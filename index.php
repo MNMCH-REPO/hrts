@@ -1,8 +1,9 @@
 <?php
-    require_once '0/includes/signin.php';
+require_once '0/includes/signin.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,10 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <title>Sign in</title>
 </head>
+
 <body>
+    
+
     <div class="container">
         <form method="post">
             <div>Login Form</div>
@@ -23,30 +27,16 @@
                 <label class="textInputLabel">User Name</label>
             </div>
             <div class="textInputContainer">
-                <input type="password" class="textInput" placeholder=" " autocomplete="off">
+                <input type="password" class="textInput" placeholder=" ">
                 <label class="textInputLabel">Password</label>
             </div>
             <div class="btnContainer">
                 <div class="btnNeutral">Sign up</div>
-                <div class="btnDefault submit">Sign in</div>
+                <div class="btnDefault">Sign in</div>
             </div> 
         </form>
     </div>
     <script src="assets/js/framework.js"></script>
-    <script>
-        if(errorMessage){Toastify({
-            text: errorMessage,
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "top",
-            position: "center",
-            stopOnFocus: true,
-            style: {
-                background: "var(--danger)",
-            },
-            onClick: function(){}
-        }).showToast();}
-    </script>
 </body>
+
 </html>
