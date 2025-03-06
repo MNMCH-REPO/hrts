@@ -14,6 +14,13 @@
         <div>Login Form</div>
         login page
     </div>
+
+
+    <h1>sample</h1>
+    <h2>sample</h2>
+<h3>sample</h3>
+<h4>sample</h4>
+
     <script src="framework.js"></script>
 </body>
 </html>
