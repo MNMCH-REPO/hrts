@@ -11,34 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="sideNav">
-            <div class="sideNavLogo img-cover"></div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain"></div>
-                <a href="">Tickets</a>
-            </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain"></div>
-                <a href="">Messages</a>
-            </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain"></div>
-                <a href="">Account</a>
-            </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain"></div>
-                <a href="">Signout</a>
-            </div>
-        </div>
-        <div class="content">
-            <div class="topNav">
-                <div class="account">
-                    <div class="accountName">John Doe</div>
-                    <div class="accountIcon img-contain"></div>
-                </div>
-            </div>
-            <div>Lorem ipsum dolor sit amet consectetur.</div>
-        </div>
+    
     </div>
     <script src="framework.js"></script>
 </body>
