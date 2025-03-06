@@ -6,7 +6,7 @@
 
     echo $hash;
 
-
+$2y$10$H2V4VZ3DgUK.n1UeWyCVYuhp9NE46wXOZYmPR.YnwMfajSg5N6XE.
 
 
 ?>
