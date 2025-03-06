@@ -16,6 +16,11 @@
             header('Location: 1/index.php');
             exit;
         } else {
-            echo 'Invalid login credentials';
+            //echo a js variable herre called errorMessage
+            echo '
+            <script>
+                errorMessage = "Incorrect Username or Password"
+            </script>
+            ';
         }
     }

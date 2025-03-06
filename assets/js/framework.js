@@ -38,4 +38,22 @@ document.addEventListener('DOMContentLoaded', function() {
             this.closest('form').submit();
         });
     });
+    if(errorMessage != ''){
+        document.querySelectorAll('.submit').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                this.closest('form').submit();
+                // Show a Toastify notification
+                Toastify({
+                    text: errorMessage,
+                    duration: 3000, // Duration in milliseconds
+                    close: true, // Show close button
+                    gravity: "top", // Position: top or bottom
+                    position: "right", // Position: left, center or right
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
+                    stopOnFocus: true // Stop on focus
+                }).showToast();
+            });
+        });
+    }
 });
+console.log('works')
