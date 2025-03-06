@@ -17,33 +17,34 @@ require_once '0/includes/signin.php';
 </head>
 
 <body>
-    <div class="container">
-        <form method="post">
-            <div>Login Form</div>
-            <div class="textInputContainer">
-                <input type="text" class="textInput" placeholder=" " autocomplete="off">
-                <label class="textInputLabel">User Name</label>
-            </div>
-            <div class="col-md-6">
-                <div class="form-container">
-                    <div class="h1">Welcome to MNMCH HRTS</div>
-                    <div class="form">
-                        <form action="0/includes/signin.php" method="post">
-                            <div class="textInputContainer">
-                                <input type="text" class="textInput" placeholder=" " name="employeeID" id="employeeID" autocomplete="off">
-                                <label class="textInputLabel">Employee ID</label>
-                            </div>
-                            <div class="textInputContainer">
-                                <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
-                                <label class="textInputLabel">Password</label>
-                            </div>
-                            <button class="btnDefault" name="loginBtn" id="loginBtn">Login</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <<div class="container">
 
+<div class="row"  style="border: 1px solid black; border-radius: 25px; max-width: 1506px; max-height: 818px ;">
+    <div class="col-md-6">
+       <PRE> <H1>THIS IS THE LEFT SIDE OF THE LOGIN 
+FORM IMAGE OF THE HOSPITAL AND LOGO HERE</H1></PRE>
+    </div>
+
+
+    <div class="col-md-6">
+        <div class="form-container">
+            <div class="h1">Welcome to MNMCH HRTS</div>
+            <div class="form">
+                <form method="post">
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " name="email" id="employeeID" autocomplete="off">
+                        <label class="textInputLabel">Email</label>
+                    </div>
+                    <div class="textInputContainer">
+                        <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
+                        <label class="textInputLabel">Password</label>
+                    </div>
+                    <button class="btnDefault" name="loginBtn" id="loginBtn">Login</button>
+                </form>
+            </div>
         </div>
+    </div>
+</div>
         <script src="assets/js/framework.js"></script>
         <script>
         if(errorMessage){Toastify({
