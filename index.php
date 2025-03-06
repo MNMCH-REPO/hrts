@@ -15,10 +15,8 @@
         login page
     </div>
 
+
     
-    <form action="" method="">LOGIN FORM</form>
-
-
 
 
 
