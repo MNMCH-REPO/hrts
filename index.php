@@ -24,8 +24,6 @@ require_once '0/includes/signin.php';
                 <input type="text" class="textInput" placeholder=" " autocomplete="off">
                 <label class="textInputLabel">User Name</label>
             </div>
-
-
             <div class="col-md-6">
                 <div class="form-container">
                     <div class="h1">Welcome to MNMCH HRTS</div>
@@ -40,9 +38,6 @@ require_once '0/includes/signin.php';
                                 <label class="textInputLabel">Password</label>
                             </div>
                             <button class="btnDefault" name="loginBtn" id="loginBtn">Login</button>
-
-
-                            a
                         </form>
                     </div>
                 </div>
@@ -50,6 +45,21 @@ require_once '0/includes/signin.php';
 
         </div>
         <script src="assets/js/framework.js"></script>
+        <script>
+        if(errorMessage){Toastify({
+            text: errorMessage,
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+                background: "var(--danger)",
+            },
+            onClick: function(){}
+        }).showToast();}
+    </script>
 </body>
 
 </html>
