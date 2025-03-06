@@ -17,8 +17,6 @@ require_once '0/includes/signin.php';
 </head>
 
 <body>
-    
-
     <div class="container">
         <form method="post">
             <div>Login Form</div>
@@ -37,6 +35,21 @@ require_once '0/includes/signin.php';
         </form>
     </div>
     <script src="assets/js/framework.js"></script>
+    <script>
+        if(errorMessage){Toastify({
+            text: errorMessage,
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+                background: "var(--danger)",
+            },
+            onClick: function(){}
+        }).showToast();}
+    </script>
 </body>
 
 </html>
