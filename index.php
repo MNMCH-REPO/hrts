@@ -42,7 +42,7 @@ require_once '0/includes/signin.php';
                             <button class="btnDefault" name="loginBtn" id="loginBtn">Login</button>
 
 
-                            a
+                            
                         </form>
                     </div>
                 </div>
