@@ -10,3 +10,5 @@
         echo 'Connection failed: ' . $e->getMessage();
         exit;
     }
+
+?>
