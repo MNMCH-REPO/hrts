@@ -33,4 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         topNav.style.left = document.querySelector('.sideNav').offsetWidth + "px";
         topNav.style.width = "calc(100% - " + document.querySelector('.sideNav').offsetWidth + "px)";
     });
+    document.querySelectorAll('.submit').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            this.closest('form').submit();
+        });
+    });
 });
