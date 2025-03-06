@@ -11,16 +11,19 @@
 </head>
 <body>
     <div class="container">
-        <div>Login Form</div>
+        <form>
+            <div>Login Form</div>
+            <div class="textInputContainer">
+            <input type="text" class="textInput" placeholder=" " autocomplete="off">
+            <label class="textInputLabel">User Name</label>
+        </div>
+            <div class="textInputContainer">
+            <input type="password" class="textInput" placeholder=" ">
+            <label class="textInputLabel">Password</label>
+        </div>
+        </form>
         login page
     </div>
-
-
-    <h1>sample</h1>
-    <h2>sample</h2>
-<h3>sample</h3>
-<h4>sample</h4>
-
     <script src="framework.js"></script>
 </body>
 </html>
