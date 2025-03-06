@@ -1,4 +1,5 @@
 <?php
+    date_default_timezone_set('Asia/Manila');
     ini_set('session.gc_maxlifetime', 3600); // 1 hour
     session_set_cookie_params(3600); // 1 hour
 
