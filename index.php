@@ -21,10 +21,14 @@
             <input type="password" class="textInput" placeholder=" ">
             <label class="textInputLabel">Password</label>
         </div>
+            <button class="btnNeutral">Login
+            </button>
         </form>
-        login page
 
-        <h1>sample lang test 123</h1>
+        <h5>forgot password</h5>
+        
+
+        
     </div>
     <script src="framework.js"></script>
 </body>
