@@ -1,3 +1,6 @@
+<?php
+    require_once '0/includes/signin.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,18 +14,20 @@
 </head>
 <body>
     <div class="container">
-        <form>
+        <form method="post">
             <div>Login Form</div>
             <div class="textInputContainer">
-            <input type="text" class="textInput" placeholder=" " autocomplete="off">
-            <label class="textInputLabel">User Name</label>
-        </div>
+                <input type="text" class="textInput" placeholder=" " autocomplete="off">
+                <label class="textInputLabel">User Name</label>
+            </div>
             <div class="textInputContainer">
-            <input type="password" class="textInput" placeholder=" ">
-            <label class="textInputLabel">Password</label>
-        </div>
-            <button class="btnNeutral">Login
-            </button>
+                <input type="password" class="textInput" placeholder=" ">
+                <label class="textInputLabel">Password</label>
+            </div>
+            <div class="btnContainer">
+                <div class="btnNeutral">Sign up</div>
+                <div class="btnDefault">Sign in</div>
+            </div> 
         </form>
     </div>
     <script src="assets/js/framework.js"></script>
