@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,22 +10,40 @@
     <link rel="stylesheet" href="assets/css/framework.css">
     <title>Page Template</title>
 </head>
+
 <body>
-    <div class="container">
-        <form>
-            <div>Login Form</div>
-            <div class="textInputContainer">
-            <input type="text" class="textInput" placeholder=" " autocomplete="off">
-            <label class="textInputLabel">User Name</label>
-        </div>
-            <div class="textInputContainer">
-            <input type="password" class="textInput" placeholder=" ">
-            <label class="textInputLabel">Password</label>
-        </div>
-            <button class="btnNeutral">Login
-            </button>
-        </form>
+    <div class="container" style="border: 1 px black solid; border-radius: 25px;">
+
+
+        <row>
+            <col-md-6>
+                <div class="hero">
+
+            </col-md-6>
+            <col-md-6>
+                <form action="" method="post">
+                    <h1 class="heroTitle">Welcome to MNMCH HRTS</h1>
+                    <p class="heroText">
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " autocomplete="off">
+                        <label class="textInputLabel">Email</label>
+                    </div>
+                    <div class="textInputContainer">
+                        <input type="password" class="textInput" placeholder=" ">
+                        <label class="textInputLabel">Password</label>
+                    </div>
+                    <button class="btnNeutral">Login
+                    </button>
+                    
+                    
+
+
+                </form>
+                </col>
+        </row>
+
     </div>
     <script src="assets/js/framework.js"></script>
 </body>
+
 </html>
