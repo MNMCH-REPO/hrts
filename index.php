@@ -11,17 +11,20 @@
 </head>
 <body>
     <div class="container">
-        <div>Login Form</div>
+        <form>
+            <div>Login Form</div>
+            <div class="textInputContainer">
+            <input type="text" class="textInput" placeholder=" " autocomplete="off">
+            <label class="textInputLabel">User Name</label>
+        </div>
+            <div class="textInputContainer">
+            <input type="password" class="textInput" placeholder=" ">
+            <label class="textInputLabel">Password</label>
+        </div>
+        </form>
         login page
+        <h1>sample lang test 123</h1>
     </div>
-
-
-
-    tangi na nyong lahat!
-    
-
-
-
     <script src="framework.js"></script>
 </body>
 </html>
