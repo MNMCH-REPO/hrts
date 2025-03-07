@@ -1,9 +1,8 @@
 <?php
-require_once '0/includes/signin.php';
+    require_once '0/includes/signin.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,37 +13,62 @@ require_once '0/includes/signin.php';
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <title>Sign in</title>
+    <style>
+        .container{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            align-self: center;
+            width: clamp(200px, 70%, 900px);
+            height: 480px;
+            border: 1px solid var(--black);
+            border-radius: 8px;
+            margin: 12% 0 0 0;
+        }
+        .container > div:nth-child(1){
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            border: 1px solid var(--black);
+            border-radius: 8px;
+            height: 100%;
+        }
+        .container > div:nth-child(2){
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            height: 100%;
+            padding: 48px 24px;
+        }
+        .container > div:nth-child(2) > div:nth-child(1){
+            text-align: center;
+            padding: 0 16px;
+        }
+    </style>
 </head>
-
 <body>
-    <<div class="container">
-
-<div class="row"  style="border: 1px solid black; border-radius: 25px; max-width: 1506px; max-height: 818px ;">
-    <div class="col-md-6">
-       <PRE> <H1>THIS IS THE LEFT SIDE OF THE LOGIN 
-FORM IMAGE OF THE HOSPITAL AND LOGO HERE</H1></PRE>
-    </div>
-
-
-    <div class="col-md-6">
-        <div class="form-container">
-            <div class="h1">Welcome to MNMCH HRTS</div>
-            <div class="form">
-                <form method="post">
-                    <div class="textInputContainer">
-                        <input type="text" class="textInput" placeholder=" " name="email" id="employeeID" autocomplete="off">
-                        <label class="textInputLabel">Email</label>
-                    </div>
-                    <div class="textInputContainer">
-                        <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
-                        <label class="textInputLabel">Password</label>
-                    </div>
-                    <button class="btnDefault" name="loginBtn" id="loginBtn">Login</button>
-                </form>
-            </div>
+    <div class="container row">
+        <div>
+            logo
+        </div>
+        <div>
+            <div class="text-title">Welcome to MNMCH HRTS</div>
+            <form method="post">
+                <div class="textInputContainer">
+                    <input type="text" class="textInput" placeholder=" " name="email" id="employeeID" autocomplete="off">
+                    <label class="textInputLabel">Email</label>
+                </div>
+                <div class="textInputContainer">
+                    <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
+                    <label class="textInputLabel">Password</label>
+                </div>
+                <div class="btnContainer">
+                    <div class="btnDefault submit">Sign in</div>
+                </div>
+            </form>
         </div>
     </div>
-</div>
         <script src="assets/js/framework.js"></script>
         <script>
         if(errorMessage){Toastify({
