@@ -41,7 +41,7 @@
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
-                <a href="../../0/includes/signout.php">Signout</a>
+                <a href="">Signout</a>
             </div>
         </div>
         <div class="content">

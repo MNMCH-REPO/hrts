@@ -10,7 +10,8 @@
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $userId]);
     $user = $stmt->fetch();
-    if ($user['role'] !== 'Employee') {
+    if (!in_array($user['role'], ['Employee', 'HR', 'Admin', 'SuperAdmin'])) {
+
         unset($_SESSION['user_id']);
         session_destroy();
         header('Location: ' . getRelativePath() . 'index.php');
