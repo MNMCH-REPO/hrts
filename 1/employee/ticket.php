@@ -1,3 +1,6 @@
+<?php
+    require_once '../../0/includes/employeeTicket.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
