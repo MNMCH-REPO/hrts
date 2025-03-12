@@ -6,6 +6,3 @@
 
     echo $hash;
 // $2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.
-
-
-?>
