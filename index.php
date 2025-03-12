@@ -68,6 +68,21 @@
         </div>
     </div>
         <script src="assets/js/framework.js"></script>
+        <script>
+        if(errorMessage){Toastify({
+            text: errorMessage,
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+                background: "var(--danger)",
+            },
+            onClick: function(){}
+        }).showToast();}
+    </script>
 </body>
 
 </html>
