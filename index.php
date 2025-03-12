@@ -63,28 +63,11 @@
                     <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
                     <label class="textInputLabel">Password</label>
                 </div>
-                <div class="btnContainer">
-                    <div class="btnDefault submit">Sign in</div>
-                </div>
+                <input type="submit" class="btnDefault" value="Sign in">
             </form>
         </div>
     </div>
         <script src="assets/js/framework.js"></script>
-        <script>
-        if(errorMessage){Toastify({
-            text: errorMessage,
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "top",
-            position: "center",
-            stopOnFocus: true,
-            style: {
-                background: "var(--danger)",
-            },
-            onClick: function(){}
-        }).showToast();}
-    </script>
 </body>
 
 </html>
