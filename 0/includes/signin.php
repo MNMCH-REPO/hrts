@@ -17,9 +17,12 @@
 
             // Redirect based on role
             if ($user['role'] === 'Employee') {
-                header('Location: ../1/employee/ticket.php');
+                header('Location: ../1/employee/SAMPLE.php');
             } elseif ($user['role'] === 'HR') {
-                header('Location: ../../1/hrRep/ticket.php');
+                header('Location: ../../1/hrRep/hrRepticket.php');
+            } elseif ($user['role'] === 'HR') {
+                header('Location: ../../1/hrRep/hrAdminticket.php');
+            
             } else {
                 header('Location: ../index.php'); // Default fallback
             }

@@ -1,5 +1,5 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=sampleconvo;charset=utf8';
+$dsn = 'mysql:host=localhost;dbname=mnmch_hrts_dbQQQQ   ;charset=utf8';
 $username = 'root';
 $password = '';
 
