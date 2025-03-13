@@ -23,3 +23,9 @@
         session_regenerate_id(true);    // Change session ID for the current session and invalidate old session ID
         $_SESSION['CREATED'] = time();  // Update creation time
     }
+    if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
+        echo '<script>';
+        echo 'console.log("User ID: ' . $_SESSION['user_id'] . '");';
+        echo 'console.log("Role: ' . $_SESSION['role'] . '");';
+        echo '</script>';
+    }
