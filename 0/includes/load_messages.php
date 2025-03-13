@@ -1,28 +1,29 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=mnmch_hrts_db;charset=utf8';
-$username = 'root';
-$password = '';
+session_start();
+require '../../0/includes/db.php';
 
-try {
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-    exit; 
+if (!isset($_SESSION['user_id'])) {
+    exit();
 }
 
-// Fetch messages ordered by datetime
-$query = "SELECT user_id AS sender, response_text AS message, created_at AS dateTime 
-          FROM ticket_responses 
-          ORDER BY created_at ASC";
+$user_id = $_SESSION['user_id'];
 
-$stmt = $pdo->prepare($query);
-$stmt->execute();
-$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $stmt = $pdo->query("SELECT ticket_responses.*, users.role FROM ticket_responses 
+                         JOIN users ON ticket_responses.user_id = users.id 
+                         ORDER BY ticket_responses.created_at ASC");
 
-// Display messages
-foreach ($messages as $msg) {
-    $class = ($msg['sender'] == 'You') ? 'sent' : 'received';
-    echo "<div class='message $class'><strong>{$msg['sender']}:</strong> {$msg['message']} <br><small>{$msg['dateTime']}</small></div>";
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $message = htmlspecialchars($row['response_text']);
+        $sender_id = $row['user_id'];
+        $role = $row['role'];
+
+        // Determine message alignment based on role
+        $class = ($sender_id == $user_id) ? "sent" : "received";
+
+        echo "<div class='message $class'>$message</div>";
+    }
+} catch (PDOException $e) {
+    echo "Error loading messages: " . $e->getMessage();
 }
 ?>

@@ -1,35 +1,25 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=mnmch_hrts_db;charset=utf8';
-$username = 'root';
-$password = '';
+session_start();
+require '../../0/includes/db.php';
 
-try {
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-    exit;
+if (!isset($_SESSION['user_id']) || !isset($_POST['message'])) {
+    exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message'])) {
-    $message = trim($_POST['message']);
-    $sender = "You"; // Change this dynamically if needed
-    $receiver = "Other"; // Placeholder; modify as required
+$user_id = $_SESSION['user_id'];
+$message = trim($_POST['message']);
 
-    if (!empty($message)) {
-        $query = "INSERT INTO ticket_responses (ticket_id, user_id, response_text, created_at) 
-          VALUES (:ticket_id, :user_id, :response_text, NOW())";
+if ($message === "") {
+    exit();
+}
 
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([
-            ':sender' => $sender,
-            ':receiver' => $receiver,
-            ':message' => $message
-        ]);
-
-        echo "Message Sent!";
-    } else {
-        echo "Message cannot be empty!";
-    }
+try {
+    $stmt = $pdo->prepare("INSERT INTO ticket_responses (user_id, response_text) VALUES (:user_id, :message)");
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+    $stmt->execute();
+    echo "Message sent successfully!";
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>
