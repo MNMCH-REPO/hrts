@@ -30,176 +30,139 @@ try {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Conversation</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .chat-container {
-            width: 50%;
-            margin: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 500px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            background-color: #f9f9f9;
-        }
-        .message {
-            padding: 10px;
-            border-radius: 10px;
-            margin: 5px 0;
-            max-width: 60%;
-            word-wrap: break-word;
-        }
-        .sent {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-            text-align: right;
-        }
-        .received {
-            background-color: #f1f0f0;
-            align-self: flex-start;
-            text-align: left;
-        }
-        .input-area {
-            display: flex;
-            margin-top: 10px;
-        }
-        input[type="text"] {
-            flex: 1;
-            padding: 10px;
-        }
-        button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="../../assets/css/message.css">
 </head>
+
 <body>
 
-<h1>Chat with HR/Admin</h1>
 
-<div class="chat-container" id="chatbox">
-    <!-- Messages will be loaded here dynamically -->
-</div>
 
-<div class="input-area">
-    <input type="text" id="message" placeholder="Type a message...">
-    <button id="sendBtn">Send</button>
-</div>
+    <div class="cards-container">
+        <?php
+        try {
+            // Fetch all tickets from the tickets table
+            $stmt = $pdo->prepare("SELECT id FROM tickets");
+            $stmt->execute();
+            $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-<script>
-// function loadMessages() {
-//     $.ajax({
-//         url: "../../0/includes/load_messages.php",
-//         type: "GET",
-//         success: function(response) {
-//             let chatbox = $("#chatbox");
-//             let prevScrollHeight = chatbox[0].scrollHeight;
-            
-//             chatbox.html(response);
-            
-//             // Scroll to bottom if new messages are added
-//             if (chatbox[0].scrollHeight > prevScrollHeight) {
-//                 chatbox.scrollTop(chatbox[0].scrollHeight);
-//             }
-//         }
-//     });
-// }
+            if ($tickets) {
+                foreach ($tickets as $index => $ticket) {
+                    echo '<div class="card card-' . (($index % 4) + 1) . '" 
+                        onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ')">';
+                    echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p>No tickets found.</p>';
+            }
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+        ?>
+    </div>
 
-// function sendMessage() {
-//     var messageText = $("#message").val().trim();
 
-//     if (messageText !== "") {
-//         $.ajax({
-//             url: "../../0/includes/send_message.php",
-//             type: "POST",
-//             data: { message: messageText },
-//             success: function(response) {
-//                 console.log(response); // Debugging response
-//                 $("#message").val(""); // Clear input field
-//                 loadMessages(); // Refresh messages after sending
-//             }
-//         });
-//     }
-// }
+    <h1>Chat with HR/Admin</h1>
 
-// $(document).ready(function() {
-//     loadMessages();
-//     setInterval(loadMessages, 1000); // Auto-refresh messages every second
+    <div class="chat-container" id="chatbox">
+        <!-- Messages will be loaded here dynamically -->
+    </div>
 
-//     $("#sendBtn").click(function() {
-//         sendMessage();
-//     });
 
-//     $("#message").keypress(function(event) {
-//         if (event.which == 13) { // Enter key
-//             sendMessage();
-//         }
-//     });
-// });
+    <div class="input-area">
+        <div class="attach" id="attach">Atttachment📎</div>
+        <input type="text" id="message" placeholder="Type a message...">
+        <button id="sendmesageBtn">Send</button>
+    </div>
 
 
 
-function loadMessages() {
-    $.ajax({
-        url: "../../0/includes/load_messages.php",
-        type: "GET",
-        success: function(response) {
-            let chatbox = $("#chatbox");
-            let prevScrollHeight = chatbox[0].scrollHeight;
-            
-            chatbox.html(response);
-            
-            // Scroll to bottom if new messages are added
-            if (chatbox[0].scrollHeight > prevScrollHeight) {
-                chatbox.scrollTop(chatbox[0].scrollHeight);
+
+    <script>
+        let selectedTicketId = null; // Store the selected ticket ID
+
+        function loadMessages(ticketId = null) {
+            if (ticketId) {
+                selectedTicketId = ticketId;
+            }
+
+            if (!selectedTicketId) {
+                console.error("No ticket selected.");
+                return;
+            }
+
+            $.ajax({
+                url: "../../0/includes/load_messages.php",
+                type: "GET",
+                data: {
+                    ticket_id: selectedTicketId
+                },
+                success: function(response) {
+                    let chatbox = $("#chatbox");
+                    chatbox.html(response);
+                    chatbox.scrollTop(chatbox[0].scrollHeight); // Auto-scroll to latest message
+                }
+            });
+        }
+
+        function sendMessage(event) {
+            if (event) event.preventDefault();
+
+            let messageText = $("#message").val().trim();
+
+            if (messageText !== "" && selectedTicketId) {
+                $.ajax({
+                    url: "../../0/includes/send_message.php",
+                    type: "POST",
+                    data: {
+                        message: messageText,
+                        ticket_id: selectedTicketId
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $("#message").val(""); // Clear input field
+                        loadMessages(); // Refresh messages
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error sending message:", error);
+                    }
+                });
+            } else {
+                console.warn("No ticket selected or message is empty.");
             }
         }
-    });
-}
 
-function sendMessage() {
-    var messageText = $("#message").val().trim();
+        $(document).ready(function() {
+            $(".card").click(function() {
+                let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
+                loadMessages(ticketId);
+            });
 
-    if (messageText !== "") {
-        $.ajax({
-            url: "../../0/includes/send_message.php",
-            type: "POST",
-            data: { message: messageText },
-            success: function(response) {
-                console.log(response); // Debugging response
-                $("#message").val(""); // Clear input field
-                loadMessages(); // Refresh messages after sending
-            }
+            $("#sendmesageBtn").click(function(event) {
+                sendMessage(event);
+            });
+
+            $("#message").keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage(event);
+                }
+            });
+
+            // Auto-refresh messages every second
+            setInterval(() => {
+                if (selectedTicketId) {
+                    loadMessages();
+                }
+            }, 1000);
         });
-    }
-}
-
-$(document).ready(function() {
-    loadMessages();
-    setInterval(loadMessages, 1000); // Auto-refresh messages every second
-
-    $("#sendBtn").click(function() {
-        sendMessage();
-    });
-
-    $("#message").keypress(function(event) {
-        if (event.which == 13) { // Enter key
-            sendMessage();
-        }
-    });
-});
-</script>
+    </script>
 
 </body>
+
 </html>

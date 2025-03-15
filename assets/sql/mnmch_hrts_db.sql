@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2025 at 09:24 AM
+-- Generation Time: Mar 14, 2025 at 06:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -61,6 +61,14 @@ CREATE TABLE `categories` (
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`) VALUES
+(1, 'Paycheck'),
+(2, 'Printer');
+
 -- --------------------------------------------------------
 
 --
@@ -72,13 +80,22 @@ CREATE TABLE `tickets` (
   `employee_id` int(11) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `description` text NOT NULL,
-  `status` enum('Open','In Progress','Resolved','Closed') DEFAULT 'Open',
+  `status` enum('Open','In Progress','Resolved') DEFAULT 'Open',
   `priority` enum('Low','Medium','High') DEFAULT 'Low',
   `category_id` int(11) NOT NULL,
   `assigned_to` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, `priority`, `category_id`, `assigned_to`, `created_at`, `updated_at`) VALUES
+(4, 1, 'Paycheck', 'The paycheck was miscalculated. Fix that please Thank you!', 'Open', 'Medium', 1, 2, '2025-03-07 17:51:41', '2025-03-07 17:51:41'),
+(5, 1, 'Printer', 'Printer was not connected to computer', 'Open', 'Medium', 2, 2, '2025-03-14 17:07:20', '2025-03-14 17:07:20'),
+(6, 1, 'Paycheck', 'miscalculated', 'Open', 'High', 1, 2, '2025-03-14 17:07:50', '2025-03-14 17:07:50');
 
 -- --------------------------------------------------------
 
@@ -93,6 +110,14 @@ CREATE TABLE `ticket_responses` (
   `response_text` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ticket_responses`
+--
+
+INSERT INTO `ticket_responses` (`id`, `ticket_id`, `user_id`, `response_text`, `created_at`) VALUES
+(1, 4, 1, 'Paycheck was not computed correctly', '2025-03-11 09:18:48'),
+(2, 4, 2, 'Hello, can you tell me more about the problem.', '2025-03-12 11:20:07');
 
 -- --------------------------------------------------------
 
@@ -109,6 +134,15 @@ CREATE TABLE `users` (
   `department` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department`, `created_at`) VALUES
+(1, 'Earl Gerald Domingo', 'earl@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'Admitting Department', '2025-03-07 15:47:06'),
+(2, 'Raymond Gonzales', 'raymond@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'Human Resource Department', '2025-03-07 17:47:34'),
+(3, 'Mico', 'mico@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Admin', 'IT Department', '2025-03-10 00:51:49');
 
 --
 -- Indexes for dumped tables
@@ -178,25 +212,25 @@ ALTER TABLE `audit_trail`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `ticket_responses`
 --
 ALTER TABLE `ticket_responses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

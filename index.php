@@ -24,7 +24,7 @@
             height: 480px;
             border: 1px solid var(--black);
             border-radius: 8px;
-            margin: 12% 0 0 0;
+            margin: 7% 0 0 0;
         }
         .container > div:nth-child(1){
             display: flex;

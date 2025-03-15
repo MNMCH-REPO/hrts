@@ -11,6 +11,7 @@ require_once '../../0/includes/employeeTicket.php';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/framework.css">
+    <link rel="stylesheet" href="../../assets/css/message.css">
     <title>Tickets</title>
     <style>
         .content {
@@ -54,217 +55,140 @@ require_once '../../0/includes/employeeTicket.php';
                 </div>
             </div>
             <div class="main-convo">
-
-
-                <style>
-                    .container-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-
-                    .main-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-                        position: relative;
-
-                    }
-
-                    .row-convo {
-                        display: flex;
-                        flex-direction: row;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .col-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-                    }
-
-                    /* .bottom-box {
-                        display: flex;
-                        flex-direction: row;
-                        width: 100%;
-                        height: 100%;
-                        border: 1px solid var(--black);
-                    } */
-
-
-                    .bottom-box {
-                        position: fixed;
-                        bottom: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 80px;
-                        /* Adjust height as needed */
-                        background: white;
-                        /* Prevents overlap with background */
-                        border-top: 1px solid var(--black);
-                        /* Optional, for a clean separation */
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-around;
-                        align-items: center;
-                        padding: 0;
-                        z-index: 1000;
-                        /* Ensures it stays on top */
-                    }
-
-
-
-                    .attachment {
-                        display: flex;
-                        flex-direction: column;
-                        width: 10%;
-                        height: 50%;
-                        border: 1px solid var(--black);
-                    }
-
-                    .text-attachment {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .input-box {
-                        
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        justify-content: center;
-                        width: 70%;
-                        height: 50%;
-                        margin-left: 10px;
-                        border: 1px solid var(--black);
-                        border-radius: 50px
-                    }
-
-                    .input-text {
-                        align-self: center;
-                        display: flex;
-                        flex-direction: column;
-                        width: 80%;
-                        height: 70%;
-
-                    }
-
-                    .textInput {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .button-send {
-                        display: flex;
-                        flex-direction: column;
-                        margin-left: 10px;
-                        width: 20%;
-                        height: 100%;
-                        border: 1px solid var(--black);
-
-                    }
-                </style>
-
                 <div class="container-convo">
                     <div class="row-convo">
                         <div class="col-convo">
+                            <div class="cards-container">
+                                <?php
+                                try {
+                                    // Fetch all tickets from the tickets table
+                                    $stmt = $pdo->prepare("SELECT id FROM tickets");
+                                    $stmt->execute();
+                                    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-                            <div class="chat-container">
-                                <div class="chat-box" id="chatbox">
-                                    <!-- Messages will be loaded here -->
-                                </div>
-
-                                <div class="bottom-box">
-
-                                    <div class="attachment">
-                                        <div class="text-attachment">Attachment</div>
-                                    </div>
-                                    <div class="input-box">
-                                        <div class="input-text">
-                                            <input type="text" class="textInput" placeholder="Type a message" name="message" id="message" autocomplete="off">
-                                        </div>
-                                        <div class="button-send">
-                                            <button class="btnDefault" type="button" name="sendBtn" id="sendBtn">Send</button>
-                                        </div>
-                                    </div>
-                                </div>
+                                    if ($tickets) {
+                                        foreach ($tickets as $index => $ticket) {
+                                            echo '<div class="card card-' . (($index % 4) + 1) . '" 
+                        onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ')">';
+                                            echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
+                                            echo '</div>';
+                                        }
+                                    } else {
+                                        echo '<p>No tickets found.</p>';
+                                    }
+                                } catch (PDOException $e) {
+                                    echo "Error: " . $e->getMessage();
+                                }
+                                ?>
                             </div>
+
+
+                            <h1>Chat with HR/Admin</h1>
+
+                            <div class="chat-container" id="chatbox">
+                                <!-- Messages will be loaded here dynamically -->
+                            </div>
+
+
+                            <div class="input-area">
+                                <div class="attach" id="attach">Atttachment📎</div>
+                                <input type="text" id="message" placeholder="Type a message...">
+                                <button id="sendmesageBtn">Send</button>
+                            </div>
+
+
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
 
 
 
+
     <script>
-        function loadMessages() {
+        let selectedTicketId = null; // Store the selected ticket ID
+
+        function loadMessages(ticketId = null) {
+            if (ticketId) {
+                selectedTicketId = ticketId;
+            }
+
+            if (!selectedTicketId) {
+                console.error("No ticket selected.");
+                return;
+            }
+
             $.ajax({
-                url: "0/includes/load_messages.php",
+                url: "../../0/includes/load_messages.php",
                 type: "GET",
+                data: {
+                    ticket_id: selectedTicketId
+                },
                 success: function(response) {
                     let chatbox = $("#chatbox");
-                    let prevScrollHeight = chatbox[0].scrollHeight;
-
-                    let newMessages = $(response).html();
-                    if (chatbox.html() !== newMessages) {
-                        chatbox.html(response);
-                        chatbox.scrollTop(chatbox[0].scrollHeight);
-                    }
+                    chatbox.html(response);
+                    chatbox.scrollTop(chatbox[0].scrollHeight); // Auto-scroll to latest message
                 }
             });
         }
 
-        function sendMessage() {
-            var messageText = $("#message").val().trim();
+        function sendMessage(event) {
+            if (event) event.preventDefault();
 
-            if (messageText !== "") {
+            let messageText = $("#message").val().trim();
+
+            if (messageText !== "" && selectedTicketId) {
                 $.ajax({
-                    url: "0/includes/send_message.php",
+                    url: "../../0/includes/send_message.php",
                     type: "POST",
-                    data: { message: messageText },
+                    data: {
+                        message: messageText,
+                        ticket_id: selectedTicketId
+                    },
                     success: function(response) {
-                        console.log(response); // Debugging response
+                        console.log(response);
                         $("#message").val(""); // Clear input field
-                        loadMessages(); // Refresh messages after sending
+                        loadMessages(); // Refresh messages
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error sending message:", error);
                     }
                 });
+            } else {
+                console.warn("No ticket selected or message is empty.");
             }
         }
 
         $(document).ready(function() {
-            loadMessages();
-            setInterval(loadMessages, 1000);
+            $(".card").click(function() {
+                let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
+                loadMessages(ticketId);
+            });
 
-            $("#sendBtn").click(function() {
-                sendMessage();
+            $("#sendmesageBtn").click(function(event) {
+                sendMessage(event);
             });
 
             $("#message").keypress(function(event) {
-                if (event.which == 13) { // Enter key
-                    sendMessage();
+                if (event.which == 13) {
+                    sendMessage(event);
                 }
             });
+
+            // Auto-refresh messages every second
+            setInterval(() => {
+                if (selectedTicketId) {
+                    loadMessages();
+                }
+            }, 1000);
         });
     </script>
+
 </body>
 
 </html>

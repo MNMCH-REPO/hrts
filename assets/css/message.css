@@ -1,0 +1,107 @@
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .chat-container {
+            width: 50%;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 0;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+
+        .sent {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .received {
+            background-color: #f1f0f0;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        .input-area {
+
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+
+        }
+
+        .attach {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #ddd;
+            color: black;
+            /* Ensures text is black */
+            font-weight: bold;
+            /* Optional: makes text stand out */
+            border-radius: 5px;
+            margin-right: 5px;
+
+            /* Add spacing between attach and input */
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        /* Sidebar styles */
+        .sidebar {
+            width: 30%;
+            display: flex-end;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card {
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-1 {
+            background-color: lightyellow;
+            cursor: pointer;
+        }
+
+        .card-2 {
+            background-color: lightgray;
+            cursor: pointer;
+        }
+
+        .card-3 {
+            background-color: lightblue;
+            cursor: pointer;
+        }
+
+        .card-4 {
+            background-color: lightgreen;
+            cursor: pointer;
+        }
+    
