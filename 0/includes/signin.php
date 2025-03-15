@@ -17,7 +17,7 @@
 
             // Redirect based on role
             if ($user['role'] === 'Employee') {
-                header('Location: ../1/employee/SAMPLE.php');
+                header('Location: ../1/employee/ticket.php');
             } elseif ($user['role'] === 'HR') {
                 header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'Admin') {
