@@ -21,14 +21,13 @@
             } elseif ($user['role'] === 'HR') {
                 header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'Admin') {
-                header('Location: ../../1/hrRep/orders(.php');
+                header('Location: ../../1/hrAdmin/ticket.php');
             
             } else {
                 header('Location: ../index.php'); // Default fallback
             }
             exit;
         } else {
-            // Echo a JS variable for an error message
             echo '
             <script>
                 errorMessage = "Incorrect Username or Password";

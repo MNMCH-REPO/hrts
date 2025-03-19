@@ -18,8 +18,42 @@
             width: 80%;
             min-height: 90vh;
             margin: 5% 0 0 5%;
-            border: 1px solid red;
             align-self: center;
+        }
+        .plateRow {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin: 0 0 32px 0;
+        }
+        .plate {
+            width: 300px;
+            height: 180px;
+            background-color: var(--primary-300);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        .tableContainer {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--neutral-300);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .tableRow {
+            display: flex;
+        }
+        .tableHeader {
+            background-color: var(--neutral-300);
+            font-weight: bold;
+        }
+        .tableCell {
+            flex: 1;
+            padding: 12px;
+            border-bottom: 1px solid var(--neutral-200);
         }
     </style>
 </head>
@@ -29,11 +63,11 @@
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="tickets.php">Tickets</a>
+                <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="messages.php">Messages</a>
+                <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
@@ -41,7 +75,7 @@
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
-                <a href="">Signout</a>
+                <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
         <div class="content">
@@ -51,7 +85,56 @@
                     <div class="accountIcon img-contain"></div>
                 </div>
             </div>
-            <div>Lorem ipsum dolor sit amet consectetur.</div>
+            <div class="row plateRow">
+                <div class="col plate" id="plate1">0</div>
+                <div class="col plate" id="plate2">0</div>
+                <div class="col plate" id="plate3">0</div>
+                <div class="col plate" id="plate4">0</div>
+            </div>
+            <div class="tableContainer">
+                <div class="tableRow tableHeader">
+                    <div class="tableCell">Column 1</div>
+                    <div class="tableCell">Column 2</div>
+                    <div class="tableCell">Column 3</div>
+                    <div class="tableCell">Column 4</div>
+                    <div class="tableCell">Column 5</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">Data 1</div>
+                    <div class="tableCell">Data 2</div>
+                    <div class="tableCell">Data 3</div>
+                    <div class="tableCell">Data 4</div>
+                    <div class="tableCell">Data 5</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">Data 1</div>
+                    <div class="tableCell">Data 2</div>
+                    <div class="tableCell">Data 3</div>
+                    <div class="tableCell">Data 4</div>
+                    <div class="tableCell">Data 5</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">Data 1</div>
+                    <div class="tableCell">Data 2</div>
+                    <div class="tableCell">Data 3</div>
+                    <div class="tableCell">Data 4</div>
+                    <div class="tableCell">Data 5</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">Data 1</div>
+                    <div class="tableCell">Data 2</div>
+                    <div class="tableCell">Data 3</div>
+                    <div class="tableCell">Data 4</div>
+                    <div class="tableCell">Data 5</div>
+                </div>
+                <div class="tableRow">
+                    <div class="tableCell">Data 1</div>
+                    <div class="tableCell">Data 2</div>
+                    <div class="tableCell">Data 3</div>
+                    <div class="tableCell">Data 4</div>
+                    <div class="tableCell">Data 5</div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="../../assets/js/framework.js"></script>

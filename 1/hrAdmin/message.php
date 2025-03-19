@@ -22,6 +22,94 @@ require_once '../../0/includes/employeeTicket.php';
             border: 1px solid red;
             align-self: center;
         }
+        .container-convo {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .main-convo {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .row-convo {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+        .col-convo {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .bottom-box {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: white;
+            border-top: 1px solid var(--black);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            z-index: 1000;
+        }
+        .attachment {
+            display: flex;
+            flex-direction: column;
+            width: 10%;
+            height: 50%;
+            border: 1px solid var(--black);
+        }
+        .text-attachment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .input-box {
+            
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 70%;
+            height: 50%;
+            margin-left: 10px;
+            border: 1px solid var(--black);
+            border-radius: 50px
+        }
+        .input-text {
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            height: 70%;
+        }
+        .textInput {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .button-send {
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;
+            width: 20%;
+            height: 100%;
+            border: 1px solid var(--black);
+        }
     </style>
 </head>
 
@@ -31,19 +119,19 @@ require_once '../../0/includes/employeeTicket.php';
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="">Tickets</a>
+                <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="">Messages</a>
+                <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
-                <a href="">Account</a>
+                <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
-                <a href="">Signout</a>
+                <a href="signout.php">Signout</a>
             </div>
         </div>
         <div class="content">
@@ -54,144 +142,13 @@ require_once '../../0/includes/employeeTicket.php';
                 </div>
             </div>
             <div class="main-convo">
-
-
-                <style>
-                    .container-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-
-                    .main-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-                        position: relative;
-
-                    }
-
-                    .row-convo {
-                        display: flex;
-                        flex-direction: row;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .col-convo {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-                    }
-
-                    /* .bottom-box {
-                        display: flex;
-                        flex-direction: row;
-                        width: 100%;
-                        height: 100%;
-                        border: 1px solid var(--black);
-                    } */
-
-
-                    .bottom-box {
-                        position: fixed;
-                        bottom: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 80px;
-                        /* Adjust height as needed */
-                        background: white;
-                        /* Prevents overlap with background */
-                        border-top: 1px solid var(--black);
-                        /* Optional, for a clean separation */
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: space-around;
-                        align-items: center;
-                        padding: 0;
-                        z-index: 1000;
-                        /* Ensures it stays on top */
-                    }
-
-
-
-                    .attachment {
-                        display: flex;
-                        flex-direction: column;
-                        width: 10%;
-                        height: 50%;
-                        border: 1px solid var(--black);
-                    }
-
-                    .text-attachment {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .input-box {
-                        
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        justify-content: center;
-                        width: 70%;
-                        height: 50%;
-                        margin-left: 10px;
-                        border: 1px solid var(--black);
-                        border-radius: 50px
-                    }
-
-                    .input-text {
-                        align-self: center;
-                        display: flex;
-                        flex-direction: column;
-                        width: 80%;
-                        height: 70%;
-
-                    }
-
-                    .textInput {
-                        display: flex;
-                        flex-direction: column;
-                        width: 100%;
-                        height: 100%;
-
-                    }
-
-                    .button-send {
-                        display: flex;
-                        flex-direction: column;
-                        margin-left: 10px;
-                        width: 20%;
-                        height: 100%;
-                        border: 1px solid var(--black);
-
-                    }
-                </style>
-
                 <div class="container-convo">
                     <div class="row-convo">
                         <div class="col-convo">
-
-
                             <div class="chat-container">
                                 <div class="chat-box" id="chatbox">
-                                    <!-- Messages will be loaded here -->
                                 </div>
-
                                 <div class="bottom-box">
-
                                     <div class="attachment">
                                         <div class="text-attachment">Attachment</div>
                                     </div>
@@ -212,9 +169,6 @@ require_once '../../0/includes/employeeTicket.php';
         </div>
     </div>
     <script src="../../assets/js/framework.js"></script>
-
-
-
     <script>
         function loadMessages() {
             $.ajax({
@@ -232,7 +186,6 @@ require_once '../../0/includes/employeeTicket.php';
                 }
             });
         }
-
         function sendMessage() {
             var messageText = $("#message").val().trim();
 
@@ -249,7 +202,6 @@ require_once '../../0/includes/employeeTicket.php';
                 });
             }
         }
-
         $(document).ready(function() {
             loadMessages();
             setInterval(loadMessages, 1000);
@@ -257,7 +209,6 @@ require_once '../../0/includes/employeeTicket.php';
             $("#sendBtn").click(function() {
                 sendMessage();
             });
-
             $("#message").keypress(function(event) {
                 if (event.which == 13) { // Enter key
                     sendMessage();
@@ -266,5 +217,4 @@ require_once '../../0/includes/employeeTicket.php';
         });
     </script>
 </body>
-
 </html>
