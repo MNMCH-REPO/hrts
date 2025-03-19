@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 19, 2025 at 01:27 PM
+-- Generation Time: Mar 19, 2025 at 02:02 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -61,6 +61,22 @@ CREATE TABLE `categories` (
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`) VALUES
+(1, 'IT Support'),
+(2, 'HR Issues'),
+(3, 'Billing Queries'),
+(4, 'Employee Relations'),
+(5, 'Technical Support'),
+(6, 'Payroll'),
+(7, 'Leave Management'),
+(8, 'Office Equipment'),
+(9, 'Training and Development'),
+(10, 'Health and Safety');
+
 -- --------------------------------------------------------
 
 --
@@ -79,6 +95,22 @@ CREATE TABLE `tickets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, `priority`, `category_id`, `assigned_to`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Issue with IT support', 'The employee cannot access their work computer.', 'Open', 'High', 1, NULL, '2025-03-12 04:00:00', '2025-03-12 04:00:00'),
+(2, 2, 'HR issue regarding leaves', 'The employee has trouble applying for leaves.', 'Open', 'Medium', 2, NULL, '2025-03-12 04:05:00', '2025-03-12 04:05:00'),
+(3, 3, 'Billing discrepancy', 'There is a mismatch in the billing statement for last month.', 'Open', 'High', 3, NULL, '2025-03-12 04:10:00', '2025-03-12 04:10:00'),
+(4, 4, 'Employee Relations concern', 'The employee raised an issue with a colleague.', 'Open', 'Medium', 4, NULL, '2025-03-12 04:15:00', '2025-03-12 04:15:00'),
+(5, 5, 'Technical issue with the software', 'The employee is unable to run the latest software update.', 'Open', 'High', 5, NULL, '2025-03-12 04:20:00', '2025-03-12 04:20:00'),
+(6, 6, 'Payroll error', 'The payroll for last month was incorrect.', 'Open', 'High', 6, NULL, '2025-03-12 04:25:00', '2025-03-12 04:25:00'),
+(7, 7, 'Leave Management problem', 'The employee cannot view their leave balance correctly.', 'Open', 'Low', 7, NULL, '2025-03-12 04:30:00', '2025-03-12 04:30:00'),
+(8, 8, 'Office Equipment malfunction', 'The printer is not working in the office.', 'Open', 'Low', 8, NULL, '2025-03-12 04:35:00', '2025-03-12 04:35:00'),
+(9, 9, 'Training request', 'The employee needs a training session on new software.', 'Open', 'Medium', 9, NULL, '2025-03-12 04:40:00', '2025-03-12 04:40:00'),
+(10, 10, 'Health and Safety concern', 'There is a potential safety issue in the office building.', 'Open', 'High', 10, NULL, '2025-03-12 04:45:00', '2025-03-12 04:45:00');
 
 -- --------------------------------------------------------
 
@@ -115,7 +147,16 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department`, `created_at`) VALUES
-(1, 'mico', 'mico@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Admin', 'HR', '2025-03-12 10:44:00');
+(1, 'mico', 'mico@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Admin', 'HR', '2025-03-12 10:44:00'),
+(2, 'alice', 'alice@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', '2025-03-12 03:00:00'),
+(3, 'bob', 'bob@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'HR Department', '2025-03-12 03:05:00'),
+(4, 'carol', 'carol@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'Billing Department', '2025-03-12 03:10:00'),
+(5, 'dave', 'dave@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'ER Department', '2025-03-12 03:15:00'),
+(6, 'eva', 'eva@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', '2025-03-12 03:20:00'),
+(7, 'frank', 'frank@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'HR Department', '2025-03-12 03:25:00'),
+(8, 'grace', 'grace@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'Billing Department', '2025-03-12 03:30:00'),
+(9, 'hank', 'hank@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'ER Department', '2025-03-12 03:35:00'),
+(10, 'iris', 'iris@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'IT Department', '2025-03-12 03:40:00');
 
 --
 -- Indexes for dumped tables
@@ -185,13 +226,13 @@ ALTER TABLE `audit_trail`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `tickets`
 --
 ALTER TABLE `tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `ticket_responses`
@@ -203,7 +244,7 @@ ALTER TABLE `ticket_responses`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
