@@ -10,75 +10,27 @@ try {
     echo 'Connection failed: ' . $e->getMessage();
     exit;
 }
-// if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-//     die("Invalid ticket ID.");
-// }
 
-// $sql = 'SELECT id FROM tickets';
-// $stmt = $pdo->prepare($sql);
-// $stmt->execute();
-// $ticket = $stmt->fetch();
-// $count = $ticket['id'];
-// echo $count;
-
-
-$sql =  'INSERT INTO ticket_responses (ticket_id, user_id, response_text, created_at) 
-        VALUES (:ticket_id, :user_id, :response_text, NOW())';
-
-$ticket_id = 5;
-$user_id = 2;
-$response_text = "heloo";
+// Insert users without specifying 'id', so it auto-increments
+$sql = 'INSERT INTO `users` (`name`, `email`, `password`, `role`, `department`, `created_at`) VALUES
+("prince", "prince@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "IT Department", NOW()),
+("malik", "malik@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "HR", "Billing Department", NOW()),
+("alice", "alice@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "IT Department", NOW()),
+("bob", "bob@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "HR Department", NOW()),
+("carol", "carol@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "HR", "Billing Department", NOW()),
+("dave", "dave@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "ER Department", NOW()),
+("eva", "eva@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "IT Department", NOW()),
+("frank", "frank@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "HR", "HR Department", NOW()),
+("grace", "grace@gmail.com", "$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.", "Employee", "Billing Department", NOW())';
 
 $stmt = $pdo->prepare($sql);
-$stmt->execute(params: [
-    'ticket_id' => 5,
-    'user_id' => 2,
-    'response_text' => "heloo"
-]);
+$stmt->execute();
 
-echo "Response inserted successfully!";
+echo "Users inserted successfully!<br>";
 
 
 
+echo "Categories inserted successfully!<br>";
 
-// $sql = 'insert into categories (name) values (:name)';
-// $name = 'Paycheck';
-// $stmt = $pdo->prepare($sql);
-// $stmt->execute(['name' => $name]);
-
-
-//  $sql = 'INSERT INTO tickets (employee_id, subject, description, status, priority, category_id, assigned_to, created_at, updated_at) 
-//      VALUES (:employee_id, :subject, :description, :status, :priority, :category_id, :assigned_to, NOW(), NOW())';
-
-//  $employee_id = 2;
-//  $subject = "System Issue";
-//  $description = "The system is experiencing slow performance.";
-//  $status = "Open";
-//  $priority = "Low";
-//  $category_id = 1;  
-//  $assigned_to = 3;
-
-//  $stmt = $pdo->prepare(query: $sql);
-//  $stmt->execute(params: [
-//      'employee_id' => $employee_id,
-//      'subject' => $subject,
-//      'description' => $description,
-//      'status' => $status,
-//      'priority' => $priority,
-//      'category_id' => $category_id,
-//      'assigned_to' => $assigned_to
-//  ]);
-
-
-
-
-
-// #if successful, redirect to login page(
-// if ($stmt->rowCount() > 0) {
-//     echo  "Ticket inserted successfully!";
-// }
-// #if not, echo error message
-// else {
-//     echo 'Error inserting user';
-// }
-// header('Location: 1/employee/SAMPLE.php');
+echo "Response inserted successfully!<br>";
+?>
