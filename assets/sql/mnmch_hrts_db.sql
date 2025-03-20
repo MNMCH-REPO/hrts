@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `attachments`
 --
 
-CREATE TABLE `attachments` (
+CREATE TABLE IF NOT EXISTS `attachments` (
   `id` int(11) NOT NULL,
   `ticket_id` int(11) NOT NULL,
   `file_path` varchar(255) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `attachments` (
 -- Table structure for table `audit_trail`
 --
 
-CREATE TABLE `audit_trail` (
+CREATE TABLE IF NOT EXISTS `audit_trail` (
   `id` int(11) NOT NULL,
   `action_type` enum('INSERT','UPDATE','DELETE') NOT NULL,
   `affected_table` enum('users','categories','tickets','ticket_responses','attachments') NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `audit_trail` (
 -- Table structure for table `categories`
 --
 
-CREATE TABLE `categories` (
+CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -83,7 +83,7 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 -- Table structure for table `tickets`
 --
 
-CREATE TABLE `tickets` (
+CREATE TABLE IF NOT EXISTS `tickets` (
   `id` int(11) NOT NULL,
   `employee_id` int(11) NOT NULL,
   `subject` varchar(255) NOT NULL,
@@ -118,7 +118,7 @@ INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, 
 -- Table structure for table `ticket_responses`
 --
 
-CREATE TABLE `ticket_responses` (
+CREATE TABLE IF NOT EXISTS `ticket_responses` (
   `id` int(11) NOT NULL,
   `ticket_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -149,7 +149,7 @@ INSERT INTO `ticket_responses` (`id`, `ticket_id`, `user_id`, `response_text`, `
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,

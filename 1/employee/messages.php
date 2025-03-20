@@ -117,40 +117,47 @@ require_once '../../0/includes/employeeTicket.php';
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-        let selectedTicketId = null; // Store the selected ticket ID
+let selectedTicketId = null;
+let refreshInterval = null; // Store interval reference
 
-        function loadMessages(ticketId = null, assignedName = null) {
-            if (ticketId) {
-                selectedTicketId = ticketId;
-            }
+function loadMessages(ticketId = null, assignedName = null) {
+    if (ticketId && ticketId !== selectedTicketId) {
+        selectedTicketId = ticketId;
 
-            if (!selectedTicketId) {
-                console.error("No ticket selected.");
-                return;
-            }
-
-            // ✅ Display the assigned person's name
-            if (assignedName) {
-                $("#assignedName").text("You are now having a conversation with: " + assignedName);
-            }
-
-            $.ajax({
-                url: "../../0/includes/load_messages.php",
-                type: "GET",
-                data: {
-                    ticket_id: selectedTicketId
-                },
-                success: function(response) {
-                    let chatbox = $("#chatbox");
-                    chatbox.html(response);
-                    chatbox.scrollTop(chatbox[0].scrollHeight);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error loading messages:", error);
-                }
-            });
+        // ✅ Clear previous interval before setting a new one
+        if (refreshInterval) {
+            clearInterval(refreshInterval);
         }
 
+        // ✅ Start a new interval for auto-refresh
+        refreshInterval = setInterval(() => {
+            loadMessages();
+        }, 1000);
+    }
+
+    if (!selectedTicketId) {
+        console.error("No ticket selected.");
+        return;
+    }
+
+    if (assignedName) {
+        $("#assignedName").text("You are now having a conversation with: " + assignedName);
+    }
+
+    $.ajax({
+        url: "../../0/includes/load_messages.php",
+        type: "GET",
+        data: { ticket_id: selectedTicketId },
+        success: function(response) {
+            let chatbox = $("#chatbox");
+            chatbox.html(response);
+            chatbox.scrollTop(chatbox[0].scrollHeight);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading messages:", error);
+        }
+    });
+}
 
 
 
@@ -195,39 +202,32 @@ require_once '../../0/includes/employeeTicket.php';
         }
 
         $(document).ready(function() {
-            // Use event delegation for dynamically created .card elements
-            $(document).on("click", ".card", function() {
-                let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
-                loadMessages(ticketId);
-            });
+    $(document).on("click", ".card", function() {
+        let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]); 
+        loadMessages(ticketId);
+    });
 
-            $("#sendmesageBtn").click(function(event) {
-                sendMessage(event);
-            });
+    $("#sendmesageBtn").click(function(event) {
+        sendMessage(event);
+    });
 
-            $("#message").keypress(function(event) {
-                if (event.which == 13) {
-                    sendMessage(event);
-                }
-            });
+    $("#message").keypress(function(event) {
+        if (event.which == 13) {
+            sendMessage(event);
+        }
+    });
 
-            $("#attach").click(function() {
-                $("#fileInput").click();
-            });
+    $("#attach").click(function() {
+        $("#fileInput").click();
+    });
 
-            $("#fileInput").change(function() {
-                let file = this.files[0];
-                if (file) {
-                    $("#message").val(file.name);
-                }
-            });
-
-            setInterval(() => {
-                if (selectedTicketId) {
-                    loadMessages();
-                }
-            }, 1000);
-        });
+    $("#fileInput").change(function() {
+        let file = this.files[0];
+        if (file) {
+            $("#message").val(file.name);
+        }
+    });
+});
     </script>
 
 
