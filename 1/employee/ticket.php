@@ -29,7 +29,7 @@
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="tickets.php">Tickets</a>
+                <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
@@ -37,7 +37,7 @@
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
-                <a href="">Account</a>
+                <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>

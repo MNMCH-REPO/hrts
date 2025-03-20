@@ -14,6 +14,11 @@
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role']; // Store user role in session
+            $_SESSION['name'] = $user['name']; // Store user name in session
+            $_SESSION['email'] = $user['email']; // Store user email in session
+            $_SESSION['department'] = $user['department']; // Store user department in session
+
+
 
             // Redirect based on role
             if ($user['role'] === 'Employee') {

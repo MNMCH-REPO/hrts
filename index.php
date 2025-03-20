@@ -63,7 +63,9 @@
                     <input type="password" class="textInput" placeholder=" " name="password" id="password" autocomplete="off">
                     <label class="textInputLabel">Password</label>
                 </div>
-                <input type="submit" class="btnDefault" value="Sign in">
+                <div class="btnContainer">
+                    <input type="submit" class="btnDefault" value="Sign in">
+                </div>
             </form>
         </div>
     </div>
