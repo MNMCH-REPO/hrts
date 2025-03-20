@@ -59,33 +59,42 @@ require_once '../../0/includes/employeeTicket.php';
                     <div class="row-convo">
                         <div class="col-convo">
                             <div class="cards-container">
-                                <?php
-                                try {
-                                    // Fetch all tickets from the tickets table
-                                    $stmt = $pdo->prepare("SELECT id FROM tickets");
-                                    $stmt->execute();
-                                    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            <?php
+require_once '../../0/includes/db.php';
 
-                                    if ($tickets) {
-                                        foreach ($tickets as $index => $ticket) {
-                                            echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                        onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ')">';
-                                            echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                            echo '</div>';
-                                        }
-                                    } else {
-                                        echo '<p>No tickets found.</p>';
-                                    }
-                                } catch (PDOException $e) {
-                                    echo "Error: " . $e->getMessage();
-                                }
-                                ?>
+if (!isset($_SESSION['user_id'])) {
+    exit('User not logged in.');
+}
+
+$employee_id = $_SESSION['user_id'];
+$stmt = $pdo->prepare("SELECT t.id, d.department_name AS assigned_name 
+                       FROM tickets t 
+                       JOIN users d ON t.assigned_to = d.id
+                       WHERE t.employee_id = :employee_id");
+
+$stmt->execute();
+$tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($tickets) {
+    foreach ($tickets as $index => $ticket) {
+        echo '<div class="card card-' . (($index % 4) + 1) . '" 
+              onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
+        echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
+        echo '</div>';
+    }
+} else {
+    echo '<p>No tickets assigned to you.</p>';
+}
+?>
+
                             </div>
 
 
                             <h1>Chat with HR/Admin</h1>
 
                             <div class="chat-container" id="chatbox">
+
+                                <h2 id="assignedName">You are now having a conversation with: <span></span></h2>
                                 <!-- Messages will be loaded here dynamically -->
                             </div>
 
@@ -108,52 +117,70 @@ require_once '../../0/includes/employeeTicket.php';
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
 
-<!-- 
-
-
     <script>
         let selectedTicketId = null; // Store the selected ticket ID
 
-        function loadMessages(ticketId = null) {
-            if (ticketId) {
-                selectedTicketId = ticketId;
-            }
+        function loadMessages(ticketId = null, assignedName = null) {
+    if (ticketId) {
+        selectedTicketId = ticketId;
+    }
 
-            if (!selectedTicketId) {
-                console.error("No ticket selected.");
-                return;
-            }
+    if (!selectedTicketId) {
+        console.error("No ticket selected.");
+        return;
+    }
 
-            $.ajax({
-                url: "../../0/includes/load_messages.php",
-                type: "GET",
-                data: {
-                    ticket_id: selectedTicketId
-                },
-                success: function(response) {
-                    let chatbox = $("#chatbox");
-                    chatbox.html(response);
-                    chatbox.scrollTop(chatbox[0].scrollHeight); // Auto-scroll to latest message
-                }
-            });
+    // Update the assigned person's name
+    if (assignedName) {
+        $("#assignedName span").text(assignedName);
+    }
+
+    $.ajax({
+        url: "../../0/includes/load_messages.php",
+        type: "GET",
+        data: { ticket_id: selectedTicketId },
+        success: function(response) {
+            let chatbox = $("#chatbox");
+            chatbox.html(response);
+            chatbox.scrollTop(chatbox[0].scrollHeight);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error loading messages:", error);
         }
+    });
+}
+
+
+        
 
         function sendMessage(event) {
             if (event) event.preventDefault();
 
             let messageText = $("#message").val().trim();
+            let fileInput = $("#fileInput")[0].files[0];
+            let formData = new FormData();
 
-            if (messageText !== "" && selectedTicketId) {
+            if (selectedTicketId) {
+                formData.append("ticket_id", selectedTicketId);
+                if (fileInput) {
+                    formData.append("file", fileInput);
+                } else if (messageText !== "") {
+                    formData.append("message", messageText);
+                } else {
+                    console.warn("No message or file selected.");
+                    return;
+                }
+
                 $.ajax({
                     url: "../../0/includes/send_message.php",
                     type: "POST",
-                    data: {
-                        message: messageText,
-                        ticket_id: selectedTicketId
-                    },
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     success: function(response) {
                         console.log(response);
-                        $("#message").val(""); // Clear input field
+                        $("#message").val(""); // Clear message input
+                        $("#fileInput").val(""); // Clear file input
                         loadMessages(); // Refresh messages
                     },
                     error: function(xhr, status, error) {
@@ -161,164 +188,45 @@ require_once '../../0/includes/employeeTicket.php';
                     }
                 });
             } else {
-                console.warn("No ticket selected or message is empty.");
+                console.warn("No ticket selected.");
             }
         }
+
         $(document).ready(function() {
-                    $(".card").click(function() {
-                        let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
-                        loadMessages(ticketId);
-                    });
+            // Use event delegation for dynamically created .card elements
+            $(document).on("click", ".card", function() {
+                let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
+                loadMessages(ticketId);
+            });
 
-                    $("#sendmesageBtn").click(function(event) {
-                        sendMessage(event);
-                    });
+            $("#sendmesageBtn").click(function(event) {
+                sendMessage(event);
+            });
 
-                    $("#message").keypress(function(event) {
-                        if (event.which == 13) {
-                            sendMessage(event);
-                        }
-                    });
-
-                    // Open file explorer when attachment button is clicked
-                    $("#attach").click(function() {
-                        $("#fileInput").click();
-                    });
-
-                    // Handle file selection and display filename in input field
-                    $("#fileInput").change(function() {
-                        let file = this.files[0];
-                        if (file) {
-                            $("#message").val(file.name);
-                        }
-                    });
-                    $(document).ready(function() {
-                        $(".card").click(function() {
-                            let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
-                            loadMessages(ticketId);
-                        });
-
-                        $("#sendmesageBtn").click(function(event) {
-                            sendMessage(event);
-                        });
-
-                        $("#message").keypress(function(event) {
-                            if (event.which == 13) {
-                                sendMessage(event);
-                            }
-                        });
-
-                        // Auto-refresh messages every second
-                        setInterval(() => {
-                            if (selectedTicketId) {
-                                loadMessages();
-                            }
-                        }, 1000);
-                    });
-    </script> -->
-
-
-    <script>
-    let selectedTicketId = null; // Store the selected ticket ID
-
-    function loadMessages(ticketId = null) {
-        if (ticketId) {
-            selectedTicketId = ticketId;
-        }
-
-        if (!selectedTicketId) {
-            console.error("No ticket selected.");
-            return;
-        }
-
-        $.ajax({
-            url: "../../0/includes/load_messages.php",
-            type: "GET",
-            data: { ticket_id: selectedTicketId },
-            success: function(response) {
-                let chatbox = $("#chatbox");
-                chatbox.html(response);
-                chatbox.scrollTop(chatbox[0].scrollHeight); // Auto-scroll to latest message
-            }
-        });
-    }
-
-    function sendMessage(event) {
-        if (event) event.preventDefault();
-
-        let messageText = $("#message").val().trim();
-        let fileInput = $("#fileInput")[0].files[0];
-        let formData = new FormData();
-
-        if (selectedTicketId) {
-            formData.append("ticket_id", selectedTicketId);
-            if (fileInput) {
-                formData.append("file", fileInput);
-            } else if (messageText !== "") {
-                formData.append("message", messageText);
-            } else {
-                console.warn("No message or file selected.");
-                return;
-            }
-
-            $.ajax({
-                url: "../../0/includes/send_message.php",
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(response) {
-                    console.log(response);
-                    $("#message").val(""); // Clear message input
-                    $("#fileInput").val(""); // Clear file input
-                    loadMessages(); // Refresh messages
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error sending message:", error);
+            $("#message").keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage(event);
                 }
             });
-        } else {
-            console.warn("No ticket selected.");
-        }
-    }
 
-    $(document).ready(function() {
-        $(".card").click(function() {
-            let ticketId = $(this).attr("onclick").match(/\d+/)[0]; // Extract ticket ID
-            loadMessages(ticketId);
+            $("#attach").click(function() {
+                $("#fileInput").click();
+            });
+
+            $("#fileInput").change(function() {
+                let file = this.files[0];
+                if (file) {
+                    $("#message").val(file.name);
+                }
+            });
+
+            setInterval(() => {
+                if (selectedTicketId) {
+                    loadMessages();
+                }
+            }, 1000);
         });
-
-        $("#sendmesageBtn").click(function(event) {
-            sendMessage(event);
-        });
-
-        $("#message").keypress(function(event) {
-            if (event.which == 13) {
-                sendMessage(event);
-            }
-        });
-
-        // Open file explorer when attachment button is clicked
-        $("#attach").click(function() {
-            $("#fileInput").click();
-        });
-
-        // Display selected file name in message input field
-        $("#fileInput").change(function() {
-            let file = this.files[0];
-            if (file) {
-                $("#message").val(file.name);
-            }
-        });
-
-        // Auto-refresh messages every second
-        setInterval(() => {
-            if (selectedTicketId) {
-                loadMessages();
-            }
-        }, 1000);
-    });
-</script>
+    </script>
 
 
 </body>
