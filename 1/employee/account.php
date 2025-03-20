@@ -141,22 +141,22 @@ require_once '../../0/includes/employeeTicket.php';
                     <div class="account-box-content">
                         <label class="account-box-content-row">
                             <span class="account-box-content-row-label">Full Name</span>
-                            <input type="text" id="fullName" value="John Doe" readonly class="account-input">
+                            <input type="text" id="fullName" value="John Doe"  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
                             <span class="account-box-content-row-label">Email</span>
-                            <input type="email" id="email" value="johndoe123@gmail.com" readonly class="account-input">
+                            <input type="email" id="email" value="johndoe123@gmail.com"  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
                             <span class="account-box-content-row-label">Role</span>
-                            <input type="text" id="role" value="Accountant" readonly class="account-input">
+                            <input type="text" id="role" value="Accountant"  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Department</span>rtuy8`
-                            <input type="text" id="department" value="Accounting and Finance" readonly class="account-input">
+                            <span class="account-box-content-row-label">Department</span>
+                            <input type="text" id="department" value="Accounting and Finance"  class="account-input">
                         </label>
 
                         <p class="change-password-text">

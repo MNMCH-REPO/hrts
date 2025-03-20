@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 19, 2025 at 02:02 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 7.4.27
+-- Generation Time: Mar 20, 2025 at 12:23 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,7 +32,7 @@ CREATE TABLE `attachments` (
   `ticket_id` int(11) NOT NULL,
   `file_path` varchar(255) NOT NULL,
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -48,7 +48,7 @@ CREATE TABLE `audit_trail` (
   `details` text DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -59,7 +59,7 @@ CREATE TABLE `audit_trail` (
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
@@ -94,7 +94,7 @@ CREATE TABLE `tickets` (
   `assigned_to` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tickets`
@@ -102,7 +102,7 @@ CREATE TABLE `tickets` (
 
 INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, `priority`, `category_id`, `assigned_to`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Issue with IT support', 'The employee cannot access their work computer.', 'Open', 'High', 1, NULL, '2025-03-12 04:00:00', '2025-03-12 04:00:00'),
-(2, 2, 'HR issue regarding leaves', 'The employee has trouble applying for leaves.', 'Open', 'Medium', 2, NULL, '2025-03-12 04:05:00', '2025-03-12 04:05:00'),
+(2, 2, 'HR issue regarding leaves', 'The employee has trouble applying for leaves.', 'Open', 'Medium', 2, 3, '2025-03-12 04:05:00', '2025-03-20 01:50:19'),
 (3, 3, 'Billing discrepancy', 'There is a mismatch in the billing statement for last month.', 'Open', 'High', 3, NULL, '2025-03-12 04:10:00', '2025-03-12 04:10:00'),
 (4, 4, 'Employee Relations concern', 'The employee raised an issue with a colleague.', 'Open', 'Medium', 4, NULL, '2025-03-12 04:15:00', '2025-03-12 04:15:00'),
 (5, 5, 'Technical issue with the software', 'The employee is unable to run the latest software update.', 'Open', 'High', 5, NULL, '2025-03-12 04:20:00', '2025-03-12 04:20:00'),
@@ -124,7 +124,24 @@ CREATE TABLE `ticket_responses` (
   `user_id` int(11) NOT NULL,
   `response_text` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ticket_responses`
+--
+
+INSERT INTO `ticket_responses` (`id`, `ticket_id`, `user_id`, `response_text`, `created_at`) VALUES
+(1, 1, 2, 'Hello can you help me with this problem?', '2025-03-19 14:01:03'),
+(2, 2, 2, 'HELLO', '2025-03-19 14:48:51'),
+(3, 2, 2, 'CAN YOU HELP ME WITH THIS PROBLEM', '2025-03-19 14:49:32'),
+(4, 2, 3, 'CAN YOU TELL ME MORE ABOUT THE PROBLEM?\r\n', '2025-03-19 14:50:29'),
+(5, 2, 2, 'sample 1', '2025-03-20 03:10:29'),
+(6, 2, 2, 'sample v2', '2025-03-20 03:10:31'),
+(7, 2, 2, 'sample 3', '2025-03-20 03:10:33'),
+(8, 2, 2, 'sample 5', '2025-03-20 03:10:35'),
+(9, 2, 2, 'saomoke', '2025-03-20 03:10:36'),
+(10, 2, 2, 'test 123', '2025-03-20 06:12:46'),
+(11, 2, 2, 'baho', '2025-03-20 06:12:49');
 
 -- --------------------------------------------------------
 
@@ -140,7 +157,7 @@ CREATE TABLE `users` (
   `role` enum('Employee','HR','Admin') NOT NULL,
   `department` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -148,8 +165,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department`, `created_at`) VALUES
 (1, 'mico', 'mico@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Admin', 'HR', '2025-03-12 10:44:00'),
-(2, 'alice', 'alice@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', '2025-03-12 03:00:00'),
-(3, 'bob', 'bob@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'HR Department', '2025-03-12 03:05:00'),
+(2, 'earl', 'earl@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', '2025-03-12 03:00:00'),
+(3, 'raymond', 'raymond@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'HR Department', '2025-03-12 03:05:00'),
 (4, 'carol', 'carol@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'Billing Department', '2025-03-12 03:10:00'),
 (5, 'dave', 'dave@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'ER Department', '2025-03-12 03:15:00'),
 (6, 'eva', 'eva@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', '2025-03-12 03:20:00'),
@@ -238,7 +255,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `ticket_responses`
 --
 ALTER TABLE `ticket_responses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
