@@ -1,4 +1,4 @@
-<?php
+<a?php
 require_once '../../0/includes/employeeTicket.php';
 ?>
 <!DOCTYPE html>
@@ -129,41 +129,41 @@ require_once '../../0/includes/employeeTicket.php';
                 .btnDefault{
                     border-radius: 50px;
                 }
+
+                
+                .btnDanger{
+                    border-radius: 50px;
+                    text-decoration: none;
+
+                }
             </style>
 
             <div class="container-account">
                 <div class="account-box">
-                    <h2 class="account-box-title">Account Information</h2>
+                    <h2 class="account-box-title">Change Password</h2>
                     <p class="account-description">
-                        The information provided below will reflect on your documents.
+                       The password must be in alphanumeric and at least 8 characters long.
                     </p>
 
                     <div class="account-box-content">
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Full Name</span>
-                            <input type="text" id="fullName" value="John Doe" readonly class="account-input">
+                            <span class="account-box-content-row-label">Old Password</span>
+                            <input type="password" id="oldPassword" name="oldPassword" value=""  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Email</span>
-                            <input type="email" id="email" value="johndoe123@gmail.com" readonly class="account-input">
+                            <span class="account-box-content-row-label">New Password</span>
+                            <input type="password" id="newPassword" name="newPassword" value=""  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Role</span>
-                            <input type="text" id="role" value="Accountant" readonly class="account-input">
+                            <span class="account-box-content-row-label">Confirm Password</span>
+                            <input type="password" id="confirmPassword" name="confirmPassword" value=""  class="account-input">
                         </label>
 
-                        <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Department</span>
-                            <input type="text" id="department" value="Accounting and Finance" readonly class="account-input">
-                        </label>
-
-                        <p class="change-password-text">
-                            IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
-                        </p>
                         <div class="btnContainer">
                             <button class="btnDefault">Save Changes</button>
+                            <a href="account.php" class="btnDanger">Back</a>
                         </div>
                     </div>
 
