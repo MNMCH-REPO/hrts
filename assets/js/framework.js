@@ -59,4 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    if (typeof userData !== 'undefined' && userData.Name) {
+        document.querySelectorAll('.accountName').forEach(function(element) {
+            element.textContent = userData.Name;
+        });
+    }
 });

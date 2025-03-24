@@ -1,5 +1,5 @@
 <?php
-    require_once '../../0/includes/employeeTicket.php';
+require_once '../../0/includes/employeeTicket.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,8 +18,7 @@
             flex-direction: column;
             width: 80%;
             min-height: 90vh;
-            margin: 5% 0 0 5%;
-            border: 1px solid red;
+            margin: 5% 0 0 260px;
             align-self: center;
         }
     </style>
@@ -31,11 +30,15 @@
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <a href="dashboard.php">Dashboard</a>
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="messages.php">Messages</a>
+                <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
@@ -68,6 +71,7 @@
                     padding: 30px;
                     background: white;
                 }
+
                 .account-box {
                     width: 100%;
                     max-width: 600px;
@@ -76,27 +80,32 @@
                     border-radius: 10px;
                     text-align: center;
                 }
+
                 .account-box-title {
                     font-size: 22px;
                     font-weight: bold;
                     margin-bottom: 10px;
                 }
+
                 .account-description {
                     font-size: 14px;
                     color: #555;
                     margin-bottom: 20px;
                 }
+
                 .account-box-content-row {
                     display: flex;
                     flex-direction: column;
                     margin-bottom: 15px;
                 }
+
                 .account-box-content-row-label {
                     font-size: 14px;
                     font-weight: 500;
                     margin-bottom: 5px;
                     text-align: left;
                 }
+
                 .account-input {
                     width: 100%;
                     padding: 10px;
@@ -105,23 +114,23 @@
                     font-size: 14px;
                     background: #f8f8f8;
                 }
+
                 .change-password-text {
                     font-size: 12px;
                     margin-top: 15px;
                     text-align: center;
                 }
+
                 .change-password-link {
                     color: blue;
                     font-weight: bold;
                     text-decoration: none;
                     cursor: pointer;
+                
                 }
+
                 .btnDefault{
                     border-radius: 50px;
-                }
-                .btnDanger{
-                    border-radius: 50px;
-                    text-decoration: none;
                 }
             </style>
 
@@ -129,28 +138,35 @@
                 <div class="account-box">
                     <h2 class="account-box-title">Change Password</h2>
                     <p class="account-description">
-                       The password must be in alphanumeric and at least 8 characters long.
+                        The password must be in a alphanumeric format and must be at least 8 characters long.
                     </p>
 
                     <div class="account-box-content">
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Old Password</span>
-                            <input type="password" id="oldPassword" name="oldPassword" value=""  class="account-input">
+                            <span class="account-box-content-row-label">Full Name</span>
+                            <input type="text" id="fullName" value="John Doe"  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">New Password</span>
-                            <input type="password" id="newPassword" name="newPassword" value=""  class="account-input">
+                            <span class="account-box-content-row-label">Email</span>
+                            <input type="email" id="email" value="johndoe123@gmail.com"  class="account-input">
                         </label>
 
                         <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Confirm Password</span>
-                            <input type="password" id="confirmPassword" name="confirmPassword" value=""  class="account-input">
+                            <span class="account-box-content-row-label">Role</span>
+                            <input type="text" id="role" value="Accountant"  class="account-input">
                         </label>
 
+                        <label class="account-box-content-row">
+                            <span class="account-box-content-row-label">Department</span>
+                            <input type="text" id="department" value="Accounting and Finance"  class="account-input">
+                        </label>
+
+                        <p class="change-password-text">
+                            IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
+                        </p>
                         <div class="btnContainer">
                             <button class="btnDefault">Save Changes</button>
-                            <a href="account.php" class="btnDanger">Back</a>
                         </div>
                     </div>
 
