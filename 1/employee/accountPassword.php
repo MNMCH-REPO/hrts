@@ -18,8 +18,7 @@
             flex-direction: column;
             width: 80%;
             min-height: 90vh;
-            margin: 5% 0 0 5%;
-            border: 1px solid red;
+            margin: 5% 0 0 260px;
             align-self: center;
         }
     </style>

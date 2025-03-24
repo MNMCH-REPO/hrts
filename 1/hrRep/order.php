@@ -12,13 +12,12 @@
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <title>Tickets</title>
     <style>
-        .content{
+        .content {
             display: flex;
             flex-direction: column;
             width: 80%;
             min-height: 90vh;
-            margin: 5% 0 0 5%;
-            border: 1px solid red;
+            margin: 5% 0 0 260px;
             align-self: center;
         }
     </style>
@@ -29,7 +28,7 @@
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="order.php">Tickets</a>
+                <a href="order.php">Oders</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>

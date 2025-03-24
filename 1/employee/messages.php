@@ -19,8 +19,7 @@ require_once '../../0/includes/employeeTicket.php';
             flex-direction: column;
             width: 80%;
             min-height: 90vh;
-            margin: 5% 0 0 5%;
-            border: 1px solid red;
+            margin: 5% 0 0 260px;
             align-self: center;
         }
     </style>
@@ -36,7 +35,7 @@ require_once '../../0/includes/employeeTicket.php';
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="messages.php">Messages</a>
+                <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
@@ -44,7 +43,7 @@ require_once '../../0/includes/employeeTicket.php';
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
-                <a href="signout.php">Signout</a>
+                <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
         <div class="content">
