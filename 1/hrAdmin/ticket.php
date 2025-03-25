@@ -312,8 +312,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </div>
 
     </div>
-    </div>
-    </div>
+    
     <script src="../../assets/js/framework.js"></script>
 </body>
 

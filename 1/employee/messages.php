@@ -22,6 +22,19 @@ require_once '../../0/includes/employeeTicket.php';
             margin: 5% 0 0 260px;
             align-self: center;
         }
+
+        .footer-messages {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    border-top: 1px solid #ddd;
+}
     </style>
 </head>
 
@@ -46,6 +59,10 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
+
+        <footer class="footer-messages">
+        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
+    </footer>
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -108,10 +125,19 @@ require_once '../../0/includes/employeeTicket.php';
 
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
     </div>
+
+
+
+
+    <footer class="footer-messages">
+        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
+    </footer>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
 
