@@ -24,34 +24,17 @@ require_once '../../0/includes/employeeTicket.php';
         }
 
         .footer-messages {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            border-top: 1px solid #ddd;
-        }
-        .row-convo{
-            display: flex;
-            width: 100%;
-            gap: 24px;
-        }
-        .col-convo{
-            width: 80%;
-        }
-        .cards-container{
-            display: flex;
-            flex-direction: column;
-            width: 20%;
-            gap: 12px 0;
-        }
-        #chatbox{
-            width: 100%;
-        }
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    border-top: 1px solid #ddd;
+}
     </style>
 </head>
 
@@ -77,9 +60,7 @@ require_once '../../0/includes/employeeTicket.php';
             </div>
         </div>
 
-        <footer class="footer-messages">
-        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
-    </footer>
+
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -137,8 +118,28 @@ require_once '../../0/includes/employeeTicket.php';
                                 ?>
 
                             </div>
+
+
+                           
+
+                            <div class="chat-container" id="chatbox">
+                                <!-- Messages will be loaded here -->
+
+                            </div>
+
+
+                            <div class="input-area">
+                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                                <div class="attach" id="attach">Attachment📎</div>
+                                <input type="text" id="message" placeholder="Type a message...">
+                                <button id="sendmesageBtn">Send</button>
+                            </div>
+
+
+
+                            </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -147,55 +148,55 @@ require_once '../../0/includes/employeeTicket.php';
 
 
 
-    <footer class="footer-messages">
-        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
-    </footer>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-let selectedTicketId = null;
-let refreshInterval = null; // Store interval reference
+        let selectedTicketId = null;
+        let refreshInterval = null; // Store interval reference
 
-function loadMessages(ticketId = null, assignedName = null) {
-    if (ticketId && ticketId !== selectedTicketId) {
-        selectedTicketId = ticketId;
+        function loadMessages(ticketId = null, assignedName = null) {
+            if (ticketId && ticketId !== selectedTicketId) {
+                selectedTicketId = ticketId;
 
-        // ✅ Clear previous interval before setting a new one
-        if (refreshInterval) {
-            clearInterval(refreshInterval);
+                // ✅ Clear previous interval before setting a new one
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                }
+
+                // ✅ Start a new interval for auto-refresh
+                refreshInterval = setInterval(() => {
+                    loadMessages();
+                }, 1000);
+            }
+
+            if (!selectedTicketId) {
+                console.error("No ticket selected.");
+                return;
+            }
+
+            if (assignedName) {
+                $("#assignedName").text("You are now having a conversation with: " + assignedName);
+            }
+
+            $.ajax({
+                url: "../../0/includes/load_messages.php",
+                type: "GET",
+                data: {
+                    ticket_id: selectedTicketId
+                },
+                success: function(response) {
+                    let chatbox = $("#chatbox");
+                    chatbox.html(response);
+                    chatbox.scrollTop(chatbox[0].scrollHeight);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading messages:", error);
+                }
+            });
         }
-
-        // ✅ Start a new interval for auto-refresh
-        refreshInterval = setInterval(() => {
-            loadMessages();
-        }, 1000);
-    }
-
-    if (!selectedTicketId) {
-        console.error("No ticket selected.");
-        return;
-    }
-
-    if (assignedName) {
-        $("#assignedName").text("You are now having a conversation with: " + assignedName);
-    }
-
-    $.ajax({
-        url: "../../0/includes/load_messages.php",
-        type: "GET",
-        data: { ticket_id: selectedTicketId },
-        success: function(response) {
-            let chatbox = $("#chatbox");
-            chatbox.html(response);
-            chatbox.scrollTop(chatbox[0].scrollHeight);
-        },
-        error: function(xhr, status, error) {
-            console.error("Error loading messages:", error);
-        }
-    });
-}
 
 
 
@@ -240,32 +241,32 @@ function loadMessages(ticketId = null, assignedName = null) {
         }
 
         $(document).ready(function() {
-    $(document).on("click", ".card", function() {
-        let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]); 
-        loadMessages(ticketId);
-    });
+            $(document).on("click", ".card", function() {
+                let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]);
+                loadMessages(ticketId);
+            });
 
-    $("#sendmesageBtn").click(function(event) {
-        sendMessage(event);
-    });
+            $("#sendmesageBtn").click(function(event) {
+                sendMessage(event);
+            });
 
-    $("#message").keypress(function(event) {
-        if (event.which == 13) {
-            sendMessage(event);
-        }
-    });
+            $("#message").keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage(event);
+                }
+            });
 
-    $("#attach").click(function() {
-        $("#fileInput").click();
-    });
+            $("#attach").click(function() {
+                $("#fileInput").click();
+            });
 
-    $("#fileInput").change(function() {
-        let file = this.files[0];
-        if (file) {
-            $("#message").val(file.name);
-        }
-    });
-});
+            $("#fileInput").change(function() {
+                let file = this.files[0];
+                if (file) {
+                    $("#message").val(file.name);
+                }
+            });
+        });
     </script>
 
 
