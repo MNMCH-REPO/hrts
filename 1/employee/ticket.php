@@ -309,8 +309,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </div>
 
     </div>
-    </div>
-    </div>
+    <footer class="footer-messages">
+        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
+    </footer>
     <script src="../../assets/js/framework.js"></script>
 </body>
 

@@ -75,6 +75,21 @@ require_once '../../0/includes/employeeTicket.php';
         tbody tr:nth-child(even) {
             background-color: var(--neutral-100);
         }
+
+
+        
+        .footer-messages {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
     </style>
 </head>
 
@@ -145,6 +160,9 @@ require_once '../../0/includes/employeeTicket.php';
             </div>
         </div>
     </div>
+    <footer class="footer-messages">
+        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
+    </footer>
     <script src="../../assets/js/framework.js"></script>
 </body>
 
