@@ -39,6 +39,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             font-size: 24px;
             font-weight: 600;
             border-radius: 8px;
+            cursor: pointer;
         }
 
 
@@ -181,7 +182,109 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         }
 
 
+        /* modal */
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 95%;
+            text-align: center;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-container {
+            position: relative;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .input-container input,
+        .input-container select,
+        .input-container textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        .input-container label {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            transition: 0.3s ease-out;
+            background: white;
+            padding: 0 5px;
+            font-size: 16px;
+            color: #666;
+            pointer-events: none;
+        }
+
+        /* Floating label effect */
+        .input-container input:focus+label,
+        .input-container input:not(:placeholder-shown)+label,
+        .input-container select:focus+label,
+        .input-container select:not(:placeholder-shown)+label,
+        .input-container textarea:focus+label,
+        .input-container textarea:not(:placeholder-shown)+label {
+            top: 5px;
+            font-size: 12px;
+            color: #007BFF;
+        }
+
+        /* Buttons */
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .btnDefault {
+            background: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btnDanger {
+            background: #DC3545;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btnDefault:hover {
+            background: #0056b3;
+        }
+
+        .btnDanger:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 
@@ -226,10 +329,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             <span class="plate-label">IN PROGRESS</span>
                             <?= $statusCounts['In Progress'] ?>
                         </div>
-                        <div class="col plate" id="plate3">
+                        <div class="col plate" id="plate3" onclick="openModal()">
                             <span class="plate-label">ADD</span>
-
                         </div>
+
                     </div>
                 </div>
 
@@ -312,7 +415,98 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <footer class="footer-messages">
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
+
+    <!-- Modal -->
+    <div id="addTicketModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">TICKET FORM</h2>
+
+            <form id="ticketForm">
+
+                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                <div class="input-container">
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="subject" required>
+                    <label for="subject">Subject</label>
+                </div>
+
+                <div class="input-container">
+                    <select id="department" required>
+                        <option value="" disabled selected></option>
+                        <option>Accounting and Finance</option>
+                        <option>IT Support</option>
+                        <option>HR</option>
+                    </select>
+                    <label for="department">Department</label>
+                </div>
+
+                <div class="input-container">
+                    <select id="category" required>
+                        <option value="" disabled selected></option>
+                        <option>Software Issue</option>
+                        <option>Hardware Issue</option>
+                        <option>Network Issue</option>
+                    </select>
+                    <label for="category">Category</label>
+                </div>
+
+                <div class="input-container">
+                    <textarea id="description" required></textarea>
+                    <label for="description">Description</label>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../assets/js/framework.js"></script>
+
+    <!-- modal -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Open modal when clicking "ADD"
+            document.getElementById("plate3").addEventListener("click", function() {
+                document.getElementById("addTicketModal").style.display = "flex";
+            });
+
+            // Close modal
+            function closeModal() {
+                document.getElementById("addTicketModal").style.display = "none";
+            }
+
+            // Attach closeModal to the window
+            window.closeModal = closeModal;
+
+            // Submit ticket (For now, just logging values)
+            function submitTicket() {
+                let employeeId = document.getElementById("employeeID").value;
+                let department = document.getElementById("department").value;
+                let subject = document.getElementById("subject").value;
+                let category = document.getElementById("category").value;
+                let description = document.getElementById("description").value;
+
+                console.log("Employee ID:", employeeId);
+                console.log("Department:", department);
+                console.log("Subject:", subject);
+                console.log("Category:", category);
+                console.log("Description:", description);
+
+                alert("Ticket Submitted!");
+                closeModal();
+            }
+        });
+    </script>
+
+
+
 </body>
 
 </html>
