@@ -254,28 +254,19 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             display: flex;
             justify-content: space-between;
             margin-top: 15px;
+
         }
 
         .btnDefault {
-            background: #007BFF;
-            color: white;
-            padding: 10px 15px;
-            border: none;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 50px;
         }
 
         .btnDanger {
-            background: #DC3545;
-            color: white;
-            padding: 10px 15px;
-            border: none;
+            border-radius: 50px;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
+
+
         }
 
         .btnDefault:hover {
@@ -419,7 +410,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <!-- Modal -->
     <div id="addTicketModal" class="modal">
         <div class="modal-content">
-            <h2 class="modal-title">TICKET FORM</h2>
+            <h1 class="modal-title">TICKET FORM</h1>
 
             <form id="ticketForm">
 
@@ -430,37 +421,44 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="subject" required>
+                    <input type="text" id="subject" name="subject" required>
                     <label for="subject">Subject</label>
                 </div>
 
                 <div class="input-container">
-                    <select id="department" required>
-                        <option value="" disabled selected></option>
-                        <option>Accounting and Finance</option>
-                        <option>IT Support</option>
-                        <option>HR</option>
-                    </select>
+                    <input type="text" id="departmentInputField" class="form-control"
+                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
+
                     <label for="department">Department</label>
                 </div>
 
                 <div class="input-container">
-                    <select id="category" required>
-                        <option value="" disabled selected></option>
-                        <option>Software Issue</option>
-                        <option>Hardware Issue</option>
-                        <option>Network Issue</option>
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <?php
+                        require "../../0/includes/db.php"; // Ensure correct database connection
+
+                        try {
+                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<option disabled>Error loading categories</option>";
+                        }
+                        ?>
                     </select>
                     <label for="category">Category</label>
                 </div>
 
+
                 <div class="input-container">
-                    <textarea id="description" required></textarea>
+                    <textarea id="description" name="description" required></textarea>
                     <label for="description">Description</label>
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="submit" name="submitTicket" class="btnDefault">SUBMIT TICKET</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
                 </div>
             </form>
@@ -472,36 +470,59 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <!-- modal -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Open modal when clicking "ADD"
-            document.getElementById("plate3").addEventListener("click", function() {
+            // Open modal function
+            function openModal() {
                 document.getElementById("addTicketModal").style.display = "flex";
-            });
 
-            // Close modal
+                // Auto-fill department correctly
+                let userDept = "<?= $_SESSION['department'] ?>"; // Use PHP instead of Blade
+                let departmentField = document.getElementById("departmentInputField");
+
+                if (departmentField) {
+                    departmentField.value = userDept;
+                } else {
+                    console.error("❌ Department field not found!");
+                }
+            }
+
+            // Make the function globally accessible
+            window.openModal = openModal;
+
+            // Attach event listener to "ADD" button
+            document.getElementById("plate3").addEventListener("click", openModal);
+
+            // Close modal function
             function closeModal() {
                 document.getElementById("addTicketModal").style.display = "none";
             }
 
-            // Attach closeModal to the window
             window.closeModal = closeModal;
 
-            // Submit ticket (For now, just logging values)
-            function submitTicket() {
-                let employeeId = document.getElementById("employeeID").value;
-                let department = document.getElementById("department").value;
-                let subject = document.getElementById("subject").value;
-                let category = document.getElementById("category").value;
-                let description = document.getElementById("description").value;
+            // Submit form via AJAX
+            document.getElementById("ticketForm").addEventListener("submit", function(e) {
+                e.preventDefault();
 
-                console.log("Employee ID:", employeeId);
-                console.log("Department:", department);
-                console.log("Subject:", subject);
-                console.log("Category:", category);
-                console.log("Description:", description);
+                let formData = new FormData(this);
 
-                alert("Ticket Submitted!");
-                closeModal();
-            }
+                fetch("../../0/includes/submitTicket.php", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Ticket submitted successfully!");
+                            document.getElementById("ticketForm").reset();
+                            closeModal();
+                            location.reload();
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("❌ Fetch Error:", error);
+                    });
+            });
         });
     </script>
 
