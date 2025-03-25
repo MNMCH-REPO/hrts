@@ -24,17 +24,34 @@ require_once '../../0/includes/employeeTicket.php';
         }
 
         .footer-messages {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border-top: 1px solid #ddd;
-}
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
+        .row-convo{
+            display: flex;
+            width: 100%;
+            gap: 24px;
+        }
+        .col-convo{
+            width: 80%;
+        }
+        .cards-container{
+            display: flex;
+            flex-direction: column;
+            width: 20%;
+            gap: 12px 0;
+        }
+        #chatbox{
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -74,7 +91,23 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="container-convo">
                     <div class="row-convo">
                         <div class="col-convo">
-                            <div class="cards-container">
+                            <div class="chat-container" id="chatbox">
+                                <!-- Messages will be loaded here -->
+
+                            </div>
+
+
+                            <div class="input-area">
+                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                                <div class="attach" id="attach">Attachment📎</div>
+                                <input type="text" id="message" placeholder="Type a message...">
+                                <button id="sendmesageBtn">Send</button>
+                            </div>
+
+
+
+                        </div>
+                        <div class="cards-container">
                                 <?php
                                 require_once '../../0/includes/db.php';
 
@@ -83,9 +116,9 @@ require_once '../../0/includes/employeeTicket.php';
                                 }
 
                                 $stmt = $pdo->prepare("SELECT t.id, u.name AS assigned_name 
-                       FROM tickets t 
-                       JOIN users u ON t.assigned_to = u.id
-                       WHERE t.employee_id = :employee_id");
+                                                            FROM tickets t 
+                                                            JOIN users u ON t.assigned_to = u.id
+                                                            WHERE t.employee_id = :employee_id");
                                 $stmt->bindParam(':employee_id', $_SESSION['user_id'], PDO::PARAM_INT);
                                 $stmt->execute();
                                 $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -104,26 +137,6 @@ require_once '../../0/includes/employeeTicket.php';
                                 ?>
 
                             </div>
-
-
-                           
-
-                            <div class="chat-container" id="chatbox">
-                                <!-- Messages will be loaded here -->
-
-                            </div>
-
-
-                            <div class="input-area">
-                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                                <div class="attach" id="attach">Attachment📎</div>
-                                <input type="text" id="message" placeholder="Type a message...">
-                                <button id="sendmesageBtn">Send</button>
-                            </div>
-
-
-
-                        </div>
                     </div>
                     
                 </div>
