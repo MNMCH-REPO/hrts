@@ -10,7 +10,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <title>Tickets</title>
     <style>
@@ -284,19 +286,23 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain"
+                    style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
+                </div>
                 <a href="messages.php">Messages</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain"
+                    style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
+                <div class="navBtnIcon img-contain"
+                    style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
@@ -320,7 +326,11 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             <span class="plate-label">IN PROGRESS</span>
                             <?= $statusCounts['In Progress'] ?>
                         </div>
-                        <div class="col plate" id="plate3" onclick="openModal()">
+                        <div class="col plate" id="plate3">
+                            <span class="plate-label">RESOLVED</span>
+                            <?= $statusCounts['Resolved'] ?>
+                        </div>
+                        <div class="col plate" id="plate4" onclick="openModal()">
                             <span class="plate-label">ADD</span>
                         </div>
 
@@ -437,7 +447,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <option value="" disabled selected>Select a category</option>
                         <?php
                         require "../../0/includes/db.php"; // Ensure correct database connection
-
+                        
                         try {
                             $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -469,7 +479,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
     <!-- modal -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             // Open modal function
             function openModal() {
                 document.getElementById("addTicketModal").style.display = "flex";
@@ -489,7 +499,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             window.openModal = openModal;
 
             // Attach event listener to "ADD" button
-            document.getElementById("plate3").addEventListener("click", openModal);
+            document.getElementById("plate4").addEventListener("click", openModal);
 
             // Close modal function
             function closeModal() {
@@ -499,15 +509,15 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             window.closeModal = closeModal;
 
             // Submit form via AJAX
-            document.getElementById("ticketForm").addEventListener("submit", function(e) {
+            document.getElementById("ticketForm").addEventListener("submit", function (e) {
                 e.preventDefault();
 
                 let formData = new FormData(this);
 
                 fetch("../../0/includes/submitTicket.php", {
-                        method: "POST",
-                        body: formData
-                    })
+                    method: "POST",
+                    body: formData
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
@@ -524,6 +534,86 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     });
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        // Attach click event listeners to plates
+        const plates = document.querySelectorAll(".plate");
+        plates.forEach(plate => {
+            plate.addEventListener("click", function () {
+                const statusMap = {
+                    plate1: "Open",
+                    plate2: "In Progress",
+                    plate3: "Resolved"
+                };
+
+                const status = statusMap[this.id];
+                if (!status) return; // Exit if the plate is not related to a status
+
+                // Fetch filtered tickets using AJAX
+                fetch(`../../0/includes/platesFilter.php?status=${encodeURIComponent(status)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.text(); // Read response as text
+                    })
+                    .then(text => {
+                        try {
+                            const data = JSON.parse(text); // Attempt to parse JSON
+                            if (data.success) {
+                                updateTable(data.tickets);
+                            } else {
+                                console.error("Error:", data.message);
+                                alert("Failed to fetch tickets. Please try again.");
+                            }
+                        } catch (error) {
+                            console.error("JSON Parse Error:", error);
+                            alert("An error occurred while processing the server response.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Fetch Error:", error);
+                        alert("An error occurred while fetching tickets.");
+                    });
+            });
+        });
+
+        // Function to update the table with filtered tickets
+        function updateTable(tickets) {
+            const tableBody = document.querySelector(".tableContainer tbody");
+            tableBody.innerHTML = ""; // Clear existing table rows
+
+            if (!tickets || tickets.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='10'>No tickets found</td></tr>";
+                return;
+            }
+
+            tickets.forEach(ticket => {
+                const row = `
+                    <tr>
+                        <td>${escapeHTML(ticket.id)}</td>
+                        <td>${escapeHTML(ticket.employee_name)}</td>
+                        <td>${escapeHTML(ticket.subject)}</td>
+                        <td>${escapeHTML(ticket.description)}</td>
+                        <td>${escapeHTML(ticket.status)}</td>
+                        <td>${escapeHTML(ticket.priority)}</td>
+                        <td>${escapeHTML(ticket.category_name)}</td>
+                        <td>${escapeHTML(ticket.assigned_to_name)}</td>
+                        <td>${escapeHTML(ticket.created_at)}</td>
+                        <td>${escapeHTML(ticket.updated_at)}</td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML("beforeend", row);
+            });
+        }
+
+        // Utility function to escape HTML to prevent XSS
+        function escapeHTML(str) {
+            const div = document.createElement("div");
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    });
+
     </script>
 
 

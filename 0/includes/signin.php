@@ -26,7 +26,7 @@
             } elseif ($user['role'] === 'HR') {
                 header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'Admin') {
-                header('Location: ../../1/hrAdmin/ticket.php');
+                header('Location: ../../1/hrAdmin/dashboard.php');
             
             } else {
                 header('Location: ../index.php'); // Default fallback

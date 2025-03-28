@@ -1,5 +1,6 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
+require_once '../../0/includes/adminTableQuery.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +43,8 @@ require_once '../../0/includes/employeeTicket.php';
             border-radius: 8px;
             overflow: hidden;
         }
-        .plateIcon{
+
+        .plateIcon {
             position: absolute;
             top: 26%;
             left: -12%;
@@ -52,7 +54,8 @@ require_once '../../0/includes/employeeTicket.php';
             background-repeat: no-repeat;
             background-size: cover;
         }
-        .plateContent{
+
+        .plateContent {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -63,13 +66,15 @@ require_once '../../0/includes/employeeTicket.php';
             align-self: flex-end;
             padding: 5% 0;
         }
-        .plateTitle{
+
+        .plateTitle {
             font-size: 24px;
             font-weight: 500;
             width: 100%;
             min-height: 32px;
         }
-        .plateValue{
+
+        .plateValue {
             font-size: 48px;
             font-weight: 600;
             width: 100%;
@@ -77,6 +82,11 @@ require_once '../../0/includes/employeeTicket.php';
             text-align: end;
             padding: 8px;
         }
+
+        /*table  */
+
+        /* table */
+
         .tableContainer {
             display: flex;
             flex-direction: column;
@@ -113,8 +123,107 @@ require_once '../../0/includes/employeeTicket.php';
             background-color: var(--neutral-100);
         }
 
+        /* search container */
 
-        
+        .search-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            /* Moves search container to the right */
+            width: 100%;
+            padding-bottom: 10px;
+            /* Adjust spacing if needed */
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: #D3D3D3;
+            /* Adjust to match exact gray shade */
+            border-radius: 30px;
+            padding: 5px;
+            width: 320px;
+            /* Adjust width */
+        }
+
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            border-radius: 30px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+        }
+
+        .search-icon img {
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            background: transparent;
+            border: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-left: 1px solid #888;
+            /* Divider line between search and filter */
+        }
+
+        .filter-btn img {
+            width: 16px;
+            height: 16px;
+            margin-left: 5px;
+        }
+
+
+
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 6px 12px;
+            border: 1px solid var(--neutral-300);
+            border-radius: 4px;
+            color: var(--primary-500);
+            background: var(--neutral-100);
+        }
+
+        .pagination a.active {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .pagination a:hover {
+            background: var(--primary-400);
+            color: white;
+        }
+
+
         .footer-messages {
             position: fixed;
             bottom: 0;
@@ -132,7 +241,7 @@ require_once '../../0/includes/employeeTicket.php';
 
 <body>
     <div class="container">
-    <div class="sideNav">
+        <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
@@ -149,6 +258,12 @@ require_once '../../0/includes/employeeTicket.php';
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
+                
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <a href="management.php">Management</a>
+                
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -184,7 +299,7 @@ require_once '../../0/includes/employeeTicket.php';
                         <div class="plateValue">123</div>
                     </div>
                 </div>
-                
+
                 <div class="col plate" id="plate4">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
                     <div class="plateContent">
@@ -206,27 +321,77 @@ require_once '../../0/includes/employeeTicket.php';
                         <div class="plateValue"></div>
                     </div>
                 </div>
-                
+
             </div>
+
+            <div class="pagination-wrapper">
+                <div class="pagination">
+                    <?php if ($page > 1): ?>
+                        <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
+                    <?php endif; ?>
+                </div>
+
+                <div class="search-container">
+                    <input type="text" placeholder="SEARCH..." class="search-input">
+                    <div class="search-icon">
+                        <img src="../../assets/images/icons/search.png" alt="Search">
+                    </div>
+                    <button class="filter-btn">
+                        <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                    </button>
+                </div>
+            </div>
+
+
+
             <div class="table-container">
                 <div class="tableContainer">
                     <table>
                         <thead>
                             <tr>
-                                <th>TICKET ID</th>
-                                <th>SUBJECT</th>
-                                <th>CATEGORY</th>
-                                <th>STATUS</th>
-                                <th>PRIORITY</th>
-                                <th>ASSIGNED TO</th>
-                                <th>DATE AND TIME</th>
+                                <th>ID <i class="fas fa-sort"></i></th>
+                                <th>Employee Name <i class="fas fa-sort"></i></th>
+                                <th>Subject <i class="fas fa-sort"></i></th>
+                                <th>Description <i class="fas fa-sort"></i></th>
+                                <th>Status <i class="fas fa-sort"></i></th>
+                                <th>Priority <i class="fas fa-sort"></i></th>
+                                <th>Category ID <i class="fas fa-sort"></i></th>
+                                <th>Assigned To <i class="fas fa-sort"></i></th>
+                                <th>Created At <i class="fas fa-sort"></i></th>
+                                <th>Updated At <i class="fas fa-sort"></i></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                            </tr>
+                            <?php if (!empty($tickets)): ?>
+                                <?php foreach ($tickets as $ticket): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($ticket['id']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['subject']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['description']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['status']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['priority']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['category_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="10">No tickets found</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
+
                     </table>
                 </div>
 
