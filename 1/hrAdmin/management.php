@@ -321,11 +321,14 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
+<<<<<<< HEAD
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="management.php">Management</a>
                 
             </div>
             <div class="navBtn">
+=======
+>>>>>>> 5a44cc2b44fa6ba49524d4b9d1c61cc83e668b22
                 <div class="navBtnIcon img-contain"
                     style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
