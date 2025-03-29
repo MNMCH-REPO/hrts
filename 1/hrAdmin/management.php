@@ -27,25 +27,6 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             align-self: center;
         }
 
-        .plateRow {
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 0 0 32px 0;
-        }
-
-        .plate {
-            width: 300px;
-            height: 180px;
-            background-color: var(--primary-300);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
         /* table */
 
         .tableContainer {
@@ -81,8 +62,25 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         }
 
         tbody tr:nth-child(even) {
-            background-color: var(--neutral-100);
+            background-color: var(--primary-100);
         }
+
+        /* Disabled button styles */
+        .btnDefaultDisabled,
+        .btnDangerDisabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+
+        /* Highlight the selected row */
+        .selected-row {
+            background-color: var(--primary-500) !important;
+            
+        }
+
+
+
 
         /* search container */
 
@@ -159,6 +157,15 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             width: 100%;
             padding-bottom: 10px;
         }
+
+        .pagination-wrapper>.btnContainer {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            height: 100%;
+            margin: 0 12px 0 0 !important;
+        }
+
 
         .pagination {
             display: flex;
@@ -266,33 +273,9 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             color: #007BFF;
         }
 
-        /* Buttons */
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-
-        }
-
-        .btnDefault {
-            cursor: pointer;
-            border-radius: 50px;
-        }
-
-        .btnDanger {
-            border-radius: 50px;
-            cursor: pointer;
 
 
-        }
 
-        .btnDefault:hover {
-            background: #0056b3;
-        }
-
-        .btnDanger:hover {
-            background: #c82333;
-        }
     </style>
 </head>
 
@@ -301,36 +284,27 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="dashboard.php">Dashboard</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
-                </div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
                 <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
-<<<<<<< HEAD
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="management.php">Management</a>
-                
             </div>
             <div class="navBtn">
-=======
->>>>>>> 5a44cc2b44fa6ba49524d4b9d1c61cc83e668b22
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/switch.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
@@ -347,20 +321,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
 
 
-            <div class="row plateRow">
-                <div class="col plate" id="plate1">
-                    <span class="plate-label">ADD ACCOUNT</span>
 
-                </div>
-                <div class="col plate" id="plate2">
-                    <span class="plate-label">EDIT ACCOUNT</span>
-
-                </div>
-                <div class="col plate" id="plate3">
-                    <span class="plate-label">ACTIVITIES</span>
-
-                </div>
-            </div>
 
 
             <div class="pagination-wrapper">
@@ -376,6 +337,13 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                     <?php if ($page < $totalPages): ?>
                         <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
                     <?php endif; ?>
+                </div>
+
+                <div class="btnContainer">
+                    <button type="button" class="btnDefault btnDefaultDisabled" id="editAccountID" disabled>Edit Account</button>
+                    <button type="button" class="btnDanger btnDangerDisabled" id="removeAccountID" disabled>Remove Account </button>
+                    <button type="button" class="btnDefault btnDefaultDisabled" id="disableAccountID" disabled>Disable Account </button>
+                    <button type="button" class="btnDefault" id="addAccountID">Add Account +</button>
                 </div>
 
                 <div class="search-container">
@@ -435,7 +403,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
 
     <!-- Modal -->
-    <div id="addTicketModal" class="modal">
+    <div id="addAccountModal" class="modal">
         <div class="modal-content">
             <h1 class="modal-title">ADD ACCOUNT</h1>
 
@@ -455,26 +423,26 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
 
                 <div class="input-container">
-                    
+
                     <select id="role" name="role" required>
                         <option value="" disabled selected>Please select a Role</option>
                         <option value="Admin">Admin</option>
                         <option value="HR Rep">HR Rep</option>
-                        <option value="Employee">Staff</option>
+                        <option value="Employee">Employee</option>
                     </select>
                 </div>
 
                 <div class="input-container">
-                   
+
                     <select id="department" name="department" required>
                         <option value="" disabled selected>Please select the Department</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                        <option value="HR Department">HR Department</option>
+                        <option value="CnC Department">CnC Department</option>
+                        <option value="Accounting Department">Accounting Department</option>
                     </select>
                 </div>
 
-                <div class="modal-buttons">
+                <div class="btnContainer">
                     <button type="submit" name="submitAccount" class="btnDefault">SUBMIT</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
                 </div>
@@ -485,54 +453,82 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
     <script src="../../assets/js/framework.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             // Open modal function
             function openModal() {
-                document.getElementById("addTicketModal").style.display = "flex";
+                document.getElementById("addAccountModal").style.display = "flex";
             }
 
             // Make the function globally accessible
             window.openModal = openModal;
 
-            // Attach event listener to "ADD ACCOUNT" plate
-            document.getElementById("plate1").addEventListener("click", openModal);
+            // Attach event listener to "ADD ACCOUNT" button
+            document.getElementById("addAccountID").addEventListener("click", openModal);
 
             // Close modal function
             function closeModal() {
-                document.getElementById("addTicketModal").style.display = "none";
+                document.getElementById("addAccountModal").style.display = "none";
             }
 
             window.closeModal = closeModal;
 
             // Submit form via AJAX
-            document.getElementById("addAccountForm").addEventListener("submit", function (e) {
+            document.getElementById("addAccountForm").addEventListener("submit", function(e) {
                 e.preventDefault();
 
                 let formData = new FormData(this);
 
                 fetch("../../0/includes/createAccount.php", { // Update the URL to match the correct PHP script
-                    method: "POST",
-                    body: formData
-                })
+                        method: "POST",
+                        body: formData
+                    })
                     .then(response => response.json())
                     .then(data => {
+                        console.log("✅ Response Data:", data); // Log the response data
                         if (data.success) {
                             alert("Account added successfully!");
-                            document.getElementById("addAccountForm").reset();
-                            closeModal();
                             location.reload();
                         } else {
                             alert("Error: " + data.message);
                         }
                     })
                     .catch(error => {
-                        console.error("❌ Fetch Error:", error);
+                        console.error("❌ Fetch Error:", error); // Log any fetch errors
                     });
             });
         });
 
 
+        // Highlight selected row and enable buttons
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all table rows
+            const tableRows = document.querySelectorAll(".tableContainer tbody tr");
+
+            // Get the buttons
+            const editButton = document.getElementById("editAccountID");
+            const removeButton = document.getElementById("removeAccountID");
+            const disableButton = document.getElementById("disableAccountID");
+
+            // Add click event listener to each row
+            tableRows.forEach(row => {
+                row.addEventListener("click", function() {
+                    // Enable the buttons
+                    editButton.classList.remove("btnDefaultDisabled");
+                    editButton.removeAttribute("disabled");
+
+                    removeButton.classList.remove("btnDangerDisabled");
+                    removeButton.removeAttribute("disabled");
+
+                    disableButton.classList.remove("btnDefaultDisabled");
+                    disableButton.removeAttribute("disabled");
+
+                    // Highlight the selected row (optional)
+                    tableRows.forEach(r => r.classList.remove("selected-row"));
+                    row.classList.add("selected-row");
+                });
+            });
+        });
     </script>
 </body>
 
-</html>c
+</html>
