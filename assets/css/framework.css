@@ -147,6 +147,26 @@ body{
 .btnDefault:hover{
     background-color: var(--primary-600);
 }
+
+.btnWarning{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: none;
+    background-color: var(--secondary-500);
+    color: var(--white);
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--fast);
+}
+.btnWarning:hover{
+    background-color: var(--secondary-600);
+}
+
+
+
 .btnDanger{
     display: flex;
     justify-content: center;

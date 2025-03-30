@@ -66,6 +66,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         }
 
         /* Disabled button styles */
+        .btnWarningDisabled,
         .btnDefaultDisabled,
         .btnDangerDisabled {
             cursor: not-allowed;
@@ -76,7 +77,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         /* Highlight the selected row */
         .selected-row {
             background-color: var(--primary-500) !important;
-            
+
         }
 
 
@@ -165,7 +166,6 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             height: 100%;
             margin: 0 12px 0 0 !important;
         }
-
 
         .pagination {
             display: flex;
@@ -272,10 +272,6 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             font-size: 12px;
             color: #007BFF;
         }
-
-
-
-
     </style>
 </head>
 
@@ -340,11 +336,13 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
 
                 <div class="btnContainer">
-                    <button type="button" class="btnDefault btnDefaultDisabled" id="editAccountID" disabled>Edit Account</button>
-                    <button type="button" class="btnDanger btnDangerDisabled" id="removeAccountID" disabled>Remove Account </button>
-                    <button type="button" class="btnDefault btnDefaultDisabled" id="disableAccountID" disabled>Disable Account </button>
-                    <button type="button" class="btnDefault" id="addAccountID">Add Account +</button>
+                    <button type="button" class="btnWarning btnWarningDisabled" id="editAccountID" name="editAccount" disabled>Edit Account</button>
+                    <button type="button" class="btnDanger btnDangerDisabled" id="removeAccountID" name="removeAccount" disabled>Remove Account </button>
+                    <button type="button" class="btnDefault btnDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
+                    <button type="button" class="btnDefault" id="addAccountID" name="addAccount">Add Account +</button>
                 </div>
+
+
 
                 <div class="search-container">
                     <input type="text" placeholder="SEARCH..." class="search-input">
@@ -374,7 +372,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                     <tbody>
                         <?php if (!empty($users)): ?>
                             <?php foreach ($users as $user): ?>
-                                <tr>
+                                <tr data-id="<?= htmlspecialchars($user['id']) ?>">
                                     <td><?= htmlspecialchars($user['id']) ?></td>
                                     <td><?= htmlspecialchars($user['name']) ?></td>
                                     <td><?= htmlspecialchars($user['email']) ?></td>
@@ -451,6 +449,51 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     </div>
 
 
+    <div id="editAccountModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">EDIT ACCOUNT</h1>
+
+            <form id="editAccountForm">
+                <div class="input-container">
+                    <input type="text" id="employeeID" name="employeeID" required>
+                    <label for="employeeID">Employee ID</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="employeeName" name="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="email" name="email" required>
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="input-container">
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected>Please select a Role</option>
+                        <option value="Admin">Admin</option>
+                        <option value="HR Rep">HR Rep</option>
+                        <option value="Employee">Employee</option>
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <select id="department" name="department" required>
+                        <option value="" disabled selected>Please select the Department</option>
+                        <option value="HR Department">HR Department</option>
+                        <option value="CnC Department">CnC Department</option>
+                        <option value="Accounting Department">Accounting Department</option>
+                    </select>
+                </div>
+
+                <div class="btnContainer">
+                    <button type="submit" class="btnDefault" name="updateAccount" id="updateAccountID">UPDATE</button>
+                    <button type="button" class="btnDanger" id="closeEditModal">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../assets/js/framework.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -499,33 +542,163 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         });
 
 
+
+
         // Highlight selected row and enable buttons
         document.addEventListener("DOMContentLoaded", function() {
-            // Get all table rows
             const tableRows = document.querySelectorAll(".tableContainer tbody tr");
-
-            // Get the buttons
             const editButton = document.getElementById("editAccountID");
             const removeButton = document.getElementById("removeAccountID");
             const disableButton = document.getElementById("disableAccountID");
 
+            let selectedRow = null; // Store the currently selected row
+
+            // Function to enable buttons
+            function enableButtons() {
+                editButton.classList.remove("btnWarningDisabled");
+                editButton.removeAttribute("disabled");
+
+                removeButton.classList.remove("btnDangerDisabled");
+                removeButton.removeAttribute("disabled");
+
+                disableButton.classList.remove("btnDisabled");
+                disableButton.removeAttribute("disabled");
+            }
+
+            // Function to disable buttons
+            function disableButtons() {
+                editButton.classList.add("btnWarningDisabled");
+                editButton.setAttribute("disabled", "true");
+
+                removeButton.classList.add("btnDangerDisabled");
+                removeButton.setAttribute("disabled", "true");
+
+                disableButton.classList.add("btnDisabled");
+                disableButton.setAttribute("disabled", "true");
+            }
+
             // Add click event listener to each row
             tableRows.forEach(row => {
                 row.addEventListener("click", function() {
-                    // Enable the buttons
-                    editButton.classList.remove("btnDefaultDisabled");
-                    editButton.removeAttribute("disabled");
+                    // Remove previous selection
+                    tableRows.forEach(r => r.classList.remove("selected-row"));
 
-                    removeButton.classList.remove("btnDangerDisabled");
-                    removeButton.removeAttribute("disabled");
+                    // Toggle selection
+                    if (selectedRow === row) {
+                        selectedRow = null;
+                        disableButtons(); // Disable buttons when deselected
+                    } else {
+                        selectedRow = row;
+                        enableButtons(); // Enable buttons when selected
+                        row.classList.add("selected-row");
+                    }
+                });
+            });
 
-                    disableButton.classList.remove("btnDefaultDisabled");
-                    disableButton.removeAttribute("disabled");
+            // Click outside the table to reset selection
+            document.addEventListener("click", function(event) {
+                if (!event.target.closest(".tableContainer")) {
+                    selectedRow = null;
+                    disableButtons();
+                    tableRows.forEach(row => row.classList.remove("selected-row"));
+                }
+            });
+        });
 
-                    // Highlight the selected row (optional)
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const tableRows = document.querySelectorAll(".tableContainer tbody tr");
+            const editButton = document.getElementById("editAccountID");
+            const editModal = document.getElementById("editAccountModal");
+            const closeModalButton = document.getElementById("closeEditModal");
+
+            // Input fields in the modal
+            const employeeIDInput = document.getElementById("employeeID");
+            const employeeNameInput = document.getElementById("employeeName");
+            const emailInput = document.getElementById("email");
+            const roleSelect = document.getElementById("role");
+            const departmentSelect = document.getElementById("department");
+
+            let selectedUserId = null;
+
+            // Add click event listener to each row
+            tableRows.forEach(row => {
+                row.addEventListener("click", function() {
+                    // Highlight the selected row
                     tableRows.forEach(r => r.classList.remove("selected-row"));
                     row.classList.add("selected-row");
+
+                    // Store the selected user ID
+                    selectedUserId = row.getAttribute("data-id");
+                    console.log("Selected User ID:", selectedUserId); // Debugging log
+
+                    // Enable the "Edit Account" button
+                    editButton.classList.remove("btnWarningDisabled");
+                    editButton.removeAttribute("disabled");
                 });
+            });
+
+
+
+            // Click outside the table to reset selection
+            document.addEventListener("click", function(event) {
+                if (!event.target.closest(".tableContainer")) {
+                    selectedUserId = null;
+                    editButton.classList.add("btnWarningDisabled");
+                    editButton.setAttribute("disabled", "true");
+                    tableRows.forEach(row => row.classList.remove("selected-row"));
+                }
+            });
+
+            editButton.addEventListener("click", function() {
+                if (selectedUserId) {
+                    fetchAndPopulateModal(selectedUserId); // Call the fetchAndPopulateModal function
+                }
+            });
+
+            // Function to fetch and populate modal
+            async function fetchAndPopulateModal(userID) {
+                try {
+                    const response = await fetch("../../0/includes/editAccountQuery.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: `id=${encodeURIComponent(userID)}`,
+                    });
+
+                    const data = await response.json();
+
+                    console.log("Fetched Data:", data); // Debugging log
+
+                    if (data.success) {
+                        // Populate input fields
+                        employeeIDInput.value = data.data.id || "";
+                        employeeNameInput.value = data.data.name || "";
+                        emailInput.value = data.data.email || "";
+                        roleSelect.value = data.data.role || "";
+                        departmentSelect.value = data.data.department || "";
+
+                        // Open the modal
+                        editModal.style.display = "flex";
+                    } else {
+                        console.error("Error fetching employee data:", data.message);
+                    }
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                }
+            }
+
+            // Close the modal
+            closeModalButton.addEventListener("click", function() {
+                editModal.style.display = "none";
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === editModal) {
+                    editModal.style.display = "none";
+                }
             });
         });
     </script>

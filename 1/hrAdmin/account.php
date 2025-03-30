@@ -43,10 +43,10 @@ require_once '../../0/includes/employeeTicket.php';
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
-                <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
-                <a href="management.php">Management</a>
             </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
+                <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -130,66 +130,111 @@ require_once '../../0/includes/employeeTicket.php';
                     font-weight: bold;
                     text-decoration: none;
                     cursor: pointer;
-                
+
                 }
 
-                .btnDefault{
+                .btnDefault {
                     border-radius: 50px;
                 }
             </style>
 
+            <?php
+            require_once '../../0/includes/db.php'; // Include your database connection file
+
+            // Fetch user data from the database
+            $userId = $_SESSION['user_id']; // Assuming the user ID is stored in the session
+
+            try {
+                $stmt = $pdo->prepare("SELECT name, email, role, department FROM users WHERE id = :id");
+                $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+                $stmt->execute();
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$user) {
+                    die("User not found.");
+                }
+            } catch (PDOException $e) {
+                die("Database error: " . $e->getMessage());
+            }
+            ?>
+
             <div class="container-account">
                 <div class="account-box">
-                    <h2 class="account-box-title">Change Password</h2>
-                    <p class="account-description">
-                        The password must be in a alphanumeric format and must be at least 8 characters long.
-                    </p>
-
-                    <div class="account-box-content">
-                        <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Full Name</span>
-                            <input type="text" id="fullName" value="John Doe"  class="account-input">
-                        </label>
-
-                        <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Email</span>
-                            <input type="email" id="email" value="johndoe123@gmail.com"  class="account-input">
-                        </label>
-
-                        <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Role</span>
-                            <input type="text" id="role" value="Accountant"  class="account-input">
-                        </label>
-
-                        <label class="account-box-content-row">
-                            <span class="account-box-content-row-label">Department</span>
-                            <input type="text" id="department" value="Accounting and Finance"  class="account-input">
-                        </label>
-
-                        <p class="change-password-text">
-                            IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
+                    <form action="" id="editAccountForm" method="POST">
+                        <input type="hidden" name="id" id="id" value="<?php echo htmlspecialchars($userId); ?>">
+                        <h2 class="account-box-title">Change Password</h2>
+                        <p class="account-description">
+                            The password must be in a alphanumeric format and must be at least 8 characters long.
                         </p>
-                        <div class="btnContainer">
-                            <button class="btnDefault">Save Changes</button>
-                        </div>
-                    </div>
 
+                        <div class="account-box-content">
+                            <label class="account-box-content-row">
+                                <span class="account-box-content-row-label">Full Name</span>
+                                <input type="text" id="fullName" name="employeeName" value="<?php echo htmlspecialchars($user['name']); ?>" class="account-input" required>
+                            </label>
+
+                            <label class="account-box-content-row">
+                                <span class="account-box-content-row-label">Email</span>
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" required>
+                            </label>
+
+                            <label class="account-box-content-row">
+                                <span class="account-box-content-row-label">Role</span>
+                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" required>
+                            </label>
+
+                            <label class="account-box-content-row">
+                                <span class="account-box-content-row-label">Department</span>
+                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" required>
+                            </label>
+
+                            <p class="change-password-text">
+                                IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
+                            </p>
+                            <div class="btnContainer">
+                                <button class="btnDefault" name="saveChanges">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-
         </div>
     </div>
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("fullName").value = userData.Name;
-    document.getElementById("email").value = userData.Email;
-    document.getElementById("role").value = userData.Role;
-    document.getElementById("department").value = userData.Department;
-});
+        // JavaScript to handle form submission and AJAX request
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const editAccountForm = document.getElementById("editAccountForm");
+
+            editAccountForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Collect form data
+                const formData = new FormData(editAccountForm);
+
+                try {
+                    // Send the form data to the backend using fetch
+                    const response = await fetch("../../0/includes/editProfile.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error submitting the form:", error);
+                    alert("An error occurred while updating the account.");
+                }
+            });
+        });
     </script>
 </body>
 

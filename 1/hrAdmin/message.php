@@ -64,18 +64,7 @@ require_once '../../0/includes/employeeTicket.php';
             <div class="main-convo">
                 <div class="container-convo">
                     <div class="row-convo">
-                        <div class="col-convo">
-                            <div class="chat-container" id="chatbox">
-                                <!-- Messages will be loaded here -->
-
-                            </div>
-                            <div class="input-area">
-                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                                <div class="attach" id="attach">Attachment📎</div>
-                                <input type="text" id="message" placeholder="Type a message...">
-                                <button id="sendmesageBtn">Send</button>
-                            </div>
-                        </div>
+                        
                         <div class="cards-container">
                                 <?php
                                 require_once '../../0/includes/db.php';
@@ -109,7 +98,7 @@ require_once '../../0/includes/employeeTicket.php';
 
 
                            
-
+                            <div class="col-convo">
                             <div class="chat-container" id="chatbox">
                                 <!-- Messages will be loaded here -->
 
@@ -123,6 +112,9 @@ require_once '../../0/includes/employeeTicket.php';
                                 <button id="sendmesageBtn">Send</button>
                             </div>
 
+
+
+                        </div>
 
 
                             </div>
