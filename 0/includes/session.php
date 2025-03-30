@@ -24,10 +24,10 @@ if (!isset($_SESSION['CREATED'])) {
     $_SESSION['CREATED'] = time();  // Update creation time
 }
 
-require_once '../../0/includes/db.php'; // Include your database connection file
 
 if (isset($_SESSION['user_id'])) {
     $userId = $_SESSION['user_id'];
+    
 
     try {
         // Fetch the latest user data from the database
