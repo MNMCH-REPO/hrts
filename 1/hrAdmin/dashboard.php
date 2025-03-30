@@ -12,231 +12,9 @@ require_once '../../0/includes/adminTableQuery.php';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/framework.css">
-    <title>Tickets</title>
-    <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
-        }
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <title>HRTS</title>
 
-        .plateRow {
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-            gap: 8px;
-            margin: 0 0 32px 0;
-        }
-
-        .plate {
-            position: relative;
-            width: 300px;
-            height: 180px;
-            background-color: var(--primary-300);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 600;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .plateIcon {
-            position: absolute;
-            top: 26%;
-            left: -12%;
-            width: 55%;
-            aspect-ratio: 1/1;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .plateContent {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            width: 60%;
-            height: 100%;
-            align-self: flex-end;
-            padding: 5% 0;
-        }
-
-        .plateTitle {
-            font-size: 24px;
-            font-weight: 500;
-            width: 100%;
-            min-height: 32px;
-        }
-
-        .plateValue {
-            font-size: 48px;
-            font-weight: 600;
-            width: 100%;
-            min-height: 32px;
-            text-align: end;
-            padding: 8px;
-        }
-
-        /*table  */
-
-        /* table */
-
-        .tableContainer {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--neutral-300);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .tableContainer {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--neutral-300);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--neutral-200);
-        }
-
-        th {
-            background-color: var(--neutral-300);
-            font-weight: bold;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: var(--neutral-100);
-        }
-
-        /* search container */
-
-        .search-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            /* Moves search container to the right */
-            width: 100%;
-            padding-bottom: 10px;
-            /* Adjust spacing if needed */
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #D3D3D3;
-            /* Adjust to match exact gray shade */
-            border-radius: 30px;
-            padding: 5px;
-            width: 320px;
-            /* Adjust width */
-        }
-
-
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 10px;
-            border-radius: 30px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .search-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 10px;
-        }
-
-        .search-icon img {
-            width: 16px;
-            height: 16px;
-        }
-
-        .filter-btn {
-            display: flex;
-            align-items: center;
-            background: transparent;
-            border: none;
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border-left: 1px solid #888;
-            /* Divider line between search and filter */
-        }
-
-        .filter-btn img {
-            width: 16px;
-            height: 16px;
-            margin-left: 5px;
-        }
-
-
-
-        .pagination-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding-bottom: 10px;
-        }
-
-        .pagination {
-            display: flex;
-            gap: 5px;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            padding: 6px 12px;
-            border: 1px solid var(--neutral-300);
-            border-radius: 4px;
-            color: var(--primary-500);
-            background: var(--neutral-100);
-        }
-
-        .pagination a.active {
-            background: var(--primary-500);
-            color: white;
-        }
-
-        .pagination a:hover {
-            background: var(--primary-400);
-            color: white;
-        }
-
-
-        .footer-messages {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            border-top: 1px solid #ddd;
-        }
-    </style>
 </head>
 
 <body>
@@ -258,12 +36,12 @@ require_once '../../0/includes/adminTableQuery.php';
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
-                
+
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="management.php">Management</a>
-                
+
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -398,10 +176,89 @@ require_once '../../0/includes/adminTableQuery.php';
             </div>
         </div>
     </div>
+
+
+
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Generate Report</h2>
+            <div class="time-options">
+                <button class="time-btn">Today</button>
+                <button class="time-btn">This week</button>
+                <button class="time-btn">This month</button>
+                <button class="time-btn">Custom</button>
+            </div>
+
+            <div class="date-range">
+                <label>From: <input type="date" id="startDate"></label>
+                <label>To: <input type="date" id="endDate"></label>
+            </div>
+
+            <div class="report-options">
+                <div class="report-card">
+                    <h3>Generate Overall Tickets</h3>
+                    <p>This will generate sample rows ("Open, In Progress, Resolved").</p>
+                </div>
+
+                <div class="report-card">
+                    <h3>Generate Tickets per Employee</h3>
+                    <label>Type:
+                        <select>
+                            <option>Please select a category</option>
+                        </select>
+                    </label>
+                    <label>Name: <input type="text" placeholder="Enter Name"></label>
+                </div>
+
+                <div class="report-card">
+                    <h3>Generate Tickets per Department</h3>
+                    <label>Type:
+                        <select>
+                            <option>Please select a category</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <button id="downloadReport">Download Report</button>
+        </div>
+    </div>
+
+
+
+
     <footer class="footer-messages">
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
     <script src="../../assets/js/framework.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let modal = document.getElementById("reportModal");
+            let downloadPlate = document.getElementById("plate6");
+            let closeModal = document.querySelector(".close");
+
+            // Show modal when clicking the download plate
+            downloadPlate.addEventListener("click", function() {
+                modal.style.display = "block";
+            });
+
+            // Close modal when clicking the close button
+            closeModal.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            // Close modal when clicking outside the content
+            window.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+    </script>
+
 </body>
 
-</html>c
+</html>
