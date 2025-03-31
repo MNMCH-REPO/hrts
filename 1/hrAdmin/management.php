@@ -452,24 +452,24 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     <div id="editAccountModal" class="modal">
         <div class="modal-content">
             <h1 class="modal-title">EDIT ACCOUNT</h1>
-
+            <input type="text" name="id" id="id" value="<?php echo htmlspecialchars($userId); ?>">
             <form id="editAccountForm">
                 <div class="input-container">
-                    <input type="text" id="employeeID" name="employeeID" required>
+                    <input type="text" id="employeeEditID" name="employeeID" required>
                     <label for="employeeID">Employee ID</label>
                 </div>
                 <div class="input-container">
-                    <input type="text" id="employeeName" name="employeeName" required>
+                    <input type="text" id="employeeEditName" name="employeeName" required>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="email" name="email" required>
+                    <input type="text" id="emailEditID" name="email" required>
                     <label for="email">Email</label>
                 </div>
 
                 <div class="input-container">
-                    <select id="role" name="role" required>
+                    <select id="roleEditID" name="role" required>
                         <option value="" disabled selected>Please select a Role</option>
                         <option value="Admin">Admin</option>
                         <option value="HR Rep">HR Rep</option>
@@ -478,7 +478,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
 
                 <div class="input-container">
-                    <select id="department" name="department" required>
+                    <select id="departmentEditID" name="department" required>
                         <option value="" disabled selected>Please select the Department</option>
                         <option value="HR Department">HR Department</option>
                         <option value="CnC Department">CnC Department</option>
@@ -613,11 +613,11 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             const closeModalButton = document.getElementById("closeEditModal");
 
             // Input fields in the modal
-            const employeeIDInput = document.getElementById("employeeID");
-            const employeeNameInput = document.getElementById("employeeName");
-            const emailInput = document.getElementById("email");
-            const roleSelect = document.getElementById("role");
-            const departmentSelect = document.getElementById("department");
+            const employeeEditIDInput = document.getElementById("employeeEditID");
+            const employeeNameEditInput = document.getElementById("employeeEditName");
+            const emailEditIDInput = document.getElementById("emailEditID");
+            const roleEditIDSelect = document.getElementById("roleEditID");
+            const departmentEditIDSelect = document.getElementById("departmentEditID");
 
             let selectedUserId = null;
 
@@ -673,11 +673,13 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
                     if (data.success) {
                         // Populate input fields
-                        employeeIDInput.value = data.data.id || "";
-                        employeeNameInput.value = data.data.name || "";
-                        emailInput.value = data.data.email || "";
-                        roleSelect.value = data.data.role || "";
-                        departmentSelect.value = data.data.department || "";
+                        console.log(data.data.id)
+                        employeeEditIDInput.value = data.data.id || "";
+                        employeeNameEditInput.value = data.data.name || "";
+                        emailEditIDInput.value = data.data.email || "";
+                        roleEditIDSelect.value = data.data.role || "";
+                        departmentEditIDSelect.value = data.data.department || "";
+                        console.log("Department:", data.data.department);
 
                         // Open the modal
                         editModal.style.display = "flex";

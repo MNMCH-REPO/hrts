@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 
     try {
         // Prepare the SQL query to fetch user data
+        
         $stmt = $pdo->prepare("SELECT id, name, email, role, department FROM users WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
