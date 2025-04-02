@@ -40,9 +40,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             font-size: 24px;
             font-weight: 600;
             border-radius: 8px;
+            cursor: pointer;
         }
 
-/* table */
+        /* table */
 
         .tableContainer {
             display: flex;
@@ -77,8 +78,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         }
 
         tbody tr:nth-child(even) {
-            background-color: var(--neutral-100);
+            background-color: var(--primary-100);
         }
+
 
         /* search container */
 
@@ -182,19 +184,85 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
         .footer-messages {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border-top: 1px solid #ddd;
-}
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
 
 
+
+        /* modal */
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 95%;
+            text-align: center;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* Ensures equal spacing */
+            width: 100%;
+            padding: 5px 0;
+            /* Adjust vertical spacing */
+        }
+
+        .input-container h1 {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: left;
+            margin: 0;
+            width: 40%;
+            /* Adjust label width for proper spacing */
+        }
+
+        .center-text {
+            width: 60%;
+            /* Ensures proper alignment */
+            font-size: 16px;
+            text-align: left;
+            /* Match exact alignment from the image */
+            font-weight: normal;
+            /* Ensure text weight matches */
+        }
+
+
+
+        .input-container select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -222,7 +290,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="management.php">Management</a>
-                
+
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -231,7 +299,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </div>
 
 
-        
+
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -334,9 +402,300 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <footer class="footer-messages">
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
-    
-    
+
+
+
+
+    <!-- Modal -->
+    <div id="assignTicketModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">ASSIGN TICKET</h1>
+
+            <form id="assignTicketForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                </div>
+
+
+                <br>
+
+
+                <div class="input-container">
+                    <select id="priorityID" name="priotity" required>
+                        <option value="" disabled selected>Please select the level of Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+
+                <br>
+
+                <div class="input-container">
+                    <select name="assignTo" id="assignToID" required>
+                        <option value="" disabled selected>Select User</option>
+                        <?php foreach ($users as $user): ?>
+                            <option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+
+                </div>
+
+                <div class="btnContainer">
+                    <button type="submit" name="assignTicket" id="assignTIcketID" class="btnDefault">SUBMIT</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="editStatusModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">ASSIGN TICKET</h1>
+
+            <form id="editStatusForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                </div>
+
+
+                <br>
+
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
+
+                <br>
+
+                <div class="input-container">
+                    <select name="statusEdit" id="statusID" required>
+                        <option value="" disabled selected>Select User</option>
+                        <?php foreach ($users as $user): ?>
+                            <option value="<?= htmlspecialchars($ticket['status']) ?>"></option>
+                        <?php endforeach; ?>
+                    </select>
+
+                </div>
+
+                <div class="btnContainer">
+                    <button type="submit" name="assignTicket" id="assignTIcketID" class="btnDefault">SUBMIT</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
     <script src="../../assets/js/framework.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all plates
+            const plates = document.querySelectorAll(".plate");
+            const tableRows = document.querySelectorAll("tbody tr");
+
+            plates.forEach(plate => {
+                plate.addEventListener("click", function() {
+                    // Get the status from the clicked plate and normalize it to lowercase
+                    const status = this.querySelector(".plate-label").textContent.trim().toLowerCase();
+
+                    // Debugging: Log the clicked plate's status
+                    console.log("Filtering by status:", status);
+
+                    // Filter table rows based on the status
+                    tableRows.forEach(row => {
+                        // Get the row's status and normalize it to lowercase
+                        const rowStatus = row.children[4].textContent.trim().toLowerCase(); // Adjust index if needed
+
+                        // Debugging: Log the status of each row
+                        console.log("Row status:", rowStatus);
+
+                        // Compare the normalized statuses
+                        if (rowStatus === status || status === "all") {
+                            row.style.display = ""; // Show the row
+                        } else {
+                            row.style.display = "none"; // Hide the row
+                        }
+                    });
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all table rows
+            const tableRows = document.querySelectorAll("tbody tr");
+            const modal = document.getElementById("assignTicketModal");
+            const prioritySelect = document.getElementById("priorityID");
+            const assignToSelect = document.getElementById("assignToID");
+
+            // Modal fields
+            const ticketIdField = modal.querySelector(".input-container:nth-child(1) .center-text");
+            const employeeNameField = modal.querySelector(".input-container:nth-child(2) .center-text");
+            const departmentField = modal.querySelector(".input-container:nth-child(3) .center-text");
+            const subjectField = modal.querySelector(".input-container:nth-child(4) .center-text");
+            const categoryField = modal.querySelector(".input-container:nth-child(5) .center-text");
+            const descriptionField = modal.querySelector(".input-container:nth-child(6) .center-text");
+
+            // Add click event listener to each row
+            tableRows.forEach(row => {
+                row.addEventListener("click", function() {
+                    // Remove highlight from all rows
+                    tableRows.forEach(r => r.style.backgroundColor = "");
+
+                    // Highlight the clicked row
+                    this.style.backgroundColor = "var(--primary-500)";
+
+                    // Get the values from the clicked row
+                    const ticketId = this.children[0].textContent.trim();
+                    const employeeName = this.children[1].textContent.trim();
+                    const subject = this.children[2].textContent.trim();
+                    const description = this.children[3].textContent.trim();
+                    const department = this.children[4].textContent.trim();
+                    const priority = this.children[5].textContent.trim();
+                    const category = this.children[6].textContent.trim();
+
+                    // Set the values in the modal
+                    ticketIdField.textContent = ticketId;
+                    employeeNameField.textContent = employeeName;
+                    departmentField.textContent = department;
+                    subjectField.textContent = subject;
+                    categoryField.textContent = category;
+                    descriptionField.textContent = description;
+
+                    // Set the priority dropdown value (if applicable)
+                    if (prioritySelect) {
+                        prioritySelect.value = priority;
+                    }
+
+                    // Open the modal
+                    modal.style.display = "flex";
+                });
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+
+            // Close the modal when clicking the "BACK" button
+            const closeModalButton = modal.querySelector(".btnDanger");
+            closeModalButton.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+        });
+
+        // Handle form submission
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const assignTicketForm = document.getElementById("assignTicketForm");
+
+            assignTicketForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get form data
+                const ticketId = document.querySelector(".input-container:nth-child(1) .center-text").textContent.trim();
+                const priority = document.getElementById("priorityID").value;
+                const assignTo = document.getElementById("assignToID").value;
+
+                // Validate form data
+                if (!ticketId || !priority || !assignTo) {
+                    alert("All fields are required.");
+                    return;
+                }
+
+                // Prepare the data to send
+                const formData = new FormData();
+                formData.append("ticketId", ticketId);
+                formData.append("priority", priority);
+                formData.append("assignTo", assignTo);
+
+                try {
+                    // Send the AJAX request
+                    const response = await fetch("../../0/includes/assignTicket.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error updating ticket:", error);
+                    alert("An error occurred while updating the ticket. Please try again.");
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>c

@@ -42,6 +42,17 @@ try {
 }
 
 
+try {
+    // Query to fetch id and name from users table
+    $stmt = $pdo->prepare("SELECT id, name FROM users ORDER BY name ASC");
+    $stmt->execute();
 
+    // Fetch all rows
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Handle database errors
+    error_log("Database error: " . $e->getMessage());
+    $users = [];
+}
 
 ?>

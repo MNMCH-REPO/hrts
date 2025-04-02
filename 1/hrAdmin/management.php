@@ -177,7 +177,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
 
                 <div class="input-container">
-                    <select id="departmentEditID" name="department" required>
+                    <select id="department" name="department" required>
                         <option value="" disabled selected>Please select the Department</option>
                         <option value="LINEN DEPARTMENT">LINEN DEPARTMENT</option>
                         <option value="SECURITY DEPARTMENT">SECURITY DEPARTMENT</option>
