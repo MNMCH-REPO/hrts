@@ -55,4 +55,26 @@ try {
     $users = [];
 }
 
-?>
+
+try {
+    // Query to fetch all distinct statuses from tickets
+    $stmt = $pdo->prepare("SELECT DISTINCT status FROM tickets ORDER BY status ASC");
+    $stmt->execute();
+    // Fetch all rows
+    $ticketStatus = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Get the current status of the ticket (replace with your actual ticket ID query)
+    $ticketID = 'editticketID'; // Replace this with the actual ticket ID
+    $stmt = $pdo->prepare("SELECT status FROM tickets WHERE id = :ticketID");
+    $stmt->bindParam(':ticketID', $ticketID, PDO::PARAM_INT);
+    $stmt->execute();
+    $ticket = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Set the current status to 'In Progress' if not found
+    $currentStatus = $ticket ? $ticket['status'] : 'In Progress';
+} catch (PDOException $e) {
+    // Handle database errors
+    error_log("Database error: " . $e->getMessage());
+    $ticketStatus = [];
+    $currentStatus = 'In Progress';  // Default value on error
+}

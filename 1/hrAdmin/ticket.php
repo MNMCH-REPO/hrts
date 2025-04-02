@@ -484,64 +484,67 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <form id="editStatusForm" method="POST">
                 <div class="input-container">
                     <h1><strong>Ticket ID:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                    <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Employee Name:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                    <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                    <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Subject:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                    <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Category:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                    <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Description:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                    <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
                 </div>
-
-
-                <br>
-
 
                 <div class="input-container">
                     <h1><strong>Priority:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                    <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
                     </select>
                 </div>
 
                 <div class="input-container">
                     <h1><strong>Assigned To:</strong></h1>
-                    <p class="center-text" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
+                    <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
                     </select>
                 </div>
 
                 <br>
 
                 <div class="input-container">
-                    <select name="statusEdit" id="statusID" required>
-                        <option value="" disabled selected>Select User</option>
-                        <?php foreach ($users as $user): ?>
-                            <option value="<?= htmlspecialchars($ticket['status']) ?>"></option>
+                    <select name="statusEdit" id="statusEditID" required>
+                        <!-- Loop through all statuses and set the selected option -->
+                        <?php foreach ($ticketStatus as $status): ?>
+                            <option value="<?= htmlspecialchars($status['status']) ?>"
+                                <?= ($status['status'] == $currentStatus) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($status['status']) ?>
+                            </option>
                         <?php endforeach; ?>
-                    </select>
 
+                        <!-- Add 'Resolved' option only if it's not already in $ticketStatus -->
+                        <?php if (!in_array('Resolved', array_column($ticketStatus, 'status'))): ?>
+                            <option value="Resolved" <?= ('Resolved' == $currentStatus) ? 'selected' : '' ?>>Resolved</option>
+                        <?php endif; ?>
+                    </select>
                 </div>
 
                 <div class="btnContainer">
-                    <button type="submit" name="assignTicket" id="assignTIcketID" class="btnDefault">SUBMIT</button>
+                    <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
                 </div>
             </form>
@@ -585,19 +588,34 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         });
 
         document.addEventListener("DOMContentLoaded", function() {
-            // Get all table rows
             const tableRows = document.querySelectorAll("tbody tr");
-            const modal = document.getElementById("assignTicketModal");
-            const prioritySelect = document.getElementById("priorityID");
-            const assignToSelect = document.getElementById("assignToID");
+            const assignTicketModal = document.getElementById("assignTicketModal");
+            const editStatusModal = document.getElementById("editStatusModal");
 
-            // Modal fields
-            const ticketIdField = modal.querySelector(".input-container:nth-child(1) .center-text");
-            const employeeNameField = modal.querySelector(".input-container:nth-child(2) .center-text");
-            const departmentField = modal.querySelector(".input-container:nth-child(3) .center-text");
-            const subjectField = modal.querySelector(".input-container:nth-child(4) .center-text");
-            const categoryField = modal.querySelector(".input-container:nth-child(5) .center-text");
-            const descriptionField = modal.querySelector(".input-container:nth-child(6) .center-text");
+            // Modal fields for assignTicketModal
+            const assignTicketFields = {
+                ticketIdField: assignTicketModal.querySelector(".input-container:nth-child(1) .center-text"),
+                employeeNameField: assignTicketModal.querySelector(".input-container:nth-child(2) .center-text"),
+                departmentField: assignTicketModal.querySelector(".input-container:nth-child(3) .center-text"),
+                subjectField: assignTicketModal.querySelector(".input-container:nth-child(4) .center-text"),
+                categoryField: assignTicketModal.querySelector(".input-container:nth-child(5) .center-text"),
+                descriptionField: assignTicketModal.querySelector(".input-container:nth-child(6) .center-text"),
+                prioritySelect: document.getElementById("priorityID"),
+                assignToSelect: document.getElementById("assignToID"),
+            };
+
+            // Modal fields for editStatusModal
+            const editStatusFields = {
+                ticketIdField: document.getElementById("editTicketID"),
+                employeeNameField: document.getElementById("editemployeeID"),
+                departmentField: document.getElementById("editdepartmentID"),
+                subjectField: document.getElementById("editsubjectID"),
+                categoryField: document.getElementById("editcategoryID"),
+                descriptionField: document.getElementById("editdescriptionID"),
+                priorityField: document.getElementById("editpriorityID"),
+                assignedToField: document.getElementById("editassignedID"),
+                statusSelect: document.getElementById("statusEditID"),
+            };
 
             // Add click event listener to each row
             tableRows.forEach(row => {
@@ -613,43 +631,69 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     const employeeName = this.children[1].textContent.trim();
                     const subject = this.children[2].textContent.trim();
                     const description = this.children[3].textContent.trim();
+                    const status = this.children[4].textContent.trim(); // Status column
                     const department = this.children[4].textContent.trim();
                     const priority = this.children[5].textContent.trim();
                     const category = this.children[6].textContent.trim();
+                    const assignedTo = this.children[7].textContent.trim();
 
-                    // Set the values in the modal
-                    ticketIdField.textContent = ticketId;
-                    employeeNameField.textContent = employeeName;
-                    departmentField.textContent = department;
-                    subjectField.textContent = subject;
-                    categoryField.textContent = category;
-                    descriptionField.textContent = description;
+                    // Open the appropriate modal based on the status
+                    if (status === "Open") {
+                        // Set the values in the assignTicketModal
+                        assignTicketFields.ticketIdField.textContent = ticketId;
+                        assignTicketFields.employeeNameField.textContent = employeeName;
+                        assignTicketFields.departmentField.textContent = department;
+                        assignTicketFields.subjectField.textContent = subject;
+                        assignTicketFields.categoryField.textContent = category;
+                        assignTicketFields.descriptionField.textContent = description;
 
-                    // Set the priority dropdown value (if applicable)
-                    if (prioritySelect) {
-                        prioritySelect.value = priority;
+                        // Set the priority dropdown value (if applicable)
+                        if (assignTicketFields.prioritySelect) {
+                            assignTicketFields.prioritySelect.value = priority;
+                        }
+
+                        // Open the assignTicketModal
+                        assignTicketModal.style.display = "flex";
+                    } else if (status === "In Progress") {
+                        // Set the values in the editStatusModal
+                        editStatusFields.ticketIdField.textContent = ticketId;
+                        editStatusFields.employeeNameField.textContent = employeeName;
+                        editStatusFields.departmentField.textContent = department;
+                        editStatusFields.subjectField.textContent = subject;
+                        editStatusFields.categoryField.textContent = category;
+                        editStatusFields.descriptionField.textContent = description;
+                        editStatusFields.priorityField.textContent = priority;
+                        editStatusFields.assignedToField.textContent = assignedTo;
+
+                        // Open the editStatusModal
+                        editStatusModal.style.display = "flex";
                     }
-
-                    // Open the modal
-                    modal.style.display = "flex";
                 });
             });
 
-            // Close the modal when clicking outside of it
+            // Close the modals when clicking outside of them
             window.addEventListener("click", function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
+                if (event.target === assignTicketModal) {
+                    assignTicketModal.style.display = "none";
+                }
+                if (event.target === editStatusModal) {
+                    editStatusModal.style.display = "none";
                 }
             });
 
-            // Close the modal when clicking the "BACK" button
-            const closeModalButton = modal.querySelector(".btnDanger");
-            closeModalButton.addEventListener("click", function() {
-                modal.style.display = "none";
+            // Close the modals when clicking the "BACK" button
+            const closeAssignModalButton = assignTicketModal.querySelector(".btnDanger");
+            const closeEditModalButton = editStatusModal.querySelector(".btnDanger");
+
+            closeAssignModalButton.addEventListener("click", function() {
+                assignTicketModal.style.display = "none";
+            });
+
+            closeEditModalButton.addEventListener("click", function() {
+                editStatusModal.style.display = "none";
             });
         });
-
-        // Handle form submission
+        // Handle form submission assign
 
         document.addEventListener("DOMContentLoaded", function() {
             const assignTicketForm = document.getElementById("assignTicketForm");
@@ -692,6 +736,50 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 } catch (error) {
                     console.error("Error updating ticket:", error);
                     alert("An error occurred while updating the ticket. Please try again.");
+                }
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const editStatusForm = document.getElementById("editStatusForm");
+
+            editStatusForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get form data
+                const ticketId = document.getElementById("editTicketID").textContent.trim();
+                const status = document.getElementById("statusEditID").value;
+
+                // Validate form data
+                if (!ticketId || !status) {
+                    alert("All fields are required.");
+                    return;
+                }
+
+                // Prepare the data to send
+                const formData = new FormData();
+                formData.append("ticketId", ticketId);
+                formData.append("statusEdit", status);
+
+                try {
+                    // Send the AJAX request
+                    const response = await fetch("../../0/includes/editStatusTicket.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                    alert("An error occurred while updating the status. Please try again.");
                 }
             });
         });
