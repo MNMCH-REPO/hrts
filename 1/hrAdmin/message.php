@@ -62,66 +62,35 @@ require_once '../../0/includes/employeeTicket.php';
                 </div>
             </div>
             <div class="main-convo">
-                <div class="container-convo">
-                    <div class="row-convo">
-                        
-                        <div class="cards-container">
-                                <?php
-                                require_once '../../0/includes/db.php';
-
-                                if (!isset($_SESSION['user_id'])) {
-                                    exit('User not logged in.');
-                                }
-
-                                $stmt = $pdo->prepare("SELECT t.id, u.name AS assigned_name 
-                       FROM tickets t 
-                       JOIN users u ON t.assigned_to = u.id
-                       WHERE t.employee_id = :employee_id");
-                                $stmt->bindParam(':employee_id', $_SESSION['user_id'], PDO::PARAM_INT);
-                                $stmt->execute();
-                                $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                <?php
+                require_once '../../0/includes/hrReloaddMessages.php';
+                ?>
 
 
-                                if ($tickets) {
-                                    foreach ($tickets as $index => $ticket) {
-                                        echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                                              onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
-                                        echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                        echo '</div>';
-                                    }
-                                } else {
-                                    echo '<p>No tickets assigned to you.</p>';
-                                }
-                                ?>
+                <div class="col-convo">
+                    <div class="chat-container" id="chatbox">
+                        <!-- Messages will be loaded here -->
 
-                            </div>
-
-
-                           
-                            <div class="col-convo">
-                            <div class="chat-container" id="chatbox">
-                                <!-- Messages will be loaded here -->
-
-                            </div>
-
-
-                            <div class="input-area">
-                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                                <div class="attach" id="attach">Attachment📎</div>
-                                <input type="text" id="message" placeholder="Type a message...">
-                                <button id="sendmesageBtn">Send</button>
-                            </div>
-
-
-
-                        </div>
-
-
-                            </div>
                     </div>
+
+
+                    <div class="input-area">
+                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                        <div class="attach" id="attach">Attachment📎</div>
+                        <input type="text" id="message" placeholder="Type a message...">
+                        <button id="sendmesageBtn">Send</button>
+                    </div>
+
+
+
                 </div>
+
+
             </div>
         </div>
+    </div>
+    </div>
+    </div>
     </div>
     <footer class="footer-messages">
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>

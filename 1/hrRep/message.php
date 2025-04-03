@@ -60,36 +60,46 @@ require_once '../../0/includes/employeeTicket.php';
                             <div class="cards-container">
                                 <?php
                                 require_once '../../0/includes/db.php';
+                               
 
                                 if (!isset($_SESSION['user_id'])) {
                                     exit('User not logged in.');
                                 }
 
-                                $stmt = $pdo->prepare("SELECT t.id, u.name AS assigned_name 
-                       FROM tickets t 
-                       JOIN users u ON t.assigned_to = u.id
-                       WHERE t.employee_id = :employee_id");
-                                $stmt->bindParam(':employee_id', $_SESSION['user_id'], PDO::PARAM_INT);
-                                $stmt->execute();
-                                $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                $employee_id = $_SESSION['user_id'];
 
+                                try {
+                                    // Fetch tickets assigned to the logged-in employee
+                                    $stmt = $pdo->prepare("
+        SELECT t.id, COALESCE(u.name, 'Unassigned') AS assigned_name 
+        FROM tickets t 
+        LEFT JOIN users u ON t.assigned_to = u.id
+        WHERE t.assigned_to = :employee_id
+    ");
+                                    $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                if ($tickets) {
-                                    foreach ($tickets as $index => $ticket) {
-                                        echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                                              onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
-                                        echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                        echo '</div>';
+                                    if ($tickets) {
+                                        foreach ($tickets as $index => $ticket) {
+                                            echo '<div class="card card-' . (($index % 4) + 1) . '" 
+                  onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
+                                            echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
+                                            echo '<p>Assigned To: ' . htmlspecialchars($ticket['assigned_name']) . '</p>';
+                                            echo '</div>';
+                                        }
+                                    } else {
+                                        echo '<p>No tickets assigned to you.</p>';
                                     }
-                                } else {
-                                    echo '<p>No tickets assigned to you.</p>';
+                                } catch (PDOException $e) {
+                                    echo 'Error fetching tickets: ' . $e->getMessage();
                                 }
                                 ?>
 
                             </div>
 
 
-                           
+
 
                             <div class="chat-container" id="chatbox">
                                 <!-- Messages will be loaded here -->
@@ -116,47 +126,49 @@ require_once '../../0/includes/employeeTicket.php';
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-let selectedTicketId = null;
-let refreshInterval = null; // Store interval reference
+        let selectedTicketId = null;
+        let refreshInterval = null; // Store interval reference
 
-function loadMessages(ticketId = null, assignedName = null) {
-    if (ticketId && ticketId !== selectedTicketId) {
-        selectedTicketId = ticketId;
+        function loadMessages(ticketId = null, assignedName = null) {
+            if (ticketId && ticketId !== selectedTicketId) {
+                selectedTicketId = ticketId;
 
-        // ✅ Clear previous interval before setting a new one
-        if (refreshInterval) {
-            clearInterval(refreshInterval);
+                // ✅ Clear previous interval before setting a new one
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                }
+
+                // ✅ Start a new interval for auto-refresh
+                refreshInterval = setInterval(() => {
+                    loadMessages();
+                }, 1000);
+            }
+
+            if (!selectedTicketId) {
+                console.error("No ticket selected.");
+                return;
+            }
+
+            if (assignedName) {
+                $("#assignedName").text("You are now having a conversation with: " + assignedName);
+            }
+
+            $.ajax({
+                url: "../../0/includes/hrReloadMessages.php",
+                type: "GET",
+                data: {
+                    ticket_id: selectedTicketId
+                },
+                success: function(response) {
+                    let chatbox = $("#chatbox");
+                    chatbox.html(response);
+                    chatbox.scrollTop(chatbox[0].scrollHeight);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading messages:", error);
+                }
+            });
         }
-
-        // ✅ Start a new interval for auto-refresh
-        refreshInterval = setInterval(() => {
-            loadMessages();
-        }, 1000);
-    }
-
-    if (!selectedTicketId) {
-        console.error("No ticket selected.");
-        return;
-    }
-
-    if (assignedName) {
-        $("#assignedName").text("You are now having a conversation with: " + assignedName);
-    }
-
-    $.ajax({
-        url: "../../0/includes/load_messages.php",
-        type: "GET",
-        data: { ticket_id: selectedTicketId },
-        success: function(response) {
-            let chatbox = $("#chatbox");
-            chatbox.html(response);
-            chatbox.scrollTop(chatbox[0].scrollHeight);
-        },
-        error: function(xhr, status, error) {
-            console.error("Error loading messages:", error);
-        }
-    });
-}
 
 
 
@@ -201,32 +213,32 @@ function loadMessages(ticketId = null, assignedName = null) {
         }
 
         $(document).ready(function() {
-    $(document).on("click", ".card", function() {
-        let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]); 
-        loadMessages(ticketId);
-    });
+            $(document).on("click", ".card", function() {
+                let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]);
+                loadMessages(ticketId);
+            });
 
-    $("#sendmesageBtn").click(function(event) {
-        sendMessage(event);
-    });
+            $("#sendmesageBtn").click(function(event) {
+                sendMessage(event);
+            });
 
-    $("#message").keypress(function(event) {
-        if (event.which == 13) {
-            sendMessage(event);
-        }
-    });
+            $("#message").keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage(event);
+                }
+            });
 
-    $("#attach").click(function() {
-        $("#fileInput").click();
-    });
+            $("#attach").click(function() {
+                $("#fileInput").click();
+            });
 
-    $("#fileInput").change(function() {
-        let file = this.files[0];
-        if (file) {
-            $("#message").val(file.name);
-        }
-    });
-});
+            $("#fileInput").change(function() {
+                let file = this.files[0];
+                if (file) {
+                    $("#message").val(file.name);
+                }
+            });
+        });
     </script>
 
 

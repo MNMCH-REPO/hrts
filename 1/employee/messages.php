@@ -72,7 +72,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="container-convo">
                     <div class="row-convo">
 
-                        <div class="cards-container">
+                    <div class="cards-container">
                             <?php
                             require_once '../../0/includes/db.php';
 
