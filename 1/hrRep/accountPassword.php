@@ -28,13 +28,10 @@ require_once '../../0/includes/employeeTicket.php';
     <div class="container">
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="dashboard.php">Dashboard</a>
-            </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="ticket.php">Tickets</a>
+                <a href="order.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
@@ -45,11 +42,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="account.php">Account</a>
 
             </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
-                <a href="management.php">Management</a>
 
-            </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
@@ -186,65 +179,65 @@ require_once '../../0/includes/employeeTicket.php';
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const updatePasswordForm = document.getElementById("updatePasswordForm");
-    const submitButton = updatePasswordForm.querySelector('button[type="submit"]');
+        document.addEventListener("DOMContentLoaded", function() {
+            const updatePasswordForm = document.getElementById("updatePasswordForm");
+            const submitButton = updatePasswordForm.querySelector('button[type="submit"]');
 
-    updatePasswordForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent the default form submission
+            updatePasswordForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
 
-        // Collect form data
-        const formData = new FormData(updatePasswordForm);
+                // Collect form data
+                const formData = new FormData(updatePasswordForm);
 
-        // Client-side validation
-        const oldPassword = formData.get("oldPassword");
-        const newPassword = formData.get("newPassword");
-        const confirmPassword = formData.get("confirmPassword");
+                // Client-side validation
+                const oldPassword = formData.get("oldPassword");
+                const newPassword = formData.get("newPassword");
+                const confirmPassword = formData.get("confirmPassword");
 
-        // Validate new password length and alphanumeric requirement
-        if (newPassword.length < 8 || !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]+$/.test(newPassword)) {
-            alert("New password must be at least 8 characters long, alphanumeric, and may include special characters.");
-            return;
-        }
+                // Validate new password length and alphanumeric requirement
+                if (newPassword.length < 8 || !/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]+$/.test(newPassword)) {
+                    alert("New password must be at least 8 characters long, alphanumeric, and may include special characters.");
+                    return;
+                }
 
-        // Validate new password and confirm password match
-        if (newPassword !== confirmPassword) {
-            alert("New password and confirm password do not match.");
-            return;
-        }
+                // Validate new password and confirm password match
+                if (newPassword !== confirmPassword) {
+                    alert("New password and confirm password do not match.");
+                    return;
+                }
 
-        try {
-            // Disable the submit button to prevent multiple submissions
-            submitButton.disabled = true;
+                try {
+                    // Disable the submit button to prevent multiple submissions
+                    submitButton.disabled = true;
 
-            // Send the form data to the backend using fetch
-            const response = await fetch("../../0/includes/changePassword.php", {
-                method: "POST",
-                body: formData,
+                    // Send the form data to the backend using fetch
+                    const response = await fetch("../../0/includes/changePassword.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    // Check if the response is valid JSON
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        window.location.href = "accountPassword.php"; // Redirect to account page
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error updating password:", error);
+                    alert("An error occurred while updating the password. Please try again.");
+                } finally {
+                    // Re-enable the submit button
+                    submitButton.disabled = false;
+                }
             });
-
-            // Check if the response is valid JSON
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert(data.message); // Show success message
-                window.location.href = "accountPassword.php"; // Redirect to account page
-            } else {
-                alert(data.message); // Show error message
-            }
-        } catch (error) {
-            console.error("Error updating password:", error);
-            alert("An error occurred while updating the password. Please try again.");
-        } finally {
-            // Re-enable the submit button
-            submitButton.disabled = false;
-        }
-    });
-});
+        });
     </script>
 </body>
 

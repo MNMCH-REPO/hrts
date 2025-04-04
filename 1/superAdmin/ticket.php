@@ -26,11 +26,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
         .plateRow {
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: space-evenly;
+            gap: 8px;
             margin: 0 0 32px 0;
         }
 
         .plate {
+            position: relative;
             width: 300px;
             height: 180px;
             background-color: var(--primary-300);
@@ -40,9 +42,50 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             font-size: 24px;
             font-weight: 600;
             border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
         }
 
-/* table */
+        .plateIcon {
+            position: absolute;
+            top: 26%;
+            left: -12%;
+            width: 55%;
+            aspect-ratio: 1/1;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .plateContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            width: 60%;
+            height: 100%;
+            align-self: flex-end;
+            padding: 5% 0;
+        }
+
+        .plateTitle {
+            font-size: 24px;
+            font-weight: 500;
+            width: 100%;
+            min-height: 32px;
+        }
+
+        .plateValue {
+            font-size: 48px;
+            font-weight: 600;
+            width: 100%;
+            min-height: 32px;
+            text-align: end;
+            padding: 8px;
+        }
+
+        /* table */
 
         .tableContainer {
             display: flex;
@@ -182,19 +225,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
         .footer-messages {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border-top: 1px solid #ddd;
-}
-
-
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            border-top: 1px solid #ddd;
+        }
     </style>
 </head>
 
@@ -222,7 +263,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="management.php">Management</a>
-                
+
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -231,7 +272,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </div>
 
 
-        
+
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -244,17 +285,27 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
             <div class="row plateRow">
                 <div class="col plate" id="plate1">
-                    <span class="plate-label">OPEN</span>
-                    <?= $statusCounts['Open'] ?>
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Open</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                    </div>
                 </div>
                 <div class="col plate" id="plate2">
-                    <span class="plate-label">IN PROGRESS</span>
-                    <?= $statusCounts['In Progress'] ?>
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">In Progress</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                    </div>
                 </div>
                 <div class="col plate" id="plate3">
-                    <span class="plate-label">RESOLVED</span>
-                    <?= $statusCounts['Resolved'] ?>
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Resolved</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                    </div>
                 </div>
+
             </div>
 
 
@@ -279,7 +330,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
                     <button class="filter-btn">
-                        <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
             </div>
@@ -334,9 +385,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <footer class="footer-messages">
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
-    
-    
+
+
     <script src="../../assets/js/framework.js"></script>
+    
 </body>
 
 </html>c

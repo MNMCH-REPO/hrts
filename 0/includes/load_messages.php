@@ -1,10 +1,11 @@
 <?php
-session_start();
-require '../../0/includes/db.php';
+require 'db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
-    exit('Invalid request.');
+    http_response_code(403); // Forbidden
+    exit('Unauthorized access.');
 }
+
 
 $user_id = $_SESSION['user_id'];
 $ticket_id = intval($_GET['ticket_id']); // Ensure it's an integer
@@ -15,7 +16,7 @@ try {
         SELECT t.id, u.name AS assigned_name 
         FROM tickets t 
         JOIN users u ON t.assigned_to = u.id
-        WHERE t.id = :ticket_id AND t.employee_id = :user_id
+        WHERE t.id = :ticket_id AND t.assigned_to = :user_id
     ");
     $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -23,7 +24,21 @@ try {
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$ticketInfo) {
-        exit('Unauthorized access.');
+        echo "Debugging Info:<br>";
+        echo "Ticket ID: " . htmlspecialchars($ticket_id) . "<br>";
+        echo "User ID: " . htmlspecialchars($user_id) . "<br>";
+    
+        // Run a manual test query to see if the ticket exists
+        $debugStmt = $pdo->prepare("SELECT * FROM tickets WHERE id = :ticket_id");
+        $debugStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $debugStmt->execute();
+        $debugResult = $debugStmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$debugResult) {
+            exit("No ticket found with this ID.");
+        } else {
+            exit("Ticket exists, but not assigned to you. Your ID: " . $user_id . ", Ticket Employee ID: " . $debugResult['employee_id']);
+        }
     }
 
     $assignedName = htmlspecialchars($ticketInfo['assigned_name']); // Get assigned user's name

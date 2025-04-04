@@ -277,41 +277,42 @@ require_once '../../0/includes/adminTableQuery.php';
                     <div class="accountIcon img-contain"></div>
                 </div>
             </div>
+
             <div class="row plateRow">
                 <div class="col plate" id="plate1">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Open</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue" value="<?= $statusCounts['Open'] ?>"></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate2">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">In Progress</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate3">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Resolved</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"></div>
                     </div>
                 </div>
 
                 <div class="col plate" id="plate4">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
                     <div class="plateContent">
-                        <div class="plateTitle">Staffs</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateTitle">HR Representative</div>
+                        <div class="plateValue"></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate5">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Employee</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate6">

@@ -48,48 +48,49 @@ require_once '../../0/includes/adminTableQuery.php';
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
-        <div class="content">
+        <d class="content">
             <div class="topNav">
                 <div class="account">
                     <div class="accountName">John Doe</div>
                     <div class="accountIcon img-contain"></div>
                 </div>
             </div>
+
             <div class="row plateRow">
                 <div class="col plate" id="plate1">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Open</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate2">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">In Progress</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate3">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Resolved</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
                     </div>
                 </div>
 
                 <div class="col plate" id="plate4">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
                     <div class="plateContent">
-                        <div class="plateTitle">Staffs</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateTitle">HR Representative</div>
+                        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate5">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Employee</div>
-                        <div class="plateValue">123</div>
+                        <div class="plateValue "><?= htmlspecialchars($roleCounts['Employee']) ?></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate6">
@@ -130,52 +131,75 @@ require_once '../../0/includes/adminTableQuery.php';
 
 
 
-            <div class="table-container">
-                <div class="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID <i class="fas fa-sort"></i></th>
-                                <th>Employee Name <i class="fas fa-sort"></i></th>
-                                <th>Subject <i class="fas fa-sort"></i></th>
-                                <th>Description <i class="fas fa-sort"></i></th>
-                                <th>Status <i class="fas fa-sort"></i></th>
-                                <th>Priority <i class="fas fa-sort"></i></th>
-                                <th>Category ID <i class="fas fa-sort"></i></th>
-                                <th>Assigned To <i class="fas fa-sort"></i></th>
-                                <th>Created At <i class="fas fa-sort"></i></th>
-                                <th>Updated At <i class="fas fa-sort"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($tickets)): ?>
-                                <?php foreach ($tickets as $ticket): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($ticket['id']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['subject']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['description']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['status']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['priority']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['category_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
+
+            <div class="tableContainer" id="tableContainerUserID">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID <i class="fas fa-sort"></i></th>
+                            <th>Employee Name <i class="fas fa-sort"></i></th>
+                            <th>Subject <i class="fas fa-sort"></i></th>
+                            <th>Description <i class="fas fa-sort"></i></th>
+                            <th>Status <i class="fas fa-sort"></i></th>
+                            <th>Priority <i class="fas fa-sort"></i></th>
+                            <th>Category ID <i class="fas fa-sort"></i></th>
+                            <th>Assigned To <i class="fas fa-sort"></i></th>
+                            <th>Created At <i class="fas fa-sort"></i></th>
+                            <th>Updated At <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($tickets)): ?>
+                            <?php foreach ($tickets as $ticket): ?>
                                 <tr>
-                                    <td colspan="10">No tickets found</td>
+                                    <td><?= htmlspecialchars($ticket['id']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['subject']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['description']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['status']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['priority']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['category_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="10" style="text-align: center;">No tickets found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
 
-                    </table>
-                </div>
-
+                </table>
             </div>
-        </div>
+            
+
+            <br><br><br><br>
+            <div class="chart-container">
+                <?php
+                // Include the CanvasJS library
+
+                $dataPoints = array(
+                    array("label" => "Food + Drinks", "y" => 590),
+                    array("label" => "Activities and Entertainments", "y" => 261),
+                    array("label" => "Health and Fitness", "y" => 158),
+                    array("label" => "Shopping & Misc", "y" => 72),
+                    array("label" => "Transportation", "y" => 191),
+                    array("label" => "Rent", "y" => 573),
+                    array("label" => "Travel Insurance", "y" => 126)
+                );
+
+                ?>
+
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                <br><br><br><br>
+            </div>
+
+
+
     </div>
+
 
 
 
@@ -232,9 +256,83 @@ require_once '../../0/includes/adminTableQuery.php';
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
     <script src="../../assets/js/framework.js"></script>
-
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const filterButton = document.querySelector('.filter-btn');
+            const tableBody = document.querySelector('table tbody');
+
+            // Function to fetch and update tickets
+            function fetchTickets(search = '', filterColumn = '', filterValue = '') {
+                const url = new URL('../../0/includes/adminSearch.php', window.location.origin);
+                url.searchParams.append('search', search);
+                if (filterColumn && filterValue) {
+                    url.searchParams.append('filterColumn', filterColumn);
+                    url.searchParams.append('filterValue', filterValue);
+                }
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear the table body
+                        tableBody.innerHTML = '';
+
+                        if (data.error) {
+                            console.error(data.error);
+                            tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
+                            return;
+                        }
+
+                        if (data.length === 0) {
+                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No tickets found</td></tr>';
+                            return;
+                        }
+
+                        // Populate the table with the fetched tickets
+                        data.forEach(ticket => {
+                            const row = `
+                        <tr>
+                            <td>${ticket.id}</td>
+                            <td>${ticket.employee_name}</td>
+                            <td>${ticket.subject}</td>
+                            <td>${ticket.description}</td>
+                            <td>${ticket.status}</td>
+                            <td>${ticket.priority}</td>
+                            <td>${ticket.category_name}</td>
+                            <td>${ticket.assigned_to_name}</td>
+                            <td>${ticket.created_at}</td>
+                            <td>${ticket.updated_at}</td>
+                        </tr>
+                    `;
+                            tableBody.insertAdjacentHTML('beforeend', row);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tickets:', error);
+                        tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
+                    });
+            }
+
+            // Event listener for search input
+            searchInput.addEventListener('input', function() {
+                const search = searchInput.value.trim();
+                fetchTickets(search);
+            });
+
+            // Event listener for filter button
+            filterButton.addEventListener('click', function() {
+                const filterColumn = prompt('Enter the column to filter (e.g., status, priority):');
+                const filterValue = prompt('Enter the value to filter by:');
+                if (filterColumn && filterValue) {
+                    fetchTickets('', filterColumn, filterValue);
+                }
+            });
+        });
+
+        
+        //open modal
         document.addEventListener("DOMContentLoaded", function() {
             let modal = document.getElementById("reportModal");
             let downloadPlate = document.getElementById("plate6");
@@ -257,6 +355,31 @@ require_once '../../0/includes/adminTableQuery.php';
                 }
             });
         });
+
+        window.onload = function() {
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                exportEnabled: true,
+                title: {
+                    text: "Average Expense Per Day  in Thai Baht"
+                },
+                subtitles: [{
+                    text: "Currency Used: Thai Baht (฿)"
+                }],
+                data: [{
+                    type: "pie",
+                    showInLegend: "true",
+                    legendText: "{label}",
+                    indexLabelFontSize: 16,
+                    indexLabel: "{label} - #percent%",
+                    yValueFormatString: "฿#,##0",
+                    dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
+                }]
+            });
+            chart.render();
+
+        }
     </script>
 
 </body>

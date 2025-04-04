@@ -1,6 +1,6 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
-require_once '../../0/includes/adminTableQuery.php'; // Include the query file
+require_once '../../0/includes/employeeTableQuery.php'; // Include the query file
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -319,19 +319,25 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <div class="container-ticket">
                     <div class="row plateRow">
                         <div class="col plate" id="plate1">
-                            <span class="plate-label">OPEN</span>
-                            <?= $statusCounts['Open'] ?>
+                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                            <div class="plateContent">
+                                <div class="plateTitle">Open</div>
+                                <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                            </div>
                         </div>
                         <div class="col plate" id="plate2">
-                            <span class="plate-label">IN PROGRESS</span>
-                            <?= $statusCounts['In Progress'] ?>
+                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                            <div class="plateContent">
+                                <div class="plateTitle">In Progress</div>
+                                <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                            </div>
                         </div>
                         <div class="col plate" id="plate3">
-                            <span class="plate-label">RESOLVED</span>
-                            <?= $statusCounts['Resolved'] ?>
-                        </div>
-                        <div class="col plate" id="plate4" onclick="openModal()">
-                            <span class="plate-label">ADD</span>
+                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                            <div class="plateContent">
+                                <div class="plateTitle">Resolved</div>
+                                <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                            </div>
                         </div>
 
                     </div>
@@ -359,7 +365,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             <img src="../../assets/images/icons/search.png" alt="Search">
                         </div>
                         <button class="filter-btn">
-                            <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                            <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                         </button>
                     </div>
                 </div>
@@ -400,7 +406,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="10">No tickets found</td>
+                                    <td colspan="10" style="text-align: center;">No tickets found</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -447,7 +453,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <option value="" disabled selected>Select a category</option>
                         <?php
                         require "../../0/includes/db.php"; // Ensure correct database connection
-                        
+
                         try {
                             $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -479,7 +485,117 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
     <!-- modal -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get all plates
+            const plates = document.querySelectorAll(".plate");
+            const tableRows = document.querySelectorAll("tbody tr");
+
+            plates.forEach(plate => {
+                plate.addEventListener("click", function() {
+                    // Get the status from the clicked plate and normalize it
+                    const status = this.querySelector(".plateTitle").textContent.trim().toLowerCase();
+
+                    // Debugging: Log the clicked plate's status
+                    console.log("Filtering by status:", status);
+
+                    tableRows.forEach(row => {
+                        // Find the status column dynamically
+                        const statusCell = row.querySelector("[data-column='status']");
+                        if (!statusCell) {
+                            console.error("Status column not found in row:", row);
+                            return;
+                        }
+
+                        const rowStatus = statusCell.textContent.trim().toLowerCase();
+
+                        // Debugging: Log the status of each row
+                        console.log("Row status:", rowStatus);
+
+                        // Show only matching rows
+                        if (rowStatus === status || status === "all") {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                });
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const filterButton = document.querySelector('.filter-btn');
+            const tableBody = document.querySelector('table tbody');
+
+            // Function to fetch and update tickets
+            function fetchTickets(search = '', filterColumn = '', filterValue = '') {
+                const url = new URL('../../0/includes/search.php', window.location.origin);
+                url.searchParams.append('search', search);
+                if (filterColumn && filterValue) {
+                    url.searchParams.append('filterColumn', filterColumn);
+                    url.searchParams.append('filterValue', filterValue);
+                }
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear the table body
+                        tableBody.innerHTML = '';
+
+                        if (data.error) {
+                            console.error(data.error);
+                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Error fetching tickets</td></tr>';
+                            return;
+                        }
+
+                        if (data.length === 0) {
+                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No tickets found</td></tr>';
+                            return;
+                        }
+
+                        // Populate the table with the fetched tickets
+                        data.forEach(ticket => {
+                            const row = `
+                        <tr>
+                            <td>${ticket.id}</td>
+                            <td>${ticket.employee_name}</td>
+                            <td>${ticket.subject}</td>
+                            <td>${ticket.description}</td>
+                            <td>${ticket.status}</td>
+                            <td>${ticket.priority}</td>
+                            <td>${ticket.category_name}</td>
+                            <td>${ticket.assigned_to_name}</td>
+                            <td>${ticket.created_at}</td>
+                            <td>${ticket.updated_at}</td>
+                        </tr>
+                    `;
+                            tableBody.insertAdjacentHTML('beforeend', row);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tickets:', error);
+                        tableBody.innerHTML = '<tr><td colspan="10"style="text-align: center;" >Error fetching tickets</td></tr>';
+                    });
+            }
+
+            // Event listener for search input
+            searchInput.addEventListener('input', function() {
+                const search = searchInput.value.trim();
+                fetchTickets(search);
+            });
+
+            // Event listener for filter button
+            filterButton.addEventListener('click', function() {
+                const filterColumn = prompt('Enter the column to filter (e.g., status, priority):');
+                const filterValue = prompt('Enter the value to filter by:');
+                if (filterColumn && filterValue) {
+                    fetchTickets('', filterColumn, filterValue);
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
             // Open modal function
             function openModal() {
                 document.getElementById("addTicketModal").style.display = "flex";
@@ -509,15 +625,15 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             window.closeModal = closeModal;
 
             // Submit form via AJAX
-            document.getElementById("ticketForm").addEventListener("submit", function (e) {
+            document.getElementById("ticketForm").addEventListener("submit", function(e) {
                 e.preventDefault();
 
                 let formData = new FormData(this);
 
                 fetch("../../0/includes/submitTicket.php", {
-                    method: "POST",
-                    body: formData
-                })
+                        method: "POST",
+                        body: formData
+                    })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
@@ -535,61 +651,61 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-        // Attach click event listeners to plates
-        const plates = document.querySelectorAll(".plate");
-        plates.forEach(plate => {
-            plate.addEventListener("click", function () {
-                const statusMap = {
-                    plate1: "Open",
-                    plate2: "In Progress",
-                    plate3: "Resolved"
-                };
+        document.addEventListener("DOMContentLoaded", function() {
+            // Attach click event listeners to plates
+            const plates = document.querySelectorAll(".plate");
+            plates.forEach(plate => {
+                plate.addEventListener("click", function() {
+                    const statusMap = {
+                        plate1: "Open",
+                        plate2: "In Progress",
+                        plate3: "Resolved"
+                    };
 
-                const status = statusMap[this.id];
-                if (!status) return; // Exit if the plate is not related to a status
+                    const status = statusMap[this.id];
+                    if (!status) return; // Exit if the plate is not related to a status
 
-                // Fetch filtered tickets using AJAX
-                fetch(`../../0/includes/platesFilter.php?status=${encodeURIComponent(status)}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.text(); // Read response as text
-                    })
-                    .then(text => {
-                        try {
-                            const data = JSON.parse(text); // Attempt to parse JSON
-                            if (data.success) {
-                                updateTable(data.tickets);
-                            } else {
-                                console.error("Error:", data.message);
-                                alert("Failed to fetch tickets. Please try again.");
+                    // Fetch filtered tickets using AJAX
+                    fetch(`../../0/includes/platesFilter.php?status=${encodeURIComponent(status)}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
                             }
-                        } catch (error) {
-                            console.error("JSON Parse Error:", error);
-                            alert("An error occurred while processing the server response.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Fetch Error:", error);
-                        alert("An error occurred while fetching tickets.");
-                    });
+                            return response.text(); // Read response as text
+                        })
+                        .then(text => {
+                            try {
+                                const data = JSON.parse(text); // Attempt to parse JSON
+                                if (data.success) {
+                                    updateTable(data.tickets);
+                                } else {
+                                    console.error("Error:", data.message);
+                                    alert("Failed to fetch tickets. Please try again.");
+                                }
+                            } catch (error) {
+                                console.error("JSON Parse Error:", error);
+                                alert("An error occurred while processing the server response.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Fetch Error:", error);
+                            alert("An error occurred while fetching tickets.");
+                        });
+                });
             });
-        });
 
-        // Function to update the table with filtered tickets
-        function updateTable(tickets) {
-            const tableBody = document.querySelector(".tableContainer tbody");
-            tableBody.innerHTML = ""; // Clear existing table rows
+            // Function to update the table with filtered tickets
+            function updateTable(tickets) {
+                const tableBody = document.querySelector(".tableContainer tbody");
+                tableBody.innerHTML = ""; // Clear existing table rows
 
-            if (!tickets || tickets.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='10'>No tickets found</td></tr>";
-                return;
-            }
+                if (!tickets || tickets.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='10'>No tickets found</td></tr>";
+                    return;
+                }
 
-            tickets.forEach(ticket => {
-                const row = `
+                tickets.forEach(ticket => {
+                    const row = `
                     <tr>
                         <td>${escapeHTML(ticket.id)}</td>
                         <td>${escapeHTML(ticket.employee_name)}</td>
@@ -602,18 +718,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <td>${escapeHTML(ticket.created_at)}</td>
                         <td>${escapeHTML(ticket.updated_at)}</td>
                     </tr>`;
-                tableBody.insertAdjacentHTML("beforeend", row);
-            });
-        }
+                    tableBody.insertAdjacentHTML("beforeend", row);
+                });
+            }
 
-        // Utility function to escape HTML to prevent XSS
-        function escapeHTML(str) {
-            const div = document.createElement("div");
-            div.textContent = str;
-            return div.innerHTML;
-        }
-    });
-
+            // Utility function to escape HTML to prevent XSS
+            function escapeHTML(str) {
+                const div = document.createElement("div");
+                div.textContent = str;
+                return div.innerHTML;
+            }
+        });
     </script>
 
 
