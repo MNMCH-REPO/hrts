@@ -1,0 +1,390 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    min-height: 90vh;
+    margin: 5% 0 0 260px;
+    align-self: center;
+}
+
+
+
+.plateRow {
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 8px;
+    margin: 0 0 32px 0;
+}
+
+.plate {
+    position: relative;
+    width: 300px;
+    height: 180px;
+    background-color: var(--primary-300);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.plateIcon {
+    position: absolute;
+    top: 26%;
+    left: -12%;
+    width: 55%;
+    aspect-ratio: 1/1;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.plateContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    width: 60%;
+    height: 100%;
+    align-self: flex-end;
+    padding: 5% 0;
+}
+
+.plateTitle {
+    font-size: 24px;
+    font-weight: 500;
+    width: 100%;
+    min-height: 32px;
+}
+
+.plateValue {
+    font-size: 48px;
+    font-weight: 600;
+    width: 100%;
+    min-height: 32px;
+    text-align: end;
+    padding: 8px;
+}
+
+/* table */
+
+.tableContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--neutral-300);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tableContainer {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--neutral-300);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--neutral-200);
+}
+
+th {
+    background-color: var(--neutral-300);
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--primary-100);
+}
+
+
+.highlighted {
+    background-color: var(--primary-400);
+}
+
+/* search container */
+
+.search-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    /* Moves search container to the right */
+    width: 100%;
+    padding-bottom: 10px;
+    /* Adjust spacing if needed */
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: #D3D3D3;
+    /* Adjust to match exact gray shade */
+    border-radius: 30px;
+    padding: 5px;
+    width: 320px;
+    /* Adjust width */
+}
+
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    border-radius: 30px;
+    outline: none;
+    font-size: 14px;
+}
+
+.search-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px;
+}
+
+.search-icon img {
+    width: 16px;
+    height: 16px;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-left: 1px solid #888;
+    /* Divider line between search and filter */
+}
+
+.filter-btn img {
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+}
+
+
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid var(--neutral-300);
+    border-radius: 4px;
+    color: var(--primary-500);
+    background: var(--neutral-100);
+}
+
+.pagination a.active {
+    background: var(--primary-500);
+    color: white;
+}
+
+.pagination a:hover {
+    background: var(--primary-400);
+    color: white;
+}
+
+
+
+.footer-messages {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    border-top: 1px solid #ddd;
+}
+
+
+
+/* modal */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 95%;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    align-self: center;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Ensures equal spacing */
+    width: 100%;
+    padding: 5px 0;
+    /* Adjust vertical spacing */
+}
+
+.input-container h1 {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    margin: 0;
+    width: 40%;
+    /* Adjust label width for proper spacing */
+}
+
+.center-text {
+    width: 60%;
+    /* Ensures proper alignment */
+    font-size: 16px;
+    text-align: left;
+    /* Match exact alignment from the image */
+    font-weight: normal;
+    /* Ensure text weight matches */
+}
+
+.confirmModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    
+
+}
+
+
+/* Add Ticket Modal Styles */
+#addTicketModal .modal-content-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 95%;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#addTicketModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#addTicketModal .modal-header .close {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+}
+
+#addTicketModal .modal-header .close:hover {
+    color: #c82333;
+}
+
+#addTicketModal .modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#addTicketModal .input-submit-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#addTicketModal .input-submit-container input,
+#addTicketModal .input-submit-container select,
+#addTicketModal .input-submit-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+    transition: border-color 0.3s ease;
+}
+
+#addTicketModal .input-submit-container input:focus,
+#addTicketModal .input-submit-container select:focus,
+#addTicketModal .input-submit-container textarea:focus {
+    border-color: #007BFF;
+}
+
+#addTicketModal .input-submit-container label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    transition: 0.3s ease-out;
+    background: white;
+    padding: 0 5px;
+    font-size: 14px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* Floating label effect */
+#addTicketModal .input-submit-container input:focus + label,
+#addTicketModal .input-submit-container input:not(:placeholder-shown) + label,
+#addTicketModal .input-submit-container select:focus + label,
+#addTicketModal .input-submit-container select:not(:placeholder-shown) + label,
+#addTicketModal .input-submit-container textarea:focus + label,
+#addTicketModal .input-submit-container textarea:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 12px;
+    color: #007BFF;
+}
+
+#addTicketModal .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

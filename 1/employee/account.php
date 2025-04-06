@@ -28,10 +28,7 @@ require_once '../../0/includes/employeeTicket.php';
     <div class="container">
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="dashboard.php">Dashboard</a>
-            </div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="ticket.php">Tickets</a>
@@ -44,10 +41,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="management.php">Management</a>
-            </div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>

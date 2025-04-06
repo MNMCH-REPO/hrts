@@ -1,6 +1,6 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
-require_once '../../0/includes/employeeTableQuery.php'; // Include the query file
+require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,271 +14,9 @@ require_once '../../0/includes/employeeTableQuery.php'; // Include the query fil
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/framework.css">
+    <link rel="stylesheet" href="../../assets/css/employeeTicket.css">
     <title>Tickets</title>
-    <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
-        }
 
-        .plateRow {
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 0 0 32px 0;
-        }
-
-        .plate {
-            width: 300px;
-            height: 180px;
-            background-color: var(--primary-300);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-
-        /* table */
-
-        .tableContainer {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--neutral-300);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .tableContainer {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--neutral-300);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--neutral-200);
-        }
-
-        th {
-            background-color: var(--neutral-300);
-            font-weight: bold;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: var(--neutral-100);
-        }
-
-        /* search container */
-
-        .search-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            /* Moves search container to the right */
-            width: 100%;
-            padding-bottom: 10px;
-            /* Adjust spacing if needed */
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #D3D3D3;
-            /* Adjust to match exact gray shade */
-            border-radius: 30px;
-            padding: 5px;
-            width: 320px;
-            /* Adjust width */
-        }
-
-
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 10px;
-            border-radius: 30px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .search-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 10px;
-        }
-
-        .search-icon img {
-            width: 16px;
-            height: 16px;
-        }
-
-        .filter-btn {
-            display: flex;
-            align-items: center;
-            background: transparent;
-            border: none;
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border-left: 1px solid #888;
-            /* Divider line between search and filter */
-        }
-
-        .filter-btn img {
-            width: 16px;
-            height: 16px;
-            margin-left: 5px;
-        }
-
-
-
-        .pagination-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding-bottom: 10px;
-        }
-
-        .pagination {
-            display: flex;
-            gap: 5px;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            padding: 6px 12px;
-            border: 1px solid var(--neutral-300);
-            border-radius: 4px;
-            color: var(--primary-500);
-            background: var(--neutral-100);
-        }
-
-        .pagination a.active {
-            background: var(--primary-500);
-            color: white;
-        }
-
-        .pagination a:hover {
-            background: var(--primary-400);
-            color: white;
-        }
-
-
-        /* modal */
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 600px;
-            max-width: 95%;
-            text-align: center;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .input-container {
-            position: relative;
-            margin: 15px 0;
-            width: 100%;
-        }
-
-        .input-container input,
-        .input-container select,
-        .input-container textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            outline: none;
-            font-size: 16px;
-            background: transparent;
-        }
-
-        .input-container label {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            transition: 0.3s ease-out;
-            background: white;
-            padding: 0 5px;
-            font-size: 16px;
-            color: #666;
-            pointer-events: none;
-        }
-
-        /* Floating label effect */
-        .input-container input:focus+label,
-        .input-container input:not(:placeholder-shown)+label,
-        .input-container select:focus+label,
-        .input-container select:not(:placeholder-shown)+label,
-        .input-container textarea:focus+label,
-        .input-container textarea:not(:placeholder-shown)+label {
-            top: 5px;
-            font-size: 12px;
-            color: #007BFF;
-        }
-
-        /* Buttons */
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-
-        }
-
-        .btnDefault {
-            cursor: pointer;
-            border-radius: 50px;
-        }
-
-        .btnDanger {
-            border-radius: 50px;
-            cursor: pointer;
-
-
-        }
-
-        .btnDefault:hover {
-            background: #0056b3;
-        }
-
-        .btnDanger:hover {
-            background: #c82333;
-        }
-    </style>
 </head>
 
 <body>
@@ -316,30 +54,35 @@ require_once '../../0/includes/employeeTableQuery.php'; // Include the query fil
 
 
             <div class="main-ticket">
-                <div class="container-ticket">
-                    <div class="row plateRow">
-                        <div class="col plate" id="plate1">
-                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                            <div class="plateContent">
-                                <div class="plateTitle">Open</div>
-                                <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
-                            </div>
+                <div class="row plateRow">
+                    <div class="col plate" id="plate1" data-status="Open">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Open</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
                         </div>
-                        <div class="col plate" id="plate2">
-                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                            <div class="plateContent">
-                                <div class="plateTitle">In Progress</div>
-                                <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
-                            </div>
+                    </div>
+                    <div class="col plate" id="plate2" data-status="In Progress">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">In Progress</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
                         </div>
-                        <div class="col plate" id="plate3">
-                            <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-                            <div class="plateContent">
-                                <div class="plateTitle">Resolved</div>
-                                <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
-                            </div>
+                    </div>
+                    <div class="col plate" id="plate3" data-status="Resolved">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Resolved</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
                         </div>
+                    </div>
 
+                    <div class="col plate" id="plate4">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Create Ticket</div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -373,45 +116,9 @@ require_once '../../0/includes/employeeTableQuery.php'; // Include the query fil
 
 
                 <div class="tableContainer">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID <i class="fas fa-sort"></i></th>
-                                <th>Employee Name <i class="fas fa-sort"></i></th>
-                                <th>Subject <i class="fas fa-sort"></i></th>
-                                <th>Description <i class="fas fa-sort"></i></th>
-                                <th>Status <i class="fas fa-sort"></i></th>
-                                <th>Priority <i class="fas fa-sort"></i></th>
-                                <th>Category ID <i class="fas fa-sort"></i></th>
-                                <th>Assigned To <i class="fas fa-sort"></i></th>
-                                <th>Created At <i class="fas fa-sort"></i></th>
-                                <th>Updated At <i class="fas fa-sort"></i></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($tickets)): ?>
-                                <?php foreach ($tickets as $ticket): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($ticket['id']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['subject']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['description']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['status']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['priority']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['category_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="10" style="text-align: center;">No tickets found</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-
-                    </table>
+                    <?php
+                    require_once '../../0/includes/employeeTable.php'; // Ensure correct database connection
+                    ?>
                 </div>
 
             </div>
@@ -474,125 +181,297 @@ require_once '../../0/includes/employeeTableQuery.php'; // Include the query fil
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" name="submitTicket" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">ASSIGN TICKET</h1>
+
+            <form id="confirmationForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="confirmTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="confirmemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="confirmsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="confirmcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="confirmdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="confirmpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="confirmassignedID" name="confirmAssigned" value="<?= htmlspecialchars($tickets['assigned_to_name']) ?>"></p>
+                    </select>
+                </div>
+
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="confirmStatusID" value="<?= htmlspecialchars($ticketStatus['status']) ?>"></p>
+                    </select>
+                </div>
+
+
+                <div class="btnContainer">
+                    <button type="submit" name="confirmButton" id="confirmButtonID" class="btnDefault">CONFIRM ORDER</button>
+                    <button type="submit" name="declineButton" id="declineButtonID" class="btnWarning">DECLINE ORDER</button>
+                    <button type="button" class="btnDanger" id="confirmBack" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <script src="../../assets/js/framework.js"></script>
 
     <!-- modal -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Get all plates
-            const plates = document.querySelectorAll(".plate");
             const tableRows = document.querySelectorAll("tbody tr");
+            const confirmModal = document.getElementById("confirmModal");
 
-            plates.forEach(plate => {
-                plate.addEventListener("click", function() {
-                    // Get the status from the clicked plate and normalize it
-                    const status = this.querySelector(".plateTitle").textContent.trim().toLowerCase();
+            // Modal fields for confirmModal
+            const confirmModalFields = {
+                ticketIdField: document.getElementById("confirmTicketID"),
+                employeeNameField: document.getElementById("confirmemployeeID"),
+                departmentField: document.getElementById("confirmdepartmentID"),
+                subjectField: document.getElementById("confirmsubjectID"),
+                categoryField: document.getElementById("confirmcategoryID"),
+                descriptionField: document.getElementById("confirmdescriptionID"),
+                priorityField: document.getElementById("confirmpriorityID"),
+                assignedToField: document.getElementById("confirmassignedID"),
+                statusField: document.getElementById("confirmStatusID"),
+            };
 
-                    // Debugging: Log the clicked plate's status
-                    console.log("Filtering by status:", status);
+            // Add click event listener to each row
+            tableRows.forEach((row) => {
+                row.addEventListener("click", function() {
+                    // Remove highlight from all rows
+                    tableRows.forEach((r) => r.classList.remove("highlighted"));
 
-                    tableRows.forEach(row => {
-                        // Find the status column dynamically
-                        const statusCell = row.querySelector("[data-column='status']");
-                        if (!statusCell) {
-                            console.error("Status column not found in row:", row);
-                            return;
-                        }
+                    // Highlight the clicked row
+                    this.classList.add("highlighted");
 
-                        const rowStatus = statusCell.textContent.trim().toLowerCase();
+                    // Get the values from the clicked row
+                    const ticketId = this.children[0].textContent.trim();
+                    const employeeName = this.children[1].textContent.trim();
+                    const assigned_department = this.children[2].textContent.trim();
+                    const subject = this.children[3].textContent.trim();
+                    const description = this.children[4].textContent.trim();
+                    const status = this.children[5].textContent.trim();
+                    const priority = this.children[6].textContent.trim();
+                    const category = this.children[7].textContent.trim();
+                    const assignedTo = this.children[8].textContent.trim();
 
-                        // Debugging: Log the status of each row
-                        console.log("Row status:", rowStatus);
+                    // Set the values in the confirmModal
+                    confirmModalFields.ticketIdField.textContent = ticketId;
+                    confirmModalFields.employeeNameField.textContent = employeeName;
+                    confirmModalFields.departmentField.textContent = assigned_department;
+                    confirmModalFields.subjectField.textContent = subject;
+                    confirmModalFields.categoryField.textContent = category;
+                    confirmModalFields.descriptionField.textContent = description;
+                    confirmModalFields.priorityField.textContent = priority;
+                    confirmModalFields.assignedToField.textContent = assignedTo;
+                    confirmModalFields.statusField.textContent = status;
 
-                        // Show only matching rows
-                        if (rowStatus === status || status === "all") {
-                            row.style.display = "";
-                        } else {
-                            row.style.display = "none";
-                        }
-                    });
+                    // Open the confirmModal
+                    confirmModal.style.display = "flex";
                 });
+            });
+
+            // Close the modal when clicking the "BACK" button
+            const closeModalButton = document.getElementById("confirmBack");
+            closeModalButton.addEventListener("click", function() {
+                confirmModal.style.display = "none";
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === confirmModal) {
+                    confirmModal.style.display = "none";
+                }
             });
         });
 
+        document.addEventListener("DOMContentLoaded", function() {
+            // Add event listeners for the buttons
+            document
+                .getElementById("confirmButtonID")
+                .addEventListener("click", function(e) {
+                    e.preventDefault();
+                    handleTicketAction("confirm");
+                });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('.search-input');
-            const filterButton = document.querySelector('.filter-btn');
-            const tableBody = document.querySelector('table tbody');
+            document
+                .getElementById("declineButtonID")
+                .addEventListener("click", function(e) {
+                    e.preventDefault();
+                    handleTicketAction("decline");
+                });
 
-            // Function to fetch and update tickets
-            function fetchTickets(search = '', filterColumn = '', filterValue = '') {
-                const url = new URL('../../0/includes/search.php', window.location.origin);
-                url.searchParams.append('search', search);
-                if (filterColumn && filterValue) {
-                    url.searchParams.append('filterColumn', filterColumn);
-                    url.searchParams.append('filterValue', filterValue);
-                }
+            function handleTicketAction(action) {
+                const ticketId = document
+                    .getElementById("confirmTicketID")
+                    .textContent.trim();
 
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear the table body
-                        tableBody.innerHTML = '';
-
-                        if (data.error) {
-                            console.error(data.error);
-                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">Error fetching tickets</td></tr>';
-                            return;
-                        }
-
-                        if (data.length === 0) {
-                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No tickets found</td></tr>';
-                            return;
-                        }
-
-                        // Populate the table with the fetched tickets
-                        data.forEach(ticket => {
-                            const row = `
-                        <tr>
-                            <td>${ticket.id}</td>
-                            <td>${ticket.employee_name}</td>
-                            <td>${ticket.subject}</td>
-                            <td>${ticket.description}</td>
-                            <td>${ticket.status}</td>
-                            <td>${ticket.priority}</td>
-                            <td>${ticket.category_name}</td>
-                            <td>${ticket.assigned_to_name}</td>
-                            <td>${ticket.created_at}</td>
-                            <td>${ticket.updated_at}</td>
-                        </tr>
-                    `;
-                            tableBody.insertAdjacentHTML('beforeend', row);
-                        });
+                // Send AJAX request
+                fetch("../../0/includes/acceptTicket.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            action: action,
+                            ticketId: ticketId,
+                        }),
                     })
-                    .catch(error => {
-                        console.error('Error fetching tickets:', error);
-                        tableBody.innerHTML = '<tr><td colspan="10"style="text-align: center;" >Error fetching tickets</td></tr>';
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert(data.message);
+                            // Optionally reload the page or update the UI
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while processing the request.");
                     });
             }
+        });
 
-            // Event listener for search input
-            searchInput.addEventListener('input', function() {
-                const search = searchInput.value.trim();
-                fetchTickets(search);
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.querySelector(".search-input");
+            const filterButton = document.querySelector(".filter-btn");
+            const table = document.querySelector("#ticketTable tbody");
 
-            // Event listener for filter button
-            filterButton.addEventListener('click', function() {
-                const filterColumn = prompt('Enter the column to filter (e.g., status, priority):');
-                const filterValue = prompt('Enter the value to filter by:');
-                if (filterColumn && filterValue) {
-                    fetchTickets('', filterColumn, filterValue);
+            // Search functionality
+            searchInput.addEventListener("keyup", function() {
+                const filter = searchInput.value.toLowerCase();
+                const rows = table.getElementsByTagName("tr");
+
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    let found = false;
+
+                    for (let j = 0; j < cells.length; j++) {
+                        if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    rows[i].style.display = found ? "" : "none";
                 }
             });
+
+            // Filter dropdown functionality
+            filterButton.addEventListener("click", function() {
+                // Create a dropdown menu dynamically
+                let dropdown = document.querySelector(".filter-dropdown");
+                if (!dropdown) {
+                    dropdown = document.createElement("div");
+                    dropdown.classList.add("filter-dropdown");
+                    dropdown.style.position = "absolute";
+                    dropdown.style.backgroundColor = "#fff";
+                    dropdown.style.border = "1px solid #ccc";
+                    dropdown.style.padding = "10px";
+                    dropdown.style.zIndex = "1000";
+
+                    // Add filter options
+                    const filters = [{
+                            column: 5,
+                            label: "Status"
+                        },
+                        {
+                            column: 6,
+                            label: "Priority"
+                        },
+                        {
+                            column: 7,
+                            label: "Category"
+                        },
+                    ];
+
+                    filters.forEach((filter) => {
+                        const option = document.createElement("div");
+                        option.textContent = filter.label;
+                        option.style.cursor = "pointer";
+                        option.style.padding = "5px 10px";
+                        option.addEventListener("click", function() {
+                            applyFilter(filter.column);
+                            dropdown.remove(); // Remove dropdown after selection
+                        });
+                        dropdown.appendChild(option);
+                    });
+
+                    document.body.appendChild(dropdown);
+
+                    // Position the dropdown below the filter button
+                    const rect = filterButton.getBoundingClientRect();
+                    dropdown.style.left = `${rect.left}px`;
+                    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+
+                    // Close dropdown when clicking outside
+                    document.addEventListener("click", function closeDropdown(event) {
+                        if (!dropdown.contains(event.target) && event.target !== filterButton) {
+                            dropdown.remove();
+                            document.removeEventListener("click", closeDropdown);
+                        }
+                    });
+                }
+            });
+
+            // Apply filter based on the selected column
+            function applyFilter(columnIndex) {
+                const rows = table.getElementsByTagName("tr");
+                const filterValue = prompt("Enter the value to filter by:");
+
+                if (filterValue) {
+                    for (let i = 0; i < rows.length; i++) {
+                        const cell = rows[i].getElementsByTagName("td")[columnIndex];
+                        if (cell) {
+                            rows[i].style.display =
+                                cell.textContent.trim().toLowerCase() === filterValue.toLowerCase() ?
+                                "" :
+                                "none";
+                        }
+                    }
+                }
+            }
         });
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -625,109 +504,32 @@ require_once '../../0/includes/employeeTableQuery.php'; // Include the query fil
             window.closeModal = closeModal;
 
             // Submit form via AJAX
-            document.getElementById("ticketForm").addEventListener("submit", function(e) {
-                e.preventDefault();
+            document
+                .getElementById("ticketForm")
+                .addEventListener("submit", function(e) {
+                    e.preventDefault();
 
-                let formData = new FormData(this);
+                    let formData = new FormData(this);
 
-                fetch("../../0/includes/submitTicket.php", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert("Ticket submitted successfully!");
-                            document.getElementById("ticketForm").reset();
-                            closeModal();
-                            location.reload();
-                        } else {
-                            alert("Error: " + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("❌ Fetch Error:", error);
-                    });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Attach click event listeners to plates
-            const plates = document.querySelectorAll(".plate");
-            plates.forEach(plate => {
-                plate.addEventListener("click", function() {
-                    const statusMap = {
-                        plate1: "Open",
-                        plate2: "In Progress",
-                        plate3: "Resolved"
-                    };
-
-                    const status = statusMap[this.id];
-                    if (!status) return; // Exit if the plate is not related to a status
-
-                    // Fetch filtered tickets using AJAX
-                    fetch(`../../0/includes/platesFilter.php?status=${encodeURIComponent(status)}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
-                            return response.text(); // Read response as text
+                    fetch("../../0/includes/submitTicket.php", {
+                            method: "POST",
+                            body: formData,
                         })
-                        .then(text => {
-                            try {
-                                const data = JSON.parse(text); // Attempt to parse JSON
-                                if (data.success) {
-                                    updateTable(data.tickets);
-                                } else {
-                                    console.error("Error:", data.message);
-                                    alert("Failed to fetch tickets. Please try again.");
-                                }
-                            } catch (error) {
-                                console.error("JSON Parse Error:", error);
-                                alert("An error occurred while processing the server response.");
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                alert("Ticket submitted successfully!");
+                                document.getElementById("ticketForm").reset();
+                                closeModal();
+                                location.reload();
+                            } else {
+                                alert("Error: " + data.message);
                             }
                         })
-                        .catch(error => {
-                            console.error("Fetch Error:", error);
-                            alert("An error occurred while fetching tickets.");
+                        .catch((error) => {
+                            console.error("❌ Fetch Error:", error);
                         });
                 });
-            });
-
-            // Function to update the table with filtered tickets
-            function updateTable(tickets) {
-                const tableBody = document.querySelector(".tableContainer tbody");
-                tableBody.innerHTML = ""; // Clear existing table rows
-
-                if (!tickets || tickets.length === 0) {
-                    tableBody.innerHTML = "<tr><td colspan='10'>No tickets found</td></tr>";
-                    return;
-                }
-
-                tickets.forEach(ticket => {
-                    const row = `
-                    <tr>
-                        <td>${escapeHTML(ticket.id)}</td>
-                        <td>${escapeHTML(ticket.employee_name)}</td>
-                        <td>${escapeHTML(ticket.subject)}</td>
-                        <td>${escapeHTML(ticket.description)}</td>
-                        <td>${escapeHTML(ticket.status)}</td>
-                        <td>${escapeHTML(ticket.priority)}</td>
-                        <td>${escapeHTML(ticket.category_name)}</td>
-                        <td>${escapeHTML(ticket.assigned_to_name)}</td>
-                        <td>${escapeHTML(ticket.created_at)}</td>
-                        <td>${escapeHTML(ticket.updated_at)}</td>
-                    </tr>`;
-                    tableBody.insertAdjacentHTML("beforeend", row);
-                });
-            }
-
-            // Utility function to escape HTML to prevent XSS
-            function escapeHTML(str) {
-                const div = document.createElement("div");
-                div.textContent = str;
-                return div.innerHTML;
-            }
         });
     </script>
 

@@ -22,6 +22,10 @@ if (!isset($_SESSION['CREATED'])) {
     // Session started more than 1 hour ago
     session_regenerate_id(true);    // Change session ID for the current session and invalidate old session ID
     $_SESSION['CREATED'] = time();  // Update creation time
+    // session_unset();            // Clear session variables
+    // session_destroy();          // Destroy the session
+    // header("Location: ../../index.php"); // Redirect to login page
+    // exit();
 }
 
 
