@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", function() {
     const tableRows = document.querySelectorAll(".tableContainer tbody tr");
     const editButton = document.getElementById("editAccountID");
-    const removeButton = document.getElementById("removeAccountID");
+    
     const disableButton = document.getElementById("disableAccountID");
 
     let selectedRow = null; // Store the currently selected row
@@ -60,10 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
         editButton.classList.remove("btnWarningDisabled");
         editButton.removeAttribute("disabled");
 
-        removeButton.classList.remove("btnDangerDisabled");
-        removeButton.removeAttribute("disabled");
 
-        disableButton.classList.remove("btnDisabled");
+        disableButton.classList.remove("btnDangerDisabled");
         disableButton.removeAttribute("disabled");
     }
 
@@ -72,10 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
         editButton.classList.add("btnWarningDisabled");
         editButton.setAttribute("disabled", "true");
 
-        removeButton.classList.add("btnDangerDisabled");
-        removeButton.setAttribute("disabled", "true");
-
-        disableButton.classList.add("btnDisabled");
+        disableButton.classList.add("btnDangerDisabled");
         disableButton.setAttribute("disabled", "true");
     }
 
@@ -100,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Click outside the table to reset selection
     document.addEventListener("click", function(event) {
         if (!event.target.closest(".tableContainer")) {
-            selectedRow = null;
+            selectedRow = null; 
             disableButtons();
             tableRows.forEach(row => row.classList.remove("selected-row"));
         }
@@ -119,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const employeeNameEditInput = document.getElementById("employeeEditName");
     const emailEditIDInput = document.getElementById("emailEditID");
     const roleEditIDSelect = document.getElementById("roleEditID");
-    const departmentEditIDSelect = document.getElementById("departmentEditID");
+    const editDepartmentIDSelect = document.getElementById("editDepartmentID");
 
     let selectedUserId = null;
 
@@ -158,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to fetch and populate modal
     async function fetchAndPopulateModal(userID) {
         try {
             const response = await fetch("../../0/includes/editAccountQuery.php", {
@@ -168,23 +162,28 @@ document.addEventListener("DOMContentLoaded", function() {
                 },
                 body: `id=${encodeURIComponent(userID)}`,
             });
-
+    
             const data = await response.json();
-
+    
             console.log("Fetched Data:", data); // Debugging log
-
+    
             if (data.success) {
+                // Reference the hidden input field
+                const idhidden = document.getElementById("idhidden");
+    
                 // Populate input fields
-                console.log(data.data.id)
                 idhidden.value = data.data.id || "";
                 employeeEditIDInput.value = data.data.id || "";
                 employeeNameEditInput.value = data.data.name || "";
                 emailEditIDInput.value = data.data.email || "";
-                roleEditIDSelect.value = data.data.role || "";
-                departmentEditIDSelect.value = data.data.department || "";
-                console.log("Department:", data.data.department);
-                console.log("Setting Department Value:", departmentEditIDSelect.value);
-
+    
+                // Set the role and department values
+                roleEditIDSelect.value = data.data.role || ""; // Ensure this matches the server response
+                
+                
+                console.log("Role Value:", roleEditIDSelect.value); // Debugging log
+                console.log("Department Value:", editDepartmentIDSelect.value); // Debugging log
+    
                 // Open the modal
                 editModal.style.display = "flex";
             } else {
@@ -194,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Fetch error:", error);
         }
     }
-
     // Close the modal
     closeModalButton.addEventListener("click", function() {
         editModal.style.display = "none";

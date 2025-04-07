@@ -83,8 +83,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
                 <div class="btnContainer">
                     <button type="button" class="btnWarning btnWarningDisabled" id="editAccountID" name="editAccount" disabled>Edit Account</button>
-                    <button type="button" class="btnDanger btnDangerDisabled" id="removeAccountID" name="removeAccount" disabled>Remove Account </button>
-                    <button type="button" class="btnDefault btnDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
+                    <button type="button" class="btnDefault btnDangerDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
                     <button type="button" class="btnDefault" id="addAccountID" name="addAccount">Add Account +</button>
                 </div>
 
@@ -311,6 +310,47 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             </form>
         </div>
     </div>
+
+
+
+    <div id="disableAccountModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">EDIT ACCOUNT</h1>
+            <input type="text" name="idhidden" id="idhidden">
+            <form id="disableAccountForm">
+                <div class="input-container">
+                    <input type="text" id="employeeDisableID" name="employeeID" required>
+                    <label for="employeeID">Employee ID</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="employeeDisableName" name="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="emailDisableID" name="email" required>
+                    <label for="email">Email</label>
+                </div>
+
+                <div class="input-container">
+                <input type="text" id="employeeDisableRole" name="employeeRole" required>
+                    <label for="role">Role</label>
+                </div>
+
+                <div class="input-container">
+                <input type="text" id="employeeDisableDepartment" name="employeeDepartment" required>
+                <label for="department">Department</label>
+                </div>
+
+
+                <div class="btnContainer">
+                    <button type="submit" class="btnDefault" name="disableAccount" id="disableAccountID">Disable</button>
+                    <button type="button" class="btnDanger" id="closeEditModal">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script src="../../assets/js/framework.js"></script>
 <script src="../../assets/js/management.js"></script>

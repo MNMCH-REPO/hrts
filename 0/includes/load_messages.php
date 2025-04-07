@@ -1,47 +1,75 @@
 <?php
-require 'db.php';
+session_start();
+require '../../0/includes/db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
-    http_response_code(403); // Forbidden
-    exit('Unauthorized access.');
+    exit('Invalid request.');
 }
-
 
 $user_id = $_SESSION['user_id'];
 $ticket_id = intval($_GET['ticket_id']); // Ensure it's an integer
 
 try {
-    // Check if the ticket belongs to the logged-in user
+    // Fetch the role of the current user
+    $roleStmt = $pdo->prepare("SELECT role FROM users WHERE id = :user_id");
+    $roleStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $roleStmt->execute();
+    $userRole = $roleStmt->fetchColumn();
+
+    if (!$userRole) {
+        exit("Error: Unable to determine user role.");
+    }
+
+    // Check if the ticket belongs to the logged-in user or if the user is an Admin
     $checkStmt = $pdo->prepare("
-        SELECT t.id, u.name AS assigned_name 
-        FROM tickets t 
-        JOIN users u ON t.assigned_to = u.id
-        WHERE t.id = :ticket_id AND t.assigned_to = :user_id
+        SELECT 
+            t.id, 
+            t.employee_id, -- ID of the user who submitted the ticket
+            t.assigned_to, -- ID of the user assigned to the ticket
+            u_assigned.name AS assigned_name, -- Name of the user assigned to the ticket
+            u_creator.name AS creator_name   -- Name of the user who submitted the ticket
+        FROM tickets t
+        LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id -- Join to get the assigned user's name
+        LEFT JOIN users u_creator ON t.employee_id = u_creator.id  -- Join to get the creator's name
+        WHERE t.id = :ticket_id
     ");
     $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-    $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $checkStmt->execute();
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$ticketInfo) {
-        echo "Debugging Info:<br>";
-        echo "Ticket ID: " . htmlspecialchars($ticket_id) . "<br>";
-        echo "User ID: " . htmlspecialchars($user_id) . "<br>";
-    
-        // Run a manual test query to see if the ticket exists
-        $debugStmt = $pdo->prepare("SELECT * FROM tickets WHERE id = :ticket_id");
-        $debugStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-        $debugStmt->execute();
-        $debugResult = $debugStmt->fetch(PDO::FETCH_ASSOC);
-    
-        if (!$debugResult) {
-            exit("No ticket found with this ID.");
-        } else {
-            exit("Ticket exists, but not assigned to you. Your ID: " . $user_id . ", Ticket Employee ID: " . $debugResult['employee_id']);
-        }
+        exit("No ticket found with this ID.");
     }
 
-    $assignedName = htmlspecialchars($ticketInfo['assigned_name']); // Get assigned user's name
+    // Determine if the user can reply to the ticket
+    $canReply = false;
+    if ($userRole === 'Admin') {
+        // Admin can view all tickets but can only reply if assigned or submitted by them
+        if ($ticketInfo['assigned_to'] == $user_id || $ticketInfo['employee_id'] == $user_id) {
+            $canReply = true;
+        }
+    } else {
+        // Non-admin users can only view tickets assigned to or submitted by them
+        if ($ticketInfo['assigned_to'] != $user_id && $ticketInfo['employee_id'] != $user_id) {
+            exit("You do not have access to this ticket.");
+        }
+        $canReply = true;
+    }
+
+    // Determine the name to display
+    if (!empty($ticketInfo['assigned_name']) && $user_id == $ticketInfo['employee_id']) {
+        // Current user submitted the ticket, display the name of the assigned user
+        $displayName = htmlspecialchars($ticketInfo['assigned_name']);
+    } elseif (!empty($ticketInfo['creator_name']) && $user_id == $ticketInfo['assigned_to']) {
+        // Current user is assigned to the ticket, display the name of the creator
+        $displayName = htmlspecialchars($ticketInfo['creator_name']);
+    } else {
+        $displayName = htmlspecialchars($ticketInfo['creator_name'] ?? $ticketInfo['assigned_name'] ?? "Unknown");
+    }
+
+    // Display the conversation header
+    echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
+    echo '<h3 class="assigned-name">' . $displayName . '</h3>';
 
     // Fetch messages for the selected ticket
     $stmt = $pdo->prepare("
@@ -55,6 +83,7 @@ try {
     $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $stmt->execute();
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     echo '<style>
     .convo-assigned {
         text-transform: uppercase; /* Converts text to all uppercase */
@@ -69,17 +98,12 @@ try {
         font-size: 1.8rem; /* H3 equivalent size */
         font-weight: bold; /* Makes it stand out */
         text-align: center; /* Centers the text */
-        display: block; /* Ensures it behaves as a block element */
+        display: block; /* Ensures it behaves asaq a block element */
         margin-top: 5px; /* Small space below the label */
     }
 </style>';
 
-
-
-    echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
-    echo '<h3 class="assigned-name">' . htmlspecialchars($assignedName) . '</h3>';
-    
-
+    // Display messages
     if (!$messages) {
         echo "<p>No messages yet.</p>";
     } else {
@@ -97,9 +121,3 @@ try {
 } catch (PDOException $e) {
     echo "Error loading messages: " . $e->getMessage();
 }
-
-
-
-
-
-?>
