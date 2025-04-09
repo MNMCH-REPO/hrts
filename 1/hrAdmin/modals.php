@@ -57,7 +57,7 @@
                         <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
                         <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
                         <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
-                        <option value="HRD DEPARTMENT">HRD DEPARTMENT</option>
+                        <option value="HR DEPARTMENT">HR DEPARTMENT</option>
                         <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
                         <option value="NONORTH POLE DEPARTMENT">NONORTH POLE DEPARTMENT</option>
                         <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>
@@ -139,7 +139,7 @@
                         <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
                         <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
                         <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
-                        <option value="HRD DEPARTMENT">HRD DEPARTMENT</option>
+                        <option value="H DEPARTMENT">H DEPARTMENT</option>
                         <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
                         <option value="NONORTH POLE DEPARTMENT">NONORTH POLE DEPARTMENT</option>
                         <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>

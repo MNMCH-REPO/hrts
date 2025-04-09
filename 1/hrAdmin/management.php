@@ -1,6 +1,5 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
-require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 require_once '../../0/includes/accountQuery.php'; // Include the query file
 ?>
 
@@ -83,8 +82,8 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
                 <div class="btnContainer">
                     <button type="button" class="btnWarning btnWarningDisabled" id="editAccountID" name="editAccount" disabled>Edit Account</button>
-                    <button type="button" class="btnDanger btnDangerDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
-                    <button type="button" class="btnApprove btnApproveDisabled" id="enableAccountID" name="enableAccount" disabled>Enable Account </button>
+                    <button type="button" class="btnDanger btnDangerDisabled" id="disableAccountID" name="disbaleAccount" style="display: none;" disabled>Disable Account </button>
+                    <button type="button" class="btnApprove btnApproveDisabled" id="enableAccountID" name="enableAccount" style="display: none;" disable>Enable Account </button>
                     <button type="button" class="btnDefault" id="addAccountID" name="addAccount">Add Account +</button>
                 </div>
 
@@ -101,7 +100,14 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
             </div>
 
-
+            <style>
+                /* Highlight rows with Inactive status */
+                .inactive-row {
+                    background-color: var(--danger-highlight);
+                    color: white;
+                    /* Optional: Change text color for better contrast */
+                }
+            </style>
 
             <div class="tableContainer">
                 <table>
@@ -112,18 +118,21 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                             <th>Email <i class="fas fa-sort"></i></th>
                             <th>Role <i class="fas fa-sort"></i></th>
                             <th>Department <i class="fas fa-sort"></i></th>
+                            <th>Status <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($users)): ?>
                             <?php foreach ($users as $user): ?>
-                                <tr data-id="<?= htmlspecialchars($user['id']) ?>">
+                                <tr data-id="<?= htmlspecialchars($user['id']) ?>"
+                                    class="<?= htmlspecialchars($user['status']) === 'Inactive' ? 'inactive-row' : '' ?>">
                                     <td><?= htmlspecialchars($user['id']) ?></td>
                                     <td><?= htmlspecialchars($user['name']) ?></td>
                                     <td><?= htmlspecialchars($user['email']) ?></td>
                                     <td><?= htmlspecialchars($user['role']) ?></td>
                                     <td><?= htmlspecialchars($user['department']) ?></td>
+                                    <td><?= htmlspecialchars($user['status']) ?> <!-- Debug: Output status here --></td>
                                     <td><?= htmlspecialchars($user['created_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -146,11 +155,11 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
 
 
-   <?php
-   
-   require_once 'modals.php';
-   
-   ?>
+    <?php
+
+    require_once 'modals.php';
+
+    ?>
 
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/management.js"></script>

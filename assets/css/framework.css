@@ -47,7 +47,8 @@
     --secondary-800: #8c4214;
     --secondary-900: #733614;
     --secondary-950: #421b06;
-    --danger: #c53d3d;   
+    --danger: #c53d3d;
+    --danger-highlight: #ff6161;
     --warning: #eebf68;
     --approve: #89dc79;
     --fast: 128ms;
@@ -202,7 +203,7 @@ body{
     padding: 4px 12px;
     border-radius: 999px;
     border: none;
-    background-color: var(--approve);
+    background-color: green;
     color: var(--white);
     font-size: 16px;
     cursor: pointer;
@@ -210,7 +211,7 @@ body{
 }
 
 .btnApprove:hover{
-    background-color: green;
+    background-color: rgb(0, 101, 0) ;
 }
 
 .popup{

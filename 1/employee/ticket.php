@@ -313,27 +313,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const plate = document.getElementById("plate4");
 
-            plate.addEventListener("click", function () {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
 
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-</script>
-
-<script>
 document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const rows = document.querySelectorAll("#ticketTable tbody tr");
@@ -373,11 +354,9 @@ document.addEventListener("DOMContentLoaded", function () {
         filterTable();
     });
 });
-</script>
 
 
-    <!-- modal -->
-    <script>
+
         document.addEventListener("DOMContentLoaded", function() {
             const tableRows = document.querySelectorAll("tbody tr");
             const confirmModal = document.getElementById("confirmModal");
@@ -496,30 +475,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
         
 
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     const searchInput = document.querySelector(".search-input");
-        //     const filterButton = document.querySelector(".filter-btn");
-        //     const table = document.querySelector("#ticketTable tbody");
+         document.addEventListener("DOMContentLoaded", function() {
+             const searchInput = document.querySelector(".search-input");
+             const filterButton = document.querySelector(".filter-btn");
+             const table = document.querySelector("#ticketTable tbody");
 
-        //     // Search functionality
-        //     searchInput.addEventListener("keyup", function() {
-        //         const filter = searchInput.value.toLowerCase();
-        //         const rows = table.getElementsByTagName("tr");
+             // Search functionality
+             searchInput.addEventListener("keyup", function() {
+                 const filter = searchInput.value.toLowerCase();
+                 const rows = table.getElementsByTagName("tr");
 
-        //         for (let i = 0; i < rows.length; i++) {
-        //             const cells = rows[i].getElementsByTagName("td");
-        //             let found = false;
+                 for (let i = 0; i < rows.length; i++) {
+                     const cells = rows[i].getElementsByTagName("td");
+                     let found = false;
 
-        //             for (let j = 0; j < cells.length; j++) {
-        //                 if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-        //                     found = true;
-        //                     break;
-        //                 }
-        //             }
+                     for (let j = 0; j < cells.length; j++) {
+                         if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
+                             found = true;
+                             break;
+                         }
+                     }
 
-        //             rows[i].style.display = found ? "" : "none";
-        //         }
-        //     });
+                     rows[i].style.display = found ? "" : "none";
+                 }
+             });
 
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
