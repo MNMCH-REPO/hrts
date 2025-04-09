@@ -165,8 +165,6 @@ body{
     background-color: var(--secondary-600);
 }
 
-
-
 .btnDanger{
     display: flex;
     justify-content: center;
@@ -195,6 +193,26 @@ body{
     font-size: 16px;
     cursor: not-allowed;
 }
+
+
+.btnApprove{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: none;
+    background-color: var(--approve);
+    color: var(--white);
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--fast);
+}
+
+.btnApprove:hover{
+    background-color: green;
+}
+
 .popup{
     display: flex;
     position: fixed;

@@ -15,7 +15,7 @@ try {
     $totalPages = ceil($totalRecords / $limit);
 
     // Fetch paginated users from the database
-    $sql = "SELECT id, name, email, role, department, created_at 
+    $sql = "SELECT id, name, email, role, department, status, created_at 
             FROM users 
             LIMIT :limit OFFSET :offset";
 

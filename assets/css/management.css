@@ -61,6 +61,12 @@ tbody tr:nth-child(even) {
 }
 
 
+/* Highlight rows with Inactive status */
+.inactive-row {
+    background-color: red !important;
+    color: white; /* Optional: Change text color for better contrast */
+}
+
 
 
 /* search container */
