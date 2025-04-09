@@ -83,7 +83,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
                 <div class="btnContainer">
                     <button type="button" class="btnWarning btnWarningDisabled" id="editAccountID" name="editAccount" disabled>Edit Account</button>
-                    <button type="button" class="btnDefault btnDangerDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
+                    <button type="button" class="btnDanger btnDangerDisabled" id="disableAccountID" name="disbaleAccount" disabled>Disable Account </button>
                     <button type="button" class="btnDefault" id="addAccountID" name="addAccount">Add Account +</button>
                 </div>
 
@@ -232,8 +232,8 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     <div id="editAccountModal" class="modal">
         <div class="modal-content">
             <h1 class="modal-title">EDIT ACCOUNT</h1>
-            <input type="text" name="idhidden" id="idhidden">
             <form id="editAccountForm">
+            <input type="text" name="idhidden" id="idhidden">
                 <div class="input-container">
                     <input type="text" id="employeeEditID" name="employeeID" required>
                     <label for="employeeID">Employee ID</label>
@@ -315,30 +315,30 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
     <div id="disableAccountModal" class="modal">
         <div class="modal-content">
-            <h1 class="modal-title">EDIT ACCOUNT</h1>
-            <input type="text" name="idhidden" id="idhidden">
+            <h1 class="modal-title">DISABLE ACCOUNT</h1>
             <form id="disableAccountForm">
+            <input type="text" name="idhidden" id="idDisableHidden">
                 <div class="input-container">
-                    <input type="text" id="employeeDisableID" name="employeeID" required>
+                    <input type="text" id="employeeDisableID" name="employeeID" readonly>
                     <label for="employeeID">Employee ID</label>
                 </div>
                 <div class="input-container">
-                    <input type="text" id="employeeDisableName" name="employeeName" required>
+                    <input type="text" id="employeeDisableName" name="employeeName" readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="emailDisableID" name="email" required>
+                    <input type="text" id="emailDisableID" name="email" readonly>
                     <label for="email">Email</label>
                 </div>
 
                 <div class="input-container">
-                <input type="text" id="employeeDisableRole" name="employeeRole" required>
+                <input type="text" id="employeeDisableRole" name="employeeRole" readonly>
                     <label for="role">Role</label>
                 </div>
 
                 <div class="input-container">
-                <input type="text" id="employeeDisableDepartment" name="employeeDepartment" required>
+                <input type="text" id="employeeDisableDepartment" name="employeeDepartment" readonly>
                 <label for="department">Department</label>
                 </div>
 

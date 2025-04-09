@@ -1,12 +1,13 @@
 <?php
 require_once '../../0/includes/db.php'; // Include your database connection file
 
-function createUser($employeeID, $employeeName, $email, $role, $department) {
+function createUser($employeeID, $employeeName, $email, $role, $department)
+{
     global $pdo; // Use the PDO instance from db.php
 
     try {
         // Static password hash
-        $passwordHash = '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW';
+        $passwordHash = '$2y$10$goVTP4El61v39QXFzClRlOwmsf48VELveViYRJ0uW2wcYZ9IlGOja';
 
         // Prepare the SQL query
         $sql = "INSERT INTO users (id, name, email, password, role, department, created_at) 
@@ -35,6 +36,8 @@ function createUser($employeeID, $employeeName, $email, $role, $department) {
 
 // Handle the AJAX request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start(); // Start the session to access the logged-in user's data
+
     // Check if all required fields are set
     if (
         isset($_POST['employeeID']) && isset($_POST['employeeName']) &&
@@ -46,14 +49,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $role = $_POST['role'];
         $department = $_POST['department'];
 
-        // Call the function to create the user
-        $result = createUser($employeeID, $employeeName, $email, $role, $department);
+        // Get the current logged-in user's ID from the session
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'User not logged in.']);
+            exit;
+        }
+        $currentUserId = $_SESSION['user_id'];
 
-        // Return the result as JSON
-        echo json_encode($result);
+        try {
+            $pdo->beginTransaction();
+
+            // Call the function to create the user
+            $result = createUser($employeeID, $employeeName, $email, $role, $department);
+
+            if ($result['success']) {
+                // Step 2: Insert into the `audit_trail` table
+                $actionType = 'CREATE'; // Action type
+                $affectedTable = 'users'; // The table being updated
+                $affectedId = $employeeID; // The ID of the created user
+                $details = "Created user: Name=$employeeName, Email=$email, Role=$role, Department=$department";
+                $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
+                $stmt = $pdo->prepare("
+                    INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
+                    VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+                ");
+                $stmt->bindParam(':actionType', $actionType);
+                $stmt->bindParam(':affectedTable', $affectedTable);
+                $stmt->bindParam(':affectedId', $affectedId);
+                $stmt->bindParam(':details', $details);
+                $stmt->bindParam(':userId', $currentUserId); // Use the logged-in user's ID
+                $stmt->bindParam(':timestamp', $timestamp);
+                $stmt->execute();
+
+                // Commit the transaction
+                $pdo->commit();
+            } else {
+                // Rollback the transaction if user creation failed
+                $pdo->rollBack();
+                echo json_encode($result);
+                exit;
+            }
+
+            // Return the result as JSON
+            echo json_encode($result);
+        } catch (PDOException $e) {
+            // Rollback the transaction on error
+            $pdo->rollBack();
+            error_log("Database error: " . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        }
     } else {
         // Return an error if any field is missing
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
     }
 }
-?>

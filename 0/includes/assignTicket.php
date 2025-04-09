@@ -1,6 +1,11 @@
 <?php
 require_once '../../0/includes/db.php'; // Include your database connection file
-
+session_start();
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'User not logged in.']);
+    exit;
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the data from the POST request
     $ticketId = $_POST['ticketId'] ?? null;
@@ -14,7 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Prepare the SQL query to update the ticket
+        // Begin a transaction
+        $pdo->beginTransaction();
+
+        // Step 1: Update the ticket in the `tickets` table
         $stmt = $pdo->prepare("UPDATE tickets 
                                SET priority = :priority, 
                                    assigned_to = :assignTo,
@@ -27,13 +35,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':assignTo', $assignTo, PDO::PARAM_INT);
 
         // Execute the query
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Ticket updated successfully.']);
-        } else {
+        if (!$stmt->execute()) {
+            $pdo->rollBack();
             echo json_encode(['success' => false, 'message' => 'Failed to update ticket.']);
+            exit;
         }
+
+        // Step 2: Insert into the `audit_trail` table
+        $actionType = 'ASSIGN'; // Action type
+        $affectedTable = 'tickets'; // The table being updated
+        $affectedId = $ticketId; // The ID of the updated ticket
+        $details = "Assigned ticket ID $ticketId to user ID $assignTo with priority $priority.";
+        $userId = $_SESSION['user_id']; // The ID of the logged-in user performing the action
+        $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
+        $auditStmt = $pdo->prepare("
+            INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+        ");
+        $auditStmt->bindParam(':actionType', $actionType);
+        $auditStmt->bindParam(':affectedTable', $affectedTable);
+        $auditStmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
+        $auditStmt->bindParam(':details', $details);
+        $auditStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $auditStmt->bindParam(':timestamp', $timestamp);
+
+        if (!$auditStmt->execute()) {
+            $pdo->rollBack();
+            echo json_encode(['success' => false, 'message' => 'Failed to log audit trail.']);
+            exit;
+        }
+
+        // Commit the transaction
+        $pdo->commit();
+
+        echo json_encode(['success' => true, 'message' => 'Ticket updated and logged successfully.']);
     } catch (PDOException $e) {
-        // Log the error for debugging
+        // Rollback the transaction on error
+        $pdo->rollBack();
         error_log("Database error: " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     }
