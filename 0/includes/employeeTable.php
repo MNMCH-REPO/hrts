@@ -18,7 +18,7 @@
     <tbody>
         <?php if (!empty($tickets)): ?>
             <?php foreach ($tickets as $ticket): ?>
-                <tr>
+                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
