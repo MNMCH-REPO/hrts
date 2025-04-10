@@ -1118,6 +1118,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 editStatusModal.style.display = "none";
             });
         });
+
+
+
+        
         // Handle form submission assign
 
         document.addEventListener("DOMContentLoaded", function() {
