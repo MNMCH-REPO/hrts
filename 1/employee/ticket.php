@@ -315,12 +315,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("searchInput");
     const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = ""; // track which plate was clicked
+    let selectedStatus = "";
 
-    // Function to filter table based on status and search
     function filterTable() {
         const searchTerm = searchInput.value.toLowerCase();
 
@@ -339,24 +338,27 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Handle plate click
-    const plates = document.querySelectorAll(".plate"); // this allows all plates to work
-    plates.forEach(plate => {
-        plate.addEventListener("click", function () {
-            selectedStatus = this.getAttribute("data-status");
-            searchInput.value = ""; // clear search bar when changing plates
-            filterTable();
-        });
+
+    const plateIDs = ["plate1", "plate2", "plate3"];
+    plateIDs.forEach(id => {
+        const plate = document.getElementById(id);
+        if (plate) {
+            plate.addEventListener("click", function () {
+                selectedStatus = this.getAttribute("data-status");
+                searchInput.value = "";
+                filterTable();
+            });
+        }
     });
 
-    // Handle typing in search bar
+    // pang search listener
     searchInput.addEventListener("input", function () {
         filterTable();
     });
 });
+</script>
 
-
-
+<script>
         document.addEventListener("DOMContentLoaded", function() {
             const tableRows = document.querySelectorAll("tbody tr");
             const confirmModal = document.getElementById("confirmModal");
