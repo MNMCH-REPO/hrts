@@ -30,7 +30,8 @@ try {
             LEFT JOIN users e ON t.employee_id = e.id
             LEFT JOIN users a ON t.assigned_to = a.id
             LEFT JOIN categories c ON t.category_id = c.id
-            LIMIT :limit OFFSET :offset"; // Pagination
+            ORDER BY t.created_at DESC
+            LIMIT :limit OFFSET :offset"; // Pagination 
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);

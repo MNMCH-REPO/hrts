@@ -95,7 +95,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
                     <button class="filter-btn">
-                        <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
             </div>
@@ -103,7 +103,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
             <style>
                 /* Highlight rows with Inactive status */
                 .inactive-row {
-                    background-color: var(--danger-highlight);
+                    background-color: var(--danger-highlight) !important;
                     color: white;
                     /* Optional: Change text color for better contrast */
                 }

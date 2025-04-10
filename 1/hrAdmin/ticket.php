@@ -305,6 +305,91 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             background: white;
             cursor: pointer;
         }
+
+
+
+        #addTicketModal .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 95%;
+            text-align: center;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #addTicketModal .input-container {
+            position: relative;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        #addTicketModal .input-container input,
+        #addTicketModal .input-container select,
+        #addTicketModal .input-container textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        #addTicketModal .input-container label {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            transition: 0.3s ease-out;
+            background: white;
+            padding: 0 5px;
+            font-size: 16px;
+            color: #666;
+            pointer-events: none;
+        }
+
+        /* Floating label effect */
+        #addTicketModal .input-container input:focus+label,
+        #addTicketModal .input-container input:not(:placeholder-shown)+label,
+        #addTicketModal .input-container select:focus+label,
+        #addTicketModal .input-container select:not(:placeholder-shown)+label,
+        #addTicketModal .input-container textarea:focus+label,
+        #addTicketModal .input-container textarea:not(:placeholder-shown)+label {
+            top: 5px;
+            font-size: 12px;
+            color: #007BFF;
+        }
+
+        /* Buttons */
+        .modal-buttons {
+            display: flex;
+            align-items: right;
+            
+            margin-top: 15px;
+
+        }
+
+        .btnDefault {
+            cursor: pointer;
+            border-radius: 50px;
+        }
+
+        .btnDanger {
+            border-radius: 50px;
+            cursor: pointer;
+
+
+        }
+
+        .btnDefault:hover {
+            background: #0056b3;
+        }
+
+        .btnDanger:hover {
+            background: #c82333;
+        }
+
     </style>
 </head>
 
@@ -375,6 +460,14 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     </div>
                 </div>
 
+                <div class="col plate" id="plate4">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Create Ticket</div>
+                        <div class="plateValue"></div>
+                    </div>
+                </div>
+
             </div>
 
 
@@ -399,7 +492,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
                     <button class="filter-btn">
-                        <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
             </div>
@@ -605,113 +698,321 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     </div>
 
 
+    <!-- Modal -->
+    <div id="addTicketModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">TICKET FORM</h1>
+
+            <form id="ticketForm">
+
+                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                <div class="input-container">
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="subject" name="subject" required>
+                    <label for="subject">Subject</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="departmentInputField" class="form-control"
+                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
+
+                    <label for="department">Department</label>
+                </div>
+
+                <div class="input-container">
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <?php
+                        require "../../0/includes/db.php"; // Ensure correct database connection
+
+                        try {
+                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<option disabled>Error loading categories</option>";
+                        }
+                        ?>
+                    </select>
+                    <label for="category">Category</label>
+                </div>
+
+
+                <div class="input-container">
+                    <textarea id="description" name="description" required></textarea>
+                    <label for="description">Description</label>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
 
     <script src="../../assets/js/framework.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get all plates
-            const plates = document.querySelectorAll(".plate");
-            const tableRows = document.querySelectorAll("tbody tr");
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate1");
 
-            plates.forEach(plate => {
-                plate.addEventListener("click", function() {
-                    // Get the status from the clicked plate and normalize it
-                    const status = this.querySelector(".plateTitle").textContent.trim().toLowerCase();
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
 
-                    // Debugging: Log the clicked plate's status
-                    console.log("Filtering by status:", status);
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
 
-                    tableRows.forEach(row => {
-                        // Adjust the index if needed to match the actual column containing the status
-                        const rowStatus = row.children[4].textContent.trim().toLowerCase();
-
-                        // Debugging: Log the status of each row
-                        console.log("Row status:", rowStatus);
-
-                        // Show only matching rows
-                        if (rowStatus === status || status === "all") {
-                            row.style.display = "";
-                        } else {
-                            row.style.display = "none";
-                        }
-                    });
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
                 });
             });
         });
 
-        //search function
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate2");
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('.search-input');
-            const filterButton = document.querySelector('.filter-btn');
-            const tableBody = document.querySelector('table tbody');
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
 
-            // Function to fetch and update tickets
-            function fetchTickets(search = '', filterColumn = '', filterValue = '') {
-                const url = new URL('../../0/includes/search.php', window.location.origin);
-                url.searchParams.append('search', search);
-                if (filterColumn && filterValue) {
-                    url.searchParams.append('filterColumn', filterColumn);
-                    url.searchParams.append('filterValue', filterValue);
-                }
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
 
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear the table body
-                        tableBody.innerHTML = '';
-
-                        if (data.error) {
-                            console.error(data.error);
-                            tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
-                            return;
-                        }
-
-                        if (data.length === 0) {
-                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No tickets found</td></tr>';
-                            return;
-                        }
-
-                        // Populate the table with the fetched tickets
-                        data.forEach(ticket => {
-                            const row = `
-                        <tr>
-                            <td>${ticket.id}</td>
-                            <td>${ticket.employee_name}</td>
-                            <td>${ticket.subject}</td>
-                            <td>${ticket.description}</td>
-                            <td>${ticket.status}</td>
-                            <td>${ticket.priority}</td>
-                            <td>${ticket.category_name}</td>
-                            <td>${ticket.assigned_to_name}</td>
-                            <td>${ticket.created_at}</td>
-                            <td>${ticket.updated_at}</td>
-                        </tr>
-                    `;
-                            tableBody.insertAdjacentHTML('beforeend', row);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching tickets:', error);
-                        tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
-                    });
-            }
-
-            // Event listener for search input
-            searchInput.addEventListener('input', function() {
-                const search = searchInput.value.trim();
-                fetchTickets(search);
-            });
-
-            // Event listener for filter button
-            filterButton.addEventListener('click', function() {
-                const filterColumn = prompt('Enter the column to filter (e.g., status, priority):');
-                const filterValue = prompt('Enter the value to filter by:');
-                if (filterColumn && filterValue) {
-                    fetchTickets('', filterColumn, filterValue);
-                }
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate3");
+
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const rows = document.querySelectorAll("#ticketTable tbody tr");
+    let selectedStatus = ""; // track which plate was clicked
+
+    // Function to filter table based on status and search
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute("data-status");
+            const rowText = row.textContent.toLowerCase();
+
+            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+            const isSearchMatch = rowText.includes(searchTerm);
+
+            if (isStatusMatch && isSearchMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    // Handle typing in search bar
+    searchInput.addEventListener("input", function () {
+        filterTable();
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+             const searchInput = document.querySelector(".search-input");
+             const filterButton = document.querySelector(".filter-btn");
+             const table = document.querySelector("#ticketTable tbody");
+
+             // Search functionality
+             searchInput.addEventListener("keyup", function() {
+                 const filter = searchInput.value.toLowerCase();
+                 const rows = table.getElementsByTagName("tr");
+
+                 for (let i = 0; i < rows.length; i++) {
+                     const cells = rows[i].getElementsByTagName("td");
+                     let found = false;
+
+                     for (let j = 0; j < cells.length; j++) {
+                         if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
+                             found = true;
+                             break;
+                         }
+                     }
+
+                     rows[i].style.display = found ? "" : "none";
+                 }
+             });
+
+            // Filter dropdown functionality
+            filterButton.addEventListener("click", function() {
+                // Create a dropdown menu dynamically
+                let dropdown = document.querySelector(".filter-dropdown");
+                if (!dropdown) {
+                    dropdown = document.createElement("div");
+                    dropdown.classList.add("filter-dropdown");
+                    dropdown.style.position = "absolute";
+                    dropdown.style.backgroundColor = "#fff";
+                    dropdown.style.border = "1px solid #ccc";
+                    dropdown.style.padding = "10px";
+                    dropdown.style.zIndex = "1000";
+
+                    // Add filter options
+                    const filters = [{
+                            column: 5,
+                            label: "Status"
+                        },
+                        {
+                            column: 6,
+                            label: "Priority"
+                        },
+                        {
+                            column: 7,
+                            label: "Category"
+                        },
+                    ];
+
+                    filters.forEach((filter) => {
+                        const option = document.createElement("div");
+                        option.textContent = filter.label;
+                        option.style.cursor = "pointer";
+                        option.style.padding = "5px 10px";
+                        option.addEventListener("click", function() {
+                            applyFilter(filter.column);
+                            dropdown.remove(); // Remove dropdown after selection
+                        });
+                        dropdown.appendChild(option);
+                    });
+
+                    document.body.appendChild(dropdown);
+
+                    // Position the dropdown below the filter button
+                    const rect = filterButton.getBoundingClientRect();
+                    dropdown.style.left = `${rect.left}px`;
+                    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+
+                    // Close dropdown when clicking outside
+                    document.addEventListener("click", function closeDropdown(event) {
+                        if (!dropdown.contains(event.target) && event.target !== filterButton) {
+                            dropdown.remove();
+                            document.removeEventListener("click", closeDropdown);
+                        }
+                    });
+                }
+            });
+
+            // Apply filter based on the selected column
+            function applyFilter(columnIndex) {
+                const rows = table.getElementsByTagName("tr");
+                const filterValue = prompt("Enter the value to filter by:");
+
+                if (filterValue) {
+                    for (let i = 0; i < rows.length; i++) {
+                        const cell = rows[i].getElementsByTagName("td")[columnIndex];
+                        if (cell) {
+                            rows[i].style.display =
+                                cell.textContent.trim().toLowerCase() === filterValue.toLowerCase() ?
+                                "" :
+                                "none";
+                        }
+                    }
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Open modal function
+            function openModal() {
+                document.getElementById("addTicketModal").style.display = "flex";
+
+                // Auto-fill department correctly
+                let userDept = "<?= $_SESSION['department'] ?>"; // Use PHP instead of Blade
+                let departmentField = document.getElementById("departmentInputField");
+
+                if (departmentField) {
+                    departmentField.value = userDept;
+                } else {
+                    console.error("❌ Department field not found!");
+                }
+            }
+
+            // Make the function globally accessible
+            window.openModal = openModal;
+
+            // Attach event listener to "ADD" button
+            document.getElementById("plate4").addEventListener("click", openModal);
+
+            // Close modal function
+            function closeModal() {
+                document.getElementById("addTicketModal").style.display = "none";
+            }
+
+            window.closeModal = closeModal;
+
+            // Submit form via AJAX
+            document
+                .getElementById("ticketForm")
+                .addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    let formData = new FormData(this);
+
+                    fetch("../../0/includes/submitTicket.php", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                alert("Ticket submitted successfully!");
+                                document.getElementById("ticketForm").reset();
+                                closeModal();
+                                location.reload();
+                            } else {
+                                alert("Error: " + data.message);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("❌ Fetch Error:", error);
+                        });
+                });
+        });
+
+
 
         document.addEventListener("DOMContentLoaded", function() {
             const tableRows = document.querySelectorAll("tbody tr");
