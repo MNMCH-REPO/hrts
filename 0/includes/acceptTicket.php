@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'details' => 'Confirmed ticket ID %d and updated status to "In Progress".',
             ],
             'decline' => [
-                'query' => "UPDATE tickets SET status = 'Open', assigned_to = NULL WHERE id = :id",
+                'query' => "UPDATE tickets SET status = 'Open', start_at = NULL, assigned_to = NULL WHERE id = :id",
                 'message' => 'Ticket assignment removed.',
                 'details' => 'Declined ticket ID %d and removed assignment.',
             ],

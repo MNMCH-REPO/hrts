@@ -16,6 +16,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <title>HRTS</title>
 </head>
 
+<style>
+
+</style>
+
 <body>
     <div class="container">
         <div class="sideNav">
@@ -223,75 +227,181 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
         <!-- Modal -->
-    <div id="addTicketModal" class="modal">
-        <div class="modal-content">
-            <h1 class="modal-title">TICKET FORM</h1>
+        <div id="addTicketModal" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">TICKET FORM</h1>
 
-            <form id="ticketForm">
+                <form id="ticketForm">
 
-                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
-                <div class="input-container">
-                    <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" readonly>
-                    <label for="employeeID">Employee ID</label>
-                </div>
+                    <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                    <div class="input-container">
+                        <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" readonly>
+                        <label for="employeeID">Employee ID</label>
+                    </div>
 
-                <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
-                    <label for="employeeName">Employee Name</label>
-                </div>
+                    <div class="input-container">
+                        <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
+                        <label for="employeeName">Employee Name</label>
+                    </div>
 
-                <div class="input-container">
-                    <input type="text" id="subject" name="subject" required>
-                    <label for="subject">Subject</label>
-                </div>
+                    <div class="input-container">
+                        <input type="text" id="subject" name="subject" required>
+                        <label for="subject">Subject</label>
+                    </div>
 
-                <div class="input-container">
-                <input type="text" name="department" value="<?= $_SESSION['department'] ?>" id="departmentInputField" readonly>
-                    <label for="department">Department</label>
-                </div>
+                    <div class="input-container">
+                        <input type="text" name="department" value="<?= $_SESSION['department'] ?>" id="departmentInputField" readonly>
+                        <label for="department">Department</label>
+                    </div>
 
-                <div class="input-container">
-                    <select id="category" name="category" required>
-                        <option value="" disabled selected>Select a category</option>
-                        <?php
-                        require "../../0/includes/db.php"; // Ensure correct database connection
+                    <div class="input-container">
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select a category</option>
+                            <?php
+                            require "../../0/includes/db.php"; // Ensure correct database connection
 
-                        try {
-                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
-                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                            try {
+                                $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                    echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                                }
+                            } catch (PDOException $e) {
+                                echo "<option disabled>Error loading categories</option>";
                             }
-                        } catch (PDOException $e) {
-                            echo "<option disabled>Error loading categories</option>";
-                        }
-                        ?>
-                    </select>
-                    <label for="category">Category</label>
-                </div>
+                            ?>
+                        </select>
+                        <label for="category">Category</label>
+                    </div>
 
 
-                <div class="input-container">
-                    <textarea id="description" name="description" required></textarea>
-                    <label for="description">Description</label>
-                </div>
+                    <div class="input-container">
+                        <textarea id="description" name="description" required></textarea>
+                        <label for="description">Description</label>
+                    </div>
 
-                <div class="modal-buttons">
-                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
-                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
-                </div>
-            </form>
+                    <div class="modal-buttons">
+                        <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
+                        <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div id="editStatusModal" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">EDIT TICKET STATUS</h1>
+
+                <form id="editStatusForm" method="POST">
+                    <div class="input-container">
+                        <h1><strong>Ticket ID:</strong></h1>
+                        <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Employee Name:</strong></h1>
+                        <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Department:</strong></h1>
+                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Subject:</strong></h1>
+                        <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Category:</strong></h1>
+                        <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Description:</strong></h1>
+                        <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Priority:</strong></h1>
+                        <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                        </select>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Assigned To:</strong></h1>
+                        <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
+                        </select>
+                    </div>
+
+                    <div class="input-container">
+                        <select name="statusEdit" id="statusEditID" required>
+                            <option value="" disabled selected>Select a status</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+
+                    <div class="btnContainer">
+                        <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
+                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
 
 
-
-
-
-
-    </div>
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const editStatusForm = document.getElementById("editStatusForm");
+
+    editStatusForm.addEventListener("submit", async function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get form data
+        const ticketId = document.getElementById("editTicketID").textContent.trim();
+        const status = document.getElementById("statusEditID").value;
+
+        // Validate form data
+        if (!ticketId || !status) {
+            alert("All fields are required.");
+            return;
+        }
+
+        // Prepare the data to send
+        const formData = new FormData();
+        formData.append("ticketId", ticketId);
+        formData.append("statusEdit", status);
+
+        try {
+            // Send the AJAX request
+            const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
+                method: "POST",
+                body: formData,
+            });
+
+            // Parse the JSON response
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message); // Show success message
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert(data.message); // Show error message
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            alert("An error occurred while updating the status. Please try again.");
+        }
+    });
+});
+    </script>
 </body>
 
 </html>

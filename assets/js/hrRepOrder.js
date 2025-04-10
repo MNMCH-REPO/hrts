@@ -66,72 +66,113 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchTickets();
   });
   
+
+
+
   document.addEventListener("DOMContentLoaded", function () {
     const tableRows = document.querySelectorAll("tbody tr");
     const confirmModal = document.getElementById("confirmModal");
-  
+    const editStatusModal = document.getElementById("editStatusModal");
+
     // Modal fields for confirmModal
     const confirmModalFields = {
-      ticketIdField: document.getElementById("confirmTicketID"),
-      employeeNameField: document.getElementById("confirmemployeeID"),
-      departmentField: document.getElementById("confirmdepartmentID"),
-      subjectField: document.getElementById("confirmsubjectID"),
-      categoryField: document.getElementById("confirmcategoryID"),
-      descriptionField: document.getElementById("confirmdescriptionID"),
-      priorityField: document.getElementById("confirmpriorityID"),
-      assignedToField: document.getElementById("confirmassignedID"),
-      statusField: document.getElementById("confirmStatusID"),
+        ticketIdField: document.getElementById("confirmTicketID"),
+        employeeNameField: document.getElementById("confirmemployeeID"),
+        departmentField: document.getElementById("confirmdepartmentID"),
+        subjectField: document.getElementById("confirmsubjectID"),
+        categoryField: document.getElementById("confirmcategoryID"),
+        descriptionField: document.getElementById("confirmdescriptionID"),
+        priorityField: document.getElementById("confirmpriorityID"),
+        assignedToField: document.getElementById("confirmassignedID"),
+        statusField: document.getElementById("confirmStatusID"),
     };
-  
+
+    // Modal fields for editStatusModal
+    const editStatusModalFields = {
+        ticketIdField: document.getElementById("editTicketID"),
+        employeeNameField: document.getElementById("editemployeeID"),
+        departmentField: document.getElementById("editdepartmentID"),
+        subjectField: document.getElementById("editsubjectID"),
+        categoryField: document.getElementById("editcategoryID"),
+        descriptionField: document.getElementById("editdescriptionID"),
+        priorityField: document.getElementById("editpriorityID"),
+        assignedToField: document.getElementById("editassignedID"),
+    };
+
     // Add click event listener to each row
     tableRows.forEach((row) => {
-      row.addEventListener("click", function () {
-        // Remove highlight from all rows
-        tableRows.forEach((r) => r.classList.remove("highlighted"));
-  
-        // Highlight the clicked row
-        this.classList.add("highlighted");
-  
-        // Get the values from the clicked row
-        const ticketId = this.children[0].textContent.trim();
-        const employeeName = this.children[1].textContent.trim();
-        const assigned_department = this.children[2].textContent.trim();
-        const subject = this.children[3].textContent.trim();
-        const description = this.children[4].textContent.trim();
-        const status = this.children[5].textContent.trim();
-        const priority = this.children[6].textContent.trim();
-        const category = this.children[7].textContent.trim();
-        const assignedTo = this.children[8].textContent.trim();
-  
-        // Set the values in the confirmModal
-        confirmModalFields.ticketIdField.textContent = ticketId;
-        confirmModalFields.employeeNameField.textContent = employeeName;
-        confirmModalFields.departmentField.textContent = assigned_department;
-        confirmModalFields.subjectField.textContent = subject;
-        confirmModalFields.categoryField.textContent = category;
-        confirmModalFields.descriptionField.textContent = description;
-        confirmModalFields.priorityField.textContent = priority;
-        confirmModalFields.assignedToField.textContent = assignedTo;
-        confirmModalFields.statusField.textContent = status;
-  
-        // Open the confirmModal
-        confirmModal.style.display = "flex";
-      });
+        row.addEventListener("click", function () {
+            // Remove highlight from all rows
+            tableRows.forEach((r) => r.classList.remove("highlighted"));
+
+            // Highlight the clicked row
+            this.classList.add("highlighted");
+
+            // Get the values from the clicked row
+            const ticketId = this.children[0].textContent.trim();
+            const employeeName = this.children[1].textContent.trim();
+            const assignedDepartment = this.children[2].textContent.trim();
+            const subject = this.children[3].textContent.trim();
+            const description = this.children[4].textContent.trim();
+            const status = this.children[5].textContent.trim();
+            const priority = this.children[6].textContent.trim();
+            const category = this.children[7].textContent.trim();
+            const assignedTo = this.children[8].textContent.trim();
+
+            // Get the current user from the session
+            const currentUser = document.querySelector(".accountName").textContent.trim();
+
+            // Check the status and assigned user
+            if (status === "Open" && assignedTo === currentUser) {
+                // Set the values in the confirmModal
+                confirmModalFields.ticketIdField.textContent = ticketId;
+                confirmModalFields.employeeNameField.textContent = employeeName;
+                confirmModalFields.departmentField.textContent = assignedDepartment;
+                confirmModalFields.subjectField.textContent = subject;
+                confirmModalFields.categoryField.textContent = category;
+                confirmModalFields.descriptionField.textContent = description;
+                confirmModalFields.priorityField.textContent = priority;
+                confirmModalFields.assignedToField.textContent = assignedTo;
+                confirmModalFields.statusField.textContent = status;
+
+                // Open the confirmModal
+                confirmModal.style.display = "flex";
+            } else if (status === "In Progress" && assignedTo === currentUser) {
+                // Set the values in the editStatusModal
+                editStatusModalFields.ticketIdField.textContent = ticketId;
+                editStatusModalFields.employeeNameField.textContent = employeeName;
+                editStatusModalFields.departmentField.textContent = assignedDepartment;
+                editStatusModalFields.subjectField.textContent = subject;
+                editStatusModalFields.categoryField.textContent = category;
+                editStatusModalFields.descriptionField.textContent = description;
+                editStatusModalFields.priorityField.textContent = priority;
+                editStatusModalFields.assignedToField.textContent = assignedTo;
+
+                // Open the editStatusModal
+                editStatusModal.style.display = "flex";
+            }
+        });
     });
-  
+
     // Close the modal when clicking outside of it
     window.addEventListener("click", function (event) {
-      if (event.target === confirmModal) {
-        confirmModal.style.display = "none";
-      }
+        if (event.target === confirmModal) {
+            confirmModal.style.display = "none";
+        }
+        if (event.target === editStatusModal) {
+            editStatusModal.style.display = "none";
+        }
     });
-  
+
     // Close the modal when clicking the "BACK" button
-    const closeModalButton = document.querySelector(".btnDanger");
-    closeModalButton.addEventListener("click", function () {
-      confirmModal.style.display = "none";
+    const closeModalButtons = document.querySelectorAll(".btnDanger");
+    closeModalButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            confirmModal.style.display = "none";
+            editStatusModal.style.display = "none";
+        });
     });
-  });
+});
   
   document.addEventListener("DOMContentLoaded", function () {
     // Add event listeners for the buttons
@@ -340,4 +381,5 @@ document.addEventListener("DOMContentLoaded", function () {
           });
       });
   });
+
   

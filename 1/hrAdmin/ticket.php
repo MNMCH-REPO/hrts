@@ -276,7 +276,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
         .input-container h1 {
             font-size: 16px;
-            font-weight: bold;
+           
             text-align: left;
             margin: 0;
             width: 40%;

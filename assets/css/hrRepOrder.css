@@ -377,3 +377,42 @@ tbody tr:nth-child(even) {
 .btnDanger:hover {
     background: #c82333;
 }
+
+/* Fix for dropdown in Edit Status Modal */
+#editStatusModal .input-container select {
+    width: 100%; /* Ensure it spans the full width of the container */
+    padding: 10px; /* Adjust padding for better spacing */
+    border: 1px solid var(--neutral-300); /* Consistent border color */
+    border-radius: 4px; /* Rounded corners */
+    outline: none; /* Remove default outline */
+    font-size: 14px; /* Adjust font size for readability */
+    background-color: white; /* Ensure background is visible */
+    color: #333; /* Text color */
+    appearance: none; /* Remove default browser styling */
+    box-shadow: none; /* Remove any shadow effects */
+}
+
+/* Add a custom arrow for the dropdown */
+#editStatusModal .input-container select:after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+/* Ensure label alignment */
+#editStatusModal .input-container label {
+    position: absolute;
+    top: -10px; /* Adjust position above the dropdown */
+    left: 10px;
+    font-size: 12px;
+    color: var(--neutral-500); /* Match label color */
+    background: white;
+    padding: 0 5px;
+}

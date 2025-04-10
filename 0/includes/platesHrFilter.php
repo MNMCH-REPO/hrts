@@ -90,3 +90,5 @@ try {
 echo "<script>console.log('Tickets:', " . json_encode($tickets) . ");</script>";
 echo "<script>console.log('Total Records:', " . json_encode($totalRecords) . ");</script>";
 echo "<script>console.log('Total Pages:', " . json_encode($totalPages) . ");</script>";
+
+
