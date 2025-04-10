@@ -95,7 +95,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </div>
 
                 <div class="search-container">
-                    <input type="text" placeholder="SEARCH..." class="search-input">
+                    <input type="text" id="searchInput"placeholder="SEARCH..." class="search-input">
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
@@ -125,7 +125,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr>
+                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
@@ -296,6 +296,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </div>
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
+
+    
 </body>
 
 </html>

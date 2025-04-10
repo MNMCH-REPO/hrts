@@ -351,7 +351,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         }
     });
 
-    // pang search listener
     searchInput.addEventListener("input", function () {
         filterTable();
     });
@@ -478,29 +477,29 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         
 
          document.addEventListener("DOMContentLoaded", function() {
-             const searchInput = document.querySelector(".search-input");
-             const filterButton = document.querySelector(".filter-btn");
-             const table = document.querySelector("#ticketTable tbody");
+            //  const searchInput = document.querySelector(".search-input");
+            //  const filterButton = document.querySelector(".filter-btn");
+            //  const table = document.querySelector("#ticketTable tbody");
 
-             // Search functionality
-             searchInput.addEventListener("keyup", function() {
-                 const filter = searchInput.value.toLowerCase();
-                 const rows = table.getElementsByTagName("tr");
+            //  // Search functionality
+            //  searchInput.addEventListener("keyup", function() {
+            //      const filter = searchInput.value.toLowerCase();
+            //      const rows = table.getElementsByTagName("tr");
 
-                 for (let i = 0; i < rows.length; i++) {
-                     const cells = rows[i].getElementsByTagName("td");
-                     let found = false;
+            //      for (let i = 0; i < rows.length; i++) {
+            //          const cells = rows[i].getElementsByTagName("td");
+            //          let found = false;
 
-                     for (let j = 0; j < cells.length; j++) {
-                         if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-                             found = true;
-                             break;
-                         }
-                     }
+            //          for (let j = 0; j < cells.length; j++) {
+            //              if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
+            //                  found = true;
+            //                  break;
+            //              }
+            //          }
 
-                     rows[i].style.display = found ? "" : "none";
-                 }
-             });
+            //          rows[i].style.display = found ? "" : "none";
+            //      }
+            //  });
 
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
