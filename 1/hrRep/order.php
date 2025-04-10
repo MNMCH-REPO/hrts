@@ -73,7 +73,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Create Ticket</div>
-
+                        <div class="plateValue"></div>
                     </div>
                 </div>
             </div>
@@ -221,74 +221,70 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         </div>
 
 
+
         <!-- Modal -->
-        <div id="assignTicketModal" class="modal">
-            <div class="modal-content">
-                <h1 class="modal-title">ASSIGN TICKET</h1>
+    <div id="addTicketModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">TICKET FORM</h1>
 
-                <form id="assignTicketForm" method="POST">
-                    <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
-                    </div>
+            <form id="ticketForm">
 
-                    <div class="input-container">
-                        <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
-                    </div>
+                <input type="text" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                <div class="input-container">
+                    <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" required>
+                    <label for="employeeID">Employee ID</label>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Department:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
-                    </div>
+                <div class="input-container">
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
-                    </div>
+                <div class="input-container">
+                    <input type="text" id="subject" name="subject" required>
+                    <label for="subject">Subject</label>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
-                    </div>
+                <div class="input-container">
+                <input type="text" name="department" value="<?= $_SESSION['department'] ?>" id="departmentInputField" readonly>
+                    <label for="department">Department</label>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
-                    </div>
+                <div class="input-container">
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <?php
+                        require "../../0/includes/db.php"; // Ensure correct database connection
+
+                        try {
+                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<option disabled>Error loading categories</option>";
+                        }
+                        ?>
+                    </select>
+                    <label for="category">Category</label>
+                </div>
 
 
-                    <br>
+                <div class="input-container">
+                    <textarea id="description" name="description" required></textarea>
+                    <label for="description">Description</label>
+                </div>
 
-
-                    <div class="input-container">
-                        <select id="priorityID" name="priotity" required>
-                            <option value="" disabled selected>Please select the level of Priority</option>
-                            <option value="Low">Low</option>
-                            <option value="Medium">Medium</option>
-                            <option value="High">High</option>
-                        </select>
-                    </div>
-
-                    <br>
-
-                    <div class="input-container">
-                        <select name="assignTo" id="assignToID" required>
-                            <option value="" disabled selected>Select User</option>
-                            <?php foreach ($users as $user): ?>
-                                <option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                    </div>
-
-                    <div class="btnContainer">
-                        <button type="submit" name="assignTicket" id="assignTIcketID" class="btnDefault">SUBMIT</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-buttons">
+                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                </div>
+            </form>
         </div>
+    </div>
+
+
+
 
 
 
