@@ -79,3 +79,7 @@ try {
     $ticketStatus = [];
     $currentStatus = 'In Progress';  // Default value on error
 }
+
+
+
+

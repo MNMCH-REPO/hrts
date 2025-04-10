@@ -25,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Step 1: Update the ticket in the `tickets` table
         $stmt = $pdo->prepare("UPDATE tickets 
                                SET priority = :priority, 
-                                   assigned_to = :assignTo,
-                                   status = 'In Progress'
+                                   assigned_to = :assignTo
+                                
                                WHERE id = :ticketId");
 
         // Bind parameters

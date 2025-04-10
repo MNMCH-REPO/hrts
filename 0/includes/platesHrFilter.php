@@ -57,6 +57,7 @@ try {
                     a.name AS assigned_to_name, 
                     a.department AS assigned_department, -- Fix department selection
                     t.created_at, 
+                    t.start_at,
                     t.updated_at 
                 FROM tickets t
 

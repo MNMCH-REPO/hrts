@@ -1,6 +1,7 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
 require_once '../../0/includes/adminTableQuery.php';
+require_once '../../0/includes/adminDashboardTables.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,6 +65,7 @@ require_once '../../0/includes/adminTableQuery.php';
                         <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
                     </div>
                 </div>
+
                 <div class="col plate" id="plate2">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
                     <div class="plateContent">
@@ -124,15 +126,12 @@ require_once '../../0/includes/adminTableQuery.php';
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
                     <button class="filter-btn">
-                        <img src="../../assets/images/icons/filter.png" alt="Filter"> FILTER
+                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
             </div>
 
-
-
-
-            <div class="tableContainer" id="tableContainerUserID">
+            <div class="tableContainer" id="tableContainerTicketID">
                 <table>
                     <thead>
                         <tr>
@@ -151,7 +150,7 @@ require_once '../../0/includes/adminTableQuery.php';
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr>
+                                <tr data-id="<?= htmlspecialchars($user['id']) ?>">
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['subject']) ?></td>
@@ -173,7 +172,193 @@ require_once '../../0/includes/adminTableQuery.php';
 
                 </table>
             </div>
-            
+
+            <br><br>
+
+
+
+            <style>
+                /* Highlight rows with Inactive status */
+                .inactive-row {
+                    background-color: var(--danger-highlight) !important;
+                    color: white;
+                }
+            </style>
+
+            <div class="pagination-wrapper">
+                <div class="pagination">
+                    <?php if ($pageUser > 1): ?>
+                        <a href="?userPage=<?= $pageUser - 1 ?>" class="prev">Previous</a>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?userPage=<?= $i ?>" class="<?= $i == $pageUser ? 'active' : '' ?>"><?= $i ?></a>
+                    <?php endfor; ?>
+
+                    <?php if ($pageUser < $totalPages): ?>
+                        <a href="?userPage=<?= $pageUser + 1 ?>" class="next">Next</a>
+                    <?php endif; ?>
+                </div>
+
+                <div class="search-container">
+                    <input type="text" placeholder="SEARCH..." class="search-input">
+                    <div class="search-icon">
+                        <img src="../../assets/images/icons/search.png" alt="Search">
+                    </div>
+                    <button class="filter-btn">
+                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
+                    </button>
+                </div>
+            </div>
+
+            <div class="tableContainer" id="tableContainerUserID">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID <i class="fas fa-sort"></i></th>
+                            <th>Employee Name <i class="fas fa-sort"></i></th>
+                            <th>Email <i class="fas fa-sort"></i></th>
+                            <th>Department <i class="fas fa-sort"></i></th>
+                            <th>Role <i class="fas fa-sort"></i></th>
+                            <th>Status <i class="fas fa-sort"></i></th>
+                            <th>Created At <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($users)): ?>
+                            <?php foreach ($users as $user): ?>
+                                <tr class="<?= $user['status'] === 'Inactive' ? 'inactive-row' : '' ?>">
+                                    <td><?= htmlspecialchars($user['id'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['name'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['email'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['department'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['role'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['status'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($user['created_at'] ?? 'N/A') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" style="text-align: center;">No users found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <br><br>
+
+
+            <div class="tableContainer" id="tableContainerDepartment">
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Total Orders</h1>
+                    <h1 style="text-align: center; margin-top: 20px;">
+                        Top 5 Departments: <?= htmlspecialchars($totalTickets ?? 0) ?>
+                    </h1>
+                    <br>
+
+                    <thead>
+                        <tr>
+                            <th>Department <i class="fas fa-sort"></i></th>
+                            <th>Total Orders <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($totalDepartments)): ?>
+                            <?php foreach ($totalDepartments as $department): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($department['department'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($department['totalDepartmentCounts'] ?? 0) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="2" style="text-align: center;">No Department found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <br><br>
+
+            <div class="tableContainer" id="tableContainerCategory">
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Orders by Category</h1>
+                    <h1 style="text-align: center; margin-top: 20px;">
+                        Total Categories: <?= htmlspecialchars($totalCategory ?? 0) ?>
+                    </h1>
+                    <br>
+
+                    <thead>
+                        <tr>
+                            <th>Category <i class="fas fa-sort"></i></th>
+                            <th>Total Orders <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($totalCategories)): ?>
+                            <?php foreach ($totalCategories as $category): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($category['category'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($category['totalCategoryCounts'] ?? 0) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="2" style="text-align: center;">No Category found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <br><br>
+
+            <div class="tableContainer" id="tableContainerCategory">
+    <table>
+        <h1 style="text-align: center; margin-top: 20px;">Top 10 Longest Orders</h1>
+        <br>
+
+        <thead>
+            <tr>
+                <th>Order ID <i class="fas fa-sort"></i></th>
+                <th>Category <i class="fas fa-sort"></i></th>
+                <th>Order Details <i class="fas fa-sort"></i></th>
+                <th>Duration <i class="fas fa-sort"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($longestOrders)): ?>
+                <?php foreach ($longestOrders as $order): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($order['ticket_id'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($order['category'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($order['order_details'] ?? 'N/A') ?></td>
+                        <td>
+                            <?php
+                                // Convert duration from seconds to hours, minutes, and seconds
+                                $hours = floor($order['duration_seconds'] / 3600);
+                                $minutes = floor(($order['duration_seconds'] % 3600) / 60);
+                                $seconds = $order['duration_seconds'] % 60;
+                                echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="4" style="text-align: center;">No Orders found</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+
+
 
             <br><br><br><br>
             <div class="chart-container">
@@ -331,7 +516,7 @@ require_once '../../0/includes/adminTableQuery.php';
             });
         });
 
-        
+
         //open modal
         document.addEventListener("DOMContentLoaded", function() {
             let modal = document.getElementById("reportModal");

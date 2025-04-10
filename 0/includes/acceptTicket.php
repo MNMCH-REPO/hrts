@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Define the actions in an associative array
         $actions = [
             'confirm' => [
-                'query' => "UPDATE tickets SET status = 'In Progress', created_at = NOW() WHERE id = :id",
+                'query' => "UPDATE tickets SET status = 'In Progress', start_at = NOW() WHERE id = :id",
                 'message' => 'Ticket status updated to "In Progress".',
                 'details' => 'Confirmed ticket ID %d and updated status to "In Progress".',
             ],
