@@ -83,4 +83,30 @@ try {
 
 
 
+try {
+    // Query for top 10 longest orders
+    $longestOrdersSql = "
+        SELECT 
+            t.id AS ticket_id,
+            c.name AS category,
+            t.description AS order_details,
+            TIMESTAMPDIFF(SECOND, t.start_at, t.updated_at) AS duration_seconds,
+            t.start_at,
+            t.updated_at
+        FROM tickets t
+        LEFT JOIN categories c ON t.category_id = c.id
+        WHERE t.start_at IS NOT NULL AND t.updated_at IS NOT NULL
+        ORDER BY duration_seconds DESC
+        LIMIT 10
+    ";
+
+    $stmt = $pdo->query($longestOrdersSql);
+    $longestOrders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    die("Database connection failed while fetching longest orders: " . $e->getMessage());
+}
+
+
+
 ?>

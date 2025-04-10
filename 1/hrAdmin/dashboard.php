@@ -131,19 +131,6 @@ require_once '../../0/includes/adminDashboardTables.php';
                 </div>
             </div>
 
-
-
-
-            <style>
-                /* active inactive account */
-                /* Highlight rows with Inactive status */
-                .inactive-row {
-                    background-color: var(--danger-highlight) !important;
-                    color: white;
-                    /* Optional: Change text color for better contrast */
-                }
-            </style>
-
             <div class="tableContainer" id="tableContainerTicketID">
                 <table>
                     <thead>
@@ -163,8 +150,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr data-id="<?= htmlspecialchars($user['id']) ?>"
-                                    class="<?= htmlspecialchars($user['status']) === 'Inactive' ? 'inactive-row' : '' ?>">
+                                <tr data-id="<?= htmlspecialchars($user['id']) ?>">
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['subject']) ?></td>
@@ -223,7 +209,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                         <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
-            </div>s
+            </div>
 
             <div class="tableContainer" id="tableContainerUserID">
                 <table>
@@ -295,7 +281,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                 </table>
             </div>
 
-
+            <br><br>
 
             <div class="tableContainer" id="tableContainerCategory">
                 <table>
@@ -327,6 +313,49 @@ require_once '../../0/includes/adminDashboardTables.php';
                     </tbody>
                 </table>
             </div>
+
+
+            <br><br>
+
+            <div class="tableContainer" id="tableContainerCategory">
+    <table>
+        <h1 style="text-align: center; margin-top: 20px;">Top 10 Longest Orders</h1>
+        <br>
+
+        <thead>
+            <tr>
+                <th>Order ID <i class="fas fa-sort"></i></th>
+                <th>Category <i class="fas fa-sort"></i></th>
+                <th>Order Details <i class="fas fa-sort"></i></th>
+                <th>Duration <i class="fas fa-sort"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($longestOrders)): ?>
+                <?php foreach ($longestOrders as $order): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($order['ticket_id'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($order['category'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($order['order_details'] ?? 'N/A') ?></td>
+                        <td>
+                            <?php
+                                // Convert duration from seconds to hours, minutes, and seconds
+                                $hours = floor($order['duration_seconds'] / 3600);
+                                $minutes = floor(($order['duration_seconds'] % 3600) / 60);
+                                $seconds = $order['duration_seconds'] % 60;
+                                echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="4" style="text-align: center;">No Orders found</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
 
 
 

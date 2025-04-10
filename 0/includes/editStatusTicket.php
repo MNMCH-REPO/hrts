@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the data from the POST request
     $ticketId = $_POST['ticketId'] ?? null;
     $status = $_POST['statusEdit'] ?? null;
+   
 
     // Validate input fields
     if (empty($ticketId) || empty($status)) {
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Step 1: Update the ticket status in the `tickets` table
         $stmt = $pdo->prepare("UPDATE tickets 
-                               SET status = :status 
+                               SET status = :status,  updated_at = NOW() 
                                WHERE id = :ticketId");
 
         // Bind parameters
