@@ -229,14 +229,14 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             <form id="ticketForm">
 
-                <input type="text" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
-                    <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" required>
+                    <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" readonly>
                     <label for="employeeID">Employee ID</label>
                 </div>
 
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 

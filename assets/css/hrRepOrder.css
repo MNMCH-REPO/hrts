@@ -295,96 +295,85 @@ tbody tr:nth-child(even) {
 }
 
 
-/* Add Ticket Modal Styles */
-#addTicketModal .modal-content-container {
+
+.modal-content {
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 8px;
-    width: 500px;
+    width: 600px;
     max-width: 95%;
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-#addTicketModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#addTicketModal .modal-header .close {
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #333;
-}
-
-#addTicketModal .modal-header .close:hover {
-    color: #c82333;
-}
-
-#addTicketModal .modal-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0 auto;
-    text-align: center;
-}
-
-#addTicketModal .input-submit-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-bottom: 20px;
+.input-container {
     position: relative;
+    margin: 15px 0;
+    width: 100%;
 }
 
-#addTicketModal .input-submit-container input,
-#addTicketModal .input-submit-container select,
-#addTicketModal .input-submit-container textarea {
+.input-container input,
+.input-container select,
+.input-container textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     outline: none;
-    font-size: 14px;
+    font-size: 16px;
     background: transparent;
-    transition: border-color 0.3s ease;
 }
 
-#addTicketModal .input-submit-container input:focus,
-#addTicketModal .input-submit-container select:focus,
-#addTicketModal .input-submit-container textarea:focus {
-    border-color: #007BFF;
-}
-
-#addTicketModal .input-submit-container label {
+.input-container label {
     position: absolute;
     top: 50%;
-    left: 12px;
+    left: 10px;
     transform: translateY(-50%);
     transition: 0.3s ease-out;
     background: white;
     padding: 0 5px;
-    font-size: 14px;
+    font-size: 16px;
     color: #666;
     pointer-events: none;
 }
 
 /* Floating label effect */
-#addTicketModal .input-submit-container input:focus + label,
-#addTicketModal .input-submit-container input:not(:placeholder-shown) + label,
-#addTicketModal .input-submit-container select:focus + label,
-#addTicketModal .input-submit-container select:not(:placeholder-shown) + label,
-#addTicketModal .input-submit-container textarea:focus + label,
-#addTicketModal .input-submit-container textarea:not(:placeholder-shown) + label {
-    top: -10px;
+.input-container input:focus+label,
+.input-container input:not(:placeholder-shown)+label,
+.input-container select:focus+label,
+.input-container select:not(:placeholder-shown)+label,
+.input-container textarea:focus+label,
+.input-container textarea:not(:placeholder-shown)+label {
+    top: 5px;
     font-size: 12px;
     color: #007BFF;
 }
 
-#addTicketModal .modal-buttons {
+ /* Buttons */
+ .modal-buttons {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    align-items: right;
+    
+    margin-top: 15px;
+
+}
+
+.btnDefault {
+    cursor: pointer;
+    border-radius: 50px;
+}
+
+.btnDanger {
+    border-radius: 50px;
+    cursor: pointer;
+
+
+}
+
+.btnDefault:hover {
+    background: #0056b3;
+}
+
+.btnDanger:hover {
+    background: #c82333;
 }
