@@ -365,7 +365,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         .modal-buttons {
             display: flex;
             align-items: right;
-            
+
             margin-top: 15px;
 
         }
@@ -389,7 +389,6 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         .btnDanger:hover {
             background: #c82333;
         }
-
     </style>
 </head>
 
@@ -669,7 +668,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     </select>
                 </div>
 
-                
+
                 <br>
 
                 <div class="input-container">
@@ -761,11 +760,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
     <script src="../../assets/js/framework.js"></script>
     <script>
-    
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate1");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -781,10 +779,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate2");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -800,10 +798,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate3");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -821,62 +819,62 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = ""; // track which plate was clicked
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("#ticketTable tbody tr");
+            let selectedStatus = ""; // track which plate was clicked
 
-    // Function to filter table based on status and search
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
+            // Function to filter table based on status and search
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
 
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute("data-status");
-            const rowText = row.textContent.toLowerCase();
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+                    const rowText = row.textContent.toLowerCase();
 
-            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-            const isSearchMatch = rowText.includes(searchTerm);
+                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+                    const isSearchMatch = rowText.includes(searchTerm);
 
-            if (isStatusMatch && isSearchMatch) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
+                    if (isStatusMatch && isSearchMatch) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
             }
+
+            // Handle typing in search bar
+            searchInput.addEventListener("input", function() {
+                filterTable();
+            });
         });
-    }
-
-    // Handle typing in search bar
-    searchInput.addEventListener("input", function () {
-        filterTable();
-    });
-});
 
 
 
-document.addEventListener("DOMContentLoaded", function() {
-             const searchInput = document.querySelector(".search-input");
-             const filterButton = document.querySelector(".filter-btn");
-             const table = document.querySelector("#ticketTable tbody");
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.querySelector(".search-input");
+            const filterButton = document.querySelector(".filter-btn");
+            const table = document.querySelector("#ticketTable tbody");
 
-             // Search functionality
-             searchInput.addEventListener("keyup", function() {
-                 const filter = searchInput.value.toLowerCase();
-                 const rows = table.getElementsByTagName("tr");
+            // Search functionality
+            searchInput.addEventListener("keyup", function() {
+                const filter = searchInput.value.toLowerCase();
+                const rows = table.getElementsByTagName("tr");
 
-                 for (let i = 0; i < rows.length; i++) {
-                     const cells = rows[i].getElementsByTagName("td");
-                     let found = false;
+                for (let i = 0; i < rows.length; i++) {
+                    const cells = rows[i].getElementsByTagName("td");
+                    let found = false;
 
-                     for (let j = 0; j < cells.length; j++) {
-                         if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-                             found = true;
-                             break;
-                         }
-                     }
+                    for (let j = 0; j < cells.length; j++) {
+                        if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
+                            found = true;
+                            break;
+                        }
+                    }
 
-                     rows[i].style.display = found ? "" : "none";
-                 }
-             });
+                    rows[i].style.display = found ? "" : "none";
+                }
+            });
 
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
