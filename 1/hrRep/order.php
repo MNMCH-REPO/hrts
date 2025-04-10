@@ -95,7 +95,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </div>
 
                 <div class="search-container">
-                    <input type="text" id="searchInput"placeholder="SEARCH..." class="search-input">
+                    <input type="text" placeholder="SEARCH..." class="search-input">
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
@@ -119,14 +119,13 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
-                            <th>Start At <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+                                <tr>
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
@@ -137,7 +136,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                                    <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -150,6 +148,9 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 </table>
             </div>
+
+
+
         </div>
 
 
@@ -284,232 +285,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-    <!-- Modal -->
-    <div id="editStatusModal" class="modal">
-        <div class="modal-content">
-            <h1 class="modal-title">ASSIGN TICKET</h1>
-
-            <form id="editStatusForm" method="POST">
-                <div class="input-container">
-                    <h1><strong>Ticket ID:</strong></h1>
-                    <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Employee Name:</strong></h1>
-                    <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Subject:</strong></h1>
-                    <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Category:</strong></h1>
-                    <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Description:</strong></h1>
-                    <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Priority:</strong></h1>
-                    <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
-                    </select>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Assigned To:</strong></h1>
-                    <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
-                    </select>
-                </div>
-
-
-                <br>
-
-                <div class="input-container">
-                    <select name="statusEdit" id="statusEditID" required>
-                        <!-- Loop through all statuses and set the selected option -->
-                        <?php foreach ($ticketStatus as $status): ?>
-                            <option value="<?= htmlspecialchars($status['status']) ?>"
-                                <?= ($status['status'] == $currentStatus) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($status['status']) ?>
-                            </option>
-                        <?php endforeach; ?>
-
-                        <!-- Add 'Resolved' option only if it's not already in $ticketStatus -->
-                        <?php if (!in_array('Resolved', array_column($ticketStatus, 'status'))): ?>
-                            <option value="Resolved" <?= ('Resolved' == $currentStatus) ? 'selected' : '' ?>>Resolved</option>
-                        <?php endif; ?>
-                    </select>
-                </div>
-
-                <div class="btnContainer">
-                    <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
-                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const tableRows = document.querySelectorAll("tbody tr");
-    const confirmModal = document.getElementById("confirmModal");
-    const editStatusModal = document.getElementById("editStatusModal");
-
-    // Modal fields for confirmModal
-    const confirmModalFields = {
-        ticketIdField: document.getElementById("confirmTicketID"),
-        employeeNameField: document.getElementById("confirmemployeeID"),
-        departmentField: document.getElementById("confirmdepartmentID"),
-        subjectField: document.getElementById("confirmsubjectID"),
-        categoryField: document.getElementById("confirmcategoryID"),
-        descriptionField: document.getElementById("confirmdescriptionID"),
-        priorityField: document.getElementById("confirmpriorityID"),
-        assignedToField: document.getElementById("confirmassignedID"),
-        statusField: document.getElementById("confirmStatusID"),
-    };
-
-    // Modal fields for editStatusModal
-    const editStatusFields = {
-        ticketIdField: document.getElementById("editTicketID"),
-        employeeNameField: document.getElementById("editemployeeID"),
-        departmentField: document.getElementById("editdepartmentID"),
-        subjectField: document.getElementById("editsubjectID"),
-        categoryField: document.getElementById("editcategoryID"),
-        descriptionField: document.getElementById("editdescriptionID"),
-        priorityField: document.getElementById("editpriorityID"),
-        assignedToField: document.getElementById("editassignedID"),
-        statusSelect: document.getElementById("statusEditID"),
-    };
-
-    // Add click event listener to each row
-    tableRows.forEach((row) => {
-        row.addEventListener("click", function () {
-            // Remove highlight from all rows
-            tableRows.forEach((r) => (r.style.backgroundColor = ""));
-
-            // Highlight the clicked row
-            this.style.backgroundColor = "var(--primary-500)";
-
-            // Get the values from the clicked row
-            const ticketId = this.children[0].textContent.trim();
-            const employeeName = this.children[1].textContent.trim();
-            const department = this.children[2].textContent.trim();
-            const subject = this.children[3].textContent.trim();
-            const description = this.children[4].textContent.trim();
-            const status = this.children[5].textContent.trim(); // Status column
-            const priority = this.children[6].textContent.trim();
-            const category = this.children[7].textContent.trim();
-            const assignedTo = this.children[8].textContent.trim();
-
-            // Open the appropriate modal based on the status
-            if (status === "Open") {
-                // Set the values in the confirmModal
-                confirmModalFields.ticketIdField.textContent = ticketId;
-                confirmModalFields.employeeNameField.textContent = employeeName;
-                confirmModalFields.departmentField.textContent = department;
-                confirmModalFields.subjectField.textContent = subject;
-                confirmModalFields.categoryField.textContent = category;
-                confirmModalFields.descriptionField.textContent = description;
-                confirmModalFields.priorityField.textContent = priority;
-                confirmModalFields.assignedToField.textContent = assignedTo;
-                confirmModalFields.statusField.textContent = status;
-
-                // Open the confirmModal
-                confirmModal.style.display = "flex";
-            } else if (status === "In Progress") {
-                // Set the values in the editStatusModal
-                editStatusFields.ticketIdField.textContent = ticketId;
-                editStatusFields.employeeNameField.textContent = employeeName;
-                editStatusFields.departmentField.textContent = department;
-                editStatusFields.subjectField.textContent = subject;
-                editStatusFields.categoryField.textContent = category;
-                editStatusFields.descriptionField.textContent = description;
-                editStatusFields.priorityField.textContent = priority;
-                editStatusFields.assignedToField.textContent = assignedTo;
-
-                // Open the editStatusModal
-                editStatusModal.style.display = "flex";
-            }
-        });
-    });
-
-    // Close the modals when clicking outside of them
-    window.addEventListener("click", function (event) {
-        if (event.target === confirmModal) {
-            confirmModal.style.display = "none";
-        }
-        if (event.target === editStatusModal) {
-            editStatusModal.style.display = "none";
-        }
-    });
-
-    // Close the modals when clicking the "BACK" button
-    const closeConfirmModalButton = confirmModal.querySelector(".btnDanger");
-    const closeEditModalButton = editStatusModal.querySelector(".btnDanger");
-
-    closeConfirmModalButton.addEventListener("click", function () {
-        confirmModal.style.display = "none";
-    });
-
-    closeEditModalButton.addEventListener("click", function () {
-        editStatusModal.style.display = "none";
-    });
-
-    // Handle the editStatusForm submission
-    const editStatusForm = document.getElementById("editStatusForm");
-
-    editStatusForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        // Get form data
-        const ticketId = document.getElementById("editTicketID").textContent.trim();
-        const status = document.getElementById("statusEditID").value;
-
-        // Validate form data
-        if (!ticketId || !status) {
-            alert("All fields are required.");
-            return;
-        }
-
-        // Prepare the data to send
-        const formData = new FormData();
-        formData.append("ticketId", ticketId);
-        formData.append("statusEdit", status);
-
-        try {
-            // Send the AJAX request
-            const response = await fetch("../../0/includes/editStatusTicket.php", {
-                method: "POST",
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert(data.message); // Show success message
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                alert(data.message); // Show error message
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-            alert("An error occurred while updating the status. Please try again.");
-        }
-    });
-});
-</script>
 
 
 
@@ -517,8 +292,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </div>
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
-
-    
 </body>
 
 </html>
