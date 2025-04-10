@@ -850,7 +850,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         });
 
 
-AAAAAAAAAAAAAA
+
         document.addEventListener("DOMContentLoaded", function() {
             const searchInput = document.querySelector(".search-input");
             const filterButton = document.querySelector(".filter-btn");
