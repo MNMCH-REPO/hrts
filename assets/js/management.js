@@ -1,4 +1,91 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector(".search-input");
+    const filterButton = document.querySelector(".filter-btn");
+    const rows = document.querySelectorAll("table tbody tr");
+    let selectedColumn = null;
+
+    function filterTable(filterValue) {
+        rows.forEach(row => {
+            const cellText = row.cells[selectedColumn]?.textContent.toLowerCase() || "";
+            row.style.display = cellText.includes(filterValue.toLowerCase()) ? "" : "none";
+        });
+    }
+
+    // Filter dropdown functionality
+    if (filterButton) {
+        filterButton.addEventListener("click", function () {
+            // Create a dropdown menu dynamically
+            let dropdown = document.querySelector(".filter-dropdown");
+            if (!dropdown) {
+                dropdown = document.createElement("div");
+                dropdown.classList.add("filter-dropdown");
+                dropdown.style.position = "absolute";
+                dropdown.style.backgroundColor = "#fff";
+                dropdown.style.border = "1px solid #ccc";
+                dropdown.style.padding = "10px";
+                dropdown.style.zIndex = "1000";
+
+                // Add filter options
+                const filters = [
+                    { column: 5, label: "Status" },
+                    { column: 4, label: "Department" },
+                    { column: 3, label: "Role" }
+                ];
+
+                filters.forEach(filter => {
+                    const option = document.createElement("div");
+                    option.textContent = filter.label;
+                    option.style.cursor = "pointer";
+                    option.style.padding = "5px 10px";
+                    option.addEventListener("click", function () {
+                        selectedColumn = filter.column;
+
+                        // Show a prompt to input the filter value
+                        const filterValue = prompt(`Enter the value to filter by for ${filter.label}:`);
+                        if (filterValue) {
+                            filterTable(filterValue); // Apply the filter
+                        }
+
+                        dropdown.remove(); // Remove dropdown after selection
+                    });
+                    dropdown.appendChild(option);
+                });
+
+                document.body.appendChild(dropdown);
+
+                // Position the dropdown below the filter button
+                const rect = filterButton.getBoundingClientRect();
+                dropdown.style.left = `${rect.left}px`;
+                dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+
+                // Close dropdown when clicking outside
+                document.addEventListener("click", function closeDropdown(event) {
+                    if (!dropdown.contains(event.target) && event.target !== filterButton) {
+                        dropdown.remove();
+                        document.removeEventListener("click", closeDropdown);
+                    }
+                });
+            }
+        });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
     // Shared variables
     const tableRows = document.querySelectorAll(".tableContainer tbody tr");
     const editButton = document.getElementById("editAccountID");
@@ -271,6 +358,7 @@ document
     });
 
 
+    // Close modal when clicking the close button
     document.addEventListener("DOMContentLoaded", function () {
         // Function to hide parent element when close button is clicked
         function setupCloseButtons() {
@@ -288,4 +376,56 @@ document
     
         // Initialize the close button functionality
         setupCloseButtons();
+    });
+
+
+
+    //this is reset  modal
+    document.addEventListener("DOMContentLoaded", function () {
+        const resetPasswordButton = document.getElementById("resetPasswordID");
+        const resetPasswordModal = document.getElementById("resetPasswordModal");
+        const resetAccountName = document.getElementById("resetAccountName");
+        const idResetHidden = document.getElementById("idResetHidden");
+
+        // Open Reset Password Modal
+        resetPasswordButton.addEventListener("click", function () {
+            const employeeName = document.getElementById("employeeEditName").value; // Get the name from the Edit Account form
+            const employeeId = document.getElementById("idhidden").value; // Get the ID from the hidden input
+    
+            // Populate the modal with the account details
+            resetAccountName.textContent = employeeName;
+            idResetHidden.value = employeeId;
+    
+            // Show the modal
+            resetPasswordModal.style.display = "flex";
+        });
+    
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const resetPasswordForm = document.getElementById("resetPasswordForm");
+        const resetPasswordModal = document.getElementById("resetPasswordModal");
+    
+        // Handle Reset Password Form Submission
+        resetPasswordForm.addEventListener("submit", function (e) {
+            e.preventDefault(); // Prevent default form submission
+    
+            const formData = new FormData(this); // Collect form data
+    
+            fetch("../../0/includes/resetPasswordManagement.php", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        resetPasswordModal.style.display = "none"; // Close the modal
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert("Error: " + data.message); // Show error message
+                    }
+                })
+                .catch((error) => console.error("❌ Fetch Error:", error));
+        });
     });

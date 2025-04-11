@@ -5,6 +5,7 @@
     min-height: 90vh;
     margin: 5% 0 0 260px;
     align-self: center;
+    overflow-x: hidden;
 }
 
 /* table */

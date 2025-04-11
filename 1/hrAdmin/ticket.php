@@ -414,7 +414,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             </div>
 
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
 
             </div>
@@ -866,30 +866,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <script>
     
         document.addEventListener("DOMContentLoaded", function() {
-            // const searchInput = document.querySelector(".search-input");
-            // const filterButton = document.querySelector(".filter-btn");
-            // const table = document.querySelector("#ticketTable tbody");
-
-            // // Search functionality
-            // searchInput.addEventListener("keyup", function() {
-            //     const filter = searchInput.value.toLowerCase();
-            //     const rows = table.getElementsByTagName("tr");
-
-            //     for (let i = 0; i < rows.length; i++) {
-            //         const cells = rows[i].getElementsByTagName("td");
-            //         let found = false;
-
-            //         for (let j = 0; j < cells.length; j++) {
-            //             if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-            //                 found = true;
-            //                 break;
-            //             }
-            //         }
-
-            //         rows[i].style.display = found ? "" : "none";
-            //     }
-            // });
-
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
                 // Create a dropdown menu dynamically

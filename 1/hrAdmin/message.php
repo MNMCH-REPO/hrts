@@ -47,7 +47,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
