@@ -73,13 +73,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
                 </div>
 
-                <div class="col plate" id="plate4">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Create Ticket</div>
-                        <div class="plateValue"></div>
-                    </div>
-                </div>
+
             </div>
 
 
@@ -226,68 +220,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        <!-- Modal -->
-        <div id="addTicketModal" class="modal">
-            <div class="modal-content">
-                <h1 class="modal-title">TICKET FORM</h1>
-
-                <form id="ticketForm">
-
-                    <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
-                    <div class="input-container">
-                        <input type="text" name="employeeID" value="<?= $_SESSION['user_id'] ?>" id="employeeID" readonly>
-                        <label for="employeeID">Employee ID</label>
-                    </div>
-
-                    <div class="input-container">
-                        <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
-                        <label for="employeeName">Employee Name</label>
-                    </div>
-
-                    <div class="input-container">
-                        <input type="text" id="subject" name="subject" required>
-                        <label for="subject">Subject</label>
-                    </div>
-
-                    <div class="input-container">
-                        <input type="text" name="department" value="<?= $_SESSION['department'] ?>" id="departmentInputField" readonly>
-                        <label for="department">Department</label>
-                    </div>
-
-                    <div class="input-container">
-                        <select id="category" name="category" required>
-                            <option value="" disabled selected>Select a category</option>
-                            <?php
-                            require "../../0/includes/db.php"; // Ensure correct database connection
-
-                            try {
-                                $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value='{$row['id']}'>{$row['name']}</option>";
-                                }
-                            } catch (PDOException $e) {
-                                echo "<option disabled>Error loading categories</option>";
-                            }
-                            ?>
-                        </select>
-                        <label for="category">Category</label>
-                    </div>
-
-
-                    <div class="input-container">
-                        <textarea id="description" name="description" required></textarea>
-                        <label for="description">Description</label>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
+        
         <!-- Modal -->
         <div id="editStatusModal" class="modal">
             <div class="modal-content">
@@ -358,56 +291,56 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/hrRepOrder.js"></script>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const editStatusForm = document.getElementById("editStatusForm");
+        document.addEventListener("DOMContentLoaded", function() {
+            const editStatusForm = document.getElementById("editStatusForm");
 
-    editStatusForm.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent the default form submission
+            editStatusForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
 
-        // Get form data
-        const ticketId = document.getElementById("editTicketID").textContent.trim();
-        const status = document.getElementById("statusEditID").value;
+                // Get form data
+                const ticketId = document.getElementById("editTicketID").textContent.trim();
+                const status = document.getElementById("statusEditID").value;
 
-        // Validate form data
-        if (!ticketId || !status) {
-            alert("All fields are required.");
-            return;
-        }
+                // Validate form data
+                if (!ticketId || !status) {
+                    alert("All fields are required.");
+                    return;
+                }
 
-        // Prepare the data to send
-        const formData = new FormData();
-        formData.append("ticketId", ticketId);
-        formData.append("statusEdit", status);
+                // Prepare the data to send
+                const formData = new FormData();
+                formData.append("ticketId", ticketId);
+                formData.append("statusEdit", status);
 
-        try {
-            // Send the AJAX request
-            const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-                method: "POST",
-                body: formData,
+                try {
+                    // Send the AJAX request
+                    const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    // Parse the JSON response
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                    alert("An error occurred while updating the status. Please try again.");
+                }
             });
-
-            // Parse the JSON response
-            const data = await response.json();
-
-            if (data.success) {
-                alert(data.message); // Show success message
-                location.reload(); // Reload the page to reflect changes
-            } else {
-                alert(data.message); // Show error message
-            }
-        } catch (error) {
-            console.error("Error updating status:", error);
-            alert("An error occurred while updating the status. Please try again.");
-        }
-    });
-});
+        });
     </script>
 
-<script>
-        document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate1");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -423,10 +356,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate2");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -442,10 +375,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate3");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -463,47 +396,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = "";
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("#ticketTable tbody tr");
+            let selectedStatus = "";
 
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
 
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute("data-status");
-            const rowText = row.textContent.toLowerCase();
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+                    const rowText = row.textContent.toLowerCase();
 
-            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-            const isSearchMatch = rowText.includes(searchTerm);
+                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+                    const isSearchMatch = rowText.includes(searchTerm);
 
-            if (isStatusMatch && isSearchMatch) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
+                    if (isStatusMatch && isSearchMatch) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
             }
-        });
-    }
 
 
-    const plateIDs = ["plate1", "plate2", "plate3"];
-    plateIDs.forEach(id => {
-        const plate = document.getElementById(id);
-        if (plate) {
-            plate.addEventListener("click", function () {
-                selectedStatus = this.getAttribute("data-status");
-                searchInput.value = "";
+            const plateIDs = ["plate1", "plate2", "plate3"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        selectedStatus = this.getAttribute("data-status");
+                        searchInput.value = "";
+                        filterTable();
+                    });
+                }
+            });
+
+            searchInput.addEventListener("input", function() {
                 filterTable();
             });
-        }
-    });
-
-    searchInput.addEventListener("input", function () {
-        filterTable();
-    });
-});
-</script>
+        });
+    </script>
 </body>
 
 </html>
