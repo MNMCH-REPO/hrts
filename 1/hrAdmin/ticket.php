@@ -397,7 +397,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
                 <a href="dashboard.php">Dashboard</a>
             </div>
             <div class="navBtn">
