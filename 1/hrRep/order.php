@@ -99,7 +99,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </div>
 
                 <div class="search-container">
-                    <input type="text" placeholder="SEARCH..." class="search-input">
+                    <input type="text" id="searchInput" placeholder="SEARCH..." class="search-input">
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
@@ -129,7 +129,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr>
+                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
@@ -402,6 +402,108 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
     </script>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate1");
+
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate2");
+
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const plate = document.getElementById("plate3");
+
+            plate.addEventListener("click", function () {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const rows = document.querySelectorAll("#ticketTable tbody tr");
+    let selectedStatus = "";
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute("data-status");
+            const rowText = row.textContent.toLowerCase();
+
+            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+            const isSearchMatch = rowText.includes(searchTerm);
+
+            if (isStatusMatch && isSearchMatch) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+
+    const plateIDs = ["plate1", "plate2", "plate3"];
+    plateIDs.forEach(id => {
+        const plate = document.getElementById(id);
+        if (plate) {
+            plate.addEventListener("click", function () {
+                selectedStatus = this.getAttribute("data-status");
+                searchInput.value = "";
+                filterTable();
+            });
+        }
+    });
+
+    searchInput.addEventListener("input", function () {
+        filterTable();
+    });
+});
+</script>
 </body>
 
 </html>
