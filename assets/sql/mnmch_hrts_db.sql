@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 08:40 AM
+-- Generation Time: Apr 13, 2025 at 07:53 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,9 +30,18 @@ SET time_zone = "+00:00";
 CREATE TABLE `attachments` (
   `id` int(11) NOT NULL,
   `ticket_id` int(11) NOT NULL,
+  `uploaded_by` int(11) DEFAULT NULL,
   `file_path` varchar(255) NOT NULL,
+  `file_name` varchar(255) NOT NULL,
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `attachments`
+--
+
+INSERT INTO `attachments` (`id`, `ticket_id`, `uploaded_by`, `file_path`, `file_name`, `uploaded_at`) VALUES
+(1, 1, 1500, 'assets/uploads/folder.png', 'folder.png', '2025-04-13 05:36:34');
 
 -- --------------------------------------------------------
 
@@ -179,7 +188,109 @@ INSERT INTO `audit_trail` (`id`, `action_type`, `affected_table`, `affected_id`,
 (124, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-09 21:56:50'),
 (125, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 03:57:08'),
 (126, 'CREATE', 'tickets', 24, 'Created ticket: Subject=tang ina mo monde, Category=7, Description=tang ina mo mico', 1500, '2025-04-09 21:59:22'),
-(127, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 05:34:26');
+(127, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 05:34:26'),
+(128, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 07:05:48'),
+(129, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 01:14:34'),
+(130, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 07:14:37'),
+(131, 'ASSIGN', 'tickets', 20, 'Assigned ticket ID 20 to user ID 1500 with priority Low.', 1, '2025-04-10 01:14:58'),
+(132, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 01:15:11'),
+(133, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 07:15:22'),
+(134, 'CONFIRM', 'tickets', 20, 'Confirmed ticket ID 20 and updated status to \"In Progress\".', 1500, '2025-04-10 01:15:35'),
+(135, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 02:46:47'),
+(136, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 08:46:52'),
+(137, 'UPDATE', 'tickets', 20, 'Updated ticket ID 20 status to Resolved.', 1, '2025-04-10 02:57:07'),
+(138, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 02:57:17'),
+(139, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 08:57:26'),
+(140, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 02:59:24'),
+(141, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 08:59:29'),
+(142, 'ASSIGN', 'tickets', 19, 'Assigned ticket ID 19 to user ID 1500 with priority Low.', 1, '2025-04-10 02:59:57'),
+(143, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:00:02'),
+(144, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 09:00:15'),
+(145, 'CONFIRM', 'tickets', 19, 'Confirmed ticket ID 19 and updated status to \"In Progress\".', 1500, '2025-04-10 03:00:21'),
+(146, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 03:00:26'),
+(147, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 09:00:31'),
+(148, 'UPDATE', 'tickets', 19, 'Updated ticket ID 19 status to Resolved.', 1, '2025-04-10 03:03:59'),
+(149, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:04:07'),
+(150, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 09:04:13'),
+(151, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:04:15'),
+(152, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 09:04:23'),
+(153, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 03:07:13'),
+(154, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 09:07:18'),
+(155, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:07:42'),
+(156, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 09:07:53'),
+(157, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 03:32:39'),
+(158, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 09:32:44'),
+(159, 'ASSIGN', 'tickets', 1, 'Assigned ticket ID 1 to user ID 1500 with priority High.', 1, '2025-04-10 03:33:03'),
+(160, 'ASSIGN', 'tickets', 17, 'Assigned ticket ID 17 to user ID 1500 with priority Low.', 1, '2025-04-10 03:33:16'),
+(161, 'ASSIGN', 'tickets', 16, 'Assigned ticket ID 16 to user ID 1500 with priority Medium.', 1, '2025-04-10 03:33:29'),
+(162, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:33:34'),
+(163, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 09:33:46'),
+(164, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 03:37:06'),
+(165, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 09:37:09'),
+(166, 'ASSIGN', 'tickets', 18, 'Assigned ticket ID 18 to user ID 1500 with priority Low.', 1, '2025-04-10 03:38:23'),
+(167, 'ASSIGN', 'tickets', 10, 'Assigned ticket ID 10 to user ID 1500 with priority High.', 1, '2025-04-10 03:38:51'),
+(168, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 03:39:00'),
+(169, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 09:39:10'),
+(170, 'CONFIRM', 'tickets', 16, 'Confirmed ticket ID 16 and updated status to \"In Progress\".', 1500, '2025-04-10 06:18:43'),
+(171, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 12:23:27'),
+(172, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 07:05:05'),
+(173, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-10 13:05:09'),
+(174, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 07:07:01'),
+(175, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-10 13:07:08'),
+(176, 'LOGIN', 'users', 2, 'User ID 2 logged in successfully.', 2, '2025-04-11 00:49:58'),
+(177, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 02:06:53'),
+(178, 'UPDATE', 'users', 5, 'Updated user details: Name=dave, Email=dave@example.com, Role=Employee, Department=HMO DEPARTMENT', 1, '2025-04-10 21:01:51'),
+(179, 'UPDATE', 'users', 10, 'Updated user details: Name=iris, Email=iris@example.com, Role=Employee, Department=MIS/IT DEPARTMENT', 1, '2025-04-10 21:03:14'),
+(180, 'UPDATE', 'users', 1201, 'Updated user details: Name=Charity Lizardo, Email=cha@gmail.com, Role=Employee, Department=EYE CENTER DEPARTMENT', 1, '2025-04-10 21:03:30'),
+(181, 'UPDATE', 'users', 6, 'Updated user details: Name=eva, Email=eva@example.com, Role=Employee, Department=REHAB DEPARTMENT', 1, '2025-04-10 21:12:48'),
+(182, 'PASSWORD_RESET', 'users', 6, 'Password for User ID 6 was reset to a blank password.', 1, '2025-04-10 21:24:20'),
+(183, 'PASSWORD_RESET', 'users', 1799, 'Password for User ID 1799 was reset to a blank password.', 1, '2025-04-10 21:24:56'),
+(184, 'PASSWORD_RESET', 'users', 3001, 'Password for User ID 3001 was reset to a blank password.', 1, '2025-04-10 21:25:05'),
+(185, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 05:20:31'),
+(186, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-10 23:32:37'),
+(187, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 05:32:49'),
+(188, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-10 23:33:06'),
+(189, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 05:33:11'),
+(190, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 06:42:20'),
+(191, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-11 00:58:18'),
+(192, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 06:58:39'),
+(193, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-11 01:24:13'),
+(194, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 07:24:21'),
+(195, 'ASSIGN', 'tickets', 24, 'Assigned ticket ID 24 to user ID 7 with priority Low.', 1, '2025-04-11 01:24:35'),
+(196, 'ASSIGN', 'tickets', 22, 'Assigned ticket ID 22 to user ID 8 with priority Medium.', 1, '2025-04-11 01:24:50'),
+(197, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-11 01:24:55'),
+(198, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 07:25:03'),
+(199, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-11 01:25:20'),
+(200, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 07:25:25'),
+(201, 'ASSIGN', 'tickets', 24, 'Assigned ticket ID 24 to user ID 2 with priority Low.', 1, '2025-04-11 01:25:48'),
+(202, 'ASSIGN', 'tickets', 23, 'Assigned ticket ID 23 to user ID 2 with priority Low.', 1, '2025-04-11 01:25:58'),
+(203, 'ASSIGN', 'tickets', 21, 'Assigned ticket ID 21 to user ID 1500 with priority Low.', 1, '2025-04-11 01:26:05'),
+(204, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-11 01:26:09'),
+(205, 'LOGIN', 'users', 2, 'User ID 2 logged in successfully.', 2, '2025-04-11 07:26:28'),
+(206, 'CONFIRM', 'tickets', 23, 'Confirmed ticket ID 23 and updated status to \"In Progress\".', 2, '2025-04-11 01:26:35'),
+(207, 'LOGOUT', 'users', 2, 'User ID 2 logged out successfully.', 2, '2025-04-11 01:27:05'),
+(208, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 07:27:13'),
+(209, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-11 01:38:50'),
+(210, 'LOGIN', 'users', 2, 'User ID 2 logged in successfully.', 2, '2025-04-11 07:39:02'),
+(211, 'LOGOUT', 'users', 2, 'User ID 2 logged out successfully.', 2, '2025-04-11 01:52:50'),
+(212, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 07:53:04'),
+(213, 'CONFIRM', 'tickets', 18, 'Confirmed ticket ID 18 and updated status to \"In Progress\".', 1500, '2025-04-11 01:53:14'),
+(214, 'UPDATE', 'tickets', 1, 'Updated ticket ID 1 status to Resolved.', 1500, '2025-04-11 01:53:32'),
+(215, 'INSERT', 'ticket_responses', 16, 'Added response to ticket ID 1: add.png', 1500, '2025-04-11 02:06:07'),
+(216, 'INSERT', 'ticket_responses', 17, 'Added response to ticket ID 9: sdasdasas', 1500, '2025-04-11 02:08:28'),
+(217, 'INSERT', 'ticket_responses', 18, 'Added response to ticket ID 1: QWERTUISDF SODF SDFO SIDFSODIF @#$@!#$@)ER)_DFS$Q@#_)$!@_#$!@_$', 1500, '2025-04-11 02:11:20'),
+(218, 'LOGOUT', 'users', 1500, 'User ID 1500 logged out successfully.', 1500, '2025-04-11 02:20:59'),
+(219, 'LOGIN', 'users', 1, 'User ID 1 logged in successfully.', 1, '2025-04-11 08:21:05'),
+(220, 'LOGOUT', 'users', 1, 'User ID 1 logged out successfully.', 1, '2025-04-11 02:27:10'),
+(221, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-11 08:27:18'),
+(222, 'INSERT', 'ticket_responses', 19, 'Added response to ticket ID 1: adjashdoasd a', 1500, '2025-04-11 02:27:50'),
+(223, 'INSERT', 'ticket_responses', 20, 'Added response to ticket ID 1: AGAGAGAGAGDALSD JASOPIDUASOPID', 1500, '2025-04-11 02:35:36'),
+(224, 'INSERT', 'ticket_responses', 21, 'Added response to ticket ID 23: asdasdasd', 1500, '2025-04-11 02:38:44'),
+(232, 'INSERT', 'ticket_responses', 29, 'Added response to ticket ID 1: asdasdasdadasdasdasdasd oaiushd aodsh aods juasdop asd', 1500, '2025-04-12 21:12:29'),
+(234, 'LOGIN', 'users', 1500, 'User ID 1500 logged in successfully.', 1500, '2025-04-13 05:23:36'),
+(235, 'INSERT', 'attachments', 1, 'Added attachment to ticket ID 1: assets/uploads/folder.png', 1500, '2025-04-12 23:36:34'),
+(236, 'INSERT', 'ticket_responses', 31, 'Added response to ticket ID 1: adasdsadasdasda', 1500, '2025-04-12 23:36:34'),
+(237, 'INSERT', 'ticket_responses', 32, 'Added response to ticket ID 24: tangi na', 1500, '2025-04-12 23:36:51');
 
 -- --------------------------------------------------------
 
@@ -197,16 +308,11 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `name`) VALUES
-(1, 'IT Support'),
-(2, 'HR Issues'),
-(3, 'Billing Queries'),
-(4, 'Employee Relations'),
-(5, 'Technical Support'),
-(6, 'Payroll'),
-(7, 'Leave Management'),
-(8, 'Office Equipment'),
-(9, 'Training and Development'),
-(10, 'Health and Safety');
+(1, 'Printer'),
+(2, 'Internet'),
+(3, 'Bizbox'),
+(4, 'PC Hardware'),
+(5, 'Other Request');
 
 -- --------------------------------------------------------
 
@@ -224,6 +330,7 @@ CREATE TABLE `tickets` (
   `category_id` int(11) NOT NULL,
   `assigned_to` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `start_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -231,29 +338,29 @@ CREATE TABLE `tickets` (
 -- Dumping data for table `tickets`
 --
 
-INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, `priority`, `category_id`, `assigned_to`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Issue with IT support', 'The employee cannot access their work computer.', 'Open', 'High', 1, NULL, '2025-04-08 07:05:34', NULL),
-(2, 2, 'HR issue regarding leaves', 'The employee has trouble applying for leaves.', 'In Progress', 'Medium', 2, 2, '2025-04-04 12:45:02', NULL),
-(4, 1200, 'Employee Relations concern', 'The employee raised an issue with a colleague.', 'Open', 'Low', 4, 2, '2025-03-12 04:15:00', NULL),
-(5, 5, 'Technical issue with the software', 'The employee is unable to run the latest software update.', 'Open', 'Low', 5, 1731, '2025-03-12 04:20:00', NULL),
-(6, 6, 'Payroll error', 'The payroll for last month was incorrect.', 'In Progress', 'Medium', 6, 1, '2025-03-12 04:25:00', NULL),
-(8, 8, 'Office Equipment malfunction', 'The printer is not working in the office.', 'Resolved', 'Low', 8, NULL, '2025-03-12 04:35:00', NULL),
-(9, 1500, 'Training request', 'The employee needs a training session on new software.', 'Open', 'Low', 9, NULL, '2025-03-12 04:40:00', NULL),
-(10, 10, 'Health and Safety concern', 'There is a potential safety issue in the office building.', 'Open', 'High', 10, NULL, '2025-04-04 12:40:00', NULL),
-(11, 2, 'Printer', 'something crazy shit', 'Open', 'Low', 5, 2, '2025-03-25 18:31:42', NULL),
-(12, 2, 'HR Sample', 'HR Text sample', 'Open', 'Low', 2, 2, '2025-04-04 10:20:10', NULL),
-(13, 2, 'Test', 'TExt', 'Open', 'Low', 6, 2, '2025-04-04 10:23:11', NULL),
-(14, 2, '123', '123', 'Open', 'Low', 1, 2, '2025-04-04 10:25:58', NULL),
-(15, 2, 'Printer', 'sample lans 123', 'In Progress', 'Medium', 6, 1799, '2025-04-08 02:45:34', NULL),
-(16, 2, 'Printer', 'sample lans 123', 'Open', 'Low', 6, NULL, '2025-04-08 02:47:27', NULL),
-(17, 2, '123123', '123123', 'Open', 'Low', 8, NULL, '2025-04-08 02:49:12', NULL),
-(18, 2, 'asdasdsad', 'asdasdasdasd', 'Open', 'Low', 8, NULL, '2025-04-08 02:51:09', NULL),
-(19, 2, 'asampel as asdia', 'ajkdashdlkajd', 'Open', 'Low', 2, NULL, '2025-04-09 10:10:30', NULL),
-(20, 1, 'adadaa', 'adjadasda', 'Open', 'Low', 8, NULL, '2025-04-10 01:15:43', NULL),
-(21, 1500, 'ADASDASDAS', 'ASDASDADS', 'Open', 'Low', 8, NULL, '2025-04-10 03:33:14', NULL),
-(22, 1500, 'asdasdaa', 'sdasasd', 'Open', 'Low', 10, NULL, '2025-04-10 03:43:19', NULL),
-(23, 1500, 'aggagaagaga', 'asdjkujahsdsadadas', 'Open', 'Low', 6, NULL, '2025-04-10 03:47:12', NULL),
-(24, 1500, 'tang ina mo monde', 'tang ina mo mico', 'Open', 'Low', 7, NULL, '2025-04-10 03:59:22', NULL);
+INSERT INTO `tickets` (`id`, `employee_id`, `subject`, `description`, `status`, `priority`, `category_id`, `assigned_to`, `created_at`, `start_at`, `updated_at`) VALUES
+(1, 1, 'Issue with IT support', 'The employee cannot access their work computer.', 'Resolved', 'High', 1, 1500, '2025-04-08 07:05:34', NULL, '2025-04-11 07:53:32'),
+(2, 2, 'HR issue regarding leaves', 'The employee has trouble applying for leaves.', 'In Progress', 'Medium', 2, 2, '2025-04-04 12:45:02', NULL, NULL),
+(4, 1200, 'Employee Relations concern', 'The employee raised an issue with a colleague.', 'Open', 'Low', 4, 2, '2025-03-12 04:15:00', NULL, NULL),
+(5, 5, 'Technical issue with the software', 'The employee is unable to run the latest software update.', 'Open', 'Low', 5, 1731, '2025-03-12 04:20:00', NULL, NULL),
+(6, 6, 'Payroll error', 'The payroll for last month was incorrect.', 'In Progress', 'Medium', 6, 1, '2025-03-12 04:25:00', NULL, NULL),
+(8, 8, 'Office Equipment malfunction', 'The printer is not working in the office.', 'Resolved', 'Low', 8, NULL, '2025-03-12 04:35:00', NULL, NULL),
+(9, 1500, 'Training request', 'The employee needs a training session on new software.', 'Open', 'Low', 9, NULL, '2025-03-12 04:40:00', NULL, NULL),
+(10, 10, 'Health and Safety concern', 'There is a potential safety issue in the office building.', 'Open', 'High', 10, 1500, '2025-04-04 12:40:00', NULL, NULL),
+(11, 2, 'Printer', 'something crazy shit', 'Open', 'Low', 5, 2, '2025-03-25 18:31:42', NULL, NULL),
+(12, 2, 'HR Sample', 'HR Text sample', 'Open', 'Low', 2, 2, '2025-04-04 10:20:10', NULL, NULL),
+(13, 2, 'Test', 'TExt', 'Open', 'Low', 6, 2, '2025-04-04 10:23:11', NULL, NULL),
+(14, 2, '123', '123', 'Open', 'Low', 1, 2, '2025-04-04 10:25:58', NULL, NULL),
+(15, 2, 'Printer', 'sample lans 123', 'In Progress', 'Medium', 6, 1799, '2025-04-08 02:45:34', NULL, NULL),
+(16, 2, 'Printer', 'sample lans 123', 'In Progress', 'Medium', 6, 1500, '2025-04-08 02:47:27', '2025-04-10 12:18:43', NULL),
+(17, 2, '123123', '123123', 'In Progress', 'Low', 8, 1500, '2025-04-08 02:49:12', NULL, NULL),
+(18, 2, 'asdasdsad', 'asdasdasdasd', 'In Progress', 'Low', 8, 1500, '2025-04-08 02:51:09', '2025-04-11 07:53:14', NULL),
+(19, 2, 'asampel as asdia', 'ajkdashdlkajd', 'Resolved', 'Low', 2, 1500, '2025-04-09 10:10:30', '2025-04-10 09:00:21', '2025-04-10 09:03:59'),
+(20, 1, 'adadaa', 'adjadasda', 'Resolved', 'Low', 8, 1500, '2025-04-10 01:15:43', '2025-04-10 07:15:35', NULL),
+(21, 1500, 'ADASDASDAS', 'ASDASDADS', 'Open', 'Low', 8, 1500, '2025-04-10 03:33:14', NULL, NULL),
+(22, 1500, 'asdasdaa', 'sdasasd', 'Open', 'Medium', 10, 8, '2025-04-10 03:43:19', NULL, NULL),
+(23, 1500, 'aggagaagaga', 'asdjkujahsdsadadas', 'In Progress', 'Low', 6, 2, '2025-04-10 03:47:12', '2025-04-11 07:26:35', NULL),
+(24, 1500, 'tang ina mo monde', 'tang ina mo mico', 'Open', 'Low', 7, 2, '2025-04-10 03:59:22', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -287,7 +394,16 @@ INSERT INTO `ticket_responses` (`id`, `ticket_id`, `user_id`, `response_text`, `
 (12, 4, 2, 'Hello Carol', '2025-04-06 14:45:35'),
 (13, 2, 2, 'sameple test123', '2025-04-08 02:59:40'),
 (14, 2, 2, 'haksdoasdad asjkdashd;lak', '2025-04-08 03:01:35'),
-(15, 9, 1500, 'hadadasd', '2025-04-09 14:17:26');
+(15, 9, 1500, 'hadadasd', '2025-04-09 14:17:26'),
+(16, 1, 1500, 'add.png', '2025-04-11 08:06:07'),
+(17, 9, 1500, 'sdasdasas', '2025-04-11 08:08:28'),
+(18, 1, 1500, 'QWERTUISDF SODF SDFO SIDFSODIF @#$@!#$@)ER)_DFS$Q@#_)$!@_#$!@_$', '2025-04-11 08:11:20'),
+(19, 1, 1500, 'adjashdoasd a', '2025-04-11 08:27:50'),
+(20, 1, 1500, 'AGAGAGAGAGDALSD JASOPIDUASOPID', '2025-04-11 08:35:36'),
+(21, 23, 1500, 'asdasdasd', '2025-04-11 08:38:44'),
+(29, 1, 1500, 'asdasdasdadasdasdasdasd oaiushd aodsh aods juasdop asd', '2025-04-13 03:12:29'),
+(31, 1, 1500, 'adasdsadasdasda', '2025-04-13 05:36:34'),
+(32, 24, 1500, 'tangi na', '2025-04-13 05:36:51');
 
 -- --------------------------------------------------------
 
@@ -313,19 +429,19 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department`, `status`, `created_at`) VALUES
 (1, 'John Mico D. Intacto', 'mico@gmail.com', '$2y$10$lmXq4CSpHjrEd11Itbnh1eyHR4Qz6XZ7NctSRHPrs9yqjCPSZ0RdW', 'Admin', 'MIS/IT DEPARTMENT', 'Active', '2025-03-12 10:44:00'),
 (2, 'Earl Gerald Domingo', 'earlgerald@gmail.com', '$2y$10$goVTP4El61v39QXFzClRlOwmsf48VELveViYRJ0uW2wcYZ9IlGOja', 'Employee', 'MIS/IT DEPARTMENT', 'Active', '2025-03-12 03:00:00'),
-(5, 'dave', 'dave@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'ER Department', 'Inactive', '2025-03-12 03:15:00'),
-(6, 'eva', 'eva@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'IT Department', 'Active', '2025-03-12 03:20:00'),
+(5, 'dave', 'dave@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'HMO DEPARTMENT', 'Inactive', '2025-03-12 03:15:00'),
+(6, 'eva', 'eva@example.com', '$2y$10$KY3CZ/O1HJXTxNIyu1uqkeJh9wyDjHdFvy5gK0oW2OInLV9ycZMCW', 'Employee', 'REHAB DEPARTMENT', 'Active', '2025-03-12 03:20:00'),
 (7, 'frank', 'frank@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'HR Department', 'Active', '2025-03-12 03:25:00'),
 (8, 'grace', 'grace@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'Billing Department', 'Active', '2025-03-12 03:30:00'),
-(10, 'iris', 'iris@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'HR', 'IT Department', 'Active', '2025-03-12 03:40:00'),
+(10, 'iris', 'iris@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'MIS/IT DEPARTMENT', 'Active', '2025-03-12 03:40:00'),
 (1200, 'carol', 'carol@example.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'INFORMATION DEPARTMENT', 'Active', '2025-03-12 03:10:00'),
-(1201, 'Charity Lizardo', 'cha@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', '', 'EYE CENTER DEPARTMENT', 'Active', '2025-04-07 15:42:56'),
+(1201, 'Charity Lizardo', 'cha@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', 'Employee', 'EYE CENTER DEPARTMENT', 'Active', '2025-04-07 15:42:56'),
 (1234, 'Bonet', 'bonet@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', 'Employee', 'PHARMACY DEPARTMENT', 'Active', '2025-04-07 15:45:07'),
 (1500, 'hank', 'hank@gmail.com', '$2y$10$goVTP4El61v39QXFzClRlOwmsf48VELveViYRJ0uW2wcYZ9IlGOja', 'HR', 'CASHIER DEPARTMENT', 'Active', '2025-03-12 03:35:00'),
 (1730, 'John Paulo Tagubar', 'paulo@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', 'Employee', 'Accounting Department', 'Active', '2025-03-28 03:09:43'),
 (1731, 'Ruzzel Rubien Abdon', 'ruzzel@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', 'Employee', 'Accounting Department', 'Active', '2025-03-29 16:41:42'),
-(1799, 'Dominic RM Daqui', 'dominic@gmail.com', '$2y$10$eOEwFtX3DdSczFsOIZCIoOZuPUtse8agtfwKxeKoWrj1XgyAkuhQW', 'Admin', 'MIS/IT DEPARTMENT', 'Active', '2025-04-07 13:54:32'),
-(3001, 'raymond', 'monde@gmail.com', '$2y$10$vEC5lEMMf.nkav7OMpSRGOZ8k719bVtycRuMzBoQFhQfNxFyPkpp.', 'Employee', 'EMERGENCY ROOM DEPARTMENT', 'Active', '2025-03-12 03:05:00');
+(1799, 'Dominic RM Daqui', 'dominic@gmail.com', '$2y$10$.V7FZHKcPdXh8bPz.G8kYejiPw6Cze7x2nyJw3Zl55dcZ6cLpYBNu', 'Admin', 'MIS/IT DEPARTMENT', 'Active', '2025-04-07 13:54:32'),
+(3001, 'raymond', 'monde@gmail.com', '$2y$10$2d9zCdRszq4V.EbvLo4gh.0m42R3j6aJ8UgOxin5qX.d9pz1bBkiu', 'Employee', 'EMERGENCY ROOM DEPARTMENT', 'Active', '2025-03-12 03:05:00');
 
 --
 -- Indexes for dumped tables
@@ -336,7 +452,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department`, `s
 --
 ALTER TABLE `attachments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `ticket_id` (`ticket_id`);
+  ADD KEY `ticket_id` (`ticket_id`),
+  ADD KEY `uploaded_by_file` (`uploaded_by`);
 
 --
 -- Indexes for table `audit_trail`
@@ -383,13 +500,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `attachments`
 --
 ALTER TABLE `attachments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `audit_trail`
 --
 ALTER TABLE `audit_trail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=238;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -407,7 +524,7 @@ ALTER TABLE `tickets`
 -- AUTO_INCREMENT for table `ticket_responses`
 --
 ALTER TABLE `ticket_responses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- Constraints for dumped tables
@@ -417,7 +534,8 @@ ALTER TABLE `ticket_responses`
 -- Constraints for table `attachments`
 --
 ALTER TABLE `attachments`
-  ADD CONSTRAINT `attachments_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `ticket_responses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `attachments_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `ticket_responses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `uploaded_by_file` FOREIGN KEY (`uploaded_by`) REFERENCES `ticket_responses` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `audit_trail`
@@ -429,16 +547,15 @@ ALTER TABLE `audit_trail`
 -- Constraints for table `tickets`
 --
 ALTER TABLE `tickets`
-  ADD CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `tickets_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `tickets_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `tickets_ibfk_3` FOREIGN KEY (`assigned_to`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `ticket_responses`
 --
 ALTER TABLE `ticket_responses`
-  ADD CONSTRAINT `ticket_responses_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `ticket_responses_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `ticket_responses_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ticket_responses_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

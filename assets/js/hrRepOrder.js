@@ -315,4 +315,154 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+
+
+
+
+  
+        document.addEventListener("DOMContentLoaded", function() {
+            const editStatusForm = document.getElementById("editStatusForm");
+
+            editStatusForm.addEventListener("submit", async function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get form data
+                const ticketId = document.getElementById("editTicketID").textContent.trim();
+                const status = document.getElementById("statusEditID").value;
+
+                // Validate form data
+                if (!ticketId || !status) {
+                    alert("All fields are required.");
+                    return;
+                }
+
+                // Prepare the data to send
+                const formData = new FormData();
+                formData.append("ticketId", ticketId);
+                formData.append("statusEdit", status);
+
+                try {
+                    // Send the AJAX request
+                    const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    // Parse the JSON response
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert(data.message); // Show success message
+                        location.reload(); // Reload the page to reflect changes
+                    } else {
+                        alert(data.message); // Show error message
+                    }
+                } catch (error) {
+                    console.error("Error updating status:", error);
+                    alert("An error occurred while updating the status. Please try again.");
+                }
+            });
+        });
+    
+
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            const plate = document.getElementById("plate1");
+
+            plate.addEventListener("click", function() {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const plate = document.getElementById("plate2");
+
+            plate.addEventListener("click", function() {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const plate = document.getElementById("plate3");
+
+            plate.addEventListener("click", function() {
+                const selectedStatus = this.getAttribute("data-status");
+                const rows = document.querySelectorAll("#ticketTable tbody tr");
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+
+                    if (rowStatus === selectedStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("#ticketTable tbody tr");
+            let selectedStatus = "";
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+                    const rowText = row.textContent.toLowerCase();
+
+                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+                    const isSearchMatch = rowText.includes(searchTerm);
+
+                    if (isStatusMatch && isSearchMatch) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }
+
+
+            const plateIDs = ["plate1", "plate2", "plate3"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        selectedStatus = this.getAttribute("data-status");
+                        searchInput.value = "";
+                        filterTable();
+                    });
+                }
+            });
+
+            searchInput.addEventListener("input", function() {
+                filterTable();
+            });
+        });
   

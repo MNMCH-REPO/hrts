@@ -72,13 +72,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
                     </div>
                 </div>
-
-
             </div>
 
 
             <div class="pagination-wrapper">
-                <div class="pagination">
+                <div class="pagination" id="pageNationID">
                     <?php if ($page > 1): ?>
                         <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
                     <?php endif; ?>

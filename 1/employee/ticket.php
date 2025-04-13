@@ -55,27 +55,27 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             <div class="main-ticket">
                 <div class="row plateRow">
-                    <div class="col plate" id="plate1" data-status="Open">
-                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                        <div class="plateContent">
-                            <div class="plateTitle">Open</div>
-                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
-                        </div>
+                <div class="col plate" id="plate1" data-status="Open">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Open</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
                     </div>
-                    <div class="col plate" id="plate2" data-status="In Progress">
-                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                        <div class="plateContent">
-                            <div class="plateTitle">In Progress</div>
-                            <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
-                        </div>
+                </div>
+                <div class="col plate" id="plate2" data-status="In Progress">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">In Progress</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
                     </div>
-                    <div class="col plate" id="plate3" data-status="Resolved">
-                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-                        <div class="plateContent">
-                            <div class="plateTitle">Resolved</div>
-                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
-                        </div>
+                </div>
+                <div class="col plate" id="plate3" data-status="Resolved">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Resolved</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
                     </div>
+                </div>
 
                     <div class="col plate" id="plate4">
                         <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
