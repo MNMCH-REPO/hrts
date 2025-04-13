@@ -45,7 +45,7 @@ try {
 
 try {
     // Query to fetch id and name from users table
-    $stmt = $pdo->prepare("SELECT id, name FROM users ORDER BY name ASC");
+    $stmt = $pdo->prepare("SELECT id, name, role FROM users ORDER BY name ASC");
     $stmt->execute();
 
     // Fetch all rows

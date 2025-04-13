@@ -276,7 +276,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
         .input-container h1 {
             font-size: 16px;
-           
+
             text-align: left;
             margin: 0;
             width: 40%;
@@ -437,29 +437,29 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
             <div class="row plateRow">
-            <div class="col plate" id="plate1" data-status="Open">
-        <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-        <div class="plateContent">
-            <div class="plateTitle">Open</div>
-            <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
-        </div>
-    </div>
+                <div class="col plate" id="plate1" data-status="Open">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Open</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                    </div>
+                </div>
 
-    <div class="col plate" id="plate2" data-status="In Progress">
-        <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-        <div class="plateContent">
-            <div class="plateTitle">In Progress</div>
-            <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
-        </div>
-    </div>
+                <div class="col plate" id="plate2" data-status="In Progress">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">In Progress</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                    </div>
+                </div>
 
-    <div class="col plate" id="plate3" data-status="Resolved">
-        <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-        <div class="plateContent">
-            <div class="plateTitle">Resolved</div>
-            <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
-        </div>
-    </div>
+                <div class="col plate" id="plate3" data-status="Resolved">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Resolved</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                    </div>
+                </div>
 
                 <div class="col plate" id="plate4">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
@@ -501,44 +501,44 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
             <div class="tableContainer">
-            <table id="ticketTable"> 
-        <thead>
-            <tr>
-                <th>ID <i class="fas fa-sort"></i></th>
-                <th>Employee Name <i class="fas fa-sort"></i></th>
-                <th>Subject <i class="fas fa-sort"></i></th>
-                <th>Description <i class="fas fa-sort"></i></th>
-                <th>Status <i class="fas fa-sort"></i></th>
-                <th>Priority <i class="fas fa-sort"></i></th>
-                <th>Category ID <i class="fas fa-sort"></i></th>
-                <th>Assigned To <i class="fas fa-sort"></i></th>
-                <th>Created At <i class="fas fa-sort"></i></th>
-                <th>Updated At <i class="fas fa-sort"></i></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($tickets)): ?>
-                <?php foreach ($tickets as $ticket): ?>
-                    <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
-                        <td><?= htmlspecialchars($ticket['id']) ?></td>
-                        <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
-                        <td><?= htmlspecialchars($ticket['subject']) ?></td>
-                        <td><?= htmlspecialchars($ticket['description']) ?></td>
-                        <td><?= htmlspecialchars($ticket['status']) ?></td>
-                        <td><?= htmlspecialchars($ticket['priority']) ?></td>
-                        <td><?= htmlspecialchars($ticket['category_name']) ?></td>
-                        <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
-                        <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                        <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10" style="text-align: center;">No tickets found</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+                <table id="ticketTable">
+                    <thead>
+                        <tr>
+                            <th>ID <i class="fas fa-sort"></i></th>
+                            <th>Employee Name <i class="fas fa-sort"></i></th>
+                            <th>Subject <i class="fas fa-sort"></i></th>
+                            <th>Description <i class="fas fa-sort"></i></th>
+                            <th>Status <i class="fas fa-sort"></i></th>
+                            <th>Priority <i class="fas fa-sort"></i></th>
+                            <th>Category ID <i class="fas fa-sort"></i></th>
+                            <th>Assigned To <i class="fas fa-sort"></i></th>
+                            <th>Created At <i class="fas fa-sort"></i></th>
+                            <th>Updated At <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($tickets)): ?>
+                            <?php foreach ($tickets as $ticket): ?>
+                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+                                    <td><?= htmlspecialchars($ticket['id']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['subject']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['description']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['status']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['priority']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['category_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                    <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="10" style="text-align: center;">No tickets found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
 
         </div>
@@ -604,12 +604,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <select name="assignTo" id="assignToID" required>
-                        <option value="" disabled selected>Select User</option>
+                        <option value="" disabled selected>Select HR Representative</option>
                         <?php foreach ($users as $user): ?>
-                            <option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
+                            <?php if ($user['role'] === 'HR'): ?>
+                                <option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
-
                 </div>
 
                 <div class="btnContainer">
@@ -762,10 +763,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate1");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -781,10 +782,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate2");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -800,10 +801,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate3");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -818,53 +819,51 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 });
             });
         });
-
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = "";
-
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
-
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute("data-status");
-            const rowText = row.textContent.toLowerCase();
-
-            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-            const isSearchMatch = rowText.includes(searchTerm);
-
-            row.style.display = isStatusMatch && isSearchMatch ? "" : "none";
-        });
-    }
-
-    // Plate click event setup
-    const plateIDs = ["plate1", "plate2", "plate3"];
-    plateIDs.forEach(id => {
-        const plate = document.getElementById(id);
-        if (plate) {
-            plate.addEventListener("click", function () {
-                selectedStatus = this.getAttribute("data-status");
-                searchInput.value = ""; // clear search input
-                filterTable(); // trigger filtering
-            });
-        }
-    });
-
-    // Search input listener
-    if (searchInput) {
-        searchInput.addEventListener("input", function () {
-            filterTable();
-        });
-    }
-});
-</script>
+    </script>
 
     <script>
-    
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("#ticketTable tbody tr");
+            let selectedStatus = "";
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+                    const rowText = row.textContent.toLowerCase();
+
+                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+                    const isSearchMatch = rowText.includes(searchTerm);
+
+                    row.style.display = isStatusMatch && isSearchMatch ? "" : "none";
+                });
+            }
+
+            // Plate click event setup
+            const plateIDs = ["plate1", "plate2", "plate3"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        selectedStatus = this.getAttribute("data-status");
+                        searchInput.value = ""; // clear search input
+                        filterTable(); // trigger filtering
+                    });
+                }
+            });
+
+            // Search input listener
+            if (searchInput) {
+                searchInput.addEventListener("input", function() {
+                    filterTable();
+                });
+            }
+        });
+    </script>
+
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
@@ -1111,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-        
+
         // Handle form submission assign
 
         document.addEventListener("DOMContentLoaded", function() {
