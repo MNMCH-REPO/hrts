@@ -348,12 +348,13 @@ body{
     height: 96px;
     width: 100%;
     background-color: var(--primary-500);
-    margin: 32px 0 64px 0;
+    margin: 47px 0 64px 0;
 }
 .sideNav{
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 990;
     display: flex;
     flex-direction: column;
     width: 220px;
@@ -415,6 +416,7 @@ body{
     border-bottom: 1px solid var(--neutral-300);
     background-color: var(--neutral-100);
     box-shadow: 4px 2px 4px 0 var(--neutral-300);
+    z-index: 999;
 }
 .account{
     display: flex;
@@ -446,4 +448,78 @@ body{
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+}
+
+
+.plateRow {
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 8px;
+    margin: 0 0 32px 0;
+}
+
+.plate {
+    position: relative;
+    width: 240px;
+    height: 140px;
+    padding: 8px;
+    background-color: var(--primary-300);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer !important;   
+}
+
+.plateIcon {
+    position: absolute;
+    top: 26%;
+    left: -12%;
+    width: 50%;
+    aspect-ratio: 1/1;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    cursor: pointer;
+}
+
+.plateContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    width: 60%;
+    height: 100%;
+    align-self: flex-end;
+    padding: 5% 0;
+    cursor: pointer;
+}
+
+.plateTitle {
+    font-size: 18px;
+    font-weight: 500;
+    width: 100%;
+    min-height: 32px;
+    cursor: pointer;
+}
+
+.plateValue {
+    font-size: 48px;
+    font-weight: 600;
+    width: 100%;
+    min-height: 32px;
+    text-align: end;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.tableContainer{
+    overflow-x: auto;
+}
+table {
+    overflow-x: auto;
 }

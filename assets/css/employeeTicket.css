@@ -8,25 +8,6 @@
             align-self: center;
         }
 
-        .plateRow {
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin: 0 0 32px 0;
-        }
-
-        .plate {
-            width: 300px;
-            height: 180px;
-            background-color: var(--primary-300);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
 
         /* table */
 
