@@ -90,6 +90,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <?php endif; ?>
                 </div>
 
+
                 <div class="search-container">
                     <input type="text" id="searchInput" placeholder="SEARCH..." class="search-input">
                     <div class="search-icon">
@@ -115,6 +116,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
+                            <th>Start At <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
@@ -132,6 +134,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                    <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -289,6 +292,55 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/hrRepOrder.js"></script>
 
     <script>
+
+// Function to handle the timer
+document.addEventListener("DOMContentLoaded", function () {
+  // Function to calculate elapsed time
+  function calculateElapsedTime(startTime) {
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const now = new Date(); // Current time
+    const elapsed = Math.floor((now - startDate) / 1000); // Elapsed time in seconds
+
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+
+    return `${hours
+      .toString()
+      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  // Update all timer cells
+  function updateTimers() {
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row.querySelector("td:nth-child(12)").textContent.trim(); // Updated At column
+      const status = row.getAttribute("data-status");
+
+    // Stop the timer if updated_at has a value or status is "Resolved"
+    if (updatedAt && updatedAt !== "" || status === "Resolved") {
+      cell.textContent = ""; // Clear the timer if it should stop
+      return;
+    }
+
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
+    });
+  }
+
+  // Update timers every second
+  setInterval(updateTimers, 1000);
+
+  // Initial update
+  updateTimers();
+});
+
+
         document.addEventListener("DOMContentLoaded", function() {
             const editStatusForm = document.getElementById("editStatusForm");
 
