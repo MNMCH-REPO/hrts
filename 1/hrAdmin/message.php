@@ -23,6 +23,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             margin: 5% 0 0 260px;
             align-self: center;
         }
+
+  
+
     </style>
 </head>
 
@@ -73,88 +76,46 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <div class="cards-container">
                         <?php
                         require_once '../../0/includes/db.php';
+
                         if (!isset($_SESSION['user_id'])) {
                             exit('User not logged in.');
                         }
 
-                        $user_id = $_SESSION['user_id'];
-                        $canReply = false; // Default to false
+                        $admin_ID = $_SESSION['user_id'];
+
                         try {
-                            // Fetch the role of the current user
-                            $roleStmt = $pdo->prepare("SELECT role FROM users WHERE id = :user_id");
-                            $roleStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-                            $roleStmt->execute();
-                            $userRole = $roleStmt->fetchColumn();
-
-                            if (!$userRole) {
-                                exit("Error: Unable to determine user role.");
-                            }
-
-                            // Fetch tickets assigned to the logged-in user or all tickets if Admin
-                            if ($userRole === 'Admin') {
-                                // Admin can view all tickets
-                                $stmt = $pdo->prepare("
-                SELECT 
-                    t.id, 
-                    t.subject, 
-                    u2.department, 
-                    t.description, 
-                    t.priority, 
-                    t.status,
-                    t.created_at,
-                    COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
-                    u2.name AS employee_name -- Employee who created the ticket
-                FROM tickets t
-                LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
-                LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
-            ");
-                            } else {
-                                // Non-Admin users can only view tickets assigned to or submitted by them
-                                $stmt = $pdo->prepare("
-                SELECT 
-                    t.id, 
-                    t.subject, 
-                    u2.department, 
-                    t.description, 
-                    t.priority, 
-                    t.status,
-                    t.created_at,
-                    COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
-                    u2.name AS employee_name -- Employee who created the ticket
-                FROM tickets t
-                LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
-                LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
-                WHERE t.assigned_to = :user_id OR t.employee_id = :user_id
-            ");
-                                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-                            }
-
+                            // Fetch all tickets
+                            $stmt = $pdo->prepare("
+            SELECT 
+                t.id, 
+                t.subject, 
+                u2.department, -- Fetch the department from the user who created the ticket
+                t.description, 
+                t.priority, 
+                t.status,
+                t.created_at,
+                COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
+                u2.name AS employee_name -- Employee who created the ticket
+            FROM tickets t
+            LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
+            LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
+            ORDER BY t.updated_at DESC; -- Sort by newest update
+        ");
                             $stmt->execute();
                             $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             if ($tickets) {
                                 foreach ($tickets as $index => $ticket) {
-                                    // Determine if the user can reply to the ticket
-                                    if ($userRole === 'Admin') {
-                                        // Admin can reply only if the ticket is assigned to or submitted by them
-                                        if ($ticket['assigned_name'] === $user_id || $ticket['employee_name'] === $user_id) {
-                                            $canReply = true;
-                                        }
-                                    } else {
-                                        // Non-Admin users can reply only to tickets assigned to or submitted by them
-                                        $canReply = true;
-                                    }
-
                                     echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                      onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
+                      data-ticket-id="' . htmlspecialchars($ticket['id']) . '">';
                                     echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                    echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name']) . '</h1>';
-                                    echo '<h1>Department: ' . htmlspecialchars($ticket['department']) . '</h1>';
-                                    echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
-                                    echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
-                                    echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
-                                    echo '<h1>Status: ' . htmlspecialchars($ticket['status']) . '</h1>';
-                                    echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at']) . '</h1>';
+                                    echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Department: ' . htmlspecialchars($ticket['department'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Subject: ' . htmlspecialchars($ticket['subject'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name'] ?? 'Unassigned') . '</h1>';
+                                    echo '<h1>Priority: ' . htmlspecialchars($ticket['priority'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Status: ' . htmlspecialchars($ticket['status'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at'] ?? 'N/A') . '</h1>';
                                     echo '</div>';
                                 }
                             } else {
@@ -166,21 +127,15 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         ?>
                     </div>
 
-                    <!-- Reply Input Area -->
-                    <div class="input-area">
-                        <?php
-                        // Display the reply input area only if the user can reply
-                        if ($canReply) {
-                            echo '<input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->';
-                            echo '<div class="attach" id="attach">Attachment📎</div>';
-                            echo '<input type="text" id="message" placeholder="Type a message...">';
-                            echo '<button id="sendmesageBtn">Send</button>';
-                        } else {
-                            echo "<p class=\"above-footer\" style=\"text-align: center;\">You can view this conversation but cannot reply to it.</p>";
 
-                        }
-                        ?>
+
+                    <div class="input-area" id="inputAreaID">
+                        <input type="file" name="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                        <div class="attach" id="attach">Attachment📎</div>
+                        <input type="text" id="message" placeholder="Type a message...">
+                        <button id="sendmesageBtn">Send</button>
                     </div>
+
 
                     <br><br>
                     <div class="footer" style="text-align: center;">
@@ -193,122 +148,177 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
         </div>
 
-
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../../assets/js/framework.js"></script>
+
+
+
+
         <script>
-            let selectedTicketId = null;
-            let refreshInterval = null; // Store interval reference
-
-            function loadMessages(ticketId = null, assignedName = null) {
-                if (ticketId && ticketId !== selectedTicketId) {
-                    selectedTicketId = ticketId;
-
-                    // ✅ Clear previous interval before setting a new one
-                    if (refreshInterval) {
-                        clearInterval(refreshInterval);
-                    }
-
-                    // ✅ Start a new interval for auto-refresh
-                    refreshInterval = setInterval(() => {
-                        loadMessages();
-                    }, 6000);
-                }
-
-                if (!selectedTicketId) {
-                    console.error("No ticket selected.");
-                    return;
-                }
-
-                if (assignedName) {
-                    $("#assignedName").text(
-                        "You are now having a conversation with: " + assignedName
-                    );
-                }
-
-                $.ajax({
-                    url: "../../0/includes/load_messages.php",
-                    type: "GET",
-                    data: {
-                        ticket_id: selectedTicketId,
-                    },
-                    success: function(response) {
-                        let chatbox = $("#chatbox");
-                        chatbox.html(response);
-                        chatbox.scrollTop(chatbox[0].scrollHeight);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error loading messages:", error);
-                    },
-                });
-            }
-
-            function sendMessage(event) {
-                if (event) event.preventDefault();
-
-                let messageText = $("#message").val().trim();
-                let fileInput = $("#fileInput")[0].files[0];
-                let formData = new FormData();
-
-                if (selectedTicketId) {
-                    formData.append("ticket_id", selectedTicketId);
-                    if (fileInput) {
-                        formData.append("file", fileInput);
-                    } else if (messageText !== "") {
-                        formData.append("message", messageText);
+            $(document).ready(function() {
+                // Handle card click to load messages
+                $(document).on("click", ".card", function() {
+                    const ticketId = $(this).data("ticket-id");
+                    if (ticketId) {
+                        loadMessages(ticketId);
                     } else {
-                        console.warn("No message or file selected.");
-                        return;
+                        console.warn("No ticket ID found for this card.");
                     }
+                });
 
+                // Function to load messages for a specific ticket
+                function loadMessages(ticketId) {
                     $.ajax({
-                        url: "../../0/includes/send_message.php",
-                        type: "POST",
-                        data: formData,
-                        contentType: false,
-                        processData: false,
+                        url: "../../0/includes/load_messages.php",
+                        type: "GET",
+                        data: {
+                            ticket_id: ticketId
+                        },
                         success: function(response) {
-                            console.log(response);
-                            $("#message").val(""); // Clear message input
-                            $("#fileInput").val(""); // Clear file input
-                            loadMessages(); // Refresh messages
+                            $("#chatbox").html(response); // Load messages into the chatbox
                         },
                         error: function(xhr, status, error) {
-                            console.error("Error sending message:", error);
+                            console.error("Error loading messages:", error);
+                            $("#chatbox").html("<p>Error loading messages.</p>");
                         },
                     });
-                } else {
-                    console.warn("No ticket selected.");
                 }
-            }
-
-            $(document).ready(function() {
-                $(document).on("click", ".card", function() {
-                    let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]);
-                    loadMessages(ticketId);
-                });
-
-                $("#sendmesageBtn").click(function(event) {
-                    sendMessage(event);
-                });
-
-                $("#message").keypress(function(event) {
-                    if (event.which == 13) {
-                        sendMessage(event);
-                    }
-                });
-
-                $("#attach").click(function() {
-                    $("#fileInput").click();
-                });
-
-                $("#fileInput").change(function() {
-                    let file = this.files[0];
-                    if (file) {
-                        $("#message").val(file.name);
-                    }
-                });
             });
+        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <script>
+           
+
+function uploadFile(fileInput, ticketId, callback) {
+  let formData = new FormData();
+  formData.append("ticket_id", ticketId);
+  formData.append("file", fileInput);
+
+  $.ajax({
+    url: "../../0/includes/upload_file.php", // New backend file for file uploads
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function (response) {
+      console.log("File uploaded successfully:", response);
+      if (response.success) {
+        if (callback) callback(response); // Call the callback function after file upload
+      } else {
+        console.error("File upload failed:", response.message);
+        alert(response.message); // Show error message to the user
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error uploading file:", error);
+      alert("An error occurred while uploading the file.");
+    },
+  });
+}
+
+function sendMessage(event) {
+  if (event) event.preventDefault();
+
+  let messageText = $("#message").val().trim();
+  let fileInput = $("#fileInput")[0].files[0];
+
+  if (!selectedTicketId) {
+    console.warn("No ticket selected.");
+    alert("Please select a ticket before sending a message.");
+    return;
+  }
+
+  if (fileInput) {
+    // Upload the file first, then send the message
+    uploadFile(fileInput, selectedTicketId, function (fileResponse) {
+      // After file upload, send the message
+      sendTextMessage(messageText);
+    });
+  } else {
+    // If no file, just send the message
+    sendTextMessage(messageText);
+  }
+}
+
+function sendTextMessage(messageText) {
+  if (!messageText) {
+    console.warn("No message to send.");
+    alert("Please enter a message before sending.");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("ticket_id", selectedTicketId);
+  formData.append("message", messageText);
+
+  $.ajax({
+    url: "../../0/includes/send_message.php", // Existing backend for sending messages
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    success: function (response) {
+      console.log("Message sent successfully:", response);
+      if (response.success) {
+        $("#message").val(""); // Clear message input
+        loadMessages(); // Refresh messages
+      } else {
+        console.error("Message sending failed:", response.message);
+        alert(response.message); // Show error message to the user
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error sending message:", error);
+      alert("An error occurred while sending the message.");
+    },
+  });
+}
+
+$(document).ready(function () {
+  // Handle file attachment
+  $("#attach").click(function () {
+    $("#fileInput").click(); // Trigger the hidden file input
+  });
+
+  // Display selected file name inside the message input field
+  $("#fileInput").change(function () {
+    let file = this.files[0];
+    if (file) {
+      $("#message").val(`${file.name}`); // Set the file name in the message input
+    } else {
+      $("#message").val(""); // Clear the message input if no file is selected
+    }
+  });
+
+  // Handle send button click
+  $("#sendmesageBtn").click(function (event) {
+    sendMessage(event);
+  });
+
+  // Handle Enter key press in the message input
+  $("#message").keypress(function (event) {
+    if (event.which == 13) {
+      sendMessage(event);
+    }
+  });
+});
         </script>
 
 </body>

@@ -7,20 +7,10 @@ if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
+$roleUser = $_SESSION['role']; // Get the role of the logged-in user
 $ticket_id = intval($_GET['ticket_id']); // Ensure it's an integer
-
 try {
-    // Fetch the role of the current user
-    $roleStmt = $pdo->prepare("SELECT role FROM users WHERE id = :user_id");
-    $roleStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $roleStmt->execute();
-    $userRole = $roleStmt->fetchColumn();
-
-    if (!$userRole) {
-        exit("Error: Unable to determine user role.");
-    }
-
-    // Check if the ticket belongs to the logged-in user or if the user is an Admin
+    // Check if the ticket exists (Admins can view all tickets)
     $checkStmt = $pdo->prepare("
         SELECT 
             t.id, 
@@ -38,34 +28,33 @@ try {
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$ticketInfo) {
-        exit("No ticket found with this ID.");
-    }
+        // Debug output for access issues
+        echo "Debugging Info:<br>";
+        echo "Ticket ID: " . htmlspecialchars($ticket_id) . "<br>";
+        echo "User ID: " . htmlspecialchars($user_id) . "<br>";
 
-    if ($userRole === 'Admin') {
-        // Allow Admins to reply to any ticket
-        $canReply = true;
-    } else {
-        // Non-admin users can only view tickets assigned to or submitted by them
-        if ($ticketInfo['assigned_to'] != $user_id && $ticketInfo['employee_id'] != $user_id) {
-            exit("You do not have access to this ticket.");
+        $debugStmt = $pdo->prepare("SELECT * FROM tickets WHERE id = :ticket_id");
+        $debugStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        $debugStmt->execute();
+        $debugResult = $debugStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$debugResult) {
+            exit("No ticket found with this ID.");
+        } else {
+            exit("Ticket exists, but you do not have access.");
         }
-        $canReply = true;
     }
 
-    // Determine the name to display
-    if (!empty($ticketInfo['assigned_name']) && $user_id == $ticketInfo['employee_id']) {
-        // Current user submitted the ticket, display the name of the assigned user
+    // Determine the display name
+    if ($ticketInfo['assigned_name']) {
+        // Display the name of the assigned user
         $displayName = htmlspecialchars($ticketInfo['assigned_name']);
-    } elseif (!empty($ticketInfo['creator_name']) && $user_id == $ticketInfo['assigned_to']) {
-        // Current user is assigned to the ticket, display the name of the creator
+    } elseif ($ticketInfo['creator_name']) {
+        // Display the name of the creator
         $displayName = htmlspecialchars($ticketInfo['creator_name']);
     } else {
-        $displayName = htmlspecialchars($ticketInfo['creator_name'] ?? $ticketInfo['assigned_name'] ?? "Unknown");
+        $displayName = "Unknown"; // Fallback in case of unexpected data
     }
-
-    // Display the conversation header
-    echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
-    echo '<h3 class="assigned-name">' . $displayName . '</h3>';
 
     // Fetch messages for the selected ticket
     $stmt = $pdo->prepare("
@@ -74,12 +63,15 @@ try {
         JOIN users ON ticket_responses.user_id = users.id 
         WHERE ticket_responses.ticket_id = :ticket_id 
         ORDER BY ticket_responses.created_at ASC
-        LIMIT 50
+       
     ");
     $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $stmt->execute();
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+
+    
     echo '<style>
     .convo-assigned {
         text-transform: uppercase; /* Converts text to all uppercase */
@@ -94,26 +86,28 @@ try {
         font-size: 1.8rem; /* H3 equivalent size */
         font-weight: bold; /* Makes it stand out */
         text-align: center; /* Centers the text */
-        display: block; /* Ensures it behaves asaq a block element */
+        display: block; /* Ensures it behaves as a block element */
         margin-top: 5px; /* Small space below the label */
     }
 </style>';
 
-    // Display messages
-    if (!$messages) {
-        echo "<p>No messages yet.</p>";
-    } else {
-        foreach ($messages as $row) {
-            $message = htmlspecialchars($row['response_text']);
-            $sender_id = $row['user_id'];
-            $role = $row['role'];
+echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
+echo '<h3 class="assigned-name">' . $displayName . '</h3>';
 
-            // Determine message alignment
-            $class = ($sender_id == $user_id) ? "sent" : "received";
+if (!$messages) {
+    echo "<p>No messages yet.</p>";
+} else {
+    foreach ($messages as $row) {
+        $message = htmlspecialchars($row['response_text']);
+        $sender_id = $row['user_id'];
+        $role = $row['role'];
 
-            echo "<div class='message $class'>$message</div>";
-        }
+        // Determine message alignment
+        $class = ($sender_id == $user_id) ? "sent" : "received";
+
+        echo "<div class='message $class'>$message</div>";
     }
+}
 } catch (PDOException $e) {
-    echo "Error loading messages: " . $e->getMessage();
+echo "Error loading messages: " . $e->getMessage();
 }
