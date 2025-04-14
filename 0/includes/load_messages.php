@@ -41,13 +41,9 @@ try {
         exit("No ticket found with this ID.");
     }
 
-    // Determine if the user can reply to the ticket
-    $canReply = false;
     if ($userRole === 'Admin') {
-        // Admin can view all tickets but can only reply if assigned or submitted by them
-        if ($ticketInfo['assigned_to'] == $user_id || $ticketInfo['employee_id'] == $user_id) {
-            $canReply = true;
-        }
+        // Allow Admins to reply to any ticket
+        $canReply = true;
     } else {
         // Non-admin users can only view tickets assigned to or submitted by them
         if ($ticketInfo['assigned_to'] != $user_id && $ticketInfo['employee_id'] != $user_id) {
