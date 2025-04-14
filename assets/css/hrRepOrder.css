@@ -7,69 +7,6 @@
     align-self: center;
 }
 
-
-
-.plateRow {
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    gap: 8px;
-    margin: 0 0 32px 0;
-}
-
-.plate {
-    position: relative;
-    width: 300px;
-    height: 180px;
-    background-color: var(--primary-300);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: 600;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.plateIcon {
-    position: absolute;
-    top: 26%;
-    left: -12%;
-    width: 55%;
-    aspect-ratio: 1/1;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.plateContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: white;
-    width: 60%;
-    height: 100%;
-    align-self: flex-end;
-    padding: 5% 0;
-}
-
-.plateTitle {
-    font-size: 24px;
-    font-weight: 500;
-    width: 100%;
-    min-height: 32px;
-}
-
-.plateValue {
-    font-size: 48px;
-    font-weight: 600;
-    width: 100%;
-    min-height: 32px;
-    text-align: end;
-    padding: 8px;
-}
-
 /* table */
 
 .tableContainer {
