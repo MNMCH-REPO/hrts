@@ -7,8 +7,6 @@ session_set_cookie_params([
     'lifetime' => 3600, // 1 hour
     'path' => '/',
     'domain' => '', // Set to your domain
-    'secure' => true, // Only send cookies over HTTPS
-    'httponly' => true, // Only accessible through the HTTP protocol
     'samesite' => 'Strict' // Prevent CSRF attacks
 ]);
 

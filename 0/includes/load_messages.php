@@ -153,7 +153,7 @@ try {
         }
 
         // Display attachments
-        foreach ($attachments as $attachment) {
+    foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
             $file_path = htmlspecialchars($attachment['file_path']);
             $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);

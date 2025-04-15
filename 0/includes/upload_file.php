@@ -6,19 +6,18 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
     $file_name = null;
 
     try {
-        // Validate that the ticket_id exists in ticket_responses and tickets
         $stmt = $pdo->prepare("
             SELECT tr.id 
             FROM ticket_responses tr
             INNER JOIN tickets t ON tr.ticket_id = t.id
-            WHERE tr.id = :ticket_id
+            WHERE t.id = :ticket_id
         ");
-        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($stmt->rowCount() === 0) {
-            throw new Exception("Invalid ticket_id: No matching ticket found in ticket_responses or tickets.");
-        }
+    $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    if ($stmt->rowCount() === 0) {
+        throw new Exception("Invalid ticket_id: No matching ticket found in tickets or ticket_responses.");
+    }
 
         // Check if a file is provided and valid
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
