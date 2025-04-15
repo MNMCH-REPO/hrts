@@ -444,7 +444,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                 paginationContainer.appendChild(btn);
             }
         }
-        const plateIDs = ["plate1", "plate2", "plate3", "plate4"];
+        const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
         plateIDs.forEach(id => {
             const plate = document.getElementById(id);
             if (plate) {
@@ -452,6 +452,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                     currentFilter = this.getAttribute("data-status") || "";
                     currentPage = 1;
                     renderTable(currentFilter);
+
                 });
             }
         });

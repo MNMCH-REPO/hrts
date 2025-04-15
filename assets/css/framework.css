@@ -463,7 +463,7 @@ body{
     width: 240px;
     height: 140px;
     padding: 8px;
-    background-color: var(--primary-300);
+    background-color: var(--primary-100);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -471,7 +471,8 @@ body{
     font-weight: 600;
     border-radius: 8px;
     overflow: hidden;
-    cursor: pointer !important;   
+    cursor: pointer !important;
+    border: 1px solid var(--primary-600);   
 }
 
 .plateIcon {
@@ -484,6 +485,7 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     cursor: pointer;
+    opacity: 0.7;
 }
 
 .plateContent {
