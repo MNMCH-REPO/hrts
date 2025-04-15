@@ -153,60 +153,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
 
-
-        <script>
-            $(document).ready(function() {
-                // Handle card click to load messages
-                $(document).on("click", ".card", function() {
-                    const ticketId = $(this).data("ticket-id");
-                    if (ticketId) {
-                        loadMessages(ticketId);
-                    } else {
-                        console.warn("No ticket ID found for this card.");
-                    }
-                });
-
-                // Function to load messages for a specific ticket
-                function loadMessages(ticketId) {
-                    $.ajax({
-                        url: "../../0/includes/load_messages.php",
-                        type: "GET",
-                        data: {
-                            ticket_id: ticketId
-                        },
-                        success: function(response) {
-                            $("#chatbox").html(response); // Load messages into the chatbox
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Error loading messages:", error);
-                            $("#chatbox").html("<p>Error loading messages.</p>");
-                        },
-                    });
-                }
-            });
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <script>
            
 
-function uploadFile(fileInput, ticketId, callback) {
+           function uploadFile(fileInput, ticketId, callback) {
   let formData = new FormData();
   formData.append("ticket_id", ticketId);
   formData.append("file", fileInput);
