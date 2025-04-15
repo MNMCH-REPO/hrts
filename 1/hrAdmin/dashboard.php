@@ -58,43 +58,47 @@ require_once '../../0/includes/adminDashboardTables.php';
             </div>
 
             <div class="row plateRow">
-                <div class="col plate" id="plate1">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Open</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
-                    </div>
-                </div>
+                <div class="col plate" id="plate1" data-status="Open">
+    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+    <div class="plateContent" data-status="Open">
+        <div class="plateTitle">Open</div>
+        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+    </div>
+</div>
 
-                <div class="col plate" id="plate2">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">In Progress</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
-                    </div>
-                </div>
-                <div class="col plate" id="plate3">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Resolved</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
-                    </div>
-                </div>
+<div class="col plate" id="plate2" data-status="In Progress">
+    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+    <div class="plateContent" data-status="In Progress">
+        <div class="plateTitle">In Progress</div>
+        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+    </div>
+</div>
 
-                <div class="col plate" id="plate4">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">HR Representative</div>
-                        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
-                    </div>
-                </div>
-                <div class="col plate" id="plate5">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Employee</div>
-                        <div class="plateValue "><?= htmlspecialchars($roleCounts['Employee']) ?></div>
-                    </div>
-                </div>
+<div class="col plate" id="plate3" data-status="Resolved">
+    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+    <div class="plateContent">
+        <div class="plateTitle">Resolved</div>
+        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+    </div>
+</div>
+
+<!-- Plates 4 and 5 don't need data-status because they aren't used for ticket filtering -->
+<div class="col plate" id="plate4">
+    <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
+    <div class="plateContent">
+        <div class="plateTitle">HR Representative</div>
+        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
+    </div>
+</div>
+
+<div class="col plate" id="plate5">
+    <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
+    <div class="plateContent">
+        <div class="plateTitle">Employee</div>
+        <div class="plateValue"><?= htmlspecialchars($roleCounts['Employee']) ?></div>
+    </div>
+</div>
+
                 <div class="col plate" id="plate6">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/folder.png);"></div>
                     <div class="plateContent">
@@ -107,17 +111,7 @@ require_once '../../0/includes/adminDashboardTables.php';
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
-                    <?php endif; ?>
+                <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
@@ -187,21 +181,11 @@ require_once '../../0/includes/adminDashboardTables.php';
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                    <?php if ($pageUser > 1): ?>
-                        <a href="?userPage=<?= $pageUser - 1 ?>" class="prev">Previous</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?userPage=<?= $i ?>" class="<?= $i == $pageUser ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($pageUser < $totalPages): ?>
-                        <a href="?userPage=<?= $pageUser + 1 ?>" class="next">Next</a>
-                    <?php endif; ?>
+                <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
-                    <input type="text" placeholder="SEARCH..." class="search-input">
+                    <input type="text" placeholder="SEARCH..." id="searchInput" class="search-input">
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
@@ -212,7 +196,7 @@ require_once '../../0/includes/adminDashboardTables.php';
             </div>
 
             <div class="tableContainer" id="tableContainerUserID">
-                <table>
+                <table class="ticketTable">
                     <thead>
                         <tr>
                             <th>ID <i class="fas fa-sort"></i></th>
@@ -227,7 +211,7 @@ require_once '../../0/includes/adminDashboardTables.php';
                     <tbody>
                         <?php if (!empty($users)): ?>
                             <?php foreach ($users as $user): ?>
-                                <tr class="<?= $user['status'] === 'Inactive' ? 'inactive-row' : '' ?>">
+                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">   
                                     <td><?= htmlspecialchars($user['id'] ?? 'N/A') ?></td>
                                     <td><?= htmlspecialchars($user['name'] ?? 'N/A') ?></td>
                                     <td><?= htmlspecialchars($user['email'] ?? 'N/A') ?></td>
@@ -443,129 +427,99 @@ require_once '../../0/includes/adminDashboardTables.php';
     <script src="../../assets/js/framework.js"></script>
     <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 
+    <script></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('.search-input');
-            const filterButton = document.querySelector('.filter-btn');
-            const tableBody = document.querySelector('table tbody');
-
-            // Function to fetch and update tickets
-            function fetchTickets(search = '', filterColumn = '', filterValue = '') {
-                const url = new URL('../../0/includes/adminSearch.php', window.location.origin);
-                url.searchParams.append('search', search);
-                if (filterColumn && filterValue) {
-                    url.searchParams.append('filterColumn', filterColumn);
-                    url.searchParams.append('filterValue', filterValue);
-                }
-
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear the table body
-                        tableBody.innerHTML = '';
-
-                        if (data.error) {
-                            console.error(data.error);
-                            tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
-                            return;
-                        }
-
-                        if (data.length === 0) {
-                            tableBody.innerHTML = '<tr><td colspan="10" style="text-align: center;">No tickets found</td></tr>';
-                            return;
-                        }
-
-                        // Populate the table with the fetched tickets
-                        data.forEach(ticket => {
-                            const row = `
-                        <tr>
-                            <td>${ticket.id}</td>
-                            <td>${ticket.employee_name}</td>
-                            <td>${ticket.subject}</td>
-                            <td>${ticket.description}</td>
-                            <td>${ticket.status}</td>
-                            <td>${ticket.priority}</td>
-                            <td>${ticket.category_name}</td>
-                            <td>${ticket.assigned_to_name}</td>
-                            <td>${ticket.created_at}</td>
-                            <td>${ticket.updated_at}</td>
-                        </tr>
-                    `;
-                            tableBody.insertAdjacentHTML('beforeend', row);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching tickets:', error);
-                        tableBody.innerHTML = '<tr><td colspan="10">Error fetching tickets</td></tr>';
-                    });
-            }
-
-            // Event listener for search input
-            searchInput.addEventListener('input', function() {
-                const search = searchInput.value.trim();
-                fetchTickets(search);
-            });
-
-            // Event listener for filter button
-            filterButton.addEventListener('click', function() {
-                const filterColumn = prompt('Enter the column to filter (e.g., status, priority):');
-                const filterValue = prompt('Enter the value to filter by:');
-                if (filterColumn && filterValue) {
-                    fetchTickets('', filterColumn, filterValue);
-                }
-            });
-        });
-
-
-        //open modal
-        document.addEventListener("DOMContentLoaded", function() {
-            let modal = document.getElementById("reportModal");
-            let downloadPlate = document.getElementById("plate6");
-            let closeModal = document.querySelector(".close");
-
-            // Show modal when clicking the download plate
-            downloadPlate.addEventListener("click", function() {
-                modal.style.display = "block";
-            });
-
-            // Close modal when clicking the close button
-            closeModal.addEventListener("click", function() {
-                modal.style.display = "none";
-            });
-
-            // Close modal when clicking outside the content
-            window.addEventListener("click", function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
-        });
-
-        window.onload = function() {
-
-            var chart = new CanvasJS.Chart("chartContainer", {
-                animationEnabled: true,
-                exportEnabled: true,
-                title: {
-                    text: "Average Expense Per Day  in Thai Baht"
-                },
-                subtitles: [{
-                    text: "Currency Used: Thai Baht (฿)"
-                }],
-                data: [{
-                    type: "pie",
-                    showInLegend: "true",
-                    legendText: "{label}",
-                    indexLabelFontSize: 16,
-                    indexLabel: "{label} - #percent%",
-                    yValueFormatString: "฿#,##0",
-                    dataPoints: <?php echo json_encode($dataPoints, JSON_NUMERIC_CHECK); ?>
-                }]
-            });
-            chart.render();
-
+    document.addEventListener("DOMContentLoaded", function () {
+        const allRows = Array.from(document.querySelectorAll("#tableContainerTicketID tbody tr"));
+        const tbody = document.querySelector("#tableContainerTicketID tbody");
+        const paginationContainer = document.getElementById("paginationControls");
+        const rowsPerPage = 5;
+        let currentPage = 1;
+        let currentFilter = "";
+        function getRowStatus(row) {
+            return row.children[4].textContent.trim();
         }
-    </script>
+        function renderTable(filter = "") {
+            const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            currentPage = Math.min(currentPage, totalPages || 1);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            tbody.innerHTML = "";
+            filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
+            renderPaginationButtons(totalPages);
+        }
+        function renderPaginationButtons(totalPages) {
+            paginationContainer.innerHTML = "";
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i;
+                btn.className = i === currentPage ? "active" : "";
+                btn.style.margin = "0 5px";
+                btn.addEventListener("click", () => {
+                    currentPage = i;
+                    renderTable(currentFilter);
+                });
+                paginationContainer.appendChild(btn);
+            }
+        }
+        const plateIDs = ["plate1", "plate2", "plate3", "plate4"];
+        plateIDs.forEach(id => {
+            const plate = document.getElementById(id);
+            if (plate) {
+                plate.addEventListener("click", function () {
+                    currentFilter = this.getAttribute("data-status") || "";
+                    currentPage = 1;
+                    renderTable(currentFilter);
+                });
+            }
+        });
+        renderTable();
+    });
+// document.addEventListener("DOMContentLoaded", function () {
+//     const rowsPerPage = 5;
+//     const table = document.querySelector("#tableContainerTicketID table");
+//     const tbody = table.querySelector("tbody");
+//     const rows = Array.from(tbody.querySelectorAll("tr"));
+//     const paginationContainer = document.getElementById("paginationControls");
+
+//     function displayPage(page) {
+//         const start = (page - 1) * rowsPerPage;
+//         const end = start + rowsPerPage;
+
+//         rows.forEach((row, index) => {
+//             row.style.display = (index >= start && index < end) ? "" : "none";
+//         });
+
+//         renderPaginationButtons(page);
+//     }
+
+//     function renderPaginationButtons(activePage) {
+//         const totalPages = Math.ceil(rows.length / rowsPerPage);
+//         paginationContainer.innerHTML = "";
+
+//         for (let i = 1; i <= totalPages; i++) {
+//             const btn = document.createElement("button");
+//             btn.textContent = i;
+//             btn.className = (i === activePage) ? "active-page-btn" : "";
+//             btn.style.margin = "0 5px";
+//             btn.style.padding = "5px 10px";
+//             btn.addEventListener("click", () => displayPage(i));
+//             paginationContainer.appendChild(btn);
+//         }
+//     }
+
+//     // Only paginate if there are rows
+//     if (rows.length > 0) {
+//         displayPage(1);
+//     }
+// });
+</script>
+
+
+
+   
 
 </body>
 
