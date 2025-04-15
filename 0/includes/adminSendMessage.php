@@ -10,6 +10,8 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+
+
 $user_id = $_SESSION['user_id'];
 
 // Check if the request is for sending a message
