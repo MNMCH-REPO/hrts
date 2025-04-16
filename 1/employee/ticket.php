@@ -150,7 +150,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
+                    value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
 
                     <label for="department">Department</label>
                 </div>
@@ -583,7 +583,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 document.getElementById("addTicketModal").style.display = "flex";
 
                 // Auto-fill department correctly
-                let userDept = "<?= $_SESSION['department'] ?>"; // Use PHP instead of Blade
+         
                 let departmentField = document.getElementById("departmentInputField");
 
                 if (departmentField) {

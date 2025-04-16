@@ -30,10 +30,6 @@ try {
 
     echo "<script>console.log('Status Counts:', " . json_encode($statusCounts) . ");</script>";
 
-    // Pagination settings
-    $limit = 10; // Number of records per page
-    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-    $offset = ($page - 1) * $limit;
 
     if ($currentUserId) {
         // Fetch total number of tickets assigned to or submitted by the user
@@ -42,7 +38,7 @@ try {
         $stmt->bindParam(':userId', $currentUserId, PDO::PARAM_INT);
         $stmt->execute();
         $totalRecords = $stmt->fetchColumn();
-        $totalPages = ceil($totalRecords / $limit);
+
 
         // Fetch paginated tickets assigned to or submitted by the user
         $sql = "SELECT 
@@ -66,21 +62,18 @@ try {
             LEFT JOIN users a ON t.assigned_to = a.id  -- Assigned user
             LEFT JOIN categories c ON t.category_id = c.id
             WHERE t.assigned_to = :userId OR t.employee_id = :userId
-            ORDER BY t.created_at DESC
-            LIMIT :limit OFFSET :offset";
+            ORDER BY t.created_at DESC";
+           
 
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':userId', $currentUserId, PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
         $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } else {
         // If no user is logged in, set empty values
         $tickets = [];
         $totalRecords = 0;
-        $totalPages = 1;
     }
 } catch (PDOException $e) {
     die("Database connection failed: " . $e->getMessage());
@@ -89,6 +82,6 @@ try {
 // Output the tickets in JSON format for debugging in console
 echo "<script>console.log('Tickets:', " . json_encode($tickets) . ");</script>";
 echo "<script>console.log('Total Records:', " . json_encode($totalRecords) . ");</script>";
-echo "<script>console.log('Total Pages:', " . json_encode($totalPages) . ");</script>";
+
 
 

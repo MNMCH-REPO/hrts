@@ -49,13 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Redirect
             if ($user['role'] === 'Employee') {
-                header('Location: /hrts/1/employee/ticket.php');
+                header('Location: ../1/employee/ticket.php');
             } elseif ($user['role'] === 'HR') {
-                header('Location: /hrts/1/hrRep/order.php');
+                header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'Admin') {
-                header('Location: /hrts/1/hrAdmin/dashboard.php');
+                header('Location: ../../1/hrAdmin/dashboard.php');
             } else {
-                header('Location: /hrts/index.php');
+                header('Location: ../index.php');
             }
             exit;
         } else {

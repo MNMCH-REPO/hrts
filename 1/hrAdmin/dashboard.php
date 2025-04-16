@@ -405,9 +405,7 @@ require_once '../../0/includes/adminDashboardTables.php';
         <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
     </footer>
     <script src="../../assets/js/framework.js"></script>
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 
-    <script></script>
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {

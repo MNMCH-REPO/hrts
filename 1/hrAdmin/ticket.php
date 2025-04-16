@@ -423,7 +423,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
-                    <button class="filter-btn">
+                    <button id="filterButton" class="filter-btn">
                         <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
@@ -650,7 +650,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
 
                     <label for="department">Department</label>
                 </div>
@@ -696,4 +696,4 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <script src="../../assets/js/adminTicket.js"></script>
 </body>
 
-</html>c
+</html>

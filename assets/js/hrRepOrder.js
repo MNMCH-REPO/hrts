@@ -7,41 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   
       console.log("Fetching tickets from:", url); // Debugging line
   
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Received data:", data); // Debugging line
-  
-          const tableBody = document.querySelector("#ticketTable tbody");
-          tableBody.innerHTML = "";
-  
-          if (!data.tickets || data.tickets.length === 0) {
-            tableBody.innerHTML =
-              "<tr><td colspan='9'>No records found</td></tr>";
-            return;
-          }
-  
-          data.tickets.forEach((ticket) => {
-            let row = `<tr>
-                          <td>${ticket.id}</td>
-                          <td>${ticket.employee_name || "N/A"}</td>
-                          <td>${ticket.employee_department || "N/A"}</td>
-                          <td>${ticket.subject || "N/A"}</td>
-                          <td>${ticket.status || "N/A"}</td>
-                          <td>${ticket.priority || "N/A"}</td>
-                          <td>${ticket.category_name || "N/A"}</td>
-                          <td>${ticket.assigned_to_name || "N/A"}</td>
-                          <td>${ticket.created_at || "N/A"}</td>
-                      </tr>`;
-            tableBody.innerHTML += row;
-          });
-        })
-        .catch((error) => console.error("Error fetching tickets:", error));
     }
   
     // Ensure buttons exist before adding event listeners
