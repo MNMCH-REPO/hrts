@@ -141,33 +141,71 @@ function selectTicket(ticketId) {
 }
 
 
+// function uploadFile(fileInput, ticketId, callback) {
+//   let formData = new FormData();
+//   formData.append("ticket_id", ticketId);
+//   formData.append("file", fileInput);
+
+//   // Debugging: Log FormData content
+//   console.log("Uploading file with Ticket ID:", ticketId);
+//   console.log("File Input:", fileInput);
+
+//   $.ajax({
+//       url: "../../0/includes/admin_upload_file.php", // Backend for file uploads
+//       type: "POST",
+//       data: formData,
+//       contentType: false,
+//       processData: false,
+//       success: function (response) {
+//           console.log("File uploaded successfully:", response);
+//           if (response.success) {
+//               if (callback) callback(response); // Call the callback function after file upload
+//           } else {
+//               console.error("File upload failed:", response.message);
+//               alert(response.message); // Show error message to the user
+//           }
+//       },
+//       error: function (xhr, status, error) {
+//           console.error("Error uploading file:", error);
+//           alert("An error occurred while uploading the file.");
+//       },
+//   });
+// }
+
 
 function uploadFile(fileInput, ticketId, callback) {
-    let formData = new FormData();
-    formData.append("ticket_id", ticketId);
-    formData.append("file", fileInput);
+  let formData = new FormData();
+  formData.append("ticket_id", ticketId);
+  formData.append("file", fileInput);
 
-    $.ajax({
-        url: "../../0/includes/adminSendMessage.php", // Backend for file uploads
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            console.log("File uploaded successfully:", response);
-            if (response.success) {
-                if (callback) callback(response); // Call the callback function after file upload
-            } else {
-                console.error("File upload failed:", response.message);
-                alert(response.message); // Show error message to the user
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error("Error uploading file:", error);
-            alert("An error occurred while uploading the file.");
-        },
-    });
+  // Debugging: Log FormData content
+  console.log("Uploading file with Ticket ID:", ticketId);
+  console.log("File Input:", fileInput);
+
+  $.ajax({
+    url: "../../0/includes/admin_upload_file.php",
+    type: "POST",
+    data: formData,
+    contentType: false,
+    processData: false,
+    dataType: "json", // <- Add this line
+    success: function (response) {
+        console.log("Backend Response:", response);
+        if (response.success) {
+            if (callback) callback(response);
+        } else {
+            console.error("File upload failed:", response.message);
+            alert(response.message);
+        }
+    },
+    error: function (xhr, status, error) {
+        console.error("Error uploading file:", error);
+        alert("An error occurred while uploading the file.");
+    },
+});
+
 }
+
 
 function sendMessage(event) {
     if (event) event.preventDefault();
@@ -183,6 +221,7 @@ function sendMessage(event) {
 
     if (fileInput) {
         // Upload the file first, then send the message
+        console.log("Upload callback response:", fileResponse); // <- Add this line
         uploadFile(fileInput, selectedTicketId, function (fileResponse) {
             // After file upload, send the message
             sendTextMessage(messageText);
