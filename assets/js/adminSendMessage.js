@@ -208,28 +208,29 @@ function uploadFile(fileInput, ticketId, callback) {
 
 
 function sendMessage(event) {
-    if (event) event.preventDefault();
+  if (event) event.preventDefault();
 
-    let messageText = $("#message").val().trim();
-    let fileInput = $("#fileInput")[0].files[0];
+  let messageText = $("#message").val().trim();
+  let fileInput = $("#fileInput")[0].files[0];
 
-    if (!selectedTicketId) {
-        console.warn("No ticket selected.");
-        alert("Please select a ticket before sending a message.");
-        return;
-    }
+  
+  if (!selectedTicketId) {
+      console.warn("No ticket selected.");
+      alert("Please select a ticket before sending a message.");
+      return;
+  }
 
-    if (fileInput) {
-        // Upload the file first, then send the message
-        console.log("Upload callback response:", fileResponse); // <- Add this line
-        uploadFile(fileInput, selectedTicketId, function (fileResponse) {
-            // After file upload, send the message
-            sendTextMessage(messageText);
-        });
-    } else {
-        // If no file, just send the message
-        sendTextMessage(messageText);
-    }
+  if (fileInput) {
+      // Upload the file first, then send the message
+      uploadFile(fileInput, selectedTicketId, function (fileResponse) {
+          console.log("Upload callback response:", fileResponse); // Moved inside the callback
+          // After file upload, send the message
+          sendTextMessage(messageText);
+      });
+  } else {
+      // If no file, just send the message
+      sendTextMessage(messageText);
+  }
 }
 
 function sendTextMessage(messageText) {

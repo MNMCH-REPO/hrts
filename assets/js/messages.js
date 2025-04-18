@@ -127,6 +127,8 @@ function sendMessage(event) {
   let messageText = $("#message").val().trim();
   let fileInput = $("#fileInput")[0].files[0];
 
+
+  
   if (!selectedTicketId) {
     console.warn("No ticket selected.");
     alert("Please select a ticket before sending a message.");

@@ -145,13 +145,26 @@ try {
             $sender_name = htmlspecialchars($row['sender_name']);
             $created_at = date('F j, Y - h:i A', strtotime($row['created_at']));
             $class = ($row['user_id'] == $user_id) ? "sent" : "received";
-
+        
+            // Skip plain text messages if they are associated with a file
+            $isFileMessage = false;
+            foreach ($attachments as $attachment) {
+                if ($attachment['uploaded_at'] === $row['created_at'] && $attachment['uploaded_by_name'] === $sender_name) {
+                    $isFileMessage = true;
+                    break;
+                }
+            }
+        
+            if ($isFileMessage) {
+                continue; // Skip this plain text message
+            }
+        
             echo "<div class='message $class'>";
             echo "<p><strong>$sender_name:</strong> <br> $message</p>";
             echo "<small>Sent on: $created_at</small>";
             echo "</div>";
         }
-
+        
         // Display attachments
     foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
