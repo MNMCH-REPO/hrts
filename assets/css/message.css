@@ -152,3 +152,22 @@
             margin: 6px 0;
             color: #333;
         }
+
+        /* Horizontal button container for view and download buttons */
+.button-container {
+    display: flex; /* Use flexbox for horizontal layout */
+    gap: 10px; /* Add spacing between buttons */
+    margin-top: 10px; /* Add some margin above the buttons */
+}
+
+.btnWarning {
+    background-color: transparent; /* Transparent background */
+    border: none; /* Remove border */
+    cursor: pointer; /* Pointer cursor on hover */
+    padding: 5px; /* Add some padding */
+}
+
+.btnWarning img {
+    width: 20px; /* Set icon width */
+    height: 20px; /* Set icon height */
+}

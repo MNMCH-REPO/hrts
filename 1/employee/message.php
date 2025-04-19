@@ -137,7 +137,9 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
                     <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
                     <div class="attach" id="attach">Attachment📎</div>
                     <input type="text" id="message" placeholder="Type a message...">
-                    <button id="sendmesageBtn" style="background-image: url(../../assets/images/icons/send.png); background-size: contain; background-repeat: no-repeat; background-position: center; width: 40px; height: 40px; border: none;"></button>
+                    <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                        <img src="../../assets/images/icons/send.png"  style="width: 100%; height: 100%; object-fit: contain;">
+                    </button>
                 </div>
 
 
