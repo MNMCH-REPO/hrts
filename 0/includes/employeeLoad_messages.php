@@ -60,56 +60,18 @@ try {
         FROM attachments 
         JOIN users ON attachments.uploaded_by = users.id 
         WHERE attachments.ticket_id = :ticket_id 
+          AND (attachments.uploaded_by = :assigned_to OR attachments.uploaded_by = :employee_id) -- Filter by assigned user or creator
         ORDER BY attachments.uploaded_at ASC
     ");
     $attachmentStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+    $attachmentStmt->bindParam(':assigned_to', $ticketInfo['assigned_to'], PDO::PARAM_INT);
+    $attachmentStmt->bindParam(':employee_id', $ticketInfo['employee_id'], PDO::PARAM_INT);
     $attachmentStmt->execute();
     $attachments = $attachmentStmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Display the conversation header
     echo '<style>
-        .convo-assigned {
-            text-transform: uppercase;
-            font-size: small;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 1px;
-            margin-top: 20px;
-        }
-        .assigned-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-align: center;
-            display: block;
-            margin-top: 5px;
-        }
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .sent {
-            background-color: #d1ffd1;
-            text-align: right;
-        }
-        .received {
-            background-color: #f1f1f1;
-            text-align: left;
-        }
-        .attachment {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
 
-        .attachment-image {
-    max-width: 300px; /* Limit the width to 300px */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 5px; /* Add rounded corners */
-    margin-top: 10px; /* Add spacing above the image */
-}
     </style>';
 
     echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
@@ -118,14 +80,13 @@ try {
     // Display messages
     if (!$messages && !$attachments) {
         echo '<p>No messages or attachments yet.</p>';
-
     } else {
         foreach ($messages as $row) {
             $message = htmlspecialchars($row['response_text']);
             $sender_name = htmlspecialchars($row['sender_name']);
             $created_at = date('F j, Y - h:i A', strtotime($row['created_at']));
             $class = ($row['user_id'] == $user_id) ? "sent" : "received";
-        
+
             // Skip plain text messages if they are associated with a file
             $isFileMessage = false;
             foreach ($attachments as $attachment) {
@@ -134,32 +95,34 @@ try {
                     break;
                 }
             }
-        
+
             if ($isFileMessage) {
                 continue; // Skip this plain text message
             }
-        
+
             echo "<div class='message $class'>";
             echo "<p><strong>$sender_name:</strong> <br> $message</p>";
             echo "<small>Sent on: $created_at</small>";
             echo "</div>";
         }
-        
 
-        // Display attachments
         foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
             $file_path = htmlspecialchars($attachment['file_path']);
             $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
             $uploaded_at = date('F j, Y - h:i A', strtotime($attachment['uploaded_at']));
-
+        
+            // Check if the file exists
+            if (!file_exists($file_path)) {
+                continue; // Skip this attachment
+            }
+        
             echo "<div class='attachment'>";
-
+        
             // Check if the file is an image
             $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
             $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
-
-
+        
             if (in_array($file_extension, $image_extensions)) {
                 // Render the image with view and download options
                 echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
@@ -172,7 +135,7 @@ try {
                 echo "<p><button class='btnDefault' onclick=\"handleFileAction('/$file_path', 'view')\">View File</button></p>";
                 echo "<p><button class='btnDefault' onclick=\"handleFileAction('/$file_path', 'download')\">Download File</button></p>";
             }
-
+        
             echo "<small>Uploaded on: $uploaded_at</small>";
             echo "</div>";
         }
