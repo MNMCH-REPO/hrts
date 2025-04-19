@@ -105,7 +105,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
-                            <th>Start At <i class="fas fa-sort"></i></th>
+                            <th>Duration <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
@@ -210,7 +210,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        
+
         <!-- Modal -->
         <div id="editStatusModal" class="modal">
             <div class="modal-content">
@@ -281,54 +281,54 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/hrRepOrder.js"></script>
 
     <script>
+        // Function to handle the timer
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to calculate elapsed time
+            function calculateElapsedTime(startTime, endTime = null) {
+                const startDate = new Date(startTime); // Convert start_at to a Date object
+                const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+                const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
 
-// Function to handle the timer
-document.addEventListener("DOMContentLoaded", function () {
-  // Function to calculate elapsed time
-  function calculateElapsedTime(startTime) {
-    const startDate = new Date(startTime); // Convert start_at to a Date object
-    const now = new Date(); // Current time
-    const elapsed = Math.floor((now - startDate) / 1000); // Elapsed time in seconds
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
 
-    const hours = Math.floor(elapsed / 3600);
-    const minutes = Math.floor((elapsed % 3600) / 60);
-    const seconds = elapsed % 60;
-
-    return `${hours
+                return `${hours
       .toString()
       .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
       .padStart(2, "0")}`;
-  }
+            }
 
-  // Update all timer cells
-  function updateTimers() {
-    const timerCells = document.querySelectorAll(".timer-cell");
-    timerCells.forEach((cell) => {
-      const startAt = cell.getAttribute("data-start-at");
-      const row = cell.closest("tr");
-      const updatedAt = row.querySelector("td:nth-child(12)").textContent.trim(); // Updated At column
-      const status = row.getAttribute("data-status");
+            // Update all timer cells
+            function updateTimers() {
+                const timerCells = document.querySelectorAll(".timer-cell");
+                timerCells.forEach((cell) => {
+                    const startAt = cell.getAttribute("data-start-at");
+                    const row = cell.closest("tr");
+                    const updatedAt = row.querySelector("td:nth-child(12)")?.textContent.trim(); // Updated At column
+                    const status = row.getAttribute("data-status");
 
-    // Stop the timer if updated_at has a value or status is "Resolved"
-    if (updatedAt && updatedAt !== "" || status === "Resolved") {
-      cell.textContent = ""; // Clear the timer if it should stop
-      return;
-    }
+                    // Stop the timer if updated_at has a value or status is "Resolved"
+                    if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+                        // Calculate the elapsed time between startAt and updatedAt
+                        cell.textContent = calculateElapsedTime(startAt, updatedAt);
+                        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+                        return;
+                    }
 
-      if (startAt) {
-        cell.textContent = calculateElapsedTime(startAt);
-      }
-    });
-  }
+                    if (startAt) {
+                        cell.textContent = calculateElapsedTime(startAt);
+                    }
+                });
+            }
 
-  // Update timers every second
-  setInterval(updateTimers, 1000);
+            // Update timers every second
+            setInterval(updateTimers, 1000);
 
-  // Initial update
-  updateTimers();
-});
-
+            // Initial update
+            updateTimers();
+        });
 
         document.addEventListener("DOMContentLoaded", function() {
             const editStatusForm = document.getElementById("editStatusForm");
@@ -363,7 +363,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (data.success) {
                         alert(data.message); // Show success message
-                        location.reload(); // Reload the page to reflect changes
+
+                        // Update the UI dynamically
+                        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+                        if (row) {
+                            const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
+                            if (statusCell) {
+                                statusCell.textContent = status; // Update the status in the table
+                            }
+
+                            const updatedAtCell = row.querySelector("td:nth-child(12)"); // Assuming the updated_at column is the 12th column
+                            if (updatedAtCell) {
+                                const currentDate = new Date().toISOString().slice(0, 19).replace("T", " "); // Format current date
+                                updatedAtCell.textContent = currentDate; // Update the updated_at column
+                            }
+                        }
+
+                        // Close the modal
+                        closeModal();
                     } else {
                         alert(data.message); // Show error message
                     }
@@ -375,107 +392,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const plate = document.getElementById("plate1");
-
-            plate.addEventListener("click", function() {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const plate = document.getElementById("plate2");
-
-            plate.addEventListener("click", function() {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const plate = document.getElementById("plate3");
-
-            plate.addEventListener("click", function() {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const searchInput = document.getElementById("searchInput");
-            const rows = document.querySelectorAll("#ticketTable tbody tr");
-            let selectedStatus = "";
-
-            function filterTable() {
-                const searchTerm = searchInput.value.toLowerCase();
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-                    const rowText = row.textContent.toLowerCase();
-
-                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-                    const isSearchMatch = rowText.includes(searchTerm);
-
-                    if (isStatusMatch && isSearchMatch) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            }
-
-
-            const plateIDs = ["plate1", "plate2", "plate3"];
-            plateIDs.forEach(id => {
-                const plate = document.getElementById(id);
-                if (plate) {
-                    plate.addEventListener("click", function() {
-                        selectedStatus = this.getAttribute("data-status");
-                        searchInput.value = "";
-                        filterTable();
-                    });
-                }
-            });
-
-            searchInput.addEventListener("input", function() {
-                filterTable();
-            });
-        });
-    </script>
 </body>
 
 </html>

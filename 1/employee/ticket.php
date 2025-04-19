@@ -55,27 +55,27 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             <div class="main-ticket">
                 <div class="row plateRow">
-                <div class="col plate" id="plate1" data-status="Open">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Open</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                    <div class="col plate" id="plate1" data-status="Open">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Open</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                        </div>
                     </div>
-                </div>
-                <div class="col plate" id="plate2" data-status="In Progress">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">In Progress</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                    <div class="col plate" id="plate2" data-status="In Progress">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">In Progress</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                        </div>
                     </div>
-                </div>
-                <div class="col plate" id="plate3" data-status="Resolved">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Resolved</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                    <div class="col plate" id="plate3" data-status="Resolved">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Resolved</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                        </div>
                     </div>
-                </div>
 
                     <div class="col plate" id="plate4">
                         <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
@@ -89,7 +89,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="pagination-wrapper">
                     <div class="pagination">
- 
+
                     </div>
 
                     <div class="search-container">
@@ -107,7 +107,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="tableContainer">
                     <?php
-                    require_once '../../0/includes/employeeTable.php'; // Ensure correct database connection
+                    require_once 'employeeTable.php'; // Ensure correct database connection
                     ?>
                 </div>
 
@@ -140,7 +140,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                    value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
 
                     <label for="department">Department</label>
                 </div>
@@ -246,10 +246,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate1");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -265,10 +265,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate2");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -284,10 +284,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
         });
 
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const plate = document.getElementById("plate3");
 
-            plate.addEventListener("click", function () {
+            plate.addEventListener("click", function() {
                 const selectedStatus = this.getAttribute("data-status");
                 const rows = document.querySelectorAll("#ticketTable tbody tr");
 
@@ -305,49 +305,49 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = "";
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.getElementById("searchInput");
+            const rows = document.querySelectorAll("#ticketTable tbody tr");
+            let selectedStatus = "";
 
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
 
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute("data-status");
-            const rowText = row.textContent.toLowerCase();
+                rows.forEach(row => {
+                    const rowStatus = row.getAttribute("data-status");
+                    const rowText = row.textContent.toLowerCase();
 
-            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-            const isSearchMatch = rowText.includes(searchTerm);
+                    const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
+                    const isSearchMatch = rowText.includes(searchTerm);
 
-            if (isStatusMatch && isSearchMatch) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
+                    if (isStatusMatch && isSearchMatch) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
             }
-        });
-    }
 
 
-    const plateIDs = ["plate1", "plate2", "plate3"];
-    plateIDs.forEach(id => {
-        const plate = document.getElementById(id);
-        if (plate) {
-            plate.addEventListener("click", function () {
-                selectedStatus = this.getAttribute("data-status");
-                searchInput.value = "";
+            const plateIDs = ["plate1", "plate2", "plate3"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        selectedStatus = this.getAttribute("data-status");
+                        searchInput.value = "";
+                        filterTable();
+                    });
+                }
+            });
+
+            searchInput.addEventListener("input", function() {
                 filterTable();
             });
-        }
-    });
+        });
+    </script>
 
-    searchInput.addEventListener("input", function () {
-        filterTable();
-    });
-});
-</script>
-
-<script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
             const tableRows = document.querySelectorAll("tbody tr");
             const confirmModal = document.getElementById("confirmModal");
@@ -464,32 +464,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             }
         });
 
-        
 
-         document.addEventListener("DOMContentLoaded", function() {
-            //  const searchInput = document.querySelector(".search-input");
-            //  const filterButton = document.querySelector(".filter-btn");
-            //  const table = document.querySelector("#ticketTable tbody");
 
-            //  // Search functionality
-            //  searchInput.addEventListener("keyup", function() {
-            //      const filter = searchInput.value.toLowerCase();
-            //      const rows = table.getElementsByTagName("tr");
+        document.addEventListener("DOMContentLoaded", function() {
 
-            //      for (let i = 0; i < rows.length; i++) {
-            //          const cells = rows[i].getElementsByTagName("td");
-            //          let found = false;
+            const filterButton = document.querySelector(".filter-btn");
 
-            //          for (let j = 0; j < cells.length; j++) {
-            //              if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-            //                  found = true;
-            //                  break;
-            //              }
-            //          }
-
-            //          rows[i].style.display = found ? "" : "none";
-            //      }
-            //  });
 
             // Filter dropdown functionality
             filterButton.addEventListener("click", function() {
@@ -573,11 +553,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 document.getElementById("addTicketModal").style.display = "flex";
 
                 // Auto-fill department correctly
-         
+
                 let departmentField = document.getElementById("departmentInputField");
 
                 if (departmentField) {
-                    departmentField.value = userDept;
+                    departmentField = document.getElementById("departmentInputField");
                 } else {
                     console.error("❌ Department field not found!");
                 }
@@ -623,6 +603,61 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             console.error("❌ Fetch Error:", error);
                         });
                 });
+        });
+
+
+
+
+        // Function to handle the timer
+        document.addEventListener("DOMContentLoaded", function() {
+            // Function to calculate elapsed time
+            function calculateElapsedTime(startTime, endTime = null) {
+                const startDate = new Date(startTime); // Convert start_at to a Date object
+                const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+                const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
+
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
+
+                return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+            }
+
+            // Update all timer cells
+            function updateTimers() {
+                const timerCells = document.querySelectorAll(".timer-cell");
+                timerCells.forEach((cell) => {
+                    const startAt = cell.getAttribute("data-start-at");
+                    const row = cell.closest("tr");
+                    const updatedAt = row
+                        .querySelector("td:nth-child(12)")
+                        ?.textContent.trim(); // Updated At column
+                    const status = row.getAttribute("data-status");
+
+                    // Stop the timer if updated_at has a value or status is "Resolved"
+                    if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+                        // Calculate the elapsed time between startAt and updatedAt
+                        cell.textContent = calculateElapsedTime(startAt, updatedAt);
+                        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+                        return;
+                    }
+
+                    if (startAt) {
+                        cell.textContent = calculateElapsedTime(startAt);
+                    }
+                });
+            }
+
+            // Update timers every second
+            setInterval(updateTimers, 1000);
+
+            // Initial update
+            updateTimers();
         });
     </script>
 

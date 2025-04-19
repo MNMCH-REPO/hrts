@@ -12,6 +12,7 @@
             <th>Category ID <i class="fas fa-sort"></i></th>
             <th>Assigned To <i class="fas fa-sort"></i></th>
             <th>Created At <i class="fas fa-sort"></i></th>
+            <th>Duration<i class="fas fa-sort"></i></th>
             <th>Updated At <i class="fas fa-sort"></i></th>
         </tr>
     </thead>
@@ -29,6 +30,7 @@
                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                    <td><?= htmlspecialchars($ticket['start_at']) ?></td>
                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                 </tr>
             <?php endforeach; ?>
