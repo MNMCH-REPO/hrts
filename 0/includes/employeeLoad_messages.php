@@ -117,7 +117,8 @@ try {
 
     // Display messages
     if (!$messages && !$attachments) {
-        echo '<p>No messages or attachments yet.</p>';
+    
+        echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
         foreach ($messages as $row) {
             $message = htmlspecialchars($row['response_text']);

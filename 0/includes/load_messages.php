@@ -58,8 +58,8 @@ try {
     } elseif ($ticketInfo['creator_name'] && $user_id == $ticketInfo['assigned_to']) {
         $displayName = htmlspecialchars($ticketInfo['creator_name']);
     } elseif ($roleUser === 'Admin') {
-        $displayName = $ticketInfo['assigned_name'] 
-            ? htmlspecialchars($ticketInfo['assigned_name']) 
+        $displayName = $ticketInfo['assigned_name']
+            ? htmlspecialchars($ticketInfo['assigned_name'])
             : "No Assigned yet";
     } else {
         $displayName = "Unknown";
@@ -138,14 +138,15 @@ try {
 
     // Display messages
     if (!$messages && !$attachments) {
-        echo '<p>No messages or attachments yet.</p>';
+        
+        echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
         foreach ($messages as $row) {
             $message = htmlspecialchars($row['response_text']);
             $sender_name = htmlspecialchars($row['sender_name']);
             $created_at = date('F j, Y - h:i A', strtotime($row['created_at']));
             $class = ($row['user_id'] == $user_id) ? "sent" : "received";
-        
+
             // Skip plain text messages if they are associated with a file
             $isFileMessage = false;
             foreach ($attachments as $attachment) {
@@ -154,19 +155,20 @@ try {
                     break;
                 }
             }
-        
+
             if ($isFileMessage) {
                 continue; // Skip this plain text message
             }
-        
+
             echo "<div class='message $class'>";
             echo "<p><strong>$sender_name:</strong> <br> $message</p>";
             echo "<small>Sent on: $created_at</small>";
             echo "</div>";
         }
-        
+
+      
         // Display attachments
-    foreach ($attachments as $attachment) {
+        foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
             $file_path = htmlspecialchars($attachment['file_path']);
             $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
@@ -174,19 +176,30 @@ try {
 
             echo "<div class='attachment'>";
 
+            echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
             // Check if the file is an image
             $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
             $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
 
+
             if (in_array($file_extension, $image_extensions)) {
-                echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
+                // Render the image with view and download options
                 echo "<img src='/$file_path' alt='$file_name' class='attachment-image'>";
-                echo "<p><button class='btnDefault' onclick=\"openImageModal('/$file_path', '$file_name')\">View Image</button></p>";
-                echo "<p><button class='btnDefault' onclick=\"handleFileAction('/$file_path', 'download')\">Download Image</button></p>";
+                echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
+            <img src='../../assets/images/icons/view.png' alt='View' >
+          </button></p>";
+                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+            <img src='../../assets/images/icons/downloads.png' alt='Download' >
+          </button></p>";
             } else {
+                // Provide view and download options for non-image files
                 echo "<p><strong>File:</strong> $file_name</p>";
-                echo "<p><button class='btnDefault' onclick=\"handleFileAction('/$file_path', 'view')\">View File</button></p>";
-                echo "<p><button class='btnDefault' onclick=\"handleFileAction('/$file_path', 'download')\">Download File</button></p>";
+                echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
+            <img src='../../assets/images/icons/view.png' alt='View' >
+          </button></p>";
+                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+            <img src='../../assets/images/icons/downloads.png' alt='Download' >
+          </button></p>";
             }
 
             echo "<small>Uploaded on: $uploaded_at</small>";

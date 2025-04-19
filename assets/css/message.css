@@ -111,6 +111,14 @@
             margin-top: 10px; /* Add spacing above the image */
         }
 
+
+        .no-messages {
+            text-align: center; /* Center the text horizontally */
+            margin-top: 20px; /* Add some spacing from the top */
+            font-size: 16px; /* Adjust font size if needed */
+            color: #555; /* Optional: Change text color */
+        }
+        
         /* Sidebar styles */
         .sidebar {
             width: 30%;

@@ -48,31 +48,6 @@ function loadMessages(ticketId = null, assignedName = null) {
   });
 }
 
-function connectWebSocket() {
-  socket = new WebSocket("ws://your-websocket-server-url");
-
-  socket.onopen = function () {
-    console.log("WebSocket connection established.");
-  };
-
-  socket.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-
-    if (data.ticket_id === selectedTicketId) {
-      updateChatbox(data.message);
-    }
-  };
-
-  socket.onerror = function (error) {
-    console.error("WebSocket error:", error);
-  };
-
-  socket.onclose = function () {
-    console.log("WebSocket closed. Reconnecting...");
-    setTimeout(connectWebSocket, 5000);
-  };
-}
-
 function updateChatbox(message) {
   const chatbox = $("#chatbox");
   const messageDiv = `

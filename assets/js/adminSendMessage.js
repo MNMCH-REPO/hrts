@@ -48,34 +48,40 @@ function checkTicketPermissions(ticketId) {
 
 
 
-let selectedTicketId = null;
-let refreshInterval = null;
-let socket = null; // Declare socket globally
+let selectedTicketId = null; // Declare selectedTicketId globally
+let refreshInterval = null; // Declare refreshInterval globally
+
 
 function loadMessages(ticketId = null, assignedName = null) {
   if (ticketId && ticketId !== selectedTicketId) {
-    selectedTicketId = ticketId;
+      selectedTicketId = ticketId;
 
-    $("#message").val("");       // Clear message input
-    $("#fileInput").val("");     // Clear file input
+      $("#message").val("");       // Clear message input
+      $("#fileInput").val("");     // Clear file input
 
-    // Clear existing interval
-    if (refreshInterval) clearInterval(refreshInterval);
+      // Clear existing interval
+      if (refreshInterval) clearInterval(refreshInterval);
 
-    // Auto-refresh messages every second
-    refreshInterval = setInterval(() => {
-      loadMessages(); // Refresh only if same ticket is still selected
-    }, 1000);
+      // Auto-refresh messages every second
+      refreshInterval = setInterval(() => {
+          loadMessages(); // Refresh only if the same ticket is still selected
+      }, 1000);
   }
 
   if (!selectedTicketId) {
-    console.error("No ticket selected.");
-    return;
+      console.error("No ticket selected.");
+      return;
   }
 
   if (assignedName) {
-    $("#assignedName").text("You are now having a conversation with: " + assignedName);
+      $("#assignedName").text("You are now having a conversation with: " + assignedName);
   }
+
+  
+  // Save the current scroll position
+  let chatbox = $("#chatbox");
+  let scrollPosition = chatbox.scrollTop();
+
 
   // Load messages via AJAX
   $.ajax({
@@ -83,39 +89,15 @@ function loadMessages(ticketId = null, assignedName = null) {
     type: "GET",
     data: { ticket_id: selectedTicketId },
     success: function (response) {
-      let chatbox = $("#chatbox");
       chatbox.html(response);
-      chatbox.scrollTop(chatbox[0].scrollHeight);
+
+      // Restore the scroll position
+      chatbox.scrollTop(scrollPosition);
     },
     error: function (xhr, status, error) {
       console.error("Error loading messages:", error);
     }
   });
-}
-
-function connectWebSocket() {
-  socket = new WebSocket("ws://your-websocket-server-url");
-
-  socket.onopen = function () {
-    console.log("WebSocket connection established.");
-  };
-
-  socket.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-
-    if (data.ticket_id === selectedTicketId) {
-      updateChatbox(data.message);
-    }
-  };
-
-  socket.onerror = function (error) {
-    console.error("WebSocket error:", error);
-  };
-
-  socket.onclose = function () {
-    console.log("WebSocket closed. Reconnecting...");
-    setTimeout(connectWebSocket, 5000);
-  };
 }
 
 function updateChatbox(message) {
@@ -139,39 +121,6 @@ function selectTicket(ticketId) {
 
   loadMessages(ticketId);
 }
-
-
-// function uploadFile(fileInput, ticketId, callback) {
-//   let formData = new FormData();
-//   formData.append("ticket_id", ticketId);
-//   formData.append("file", fileInput);
-
-//   // Debugging: Log FormData content
-//   console.log("Uploading file with Ticket ID:", ticketId);
-//   console.log("File Input:", fileInput);
-
-//   $.ajax({
-//       url: "../../0/includes/admin_upload_file.php", // Backend for file uploads
-//       type: "POST",
-//       data: formData,
-//       contentType: false,
-//       processData: false,
-//       success: function (response) {
-//           console.log("File uploaded successfully:", response);
-//           if (response.success) {
-//               if (callback) callback(response); // Call the callback function after file upload
-//           } else {
-//               console.error("File upload failed:", response.message);
-//               alert(response.message); // Show error message to the user
-//           }
-//       },
-//       error: function (xhr, status, error) {
-//           console.error("Error uploading file:", error);
-//           alert("An error occurred while uploading the file.");
-//       },
-//   });
-// }
-
 
 function uploadFile(fileInput, ticketId, callback) {
   let formData = new FormData();
