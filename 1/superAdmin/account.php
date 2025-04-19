@@ -175,7 +175,7 @@ require_once '../../0/includes/employeeTicket.php';
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Email</span>
-                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" required>
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" readonly>
                             </label>
 
                             <label class="account-box-content-row">

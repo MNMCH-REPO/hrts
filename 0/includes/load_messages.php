@@ -12,7 +12,7 @@ $ticket_id = intval($_GET['ticket_id']); // Ensure it's an integer
 
 try {
     // Check if the ticket exists and if the user has access
-    if ($roleUser === 'Admin') {
+    if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
         // Admins can view all tickets
         $checkStmt = $pdo->prepare("
             SELECT 
