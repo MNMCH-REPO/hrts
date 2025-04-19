@@ -54,7 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'Admin') {
                 header('Location: ../../1/hrAdmin/dashboard.php');
-            } else {
+            } elseif ($user['role'] === 'Super Admin') {
+                header('Location: ../../1/superAdmin/dashboard.php');
+            }
+            else {
                 header('Location: ../index.php');
             }
             exit;

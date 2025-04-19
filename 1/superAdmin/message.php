@@ -1,5 +1,6 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
+require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +31,7 @@ require_once '../../0/includes/employeeTicket.php';
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
                 <a href="dashboard.php">Dashboard</a>
             </div>
             <div class="navBtn">
@@ -46,7 +47,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
@@ -63,188 +64,271 @@ require_once '../../0/includes/employeeTicket.php';
             </div>
             <div class="main-convo">
                 <div class="container-convo">
-                    <div class="row-convo">
-                        
-                        <div class="cards-container">
-                                <?php
-                                require_once '../../0/includes/db.php';
 
-                                if (!isset($_SESSION['user_id'])) {
-                                    exit('User not logged in.');
-                                }
+                    <div class="chat-container" id="chatbox">
+                        <!-- Messages will be loaded here -->
 
-                                $stmt = $pdo->prepare("SELECT t.id, u.name AS assigned_name 
-                       FROM tickets t 
-                       JOIN users u ON t.assigned_to = u.id
-                       WHERE t.employee_id = :employee_id");
-                                $stmt->bindParam(':employee_id', $_SESSION['user_id'], PDO::PARAM_INT);
-                                $stmt->execute();
-                                $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-                                if ($tickets) {
-                                    foreach ($tickets as $index => $ticket) {
-                                        echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                                              onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
-                                        echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                        echo '</div>';
-                                    }
-                                } else {
-                                    echo '<p>No tickets assigned to you.</p>';
-                                }
-                                ?>
-
-                            </div>
-
-
-                           
-                            <div class="col-convo">
-                            <div class="chat-container" id="chatbox">
-                                <!-- Messages will be loaded here -->
-
-                            </div>
-
-
-                            <div class="input-area">
-                                <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                                <div class="attach" id="attach">Attachment📎</div>
-                                <input type="text" id="message" placeholder="Type a message...">
-                                <button id="sendmesageBtn">Send</button>
-                            </div>
-
-
-
-                        </div>
-
-
-                            </div>
                     </div>
+
+                    <div class="cards-container">
+                        <?php
+                        require_once '../../0/includes/db.php';
+
+                        if (!isset($_SESSION['user_id'])) {
+                            exit('User not logged in.');
+                        }
+
+                        $admin_ID = $_SESSION['user_id'];
+
+                        try {
+                            // Fetch all tickets
+                            $stmt = $pdo->prepare("
+            SELECT 
+                t.id, 
+                t.subject, 
+                u2.department, -- Fetch the department from the user who created the ticket
+                t.description, 
+                t.priority, 
+                t.status,
+                t.created_at,
+                COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
+                u2.name AS employee_name -- Employee who created the ticket
+            FROM tickets t
+            LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
+            LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
+            ORDER BY t.updated_at DESC; -- Sort by newest update
+        ");
+                            $stmt->execute();
+                            $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                            if ($tickets) {
+                                foreach ($tickets as $index => $ticket) {
+                                    echo '<div class="card card-' . (($index % 4) + 1) . '" 
+                      data-ticket-id="' . htmlspecialchars($ticket['id']) . '">';
+                                    echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
+                                    echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Department: ' . htmlspecialchars($ticket['department'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Subject: ' . htmlspecialchars($ticket['subject'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name'] ?? 'Unassigned') . '</h1>';
+                                    echo '<h1>Priority: ' . htmlspecialchars($ticket['priority'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Status: ' . htmlspecialchars($ticket['status'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at'] ?? 'N/A') . '</h1>';
+                                    echo '</div>';
+                                }
+                            } else {
+                                echo '<p>No tickets found.</p>';
+                            }
+                        } catch (PDOException $e) {
+                            echo 'Error fetching tickets: ' . $e->getMessage();
+                        }
+                        ?>
+                    </div>
+
+
+
+                    <div class="input-area" id="inputAreaID">
+                        <input type="file" name="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                        <div class="attach" id="attach">Attachment📎</div>
+                        <input type="text" id="message" placeholder="Type a message...">
+                        <button id="sendmesageBtn">Send</button>
+                    </div>
+
+
+                    <br><br>
+                    <div class="footer" style="text-align: center;">
+                        <p>All rights reserved ©</p>
+                    </div>
+
                 </div>
+
             </div>
+
         </div>
-    </div>
-    <footer class="footer-messages">
-        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../../assets/js/framework.js"></script>
 
-    <script>
-        let selectedTicketId = null;
-        let refreshInterval = null; // Store interval reference
 
-        function loadMessages(ticketId = null, assignedName = null) {
-            if (ticketId && ticketId !== selectedTicketId) {
-                selectedTicketId = ticketId;
+        <!-- Image Modal -->
+        <div id="imageModal" class="modal">
+            <span class="close" id="closeModal">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
 
-                // ✅ Clear previous interval before setting a new one
-                if (refreshInterval) {
-                    clearInterval(refreshInterval);
+        <style>
+            /* Modal styles */
+            .modal {
+                display: none;
+                /* Hidden by default */
+                position: fixed;
+                /* Stay in place */
+                z-index: 1000;
+                /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%;
+                /* Full width */
+                height: 100%;
+                /* Full height */
+                background-color: rgba(0, 0, 0, 0.8);
+                /* Black background with opacity */
+                justify-content: center;
+                /* Center content horizontally */
+                align-items: center;
+                /* Center content vertically */
+                display: flex;
+                /* Flexbox for centering */
+            }
+
+            .modal-content {
+                margin: auto;
+                display: block;
+                max-width: 60%;
+                /* Limit the image size to 60% of the viewport width */
+                max-height: 60%;
+                /* Limit the image size to 60% of the viewport height */
+                width: auto;
+                /* Maintain aspect ratio */
+                height: auto;
+                /* Maintain aspect ratio */
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                /* Add a subtle shadow */
+            }
+
+            .close {
+                position: absolute;
+                top: 20px;
+                right: 35px;
+                color: #fff;
+                font-size: 40px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: red;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .modal-content {
+                    max-width: 80%;
+                    /* Adjust for smaller screens */
+                    max-height: 50%;
+                    /* Adjust for smaller screens */
                 }
 
-                // ✅ Start a new interval for auto-refresh
-                refreshInterval = setInterval(() => {
-                    loadMessages();
-                }, 1000);
-            }
-
-            if (!selectedTicketId) {
-                console.error("No ticket selected.");
-                return;
-            }
-
-            if (assignedName) {
-                $("#assignedName").text("You are now having a conversation with: " + assignedName);
-            }
-
-            $.ajax({
-                url: "../../0/includes/load_messages.php",
-                type: "GET",
-                data: {
-                    ticket_id: selectedTicketId
-                },
-                success: function(response) {
-                    let chatbox = $("#chatbox");
-                    chatbox.html(response);
-                    chatbox.scrollTop(chatbox[0].scrollHeight);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error loading messages:", error);
+                .close {
+                    font-size: 30px;
+                    /* Smaller close button on small screens */
                 }
-            });
-        }
+            }
 
 
+            .card.active {
+                border: 2px solid #007bff;
+                background-color: #f0f8ff;
+            }
+        </style>
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="../../assets/js/framework.js"></script>
+        <script src="../../assets/js/adminSendMessage.js"></script>
 
-        function sendMessage(event) {
-            if (event) event.preventDefault();
-
-            let messageText = $("#message").val().trim();
-            let fileInput = $("#fileInput")[0].files[0];
-            let formData = new FormData();
-
-            if (selectedTicketId) {
-                formData.append("ticket_id", selectedTicketId);
-                if (fileInput) {
-                    formData.append("file", fileInput);
-                } else if (messageText !== "") {
-                    formData.append("message", messageText);
-                } else {
-                    console.warn("No message or file selected.");
+        <script>
+            function handleFileAction(filePath, action) {
+                if (!filePath) {
+                    console.error("File path is missing.");
                     return;
                 }
 
-                $.ajax({
-                    url: "../../0/includes/send_message.php",
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        console.log(response);
-                        $("#message").val(""); // Clear message input
-                        $("#fileInput").val(""); // Clear file input
-                        loadMessages(); // Refresh messages
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error sending message:", error);
-                    }
-                });
-            } else {
-                console.warn("No ticket selected.");
+                if (action === "view") {
+                    // Open the file in a new tab for viewing
+                    window.open(filePath, "_blank");
+                } else if (action === "download") {
+                    // Trigger a download using AJAX
+                    const link = document.createElement("a");
+                    link.href = filePath;
+                    link.download = filePath.split("/").pop(); // Extract the file name from the path
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    console.error("Invalid action specified.");
+                }
             }
-        }
 
-        $(document).ready(function() {
-            $(document).on("click", ".card", function() {
-                let ticketId = parseInt($(this).attr("onclick").match(/\d+/)[0]);
-                loadMessages(ticketId);
+            // Ensure modal is hidden on page load
+            document.addEventListener("DOMContentLoaded", function() {
+                const modal = document.getElementById("imageModal");
+                modal.style.display = "none"; // Ensure modal is hidden
             });
 
-            $("#sendmesageBtn").click(function(event) {
-                sendMessage(event);
-            });
 
-            $("#message").keypress(function(event) {
-                if (event.which == 13) {
-                    sendMessage(event);
+
+
+            // Open the modal and display the image
+            function openImageModal(imagePath) {
+                const modal = document.getElementById("imageModal");
+                const modalImage = document.getElementById("modalImage");
+
+                modal.style.display = "flex"; // Use flex to center the modal
+                modalImage.src = imagePath; // Set the image source
+            }
+
+            // Close the modal
+            document.getElementById("closeModal").onclick = function() {
+                const modal = document.getElementById("imageModal");
+                modal.style.display = "none";
+            };
+
+            // Close the modal when clicking outside the image
+            window.onclick = function(event) {
+                const modal = document.getElementById("imageModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
                 }
-            });
+            };
 
-            $("#attach").click(function() {
-                $("#fileInput").click();
-            });
 
-            $("#fileInput").change(function() {
-                let file = this.files[0];
-                if (file) {
-                    $("#message").val(file.name);
+
+
+            function renderTickets() {
+                const cardsContainer = document.querySelector(".cards-container");
+                cardsContainer.innerHTML = ""; // Clear existing cards
+
+                if (tickets.length > 0) {
+                    tickets.forEach((ticket, index) => {
+                        const card = document.createElement("div");
+                        card.className = `card card-${(index % 4) + 1}`;
+                        card.onclick = () => {
+                            loadMessages(ticket.id, ticket.assigned_name);
+                            startAutoRefresh(ticket.id, ticket.assigned_name);
+                        };
+
+                        card.innerHTML = `
+        <h1>Ticket ID: ${ticket.id}</h1>
+        <h1>Employee Name: ${ticket.employee_name}</h1>
+        <h1>Department: ${ticket.department}</h1>
+        <h1>Subject: ${ticket.subject}</h1>
+        <h1>Assigned Name: ${ticket.assigned_name}</h1>
+        <h1>Priority: ${ticket.priority}</h1>
+        <h1>Status: ${ticket.status}</h1>
+        <h1>Created At: ${ticket.created_at}</h1>
+      `;
+
+                        cardsContainer.appendChild(card);
+                    });
+
+                    // Automatically open the newest ticket
+                    const newestTicket = tickets[0];
+                    loadMessages(newestTicket.id, newestTicket.assigned_name);
+                } else {
+                    cardsContainer.innerHTML = "<p>No tickets assigned to you.</p>";
                 }
-            });
-        });
-    </script>
-
+            }
+        </script>
 
 </body>
 

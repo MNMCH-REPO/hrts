@@ -29,7 +29,7 @@ require_once '../../0/includes/employeeTicket.php';
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
                 <a href="dashboard.php">Dashboard</a>
             </div>
             <div class="navBtn">
@@ -45,7 +45,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="account.php">Account</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
@@ -180,12 +180,12 @@ require_once '../../0/includes/employeeTicket.php';
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Role</span>
-                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" required>
+                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" readonly>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Department</span>
-                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" required>
+                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" readonly>
                             </label>
 
                             <p class="change-password-text">
