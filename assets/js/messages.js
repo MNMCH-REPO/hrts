@@ -1,71 +1,51 @@
-let selectedTicketId = null;
-let refreshInterval = null;
-let socket = null; // Declare socket globally
+let selectedTicketId = null; // Declare selectedTicketId globally
+let refreshInterval = null; // Declare refreshInterval globally
+
 
 function loadMessages(ticketId = null, assignedName = null) {
   if (ticketId && ticketId !== selectedTicketId) {
-    selectedTicketId = ticketId;
+      selectedTicketId = ticketId;
 
-    $("#message").val("");       // Clear message input
-    $("#fileInput").val("");     // Clear file input
+      $("#message").val("");       // Clear message input
+      $("#fileInput").val("");     // Clear file input
 
-    // Clear existing interval
-    if (refreshInterval) clearInterval(refreshInterval);
+      // Clear existing interval
+      if (refreshInterval) clearInterval(refreshInterval);
 
-    // Auto-refresh messages every second
-    refreshInterval = setInterval(() => {
-      loadMessages(); // Refresh only if same ticket is still selected
-    }, 1000);
+      // Auto-refresh messages every second
+      refreshInterval = setInterval(() => {
+          loadMessages(); // Refresh only if the same ticket is still selected
+      }, 1000);
   }
 
   if (!selectedTicketId) {
-    console.error("No ticket selected.");
-    return;
+      console.error("No ticket selected.");
+      return;
   }
 
   if (assignedName) {
-    $("#assignedName").text("You are now having a conversation with: " + assignedName);
+      $("#assignedName").text("You are now having a conversation with: " + assignedName);
   }
+
+  // Save the current scroll position
+  let chatbox = $("#chatbox");
+  let scrollPosition = chatbox.scrollTop();
 
   // Load messages via AJAX
   $.ajax({
-    url: "../../0/includes/employeeLoad_messages.php",
-    type: "GET",
-    data: { ticket_id: selectedTicketId },
-    success: function (response) {
-      let chatbox = $("#chatbox");
-      chatbox.html(response);
-      chatbox.scrollTop(chatbox[0].scrollHeight);
-    },
-    error: function (xhr, status, error) {
-      console.error("Error loading messages:", error);
-    }
+      url: "../../0/includes/employeeLoad_messages.php",
+      type: "GET",
+      data: { ticket_id: selectedTicketId },
+      success: function (response) {
+          chatbox.html(response);
+
+          // Restore the scroll position
+          chatbox.scrollTop(scrollPosition);
+      },
+      error: function (xhr, status, error) {
+          console.error("Error loading messages:", error);
+      }
   });
-}
-
-function connectWebSocket() {
-  socket = new WebSocket("ws://your-websocket-server-url");
-
-  socket.onopen = function () {
-    console.log("WebSocket connection established.");
-  };
-
-  socket.onmessage = function (event) {
-    const data = JSON.parse(event.data);
-
-    if (data.ticket_id === selectedTicketId) {
-      updateChatbox(data.message);
-    }
-  };
-
-  socket.onerror = function (error) {
-    console.error("WebSocket error:", error);
-  };
-
-  socket.onclose = function () {
-    console.log("WebSocket closed. Reconnecting...");
-    setTimeout(connectWebSocket, 5000);
-  };
 }
 
 function updateChatbox(message) {
@@ -127,6 +107,8 @@ function sendMessage(event) {
   let messageText = $("#message").val().trim();
   let fileInput = $("#fileInput")[0].files[0];
 
+
+  
   if (!selectedTicketId) {
     console.warn("No ticket selected.");
     alert("Please select a ticket before sending a message.");

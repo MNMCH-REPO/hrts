@@ -175,17 +175,17 @@ require_once '../../0/includes/employeeTicket.php';
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Email</span>
-                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" required>
+                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" readonly>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Role</span>
-                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" required>
+                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" readonly>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Department</span>
-                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" required>
+                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" readonly>
                             </label>
 
                             <p class="change-password-text">

@@ -23,6 +23,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             margin: 5% 0 0 260px;
             align-self: center;
         }
+
         /* table */
 
         .tableContainer {
@@ -54,6 +55,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             background-color: var(--primary-100);
         }
 
+        tbody tr.highlighted {
+            background-color: var(--primary-500) !important;
+            /* Highlight color */
+            color: white;
+            /* Optional: Change text color */
+        }
 
         /* search container */
 
@@ -423,7 +430,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <div class="search-icon">
                         <img src="../../assets/images/icons/search.png" alt="Search">
                     </div>
-                    <button class="filter-btn">
+                    <button id="filterButton" class="filter-btn">
                         <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
                     </button>
                 </div>
@@ -444,6 +451,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
+                            <th>Duration <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
@@ -460,6 +468,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                    <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -537,9 +546,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <select name="assignTo" id="assignToID" required>
                         <option value="" disabled selected>Select HR Representative</option>
                         <?php foreach ($users as $user): ?>
-                            <?php if ($user['role'] === 'HR'): ?>
-                                <option value="<?= $user['id'] ?>"><?= htmlspecialchars($user['name']) ?></option>
-                            <?php endif; ?>
+                            <option value="<?= $user['id'] ?>">
+                                <?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['department']) ?>)
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -551,6 +560,136 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             </form>
         </div>
     </div>
+
+
+
+
+    <!-- Modal -->
+    <div id="addTicketModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">TICKET FORM</h1>
+
+            <form id="ticketForm">
+
+                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+                <div class="input-container">
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <label for="employeeName">Employee Name</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="subject" name="subject" required>
+                    <label for="subject">Subject</label>
+                </div>
+
+                <div class="input-container">
+                    <input type="text" id="departmentInputField" class="form-control"
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+
+                    <label for="department">Department</label>
+                </div>
+
+                <div class="input-container">
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Select a category</option>
+                        <?php
+                        require "../../0/includes/db.php"; // Ensure correct database connection
+
+                        try {
+                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
+                            }
+                        } catch (PDOException $e) {
+                            echo "<option disabled>Error loading categories</option>";
+                        }
+                        ?>
+                    </select>
+                    <label for="category">Category</label>
+                </div>
+
+
+                <div class="input-container">
+                    <textarea id="description" name="description" required></textarea>
+                    <label for="description">Description</label>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">ASSIGN TICKET</h1>
+
+            <form id="confirmationForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="confirmTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="confirmemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="confirmsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="confirmcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="confirmdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="confirmpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="confirmassignedID" name="confirmAssigned" value="<?= htmlspecialchars($tickets['assigned_to_name']) ?>"></p>
+                    </select>
+                </div>
+
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="confirmStatusID" value="<?= htmlspecialchars($ticketStatus['status']) ?>"></p>
+                    </select>
+                </div>
+
+
+                <div class="btnContainer">
+                    <button type="submit" name="confirmButton" id="confirmButtonID" class="btnDefault">CONFIRM ORDER</button>
+                    <button type="submit" name="declineButton" id="declineButtonID" class="btnWarning">DECLINE ORDER</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 
     <!-- Modal -->
@@ -630,63 +769,85 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     </div>
 
 
-    <!-- Modal -->
-    <div id="addTicketModal" class="modal">
+    <!-- Ticket Summarization Modal -->
+    <div id="ticketSummarizationModal" class="modal">
         <div class="modal-content">
-            <h1 class="modal-title">TICKET FORM</h1>
+            <h1 class="modal-title">Ticket Summarization</h1>
 
-            <form id="ticketForm">
-
-                <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
+            <form id="ticketSummarizationForm" method="POST">
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
-                    <label for="employeeName">Employee Name</label>
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="subject" name="subject" required>
-                    <label for="subject">Subject</label>
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="departmentInputField" class="form-control"
-                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
-
-                    <label for="department">Department</label>
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="summarizationDepartment"><?= htmlspecialchars($ticket['assigned_department'] ?? 'N/A') ?></p>
                 </div>
 
                 <div class="input-container">
-                    <select id="category" name="category" required>
-                        <option value="" disabled selected>Select a category</option>
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Duration:</strong></h1>
+                    <p class="center-text" id="summarizationDuration">
                         <?php
-                        require "../../0/includes/db.php"; // Ensure correct database connection
+                        if (!empty($ticket['start_at']) && !empty($ticket['updated_at'])) {
+                            $startAt = new DateTime($ticket['start_at']);
+                            $updatedAt = new DateTime($ticket['updated_at']);
+                            $duration = $startAt->diff($updatedAt);
 
-                        try {
-                            $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
-                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<option value='{$row['id']}'>{$row['name']}</option>";
-                            }
-                        } catch (PDOException $e) {
-                            echo "<option disabled>Error loading categories</option>";
+                            // Format the duration (e.g., "2 days, 3 hours, 15 minutes")
+                            echo $duration->format('%d days, %h hours, %i minutes');
+                        } else {
+                            echo 'N/A'; // Fallback if timestamps are missing
                         }
                         ?>
-                    </select>
-                    <label for="category">Category</label>
+                    </p>
                 </div>
 
-
-                <div class="input-container">
-                    <textarea id="description" name="description" required></textarea>
-                    <label for="description">Description</label>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
-                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
+                <div class="btnContainer">
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
                 </div>
             </form>
         </div>
     </div>
+
+
+
+
 
 
 
@@ -696,4 +857,4 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <script src="../../assets/js/adminTicket.js"></script>
 </body>
 
-</html>c
+</html>

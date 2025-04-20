@@ -24,7 +24,8 @@ try {
                 t.priority, 
                 c.name AS category_name, 
                 a.name AS assigned_to_name, 
-                t.created_at, 
+                t.created_at,
+                t.start_at,
                 t.updated_at 
             FROM tickets t
             LEFT JOIN users e ON t.employee_id = e.id
@@ -45,7 +46,7 @@ try {
 
 try {
     // Query to fetch id and name from users table
-    $stmt = $pdo->prepare("SELECT id, name, role FROM users ORDER BY name ASC");
+    $stmt = $pdo->prepare("SELECT id, name, role, department FROM users ORDER BY name ASC");
     $stmt->execute();
 
     // Fetch all rows

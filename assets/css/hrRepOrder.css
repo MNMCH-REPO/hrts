@@ -38,6 +38,11 @@ tbody tr:nth-child(even) {
     background-color: var(--primary-100);
 }
 
+tbody tr.highlighted {
+    background-color: var(--primary-500) !important; /* Use a higher specificity and !important */
+    color: white; /* Optional: Change text color */
+}
+
 
 .highlighted {
     background-color: var(--primary-400);

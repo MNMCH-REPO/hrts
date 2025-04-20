@@ -55,27 +55,27 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             <div class="main-ticket">
                 <div class="row plateRow">
-                <div class="col plate" id="plate1" data-status="Open">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Open</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                    <div class="col plate" id="plate1" data-status="Open">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Open</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                        </div>
                     </div>
-                </div>
-                <div class="col plate" id="plate2" data-status="In Progress">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">In Progress</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                    <div class="col plate" id="plate2" data-status="In Progress">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">In Progress</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                        </div>
                     </div>
-                </div>
-                <div class="col plate" id="plate3" data-status="Resolved">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Resolved</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                    <div class="col plate" id="plate3" data-status="Resolved">
+                        <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                        <div class="plateContent">
+                            <div class="plateTitle">Resolved</div>
+                            <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                        </div>
                     </div>
-                </div>
 
                     <div class="col plate" id="plate4">
                         <div class="plateIcon" style="background-image: url(../../assets/images/icons/add.png);"></div>
@@ -89,17 +89,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="pagination-wrapper">
                     <div class="pagination">
-                        <?php if ($page > 1): ?>
-                            <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
-                        <?php endif; ?>
 
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-                        <?php endfor; ?>
-
-                        <?php if ($page < $totalPages): ?>
-                            <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
-                        <?php endif; ?>
                     </div>
 
                     <div class="search-container">
@@ -117,7 +107,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="tableContainer">
                     <?php
-                    require_once '../../0/includes/employeeTable.php'; // Ensure correct database connection
+                    require_once 'employeeTable.php'; // Ensure correct database connection
                     ?>
                 </div>
 
@@ -150,7 +140,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="{{ session('department') }}" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
 
                     <label for="department">Department</label>
                 </div>
@@ -255,387 +245,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     <script src="../../assets/js/framework.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const plate = document.getElementById("plate1");
-
-            plate.addEventListener("click", function () {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const plate = document.getElementById("plate2");
-
-            plate.addEventListener("click", function () {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const plate = document.getElementById("plate3");
-
-            plate.addEventListener("click", function () {
-                const selectedStatus = this.getAttribute("data-status");
-                const rows = document.querySelectorAll("#ticketTable tbody tr");
-
-                rows.forEach(row => {
-                    const rowStatus = row.getAttribute("data-status");
-
-                    if (rowStatus === selectedStatus) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
-            });
-        });
-
-
-
-        document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const rows = document.querySelectorAll("#ticketTable tbody tr");
-    let selectedStatus = "";
-
-    function filterTable() {
-        const searchTerm = searchInput.value.toLowerCase();
-
-        rows.forEach(row => {
-            const rowStatus = row.getAttribute("data-status");
-            const rowText = row.textContent.toLowerCase();
-
-            const isStatusMatch = selectedStatus === "" || rowStatus === selectedStatus;
-            const isSearchMatch = rowText.includes(searchTerm);
-
-            if (isStatusMatch && isSearchMatch) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
-
-    const plateIDs = ["plate1", "plate2", "plate3"];
-    plateIDs.forEach(id => {
-        const plate = document.getElementById(id);
-        if (plate) {
-            plate.addEventListener("click", function () {
-                selectedStatus = this.getAttribute("data-status");
-                searchInput.value = "";
-                filterTable();
-            });
-        }
-    });
-
-    searchInput.addEventListener("input", function () {
-        filterTable();
-    });
-});
-</script>
-
-<script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const tableRows = document.querySelectorAll("tbody tr");
-            const confirmModal = document.getElementById("confirmModal");
-
-            // Modal fields for confirmModal
-            const confirmModalFields = {
-                ticketIdField: document.getElementById("confirmTicketID"),
-                employeeNameField: document.getElementById("confirmemployeeID"),
-                departmentField: document.getElementById("confirmdepartmentID"),
-                subjectField: document.getElementById("confirmsubjectID"),
-                categoryField: document.getElementById("confirmcategoryID"),
-                descriptionField: document.getElementById("confirmdescriptionID"),
-                priorityField: document.getElementById("confirmpriorityID"),
-                assignedToField: document.getElementById("confirmassignedID"),
-                statusField: document.getElementById("confirmStatusID"),
-            };
-
-            // Add click event listener to each row
-            tableRows.forEach((row) => {
-                row.addEventListener("click", function() {
-                    // Remove highlight from all rows
-                    tableRows.forEach((r) => r.classList.remove("highlighted"));
-
-                    // Highlight the clicked row
-                    this.classList.add("highlighted");
-
-                    // Get the values from the clicked row
-                    const ticketId = this.children[0].textContent.trim();
-                    const employeeName = this.children[1].textContent.trim();
-                    const assigned_department = this.children[2].textContent.trim();
-                    const subject = this.children[3].textContent.trim();
-                    const description = this.children[4].textContent.trim();
-                    const status = this.children[5].textContent.trim();
-                    const priority = this.children[6].textContent.trim();
-                    const category = this.children[7].textContent.trim();
-                    const assignedTo = this.children[8].textContent.trim();
-
-                    // Set the values in the confirmModal
-                    confirmModalFields.ticketIdField.textContent = ticketId;
-                    confirmModalFields.employeeNameField.textContent = employeeName;
-                    confirmModalFields.departmentField.textContent = assigned_department;
-                    confirmModalFields.subjectField.textContent = subject;
-                    confirmModalFields.categoryField.textContent = category;
-                    confirmModalFields.descriptionField.textContent = description;
-                    confirmModalFields.priorityField.textContent = priority;
-                    confirmModalFields.assignedToField.textContent = assignedTo;
-                    confirmModalFields.statusField.textContent = status;
-
-                    // Open the confirmModal
-                    confirmModal.style.display = "flex";
-                });
-            });
-
-            // Close the modal when clicking the "BACK" button
-            const closeModalButton = document.getElementById("confirmBack");
-            closeModalButton.addEventListener("click", function() {
-                confirmModal.style.display = "none";
-            });
-
-            // Close the modal when clicking outside of it
-            window.addEventListener("click", function(event) {
-                if (event.target === confirmModal) {
-                    confirmModal.style.display = "none";
-                }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Add event listeners for the buttons
-            document
-                .getElementById("confirmButtonID")
-                .addEventListener("click", function(e) {
-                    e.preventDefault();
-                    handleTicketAction("confirm");
-                });
-
-            document
-                .getElementById("declineButtonID")
-                .addEventListener("click", function(e) {
-                    e.preventDefault();
-                    handleTicketAction("decline");
-                });
-
-            function handleTicketAction(action) {
-                const ticketId = document
-                    .getElementById("confirmTicketID")
-                    .textContent.trim();
-
-                // Send AJAX request
-                fetch("../../0/includes/acceptTicket.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            action: action,
-                            ticketId: ticketId,
-                        }),
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            alert(data.message);
-                            // Optionally reload the page or update the UI
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                        alert("An error occurred while processing the request.");
-                    });
-            }
-        });
-
-        
-
-         document.addEventListener("DOMContentLoaded", function() {
-            //  const searchInput = document.querySelector(".search-input");
-            //  const filterButton = document.querySelector(".filter-btn");
-            //  const table = document.querySelector("#ticketTable tbody");
-
-            //  // Search functionality
-            //  searchInput.addEventListener("keyup", function() {
-            //      const filter = searchInput.value.toLowerCase();
-            //      const rows = table.getElementsByTagName("tr");
-
-            //      for (let i = 0; i < rows.length; i++) {
-            //          const cells = rows[i].getElementsByTagName("td");
-            //          let found = false;
-
-            //          for (let j = 0; j < cells.length; j++) {
-            //              if (cells[j] && cells[j].textContent.toLowerCase().includes(filter)) {
-            //                  found = true;
-            //                  break;
-            //              }
-            //          }
-
-            //          rows[i].style.display = found ? "" : "none";
-            //      }
-            //  });
-
-            // Filter dropdown functionality
-            filterButton.addEventListener("click", function() {
-                // Create a dropdown menu dynamically
-                let dropdown = document.querySelector(".filter-dropdown");
-                if (!dropdown) {
-                    dropdown = document.createElement("div");
-                    dropdown.classList.add("filter-dropdown");
-                    dropdown.style.position = "absolute";
-                    dropdown.style.backgroundColor = "#fff";
-                    dropdown.style.border = "1px solid #ccc";
-                    dropdown.style.padding = "10px";
-                    dropdown.style.zIndex = "1000";
-
-                    // Add filter options
-                    const filters = [{
-                            column: 5,
-                            label: "Status"
-                        },
-                        {
-                            column: 6,
-                            label: "Priority"
-                        },
-                        {
-                            column: 7,
-                            label: "Category"
-                        },
-                    ];
-
-                    filters.forEach((filter) => {
-                        const option = document.createElement("div");
-                        option.textContent = filter.label;
-                        option.style.cursor = "pointer";
-                        option.style.padding = "5px 10px";
-                        option.addEventListener("click", function() {
-                            applyFilter(filter.column);
-                            dropdown.remove(); // Remove dropdown after selection
-                        });
-                        dropdown.appendChild(option);
-                    });
-
-                    document.body.appendChild(dropdown);
-
-                    // Position the dropdown below the filter button
-                    const rect = filterButton.getBoundingClientRect();
-                    dropdown.style.left = `${rect.left}px`;
-                    dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-
-                    // Close dropdown when clicking outside
-                    document.addEventListener("click", function closeDropdown(event) {
-                        if (!dropdown.contains(event.target) && event.target !== filterButton) {
-                            dropdown.remove();
-                            document.removeEventListener("click", closeDropdown);
-                        }
-                    });
-                }
-            });
-
-            // Apply filter based on the selected column
-            function applyFilter(columnIndex) {
-                const rows = table.getElementsByTagName("tr");
-                const filterValue = prompt("Enter the value to filter by:");
-
-                if (filterValue) {
-                    for (let i = 0; i < rows.length; i++) {
-                        const cell = rows[i].getElementsByTagName("td")[columnIndex];
-                        if (cell) {
-                            rows[i].style.display =
-                                cell.textContent.trim().toLowerCase() === filterValue.toLowerCase() ?
-                                "" :
-                                "none";
-                        }
-                    }
-                }
-            }
-        });
-
-        document.addEventListener("DOMContentLoaded", function() {
-            // Open modal function
-            function openModal() {
-                document.getElementById("addTicketModal").style.display = "flex";
-
-                // Auto-fill department correctly
-                let userDept = "<?= $_SESSION['department'] ?>"; // Use PHP instead of Blade
-                let departmentField = document.getElementById("departmentInputField");
-
-                if (departmentField) {
-                    departmentField.value = userDept;
-                } else {
-                    console.error("❌ Department field not found!");
-                }
-            }
-
-            // Make the function globally accessible
-            window.openModal = openModal;
-
-            // Attach event listener to "ADD" button
-            document.getElementById("plate4").addEventListener("click", openModal);
-
-            // Close modal function
-            function closeModal() {
-                document.getElementById("addTicketModal").style.display = "none";
-            }
-
-            window.closeModal = closeModal;
-
-            // Submit form via AJAX
-            document
-                .getElementById("ticketForm")
-                .addEventListener("submit", function(e) {
-                    e.preventDefault();
-
-                    let formData = new FormData(this);
-
-                    fetch("../../0/includes/submitTicket.php", {
-                            method: "POST",
-                            body: formData,
-                        })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            if (data.success) {
-                                alert("Ticket submitted successfully!");
-                                document.getElementById("ticketForm").reset();
-                                closeModal();
-                                location.reload();
-                            } else {
-                                alert("Error: " + data.message);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error("❌ Fetch Error:", error);
-                        });
-                });
-        });
-    </script>
-
+<script src="../../assets/js/employeeTicket.js"></script>
 
 
 </body>

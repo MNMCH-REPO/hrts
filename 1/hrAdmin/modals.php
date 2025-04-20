@@ -23,53 +23,55 @@
                  <select id="role" name="role" required>
                      <option value="" disabled selected>Please select a Role</option>
                      <option value="Admin">Admin</option>
-                     <option value="HR Rep">HR Rep</option>
                      <option value="Employee">Employee</option>
+                     <option value="HR Rep">HR Rep</option>
+
                  </select>
              </div>
 
              <div class="input-container">
                  <select id="department" name="department" required>
                      <option value="" disabled selected>Please select the Department</option>
-                     <option value="LINEN DEPARTMENT">LINEN DEPARTMENT</option>
-                     <option value="SECURITY DEPARTMENT">SECURITY DEPARTMENT</option>
-                     <option value="MAINTENANCE DEPARTMENT">MAINTENANCE DEPARTMENT</option>
-                     <option value="INFORMATION DEPARTMENT">INFORMATION DEPARTMENT</option>
-                     <option value="ADMITTING DEPARTMENT">ADMITTING DEPARTMENT</option>
-                     <option value="PHARMACY DEPARTMENT">PHARMACY DEPARTMENT</option>
-                     <option value="EMERGENCY ROOM DEPARTMENT">EMERGENCY ROOM DEPARTMENT</option>
-                     <option value="CASHIER DEPARTMENT">CASHIER DEPARTMENT</option>
-                     <option value="PHILHEALTH GF DEPARTMENT">PHILHEALTH GF DEPARTMENT</option>
-                     <option value="BILLING DEPARTMENT">BILLING DEPARTMENT</option>
-                     <option value="RADIOLOGY DEPARTMENT">RADIOLOGY DEPARTMENT</option>
-                     <option value="HEART STATION DEPARTMENT">HEART STATION DEPARTMENT</option>
-                     <option value="HMO DEPARTMENT">HMO DEPARTMENT</option>
-                     <option value="LABORATORY DEPARTMENT">LABORATORY DEPARTMENT</option>
-                     <option value="REHAB DEPARTMENT">REHAB DEPARTMENT</option>
-                     <option value="DIALYSIS DEPARTMENT">DIALYSIS DEPARTMENT</option>
-                     <option value="CSR DEPARTMENT">CSR DEPARTMENT</option>
-                     <option value="OR/DR DEPARTMENT">OR/DR DEPARTMENT</option>
-                     <option value="NICU DEPARTMENT">NICU DEPARTMENT</option>
-                     <option value="ICU DEPARTMENT">ICU DEPARTMENT</option>
-                     <option value="PULMONARY DEPARTMENT">PULMONARY DEPARTMENT</option>
-                     <option value="OB-SONO DEPARTMENT">OB-SONO DEPARTMENT</option>
-                     <option value="EYE CENTER DEPARTMENT">EYE CENTER DEPARTMENT</option>
-                     <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
-                     <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
-                     <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
-                     <option value="HR DEPARTMENT">HR DEPARTMENT</option>
-                     <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
-                     <option value="NORTH POLE DEPARTMENT">NORTH POLE DEPARTMENT</option>
-                     <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>
                      <option value="ACCOUNTING DEPARTMENT">ACCOUNTING DEPARTMENT</option>
+                     <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
+                     <option value="BILLING DEPARTMENT">BILLING DEPARTMENT</option>
+                     <option value="CASHIER DEPARTMENT">CASHIER DEPARTMENT</option>
+                     <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
                      <option value="CNC DEPARTMENT">CNC DEPARTMENT</option>
-                     <option value="NSO DEPARTMENT">NSO DEPARTMENT</option>
+                     <option value="CSR DEPARTMENT">CSR DEPARTMENT</option>
+                     <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
+                     <option value="DIALYSIS DEPARTMENT">DIALYSIS DEPARTMENT</option>
+                     <option value="EMERGENCY ROOM DEPARTMENT">EMERGENCY ROOM DEPARTMENT</option>
+                     <option value="EYE CENTER DEPARTMENT">EYE CENTER DEPARTMENT</option>
+                     <option value="HEART STATION DEPARTMENT">HEART STATION DEPARTMENT</option>
+                     <option value="HR DEPARTMENT">HR DEPARTMENT</option>
+                     <option value="ICU DEPARTMENT">ICU DEPARTMENT</option>
+                     <option value="INFORMATION DEPARTMENT">INFORMATION DEPARTMENT</option>
+                     <option value="LABORATORY DEPARTMENT">LABORATORY DEPARTMENT</option>
+                     <option value="LINEN DEPARTMENT">LINEN DEPARTMENT</option>
+                     <option value="MAINTENANCE DEPARTMENT">MAINTENANCE DEPARTMENT</option>
                      <option value="MARKETING DEPARTMENT">MARKETING DEPARTMENT</option>
-                     <option value="CRO DEPARTMENT">CRO DEPARTMENT</option>
+                     <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
                      <option value="MIS/IT DEPARTMENT">MIS/IT DEPARTMENT</option>
+                     <option value="NORTH POLE DEPARTMENT">NORTH POLE DEPARTMENT</option>
+                     <option value="NICU DEPARTMENT">NICU DEPARTMENT</option>
+                     <option value="NSO DEPARTMENT">NSO DEPARTMENT</option>
                      <option value="NURSE STATION DEPARTMENT">NURSE STATION DEPARTMENT</option>
+                     <option value="OB-SONO DEPARTMENT">OB-SONO DEPARTMENT</option>
+                     <option value="OR/DR DEPARTMENT">OR/DR DEPARTMENT</option>
+                     <option value="PHARMACY DEPARTMENT">PHARMACY DEPARTMENT</option>
+                     <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>
+                     <option value="PHILHEALTH GF DEPARTMENT">PHILHEALTH GF DEPARTMENT</option>
                      <option value="PROPERTY DEPARTMENT">PROPERTY DEPARTMENT</option>
+                     <option value="PULMONARY DEPARTMENT">PULMONARY DEPARTMENT</option>
                      <option value="PURCHASING DEPARTMENT">PURCHASING DEPARTMENT</option>
+                     <option value="RADIOLOGY DEPARTMENT">RADIOLOGY DEPARTMENT</option>
+                     <option value="REHAB DEPARTMENT">REHAB DEPARTMENT</option>
+                     <option value="SECURITY DEPARTMENT">SECURITY DEPARTMENT</option>
+                     <option value="SHARED SERVICES DEPARTMENT">SHARED SERVICES DEPARTMENT</option>
+                     <option value="TALENT ACQUISITION DEPARTMENT">TALENT ACQUISITION DEPARTMENT</option>
+                     <option value="ZONAL MANAGEMENT DEPARTMENT">ZONAL MANAGEMENT DEPARTMENT</option>
+
                  </select>
              </div>
 
@@ -105,53 +107,54 @@
                  <select id="roleEditID" name="role" required>
                      <option value="" disabled selected>Please select a Role</option>
                      <option value="Admin">Admin</option>
-                     <option value="HR Rep">HR Rep</option>
                      <option value="Employee">Employee</option>
+                     <option value="HR Rep">HR Rep</option>
                  </select>
              </div>
 
              <div class="input-container">
                  <select id="departmentEditID" name="department" required>
                      <option value="" disabled selected>Please select the Department</option>
-                     <option value="LINEN DEPARTMENT">LINEN DEPARTMENT</option>
-                     <option value="SECURITY DEPARTMENT">SECURITY DEPARTMENT</option>
-                     <option value="MAINTENANCE DEPARTMENT">MAINTENANCE DEPARTMENT</option>
-                     <option value="INFORMATION DEPARTMENT">INFORMATION DEPARTMENT</option>
-                     <option value="ADMITTING DEPARTMENT">ADMITTING DEPARTMENT</option>
-                     <option value="PHARMACY DEPARTMENT">PHARMACY DEPARTMENT</option>
-                     <option value="EMERGENCY ROOM DEPARTMENT">EMERGENCY ROOM DEPARTMENT</option>
-                     <option value="CASHIER DEPARTMENT">CASHIER DEPARTMENT</option>
-                     <option value="PHILHEALTH GF DEPARTMENT">PHILHEALTH GF DEPARTMENT</option>
-                     <option value="BILLING DEPARTMENT">BILLING DEPARTMENT</option>
-                     <option value="RADIOLOGY DEPARTMENT">RADIOLOGY DEPARTMENT</option>
-                     <option value="HEART STATION DEPARTMENT">HEART STATION DEPARTMENT</option>
-                     <option value="HMO DEPARTMENT">HMO DEPARTMENT</option>
-                     <option value="LABORATORY DEPARTMENT">LABORATORY DEPARTMENT</option>
-                     <option value="REHAB DEPARTMENT">REHAB DEPARTMENT</option>
-                     <option value="DIALYSIS DEPARTMENT">DIALYSIS DEPARTMENT</option>
-                     <option value="CSR DEPARTMENT">CSR DEPARTMENT</option>
-                     <option value="OR/DR DEPARTMENT">OR/DR DEPARTMENT</option>
-                     <option value="NICU DEPARTMENT">NICU DEPARTMENT</option>
-                     <option value="ICU DEPARTMENT">ICU DEPARTMENT</option>
-                     <option value="PULMONARY DEPARTMENT">PULMONARY DEPARTMENT</option>
-                     <option value="OB-SONO DEPARTMENT">OB-SONO DEPARTMENT</option>
-                     <option value="EYE CENTER DEPARTMENT">EYE CENTER DEPARTMENT</option>
-                     <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
-                     <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
-                     <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
-                     <option value="H DEPARTMENT">H DEPARTMENT</option>
-                     <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
-                     <option value="NORTH POLE DEPARTMENT">NORTH POLE DEPARTMENT</option>
-                     <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>
                      <option value="ACCOUNTING DEPARTMENT">ACCOUNTING DEPARTMENT</option>
+                     <option value="ADMIN SEC DEPARTMENT">ADMIN SEC DEPARTMENT</option>
+                     <option value="BILLING DEPARTMENT">BILLING DEPARTMENT</option>
+                     <option value="CASHIER DEPARTMENT">CASHIER DEPARTMENT</option>
+                     <option value="CHEMO DEPARTMENT">CHEMO DEPARTMENT</option>
                      <option value="CNC DEPARTMENT">CNC DEPARTMENT</option>
-                     <option value="NSO DEPARTMENT">NSO DEPARTMENT</option>
+                     <option value="CSR DEPARTMENT">CSR DEPARTMENT</option>
+                     <option value="DIETARY DEPARTMENT">DIETARY DEPARTMENT</option>
+                     <option value="DIALYSIS DEPARTMENT">DIALYSIS DEPARTMENT</option>
+                     <option value="EMERGENCY ROOM DEPARTMENT">EMERGENCY ROOM DEPARTMENT</option>
+                     <option value="EYE CENTER DEPARTMENT">EYE CENTER DEPARTMENT</option>
+                     <option value="HEART STATION DEPARTMENT">HEART STATION DEPARTMENT</option>
+                     <option value="HR DEPARTMENT">HR DEPARTMENT</option>
+                     <option value="ICU DEPARTMENT">ICU DEPARTMENT</option>
+                     <option value="INFORMATION DEPARTMENT">INFORMATION DEPARTMENT</option>
+                     <option value="LABORATORY DEPARTMENT">LABORATORY DEPARTMENT</option>
+                     <option value="LINEN DEPARTMENT">LINEN DEPARTMENT</option>
+                     <option value="MAINTENANCE DEPARTMENT">MAINTENANCE DEPARTMENT</option>
                      <option value="MARKETING DEPARTMENT">MARKETING DEPARTMENT</option>
-                     <option value="CRO DEPARTMENT">CRO DEPARTMENT</option>
+                     <option value="MEDICAL RECORDS DEPARTMENT">MEDICAL RECORDS DEPARTMENT</option>
                      <option value="MIS/IT DEPARTMENT">MIS/IT DEPARTMENT</option>
+                     <option value="NORTH POLE DEPARTMENT">NORTH POLE DEPARTMENT</option>
+                     <option value="NICU DEPARTMENT">NICU DEPARTMENT</option>
+                     <option value="NSO DEPARTMENT">NSO DEPARTMENT</option>
                      <option value="NURSE STATION DEPARTMENT">NURSE STATION DEPARTMENT</option>
+                     <option value="OB-SONO DEPARTMENT">OB-SONO DEPARTMENT</option>
+                     <option value="OR/DR DEPARTMENT">OR/DR DEPARTMENT</option>
+                     <option value="PHARMACY DEPARTMENT">PHARMACY DEPARTMENT</option>
+                     <option value="PHILHEALTH 4TH F DEPARTMENT">PHILHEALTH 4TH F DEPARTMENT</option>
+                     <option value="PHILHEALTH GF DEPARTMENT">PHILHEALTH GF DEPARTMENT</option>
                      <option value="PROPERTY DEPARTMENT">PROPERTY DEPARTMENT</option>
+                     <option value="PULMONARY DEPARTMENT">PULMONARY DEPARTMENT</option>
                      <option value="PURCHASING DEPARTMENT">PURCHASING DEPARTMENT</option>
+                     <option value="RADIOLOGY DEPARTMENT">RADIOLOGY DEPARTMENT</option>
+                     <option value="REHAB DEPARTMENT">REHAB DEPARTMENT</option>
+                     <option value="SECURITY DEPARTMENT">SECURITY DEPARTMENT</option>
+                     <option value="SHARED SERVICES DEPARTMENT">SHARED SERVICES DEPARTMENT</option>
+                     <option value="TALENT ACQUISITION DEPARTMENT">TALENT ACQUISITION DEPARTMENT</option>
+                     <option value="ZONAL MANAGEMENT DEPARTMENT">ZONAL MANAGEMENT DEPARTMENT</option>
+
                  </select>
              </div>
 
