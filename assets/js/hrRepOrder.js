@@ -467,48 +467,45 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Function to handle the timer
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function() {
   // Function to calculate elapsed time
   function calculateElapsedTime(startTime, endTime = null) {
-    const startDate = new Date(startTime); // Convert start_at to a Date object
-    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
-    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
+      const startDate = new Date(startTime); // Convert start_at to a Date object
+      const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+      const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
 
-    const hours = Math.floor(elapsed / 3600);
-    const minutes = Math.floor((elapsed % 3600) / 60);
-    const seconds = elapsed % 60;
+      const hours = Math.floor(elapsed / 3600);
+      const minutes = Math.floor((elapsed % 3600) / 60);
+      const seconds = elapsed % 60;
 
-    return `${hours
-      .toString()
-      .padStart(
-        2,
-        "0"
-      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      return `${hours
+.toString()
+.padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+.toString()
+.padStart(2, "0")}`;
   }
 
   // Update all timer cells
   function updateTimers() {
-    const timerCells = document.querySelectorAll(".timer-cell");
-    timerCells.forEach((cell) => {
-      const startAt = cell.getAttribute("data-start-at");
-      const row = cell.closest("tr");
-      const updatedAt = row
-        .querySelector("td:nth-child(12)")
-        ?.textContent.trim(); // Updated At column
-      const status = row.getAttribute("data-status");
+      const timerCells = document.querySelectorAll(".timer-cell");
+      timerCells.forEach((cell) => {
+          const startAt = cell.getAttribute("data-start-at");
+          const row = cell.closest("tr");
+          const updatedAt = row.querySelector("td:nth-child(12)")?.textContent.trim(); // Updated At column
+          const status = row.getAttribute("data-status");
 
-      // Stop the timer if updated_at has a value or status is "Resolved"
-      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
-        // Calculate the elapsed time between startAt and updatedAt
-        cell.textContent = calculateElapsedTime(startAt, updatedAt);
-        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
-        return;
-      }
+          // Stop the timer if updated_at has a value or status is "Resolved"
+          if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+              // Calculate the elapsed time between startAt and updatedAt
+              cell.textContent = calculateElapsedTime(startAt, updatedAt);
+              cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+              return;
+          }
 
-      if (startAt) {
-        cell.textContent = calculateElapsedTime(startAt);
-      }
-    });
+          if (startAt) {
+              cell.textContent = calculateElapsedTime(startAt);
+          }
+      });
   }
 
   // Update timers every second
