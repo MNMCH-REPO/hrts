@@ -275,6 +275,84 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         </div>
     </div>
 
+    
+    <!-- Ticket Summarization Modal -->
+    <div id="ticketSummarizationModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">Ticket Summarization</h1>
+
+            <form id="ticketSummarizationForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="summarizationDepartment"><?= htmlspecialchars($ticket['assigned_department'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Duration:</strong></h1>
+                    <p class="center-text" id="summarizationDuration">
+                        <?php
+                        if (!empty($ticket['start_at']) && !empty($ticket['updated_at'])) {
+                            $startAt = new DateTime($ticket['start_at']);
+                            $updatedAt = new DateTime($ticket['updated_at']);
+                            $duration = $startAt->diff($updatedAt);
+
+                            // Format the duration (e.g., "2 days, 3 hours, 15 minutes")
+                            echo $duration->format('%d days, %h hours, %i minutes');
+                        } else {
+                            echo 'N/A'; // Fallback if timestamps are missing
+                        }
+                        ?>
+                    </p>
+                </div>
+
+                <div class="btnContainer">
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 
 
     <script src="../../assets/js/framework.js"></script>

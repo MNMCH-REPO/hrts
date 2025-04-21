@@ -239,6 +239,58 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Function to handle the timer
+document.addEventListener("DOMContentLoaded", function () {
+  // Function to calculate elapsed time
+  function calculateElapsedTime(startTime, endTime = null) {
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
+
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+
+    return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  // Update all timer cells
+  function updateTimers() {
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row
+        .querySelector("td:nth-child(11)")
+        ?.textContent.trim(); // Corrected column index
+      const status = row.getAttribute("data-status");
+
+      // Stop the timer if updated_at has a value or status is "Resolved"
+      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+        // Calculate the elapsed time between startAt and updatedAt
+        cell.textContent = calculateElapsedTime(startAt, updatedAt);
+        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+        return;
+      }
+
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
+    });
+  }
+
+  // Update timers every second
+  setInterval(updateTimers, 1000);
+
+  // Initial update
+  updateTimers();
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   const tableRows = document.querySelectorAll("#ticketTable tbody tr");
   const assignTicketModal = document.getElementById("assignTicketModal");
@@ -341,7 +393,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open the confirmModal
         confirmModalFields.ticketIdField.textContent = ticketId;
         confirmModalFields.employeeNameField.textContent = employeeName;
-        confirmModalFields.departmentField.textContent = department;
+        confirmModalFields.departmentField.textContent =
+          confirmModalFields.departmentField.dataset.assigned;
         confirmModalFields.subjectField.textContent = subject;
         confirmModalFields.categoryField.textContent = category;
         confirmModalFields.descriptionField.textContent = description;
@@ -354,7 +407,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Open the editStatusModal
         editStatusFields.ticketIdField.textContent = ticketId;
         editStatusFields.employeeNameField.textContent = employeeName;
-        editStatusFields.departmentField.textContent = department;
+        editStatusFields.departmentField.textContent =
+          editStatusFields.departmentField.dataset.assigned;
         editStatusFields.subjectField.textContent = subject;
         editStatusFields.categoryField.textContent = category;
         editStatusFields.descriptionField.textContent = description;
@@ -386,13 +440,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const priority = this.children[5].textContent.trim();
         const category = this.children[6].textContent.trim();
         const assignedTo = this.children[7].textContent.trim();
-        const startAt = this.children[8].textContent.trim(); // Created At
-        const updatedAt = this.children[9].textContent.trim(); // Updated At
+        const startAt =
+          this.querySelector(".timer-cell").getAttribute("data-start-at"); // Adjusted to match new structure
+        const updatedAt = this.children[10].textContent.trim(); // 11th column remains the same
 
         // Populate the modal fields
         summarizationFields.ticketIdField.textContent = ticketId;
         summarizationFields.employeeNameField.textContent = employeeName;
-        summarizationFields.departmentField.textContent = "N/A"; // Add department if available
+        summarizationFields.departmentField.textContent =
+          summarizationFields.departmentField.dataset.assigned;
         summarizationFields.subjectField.textContent = subject;
         summarizationFields.categoryField.textContent = category;
         summarizationFields.descriptionField.textContent = description;
@@ -401,12 +457,12 @@ document.addEventListener("DOMContentLoaded", function () {
         summarizationFields.statusField.textContent = status;
 
         // Calculate and populate the duration
-        if (startAt && updatedAt) {
+        if (Date.parse(startAt) && Date.parse(updatedAt)) {
           const startDate = new Date(startAt);
           const updatedDate = new Date(updatedAt);
           const durationMs = updatedDate - startDate;
 
-          // Convert duration to days, hours, and minutes
+          // Convert duration to days, hours, minutes, and seconds
           const days = Math.floor(durationMs / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
             (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -414,8 +470,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const minutes = Math.floor(
             (durationMs % (1000 * 60 * 60)) / (1000 * 60)
           );
+          const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
 
-          summarizationFields.durationField.textContent = `${days} days, ${hours} hours, ${minutes} minutes`;
+          summarizationFields.durationField.textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
         } else {
           summarizationFields.durationField.textContent = "N/A";
         }
@@ -440,7 +497,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.target === ticketSummarizationModal) {
       ticketSummarizationModal.style.display = "none";
     }
-
   });
 
   // Close the modals when clicking the "BACK" button

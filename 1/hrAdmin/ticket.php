@@ -643,7 +643,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                    <p class="center-text" id="confirmdepartmentID" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -710,7 +710,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                    <p class="center-text" id="editdepartmentID" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -787,7 +787,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="summarizationDepartment"><?= htmlspecialchars($ticket['assigned_department'] ?? 'N/A') ?></p>
+                    <p class="center-text" id="summarizationDepartment" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -822,20 +822,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Duration:</strong></h1>
-                    <p class="center-text" id="summarizationDuration">
-                        <?php
-                        if (!empty($ticket['start_at']) && !empty($ticket['updated_at'])) {
-                            $startAt = new DateTime($ticket['start_at']);
-                            $updatedAt = new DateTime($ticket['updated_at']);
-                            $duration = $startAt->diff($updatedAt);
-
-                            // Format the duration (e.g., "2 days, 3 hours, 15 minutes")
-                            echo $duration->format('%d days, %h hours, %i minutes');
-                        } else {
-                            echo 'N/A'; // Fallback if timestamps are missing
-                        }
-                        ?>
-                    </p>
+                    <p class="center-text" id="summarizationDuration" data-assigned="<?= htmlspecialchars($ticket['start_at']) ?>">Unassigned</p>
                 </div>
 
                 <div class="btnContainer">
