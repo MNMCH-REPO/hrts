@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let departmentField = document.getElementById("departmentInputField");
 
     if (departmentField) {
-      departmentField.value = userDept;
+      departmentField.readonly = true; // Make it read-only
     } else {
       console.error("❌ Department field not found!");
     }
@@ -462,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const updatedDate = new Date(updatedAt);
           const durationMs = updatedDate - startDate;
 
-          // Convert duration to days, hours, minutes, and seconds
+          // Convert duration to days, hours, and minutes
           const days = Math.floor(durationMs / (1000 * 60 * 60 * 24));
           const hours = Math.floor(
             (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -548,9 +548,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (data.success) {
         alert(data.message); // Show success message
-        location.reload(); // Reload the page to reflect changes
-      } else {
-        alert(data.message); // Show error message
+
+        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+        if (row) {
+          const priorityCell = row.querySelector("td:nth-child(6)"); // Assuming the priority column is the 6th column
+          if (priorityCell) {
+            priorityCell.textContent = priority; // Update the priority in the table
+            row.setAttribute("data-priority", priority); // Update the data-priority attribute
+          }
+
+          const assignedToCell = row.querySelector("td:nth-child(8)"); // Assuming the assigned_to column is the 8th column
+          if (assignedToCell) {
+            // Display the name in the table cell
+            assignedToCell.textContent = data.assignedToName; // Update the assigned_to with the name
+
+            // Store the ID and name in data attributes for future reference
+            row.setAttribute("data-assigned-name", data.assignedToName); // Update the data-assigned-name attribute
+            row.setAttribute("data-assigned-id", data.assignedToId); // Update the data-assigned-id attribute
+          }
+        }
+        console.log("Ticket ID:", ticketId);
+        console.log("Status:", priority);
+        console.log("Assigned To:", assignTo);
+        console.log("Row:", row);
+
+        // Close the modal
+        document.getElementById("assignTicketModal").style.display = "none";
       }
     } catch (error) {
       console.error("Error updating ticket:", error);
@@ -591,7 +614,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (data.success) {
         alert(data.message); // Show success message
-        location.reload(); // Reload the page to reflect changes
+
+        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+        if (row) {
+          const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
+          if (statusCell) {
+            statusCell.textContent = status; // Update the status in the table
+            row.setAttribute("data-status", status); // Update the data-status attribute
+          }
+        }
+        console.log("Ticket ID:", ticketId);
+        console.log("Status:", status);
+        console.log("Row:", row);
+
+        // Close the modal
+        closeModal();
       } else {
         alert(data.message); // Show error message
       }

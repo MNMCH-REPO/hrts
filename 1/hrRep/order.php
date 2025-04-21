@@ -113,6 +113,18 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
                                 <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+
+
+
+
+                                <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
+                                    data-status="<?= htmlspecialchars($ticket['status']) ?>"
+                                    data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
+                                    data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
+                                    data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
+                                    data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                                    data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
+
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
@@ -229,7 +241,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                     <div class="input-container">
                         <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Fnance</p>
                     </div>
 
                     <div class="input-container">
@@ -275,139 +287,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         </div>
     </div>
 
-    
-    <!-- Ticket Summarization Modal -->
-    <div id="ticketSummarizationModal" class="modal">
-        <div class="modal-content">
-            <h1 class="modal-title">Ticket Summarization</h1>
-
-            <form id="ticketSummarizationForm" method="POST">
-                <div class="input-container">
-                    <h1><strong>Ticket ID:</strong></h1>
-                    <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Employee Name:</strong></h1>
-                    <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="summarizationDepartment"><?= htmlspecialchars($ticket['assigned_department'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Subject:</strong></h1>
-                    <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Category:</strong></h1>
-                    <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Description:</strong></h1>
-                    <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Priority:</strong></h1>
-                    <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Assigned To:</strong></h1>
-                    <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Status:</strong></h1>
-                    <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Duration:</strong></h1>
-                    <p class="center-text" id="summarizationDuration">
-                        <?php
-                        if (!empty($ticket['start_at']) && !empty($ticket['updated_at'])) {
-                            $startAt = new DateTime($ticket['start_at']);
-                            $updatedAt = new DateTime($ticket['updated_at']);
-                            $duration = $startAt->diff($updatedAt);
-
-                            // Format the duration (e.g., "2 days, 3 hours, 15 minutes")
-                            echo $duration->format('%d days, %h hours, %i minutes');
-                        } else {
-                            echo 'N/A'; // Fallback if timestamps are missing
-                        }
-                        ?>
-                    </p>
-                </div>
-
-                <div class="btnContainer">
-                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
 
 
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
 
     <script>
-        // Function to handle the timer
-        document.addEventListener("DOMContentLoaded", function() {
-            // Function to calculate elapsed time
-            function calculateElapsedTime(startTime, endTime = null) {
-                const startDate = new Date(startTime); // Convert start_at to a Date object
-                const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
-                const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
-
-                const hours = Math.floor(elapsed / 3600);
-                const minutes = Math.floor((elapsed % 3600) / 60);
-                const seconds = elapsed % 60;
-
-                return `${hours
-      .toString()
-      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-            }
-
-            // Update all timer cells
-            function updateTimers() {
-                const timerCells = document.querySelectorAll(".timer-cell");
-                timerCells.forEach((cell) => {
-                    const startAt = cell.getAttribute("data-start-at");
-                    const row = cell.closest("tr");
-                    const updatedAt = row.querySelector("td:nth-child(12)")?.textContent.trim(); // Updated At column
-                    const status = row.getAttribute("data-status");
-
-                    // Stop the timer if updated_at has a value or status is "Resolved"
-                    if ((updatedAt && updatedAt !== "") || status === "Resolved") {
-                        // Calculate the elapsed time between startAt and updatedAt
-                        cell.textContent = calculateElapsedTime(startAt, updatedAt);
-                        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
-                        return;
-                    }
-
-                    if (startAt) {
-                        cell.textContent = calculateElapsedTime(startAt);
-                    }
-                });
-            }
-
-            // Update timers every second
-            setInterval(updateTimers, 1000);
-
-            // Initial update
-            updateTimers();
-        });
-
         document.addEventListener("DOMContentLoaded", function() {
             const editStatusForm = document.getElementById("editStatusForm");
 
@@ -429,42 +314,39 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 formData.append("ticketId", ticketId);
                 formData.append("statusEdit", status);
 
-                try {
-                    // Send the AJAX request
-                    const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-                        method: "POST",
-                        body: formData,
-                    });
 
-                    // Parse the JSON response
-                    const data = await response.json();
+                // Send the AJAX request
+                const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
+                    method: "POST",
+                    body: formData,
+                });
 
-                    if (data.success) {
-                        alert(data.message); // Show success message
+                // Parse the JSON response
+                const data = await response.json();
 
-                        // Update the UI dynamically
-                        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
-                        if (row) {
-                            const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
-                            if (statusCell) {
-                                statusCell.textContent = status; // Update the status in the table
-                            }
+                if (data.success) {
+                    alert(data.message); // Show success message
 
-                            const updatedAtCell = row.querySelector("td:nth-child(12)"); // Assuming the updated_at column is the 12th column
-                            if (updatedAtCell) {
-                                const currentDate = new Date().toISOString().slice(0, 19).replace("T", " "); // Format current date
-                                updatedAtCell.textContent = currentDate; // Update the updated_at column
-                            }
+                    const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+                    if (row) {
+                        const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
+                        if (statusCell) {
+                            statusCell.textContent = status; // Update the status in the table
+                            row.setAttribute("data-status", status); // Update the data-status attribute
                         }
 
-                        // Close the modal
-                        closeModal();
-                    } else {
-                        alert(data.message); // Show error message
+                        const updatedAtCell = row.querySelector("td:nth-child(12)"); // Assuming the updated_at column is the 12th column
+                        if (updatedAtCell) {
+                            const currentDate = new Date().toISOString().slice(0, 19).replace("T", " "); // Format current date
+                            updatedAtCell.textContent = currentDate; // Update the updated_at column
+                            row.setAttribute("data-updated-at", currentDate); // Update the data-updated-at attribute
+                        }
                     }
-                } catch (error) {
-                    console.error("Error updating status:", error);
-                    alert("An error occurred while updating the status. Please try again.");
+
+                    // Close the modal
+                    closeModal();
+                } else {
+                    alert(data.message); // Show error message
                 }
             });
         });

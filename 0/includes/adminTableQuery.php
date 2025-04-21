@@ -17,8 +17,8 @@ try {
     // Fetch paginated tickets
     $sql = "SELECT 
                 t.id, 
-                e.name AS employee_name,
-                e.department AS assigned_department, 
+                e.name AS employee_name, 
+                 e.department AS assigned_department, 
                 t.subject, 
                 t.description, 
                 t.status, 

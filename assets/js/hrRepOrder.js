@@ -34,9 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const tableRows = document.querySelectorAll("tbody tr");
   const confirmModal = document.getElementById("confirmModal");
   const editStatusModal = document.getElementById("editStatusModal");
-  const ticketSummarizationModal = document.getElementById(
-    "ticketSummarizationModal"
-  );
 
   // Modal fields for confirmModal
   const confirmModalFields = {
@@ -83,20 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const category = this.children[7].textContent.trim();
       const assignedTo = this.children[8].textContent.trim();
 
-      // Fields in the Ticket Summarization Modal
-      const summarizationFields = {
-        ticketIdField: document.getElementById("summarizationTicketID"),
-        employeeNameField: document.getElementById("summarizationEmployeeName"),
-        departmentField: document.getElementById("summarizationDepartment"),
-        subjectField: document.getElementById("summarizationSubject"),
-        categoryField: document.getElementById("summarizationCategory"),
-        descriptionField: document.getElementById("summarizationDescription"),
-        priorityField: document.getElementById("summarizationPriority"),
-        assignedToField: document.getElementById("summarizationAssignedTo"),
-        statusField: document.getElementById("summarizationStatus"),
-        durationField: document.getElementById("summarizationDuration"),
-      };
-
       // Get the current user from the session
       const currentUser = document
         .querySelector(".accountName")
@@ -107,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Set the values in the confirmModal
         confirmModalFields.ticketIdField.textContent = ticketId;
         confirmModalFields.employeeNameField.textContent = employeeName;
-        confirmModalFields.departmentField.innerHTML = confirmModalFields.departmentField.value;
+        confirmModalFields.departmentField.textContent = assignedDepartment;
         confirmModalFields.subjectField.textContent = subject;
         confirmModalFields.categoryField.textContent = category;
         confirmModalFields.descriptionField.textContent = description;
@@ -121,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Set the values in the editStatusModal
         editStatusModalFields.ticketIdField.textContent = ticketId;
         editStatusModalFields.employeeNameField.textContent = employeeName;
-        // editStatusModalFields.departmentField.textContent = assignedDepartment;
+        editStatusModalFields.departmentField.textContent = assignedDepartment;
         editStatusModalFields.subjectField.textContent = subject;
         editStatusModalFields.categoryField.textContent = category;
         editStatusModalFields.descriptionField.textContent = description;
@@ -130,52 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Open the editStatusModal
         editStatusModal.style.display = "flex";
-      } else if (status === "Resolved") {
-        // Get ticket details from the row
-        const ticketId = this.children[0].textContent.trim();
-        const employeeName = this.children[1].textContent.trim();
-        const subject = this.children[2].textContent.trim();
-        const description = this.children[3].textContent.trim();
-        const status = this.children[4].textContent.trim();
-        const priority = this.children[5].textContent.trim();
-        const category = this.children[6].textContent.trim();
-        const assignedTo = this.children[7].textContent.trim();
-        const startAt = this.children[8].textContent.trim(); // Created At
-        const updatedAt = this.children[9].textContent.trim(); // Updated At
-
-        // Populate the modal fields
-        summarizationFields.ticketIdField.textContent = ticketId;
-        summarizationFields.employeeNameField.textContent = employeeName;
-        // summarizationFields.departmentField.textContent = "N/A"; // Add department if available
-        summarizationFields.subjectField.textContent = subject;
-        summarizationFields.categoryField.textContent = category;
-        summarizationFields.descriptionField.textContent = description;
-        summarizationFields.priorityField.textContent = priority;
-        summarizationFields.assignedToField.textContent = assignedTo;
-        summarizationFields.statusField.textContent = status;
-
-        // Calculate and populate the duration
-        if (startAt && updatedAt) {
-          const startDate = new Date(startAt);
-          const updatedDate = new Date(updatedAt);
-          const durationMs = updatedDate - startDate;
-
-          // Convert duration to days, hours, and minutes
-          const days = Math.floor(durationMs / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor(
-            (durationMs % (1000 * 60 * 60)) / (1000 * 60)
-          );
-
-          summarizationFields.durationField.textContent = `${days} days, ${hours} hours, ${minutes} minutes`;
-        } else {
-          summarizationFields.durationField.textContent = "N/A";
-        }
-
-        // Open the modal
-        ticketSummarizationModal.style.display = "flex";
       }
     });
   });
@@ -196,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       confirmModal.style.display = "none";
       editStatusModal.style.display = "none";
-      ticketSummarizationModal.style.display = "none";
     });
   });
 });
@@ -467,45 +403,48 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Function to handle the timer
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Function to calculate elapsed time
   function calculateElapsedTime(startTime, endTime = null) {
-      const startDate = new Date(startTime); // Convert start_at to a Date object
-      const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
-      const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
 
-      const hours = Math.floor(elapsed / 3600);
-      const minutes = Math.floor((elapsed % 3600) / 60);
-      const seconds = elapsed % 60;
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
 
-      return `${hours
-.toString()
-.padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-.toString()
-.padStart(2, "0")}`;
+    return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
   // Update all timer cells
   function updateTimers() {
-      const timerCells = document.querySelectorAll(".timer-cell");
-      timerCells.forEach((cell) => {
-          const startAt = cell.getAttribute("data-start-at");
-          const row = cell.closest("tr");
-          const updatedAt = row.querySelector("td:nth-child(12)")?.textContent.trim(); // Updated At column
-          const status = row.getAttribute("data-status");
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row
+        .querySelector("td:nth-child(12)")
+        ?.textContent.trim(); // Updated At column
+      const status = row.getAttribute("data-status");
 
-          // Stop the timer if updated_at has a value or status is "Resolved"
-          if ((updatedAt && updatedAt !== "") || status === "Resolved") {
-              // Calculate the elapsed time between startAt and updatedAt
-              cell.textContent = calculateElapsedTime(startAt, updatedAt);
-              cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
-              return;
-          }
+      // Stop the timer if updated_at has a value or status is "Resolved"
+      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+        // Calculate the elapsed time between startAt and updatedAt
+        cell.textContent = calculateElapsedTime(startAt, updatedAt);
+        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+        return;
+      }
 
-          if (startAt) {
-              cell.textContent = calculateElapsedTime(startAt);
-          }
-      });
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
+    });
   }
 
   // Update timers every second
@@ -513,65 +452,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initial update
   updateTimers();
-});
-
-document.addEventListener("DOMContentLoaded", function() {
-  const editStatusForm = document.getElementById("editStatusForm");
-
-  editStatusForm.addEventListener("submit", async function(event) {
-      event.preventDefault(); // Prevent the default form submission
-
-      // Get form data
-      const ticketId = document.getElementById("editTicketID").textContent.trim();
-      const status = document.getElementById("statusEditID").value;
-
-      // Validate form data
-      if (!ticketId || !status) {
-          alert("All fields are required.");
-          return;
-      }
-
-      // Prepare the data to send
-      const formData = new FormData();
-      formData.append("ticketId", ticketId);
-      formData.append("statusEdit", status);
-
-      try {
-          // Send the AJAX request
-          const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-              method: "POST",
-              body: formData,
-          });
-
-          // Parse the JSON response
-          const data = await response.json();
-
-          if (data.success) {
-              alert(data.message); // Show success message
-
-              // Update the UI dynamically
-              const row = document.querySelector(`tr[data-id="${ticketId}"]`);
-              if (row) {
-                  const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
-                  if (statusCell) {
-                      statusCell.textContent = status; // Update the status in the table
-                  }
-
-                  const updatedAtCell = row.querySelector("td:nth-child(12)"); // Assuming the updated_at column is the 12th column
-                  if (updatedAtCell) {
-                      const currentDate = new Date().toISOString().slice(0, 19).replace("T", " "); // Format current date
-                      updatedAtCell.textContent = currentDate; // Update the updated_at column
-                  }
-              }
-
-              // Close the modal
-              closeModal();
-          } else {
-              alert(data.message); // Show error message
-          }
-      } catch (error) {
-          console.error("Error updating status:", error);
-          alert("An error occurred while updating the status. Please try again.");
-      }
-  });
 });

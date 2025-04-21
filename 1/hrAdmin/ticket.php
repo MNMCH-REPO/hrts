@@ -458,7 +458,14 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+                                <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
+                                    data-status="<?= htmlspecialchars($ticket['status']) ?>"
+                                    data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
+                                    data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
+                                    data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
+                                    data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                                    data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
+
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['subject']) ?></td>
@@ -573,7 +580,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName"  readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
@@ -584,7 +591,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department" readonly>
 
                     <label for="department">Department</label>
                 </div>

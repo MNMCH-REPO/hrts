@@ -15,41 +15,7 @@ require_once '../../0/includes/adminDashboardTables.php';
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <title>HRTS</title>
-    <style>
-        .time-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--neutral-300);
-            background-color: var(--white);
-            color: var(--black);
-            border-radius: 4px;
-            cursor: pointer;
-            transition: var(--fast);
-        }
-        .time-btn:hover {
-            background-color: var(--neutral-200);
-        }
-        .time-btn.active {
-            background-color: var(--primary-500);
-            color: var(--white);
-            border-color: var(--primary-500);
-        }
-        .report-card {
-            padding: 16px;
-            border: 3px solid var(--neutral-300);
-            border-radius: 8px;
-            background-color: var(--white);
-            cursor: pointer;
-            transition: var(--fast);
-            margin-bottom: 12px;
-        }
-        .report-card:hover {
-            background-color: var(--neutral-200);
-        }
-        .report-card.selected {
-            color: var(--white);
-            border-color: var(--primary-500);
-        }
-    </style>
+
 </head>
 
 <body>
@@ -410,6 +376,11 @@ require_once '../../0/includes/adminDashboardTables.php';
 
                 <div class="report-card">
                     <h3>Generate Tickets per Employee</h3>
+                    <label>Type:
+                        <select>
+                            <option>Please select a category</option>
+                        </select>
+                    </label>
                     <label>Name: <input type="text" placeholder="Enter Name"></label>
                 </div>
 
