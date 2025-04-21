@@ -1,12 +1,12 @@
 <?php
 require_once '../../0/includes/db.php'; // Ensure this file initializes the global $pdo variable
 session_start(); // Start the session to access user data
+
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in.']);
     exit;
 }
-
 
 header('Content-Type: application/json');
 
@@ -53,6 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':id', $ticketId, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
+            // Fetch the updated ticket status
+            $statusStmt = $pdo->prepare("SELECT status, start_at FROM tickets WHERE id = :id");
+            $statusStmt->bindParam(':id', $ticketId, PDO::PARAM_INT);
+            $statusStmt->execute();
+            $ticket = $statusStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$ticket) {
+                echo json_encode(['success' => false, 'message' => 'Failed to fetch updated ticket status.']);
+                exit;
+            }
+
             // Log the action in the `audit_trail` table
             $userId = $_SESSION['user_id'] ?? null; // The ID of the logged-in user
             if (!$userId) {
@@ -84,7 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Debugging: Log successful execution
             error_log("Query executed successfully for Ticket ID: " . $ticketId);
-            echo json_encode(['success' => true, 'message' => $actions[$action]['message']]);
+            echo json_encode([
+                'success' => true,
+                'message' => $actions[$action]['message'],
+                'status' => $ticket['status'], // Include the updated status
+                'startAt' => $ticket['start_at'], // Include the start_at timestamp
+            ]);
         } else {
             // Debugging: Log failed execution
             error_log("Query failed for Ticket ID: " . $ticketId);

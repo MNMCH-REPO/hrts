@@ -464,6 +464,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                     data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
                                     data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
                                     data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                                    data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"
                                     data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
 
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>

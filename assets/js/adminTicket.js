@@ -582,6 +582,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const editStatusForm = document.getElementById("editStatusForm");
 
@@ -617,18 +619,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const row = document.querySelector(`tr[data-id="${ticketId}"]`);
         if (row) {
-          const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
+          const statusCell = row.querySelector("td:nth-child(5)"); // Assuming the status column is the 5th column
           if (statusCell) {
             statusCell.textContent = status; // Update the status in the table
             row.setAttribute("data-status", status); // Update the data-status attribute
           }
+
+
+          const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
+          if (durationCell) {
+            // Retrieve the start_at value from the server response or the row's data attribute
+            const startAt = data.startAt || row.getAttribute("data-duration");
+          
+            // Calculate the elapsed time
+            const calculateElapsedTime = (startTime) => {
+              const startDate = new Date(startTime);
+              const now = new Date();
+              const elapsed = Math.floor((now - startDate) / 1000); // Elapsed time in seconds
+          
+              const hours = Math.floor(elapsed / 3600);
+              const minutes = Math.floor((elapsed % 3600) / 60);
+              const seconds = elapsed % 60;
+          
+              return `${hours.toString().padStart(2, "0")}:${minutes
+                .toString()
+                .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+            };
+          
+            // Update the duration cell with the calculated elapsed time
+            if (startAt) {
+              durationCell.textContent = calculateElapsedTime(startAt);
+              row.setAttribute("data-duration", startAt); // Update the data-duration attribute
+            }
+          }
+
+          // Retrieve updated_at from the server response
+          const updatedAt = data.updatedAt || new Date().toISOString().slice(0, 19).replace("T", " "); // Use server value or current time
+
+          const updatedCell = row.querySelector("td:nth-child(11)"); // Assuming the updated_at column is the 11th column
+          if (updatedCell) {
+            updatedCell.textContent = updatedAt; // Update the updated_at column
+            row.setAttribute("data-updated-at", updatedAt); // Update the data-updated-at attribute
+          }
         }
         console.log("Ticket ID:", ticketId);
         console.log("Status:", status);
+        console.log("Updated At:", updatedAt);
         console.log("Row:", row);
 
         // Close the modal
-        closeModal();
+        document.getElementById("editStatusModal").style.display = "none";
       } else {
         alert(data.message); // Show error message
       }
@@ -638,6 +678,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
   // Add event listeners for the buttons
@@ -674,11 +716,36 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          alert(data.message);
-          // Optionally reload the page or update the UI
-          location.reload();
+          alert(data.message); // Show success message
+
+          const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+          if (row) {
+            const statusCell = row.querySelector("td:nth-child(5)"); // Assuming the status column is the 5th column
+            if (statusCell) {
+              const status = data.status || "Unknown"; // Fallback to "Unknown" if status is undefined
+              statusCell.textContent = status; // Update the status in the table
+              row.setAttribute("data-status", status); // Update the data-status attribute
+            }
+            
+            const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
+            if (durationCell) {
+              const startAt = data.startAt || row.getAttribute("data-start-at");
+              row.setAttribute("data-start-at", startAt); // Update the data-start-at attribute
+            
+              // Call the global updateTimers function to handle the timer
+              updateTimers();
+            }
+            
+          }
+          console.log("Ticket ID:", ticketId);
+          console.log("Status:", data.status);
+       
+          console.log("Row:", row);
+
+          // Close the modal
+          document.getElementById("confirmModal").style.display = "none";
         } else {
-          alert(data.message);
+          alert(data.message); // Show error message
         }
       })
       .catch((error) => {
