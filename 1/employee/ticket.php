@@ -243,6 +243,72 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </div>
 
 
+    <!-- Modal -->
+    <div id="editStatusModal" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">EDIT TICKET STATUS</h1>
+
+                <form id="editStatusForm" method="POST">
+                    <div class="input-container">
+                        <h1><strong>Ticket ID:</strong></h1>
+                        <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Employee Name:</strong></h1>
+                        <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Department:</strong></h1>
+                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Fnance</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Subject:</strong></h1>
+                        <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Category:</strong></h1>
+                        <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Description:</strong></h1>
+                        <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Priority:</strong></h1>
+                        <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                        </select>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Assigned To:</strong></h1>
+                        <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
+                        </select>
+                    </div>
+
+                    <div class="input-container">
+                        <select name="statusEdit" id="statusEditID" required>
+                            <option value="" disabled selected>Select a status</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+
+                    <div class="btnContainer">
+                        <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
+                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <script src="../../assets/js/framework.js"></script>
 
 <script src="../../assets/js/employeeTicket.js"></script>
@@ -257,7 +323,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             let currentFilter = "";
 
             function getRowStatus(row) {
-                return row.children[4].textContent.trim();
+                return row.children[5].textContent.trim();
             }
 
             function renderTable(filter = "") {

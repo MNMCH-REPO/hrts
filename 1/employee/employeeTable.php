@@ -1,4 +1,3 @@
-
 <table id="ticketTable" class="table">
     <thead>
         <tr>
@@ -19,7 +18,15 @@
     <tbody>
         <?php if (!empty($tickets)): ?>
             <?php foreach ($tickets as $ticket): ?>
-                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+                <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
+                    data-status="<?= htmlspecialchars($ticket['status']) ?>"
+                    data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
+                    data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
+                    data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
+                    data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                    data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"
+                    data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
+
                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                     <td><?= htmlspecialchars($ticket['employee_department']) ?></td>

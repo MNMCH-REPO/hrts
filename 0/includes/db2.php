@@ -1,5 +1,5 @@
 <?php
-      $dsn = 'mysql:host=srv1632.hstgr.io;dbname=mnmchcom_hrts;charset=utf8';
+      $dsn = 'mysql:host=mnmch.com;dbname=mnmchcom_hrts;charset=utf8';
       $username = 'mnmchcom';
       $password = '&rh{Q.DYFE[O';
 
