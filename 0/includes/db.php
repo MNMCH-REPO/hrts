@@ -1,11 +1,7 @@
 <?php
-    //  $dsn = 'mysql:host=srv1632.hstgr.io;dbname=u643738716_mnmch_hrts_db;charset=utf8';
-    //  $username = 'u643738716_root';
-    //  $password = 'MNMCH&db00';
-
-      $dsn = 'mysql:host=localhost;dbname=mnmch_hrts_db;charset=utf8';
-      $username = 'root';
-      $password = '';
+      $dsn = 'mysql:host=mnmch.com;dbname=mnmchcom_hrts;charset=utf8';
+      $username = 'mnmchcom';
+      $password = '&rh{Q.DYFE[O';
 
 
     try {
