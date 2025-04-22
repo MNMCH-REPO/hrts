@@ -290,67 +290,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
 
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const editStatusForm = document.getElementById("editStatusForm");
-
-            editStatusForm.addEventListener("submit", async function(event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                // Get form data
-                const ticketId = document.getElementById("editTicketID").textContent.trim();
-                const status = document.getElementById("statusEditID").value;
-
-                // Validate form data
-                if (!ticketId || !status) {
-                    alert("All fields are required.");
-                    return;
-                }
-
-                // Prepare the data to send
-                const formData = new FormData();
-                formData.append("ticketId", ticketId);
-                formData.append("statusEdit", status);
-
-
-                // Send the AJAX request
-                const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-                    method: "POST",
-                    body: formData,
-                });
-
-                // Parse the JSON response
-                const data = await response.json();
-
-                if (data.success) {
-                    alert(data.message); // Show success message
-
-                    const row = document.querySelector(`tr[data-id="${ticketId}"]`);
-                    if (row) {
-                        const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 6th column
-                        if (statusCell) {
-                            statusCell.textContent = status; // Update the status in the table
-                            row.setAttribute("data-status", status); // Update the data-status attribute
-                        }
-
-                        const updatedAtCell = row.querySelector("td:nth-child(12)"); // Assuming the updated_at column is the 12th column
-                        if (updatedAtCell) {
-                            const currentDate = new Date().toISOString().slice(0, 19).replace("T", " "); // Format current date
-                            updatedAtCell.textContent = currentDate; // Update the updated_at column
-                            row.setAttribute("data-updated-at", currentDate); // Update the data-updated-at attribute
-                        }
-                    }
-
-                    // Close the modal
-                    closeModal();
-                } else {
-                    alert(data.message); // Show error message
-                }
-            });
-        });
-    </script>
-
 </body>
 
 </html>

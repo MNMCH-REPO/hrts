@@ -190,55 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-//confirm and decline
-document.addEventListener("DOMContentLoaded", function () {
-  // Add event listeners for the buttons
-  document
-    .getElementById("confirmButtonID")
-    .addEventListener("click", function (e) {
-      e.preventDefault();
-      handleTicketAction("confirm");
-    });
-
-  document
-    .getElementById("declineButtonID")
-    .addEventListener("click", function (e) {
-      e.preventDefault();
-      handleTicketAction("decline");
-    });
-
-  function handleTicketAction(action) {
-    const ticketId = document
-      .getElementById("confirmTicketID")
-      .textContent.trim();
-
-    // Send AJAX request
-    fetch("../../0/includes/acceptTicket.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: action,
-        ticketId: ticketId,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          alert(data.message);
-          // Optionally reload the page or update the UI
-          location.reload();
-        } else {
-          alert(data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("An error occurred while processing the request.");
-      });
-  }
-});
 
 //filter
 document.addEventListener("DOMContentLoaded", function () {
@@ -321,54 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// //edit status
-// document.addEventListener("DOMContentLoaded", function () {
-//   const editStatusForm = document.getElementById("editStatusForm");
 
-//   editStatusForm.addEventListener("submit", async function (event) {
-//     event.preventDefault(); // Prevent the default form submission
-
-//     // Get form data
-//     const ticketId = document.getElementById("editTicketID").textContent.trim();
-//     const status = document.getElementById("statusEditID").value;
-
-//     // Validate form data
-//     if (!ticketId || !status) {
-//       alert("All fields are required.");
-//       return;
-//     }
-
-//     // Prepare the data to send
-//     const formData = new FormData();
-//     formData.append("ticketId", ticketId);
-//     formData.append("statusEdit", status);
-
-//     try {
-//       // Send the AJAX request
-//       const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-//         method: "POST",
-//         body: formData,
-//       });
-
-//       // Parse the JSON response
-//       const data = await response.json();
-
-//       if (data.success) {
-//         alert(data.message); // Show success message
-//         location.reload(); // Reload the page to reflect changes
-//       } else {
-//         alert(data.message); // Show error message
-//       }
-//     } catch (error) {
-//       console.error("Error updating status:", error);
-//       alert("An error occurred while updating the status. Please try again.");
-//     }
-//   });
-// });
 
 //status form
 document.addEventListener("DOMContentLoaded", function () {
-  // Function to calculate elapsed time
+
   function calculateElapsedTime(startTime, endTime = null) {
     const startDate = new Date(startTime); // Convert start_at to a Date object
     const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
@@ -393,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const startAt = cell.getAttribute("data-start-at");
       const row = cell.closest("tr");
       const updatedAt = row
-        .querySelector("td:nth-child(11)")
+        .querySelector("td:nth-child(12)")
         ?.textContent.trim(); // Corrected column index
       const status = row.getAttribute("data-status");
 
@@ -403,101 +311,234 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  const editStatusForm = document.getElementById("editStatusForm");
+const editStatusForm = document.getElementById("editStatusForm");
 
-  editStatusForm.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent the default form submission
+editStatusForm.addEventListener("submit", async function (event) {
+  event.preventDefault(); // Prevent the default form submission
 
-    // Get form data
-    const ticketId = document.getElementById("editTicketID").textContent.trim();
-    const status = document.getElementById("statusEditID").value;
+  // Get form data
+  const ticketId = document.getElementById("editTicketID").textContent.trim();
+  const status = document.getElementById("statusEditID").value;
 
-    // Validate form data
-    if (!ticketId || !status) {
-      alert("All fields are required.");
-      return;
-    }
+  // Validate form data
+  if (!ticketId || !status) {
+    alert("All fields are required.");
+    return;
+  }
 
-    // Prepare the data to send
-    const formData = new FormData();
-    formData.append("ticketId", ticketId);
-    formData.append("statusEdit", status);
+  // Prepare the data to send
+  const formData = new FormData();
+  formData.append("ticketId", ticketId);
+  formData.append("statusEdit", status);
 
-    try {
-      // Send the AJAX request
-      const response = await fetch("../../0/includes/hrEdtiTicketStatus.php", {
-        method: "POST",
-        body: formData,
-      });
+  try {
+    // Send the AJAX request
+    const response = await fetch("../../0/includes/editStatusTicket.php", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        alert(data.message);
+    if (data.success) {
+      alert(data.message);
 
-        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
-        let updatedAt = ""; // 🔧 Declare updatedAt in outer scope
+      const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+      let updatedAt = ""; // 🔧 Declare updatedAt in outer scope
 
-        if (row) {
-          const statusCell = row.querySelector("td:nth-child(5)");
-          if (statusCell) {
-            statusCell.textContent = status;
-            row.setAttribute("data-status", status);
-          }
-
-          updatedAt =
-            data.updatedAt ||
-            (() => {
-              const now = new Date();
-              const gmt8 = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-              const year = gmt8.getUTCFullYear();
-              const month = String(gmt8.getUTCMonth() + 1).padStart(2, "0");
-              const day = String(gmt8.getUTCDate()).padStart(2, "0");
-              const hours = String(gmt8.getUTCHours()).padStart(2, "0");
-              const minutes = String(gmt8.getUTCMinutes()).padStart(2, "0");
-              const seconds = String(gmt8.getUTCSeconds()).padStart(2, "0");
-              return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-            })();
-
-          const updatedCell = row.querySelector("td:nth-child(11)");
-          if (updatedCell) {
-            updatedCell.textContent = updatedAt;
-            row.setAttribute("data-updated-at", updatedAt);
-          }
-
-          const startAt = row
-            .querySelector(".timer-cell")
-            ?.getAttribute("data-start-at");
-          const cell = row.querySelector(".timer-cell");
-
-          if ((updatedAt && updatedAt !== "") || status === "Resolved") {
-            if (startAt && cell) {
-              cell.textContent = calculateElapsedTime(startAt, updatedAt);
-              cell.classList.add("stopped");
-            }
-          }
-
-          updateTimers();
+      if (row) {
+        const statusCell = row.querySelector("td:nth-child(6)");
+        if (statusCell) {
+          statusCell.textContent = status;
+          row.setAttribute("data-status", status);
         }
 
-        console.log("Ticket ID:", ticketId);
-        console.log("Status:", status);
-        console.log("Updated At:", updatedAt);
-        console.log("Row:", row);
+        updatedAt = data.updatedAt || (() => {
+          const now = new Date();
+          const gmt8 = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+          const year = gmt8.getUTCFullYear();
+          const month = String(gmt8.getUTCMonth() + 1).padStart(2, "0");
+          const day = String(gmt8.getUTCDate()).padStart(2, "0");
+          const hours = String(gmt8.getUTCHours()).padStart(2, "0");
+          const minutes = String(gmt8.getUTCMinutes()).padStart(2, "0");
+          const seconds = String(gmt8.getUTCSeconds()).padStart(2, "0");
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        })();
 
-        document.getElementById("editStatusModal").style.display = "none";
-      } else {
-        alert(data.message); // Show error message
+        const updatedCell = row.querySelector("td:nth-child(12)");
+        if (updatedCell) {
+          updatedCell.textContent = updatedAt;
+          row.setAttribute("data-updated-at", updatedAt);
+        }
+
+
+        const startAt = row.querySelector(".timer-cell")?.getAttribute("data-start-at");
+        const cell = row.querySelector(".timer-cell");
+
+        if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+          if (startAt && cell) {
+            cell.textContent = calculateElapsedTime(startAt, updatedAt);
+            cell.classList.add("stopped");
+          }
+        }
+
+        updateTimers();
       }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("An error occurred while updating the status. Please try again.");
-    }
 
-    // Initial update
-    updateTimers();
-  });
+      console.log("Ticket ID:", ticketId);
+      console.log("Status:", status);
+      console.log("Updated At:", updatedAt);
+      console.log("Row:", row);
+
+      document.getElementById("editStatusModal").style.display = "none";
+    } else {
+      alert(data.message); // Show error message
+    }
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("An error occurred while updating the status. Please try again.");
+  }
+
+  // Initial update
+  updateTimers();
 });
+});
+
+
+
+
+
+//accept ticket
+document.addEventListener("DOMContentLoaded", function () {
+  // Function to calculate elapsed time
+
+  function calculateElapsedTime(startTime, endTime = null) {
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
+
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+
+    return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  // Function to update all timer cells
+  function updateTimers() {
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row
+        .querySelector("td:nth-child(12)")
+        ?.textContent.trim(); // Corrected column index
+      const status = row.getAttribute("data-status");
+
+      // Stop the timer if updated_at has a value or status is "Resolved"
+      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+        // Calculate the elapsed time between startAt and updatedAt
+        // cell.textContent = calculateElapsedTime(startAt, updatedAt);
+        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+        return;
+      }
+
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
+    });
+  }
+
+
+  function updateDurationCell(row, data) {
+    const durationCell = row.querySelector("td:nth-child(11)"); // Assuming the duration column is the 10th column
+    if (durationCell) {
+      const startAt = data.startAt || row.getAttribute("data-start-at");
+
+      // Set the attribute on both row and cell for consistency
+      row.setAttribute("data-start-at", startAt);
+      durationCell.setAttribute("data-start-at", startAt); // <--- Add this line
+
+      // Call the function to calculate elapsed time and update the cell
+      durationCell.textContent = calculateElapsedTime(startAt);
+    }
+  }
+  // Function to handle ticket action (confirm/decline)
+  function handleTicketAction(action) {
+    const ticketId = document
+      .getElementById("confirmTicketID")
+      .textContent.trim();
+
+    // Send AJAX request
+    fetch("../../0/includes/acceptTicket.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: action,
+        ticketId: ticketId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert(data.message); // Show success message
+
+          const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+          if (row) {
+            const statusCell = row.querySelector("td:nth-child(6)"); // Assuming the status column is the 5th column
+            if (statusCell) {
+              const status = data.status || "Unknown"; // Fallback to "Unknown" if status is undefined
+              statusCell.textContent = status; // Update the status in the table
+              row.setAttribute("data-status", status); // Update the data-status attribute
+            }
+            updateDurationCell(row, data);
+          }
+          console.log("Ticket ID:", ticketId);
+          console.log("Status:", data.status);
+          console.log("Row:", row);
+
+          // Close the modal
+          document.getElementById("confirmModal").style.display = "none";
+        } else {
+          alert(data.message); // Show error message
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred while processing the request.");
+      });
+  }
+  // Add event listeners for the buttons
+  document
+    .getElementById("confirmButtonID")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      handleTicketAction("confirm");
+    });
+
+  document
+    .getElementById("declineButtonID")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      handleTicketAction("decline");
+    });
+
+  // Update timers every second
+  setInterval(updateTimers, 1000);
+
+  // Initial update
+  updateTimers();
+});
+
+
+
 
 // document.addEventListener("DOMContentLoaded", function () {
 //   const plate = document.getElementById("plate1");

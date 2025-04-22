@@ -8,21 +8,16 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the data from the POST request
     $ticketId = $_POST['ticketId'] ?? null;
     $status = $_POST['statusEdit'] ?? null;
+   
 
     // Validate input fields
     if (empty($ticketId) || empty($status)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
-        exit;
-    }
-
-    // Validate the status to ensure it's either 'In Progress' or 'Resolved'
-    $validStatuses = ['In Progress', 'Resolved'];
-    if (!in_array($status, $validStatuses)) {
-        echo json_encode(['success' => false, 'message' => 'Invalid status selected.']);
         exit;
     }
 
@@ -32,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Step 1: Update the ticket status in the `tickets` table
         $stmt = $pdo->prepare("UPDATE tickets 
-                               SET status = :status, updated_at = NOW() 
+                               SET status = :status,  updated_at = NOW() 
                                WHERE id = :ticketId");
 
         // Bind parameters

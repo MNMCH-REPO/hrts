@@ -15,19 +15,19 @@
     flex-direction: column;
     border: 1px solid var(--neutral-300);
     border-radius: 8px;
-    overflow: hidden;
+  
 }
 
 .tableContainer {
     width: 100%;
     border-radius: 8px;
-    overflow: hidden;
+  
     border: 1px solid var(--neutral-300);
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+ 
 }
 
 th,
