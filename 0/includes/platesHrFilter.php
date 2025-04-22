@@ -56,8 +56,6 @@ try {
                     t.start_at,
                     t.updated_at 
                 FROM tickets t
-
-
             LEFT JOIN users e ON t.employee_id = e.id  -- Ticket submitter
             LEFT JOIN users a ON t.assigned_to = a.id  -- Assigned user
             LEFT JOIN categories c ON t.category_id = c.id
