@@ -510,8 +510,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-// Handle form submission assign
 
+
+
+
+//assign ticket
 document.addEventListener("DOMContentLoaded", function () {
   const assignTicketForm = document.getElementById("assignTicketForm");
 
@@ -585,117 +588,206 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  const editStatusForm = document.getElementById("editStatusForm");
+  // Function to calculate elapsed time
+  function calculateElapsedTime(startTime, endTime = null) {
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
 
-  editStatusForm.addEventListener("submit", async function (event) {
-    event.preventDefault(); // Prevent the default form submission
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
 
-    // Get form data
-    const ticketId = document.getElementById("editTicketID").textContent.trim();
-    const status = document.getElementById("statusEditID").value;
+    return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
 
-    // Validate form data
-    if (!ticketId || !status) {
-      alert("All fields are required.");
-      return;
-    }
+  // Update all timer cells
+  function updateTimers() {
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row
+        .querySelector("td:nth-child(11)")
+        ?.textContent.trim(); // Corrected column index
+      const status = row.getAttribute("data-status");
 
-    // Prepare the data to send
-    const formData = new FormData();
-    formData.append("ticketId", ticketId);
-    formData.append("statusEdit", status);
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
+    });
+  }
+  
+const editStatusForm = document.getElementById("editStatusForm");
 
-    try {
-      // Send the AJAX request
-      const response = await fetch("../../0/includes/editStatusTicket.php", {
-        method: "POST",
-        body: formData,
-      });
+editStatusForm.addEventListener("submit", async function (event) {
+  event.preventDefault(); // Prevent the default form submission
 
-      const data = await response.json();
+  // Get form data
+  const ticketId = document.getElementById("editTicketID").textContent.trim();
+  const status = document.getElementById("statusEditID").value;
 
-      if (data.success) {
-        alert(data.message); // Show success message
+  // Validate form data
+  if (!ticketId || !status) {
+    alert("All fields are required.");
+    return;
+  }
 
-        const row = document.querySelector(`tr[data-id="${ticketId}"]`);
-        if (row) {
-          const statusCell = row.querySelector("td:nth-child(5)"); // Assuming the status column is the 5th column
-          if (statusCell) {
-            statusCell.textContent = status; // Update the status in the table
-            row.setAttribute("data-status", status); // Update the data-status attribute
-          }
+  // Prepare the data to send
+  const formData = new FormData();
+  formData.append("ticketId", ticketId);
+  formData.append("statusEdit", status);
 
+  try {
+    // Send the AJAX request
+    const response = await fetch("../../0/includes/editStatusTicket.php", {
+      method: "POST",
+      body: formData,
+    });
 
-          const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
-          if (durationCell) {
-            // Retrieve the start_at value from the server response or the row's data attribute
-            const startAt = data.startAt || row.getAttribute("data-duration");
-          
-            // Calculate the elapsed time
-            const calculateElapsedTime = (startTime) => {
-              const startDate = new Date(startTime);
-              const now = new Date();
-              const elapsed = Math.floor((now - startDate) / 1000); // Elapsed time in seconds
-          
-              const hours = Math.floor(elapsed / 3600);
-              const minutes = Math.floor((elapsed % 3600) / 60);
-              const seconds = elapsed % 60;
-          
-              return `${hours.toString().padStart(2, "0")}:${minutes
-                .toString()
-                .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-            };
-          
-            // Update the duration cell with the calculated elapsed time
-            if (startAt) {
-              durationCell.textContent = calculateElapsedTime(startAt);
-              row.setAttribute("data-duration", startAt); // Update the data-duration attribute
-            }
-          }
+    const data = await response.json();
 
-          // Retrieve updated_at from the server response
-          const updatedAt = data.updatedAt || new Date().toISOString().slice(0, 19).replace("T", " "); // Use server value or current time
+    if (data.success) {
+      alert(data.message);
 
-          const updatedCell = row.querySelector("td:nth-child(11)"); // Assuming the updated_at column is the 11th column
-          if (updatedCell) {
-            updatedCell.textContent = updatedAt; // Update the updated_at column
-            row.setAttribute("data-updated-at", updatedAt); // Update the data-updated-at attribute
+      const row = document.querySelector(`tr[data-id="${ticketId}"]`);
+      let updatedAt = ""; // 🔧 Declare updatedAt in outer scope
+
+      if (row) {
+        const statusCell = row.querySelector("td:nth-child(5)");
+        if (statusCell) {
+          statusCell.textContent = status;
+          row.setAttribute("data-status", status);
+        }
+
+        updatedAt = data.updatedAt || (() => {
+          const now = new Date();
+          const gmt8 = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+          const year = gmt8.getUTCFullYear();
+          const month = String(gmt8.getUTCMonth() + 1).padStart(2, "0");
+          const day = String(gmt8.getUTCDate()).padStart(2, "0");
+          const hours = String(gmt8.getUTCHours()).padStart(2, "0");
+          const minutes = String(gmt8.getUTCMinutes()).padStart(2, "0");
+          const seconds = String(gmt8.getUTCSeconds()).padStart(2, "0");
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        })();
+        
+        const updatedCell = row.querySelector("td:nth-child(11)");
+        if (updatedCell) {
+          updatedCell.textContent = updatedAt;
+          row.setAttribute("data-updated-at", updatedAt);
+        }
+        
+
+        const startAt = row.querySelector(".timer-cell")?.getAttribute("data-start-at");
+        const cell = row.querySelector(".timer-cell");
+
+        if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+          if (startAt && cell) {
+            cell.textContent = calculateElapsedTime(startAt, updatedAt);
+            cell.classList.add("stopped");
           }
         }
-        console.log("Ticket ID:", ticketId);
-        console.log("Status:", status);
-        console.log("Updated At:", updatedAt);
-        console.log("Row:", row);
 
-        // Close the modal
-        document.getElementById("editStatusModal").style.display = "none";
-      } else {
-        alert(data.message); // Show error message
+        updateTimers();
       }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("An error occurred while updating the status. Please try again.");
+
+      console.log("Ticket ID:", ticketId);
+      console.log("Status:", status);
+      console.log("Updated At:", updatedAt);
+      console.log("Row:", row);
+
+      document.getElementById("editStatusModal").style.display = "none";
+    } else {
+      alert(data.message); // Show error message
     }
-  });
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("An error occurred while updating the status. Please try again.");
+  }
+
+  // Initial update
+  updateTimers();
+});
 });
 
 
-
+//accept ticket
 document.addEventListener("DOMContentLoaded", function () {
-  // Add event listeners for the buttons
-  document
-    .getElementById("confirmButtonID")
-    .addEventListener("click", function (e) {
-      e.preventDefault();
-      handleTicketAction("confirm");
-    });
+  // Function to calculate elapsed time
+  function calculateElapsedTime(startTime, endTime = null) {
+    const startDate = new Date(startTime); // Convert start_at to a Date object
+    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
+    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
 
-  document
-    .getElementById("declineButtonID")
-    .addEventListener("click", function (e) {
-      e.preventDefault();
-      handleTicketAction("decline");
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+
+    return `${hours
+      .toString()
+      .padStart(
+        2,
+        "0"
+      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  // Function to update all timer cells
+  function updateTimers() {
+    const timerCells = document.querySelectorAll(".timer-cell");
+    timerCells.forEach((cell) => {
+      const startAt = cell.getAttribute("data-start-at");
+      const row = cell.closest("tr");
+      const updatedAt = row
+        .querySelector("td:nth-child(11)")
+        ?.textContent.trim(); // Corrected column index
+      const status = row.getAttribute("data-status");
+
+      // Stop the timer if updated_at has a value or status is "Resolved"
+      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
+        // Calculate the elapsed time between startAt and updatedAt
+        cell.textContent = calculateElapsedTime(startAt, updatedAt);
+        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
+        return;
+      }
+
+      if (startAt) {
+        cell.textContent = calculateElapsedTime(startAt);
+      }
     });
+  }
+
+  // Function to handle a specific row's duration cell
+  function updateDurationCell(row, data) {
+    const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
+    if (durationCell) {
+      const startAt = data.startAt || row.getAttribute("data-start-at");
+      row.setAttribute("data-start-at", startAt); // Update the data-start-at attribute
+
+      // Call the function to calculate elapsed time and update the cell
+      durationCell.textContent = calculateElapsedTime(startAt);
+    }
+  }
+
+  // // Add event listeners for the buttons
+  // document
+  //   .getElementById("confirmButtonID")
+  //   .addEventListener("click", function (e) {
+  //     e.preventDefault();
+  //     handleTicketAction("confirm");
+  //   });
+
+  // document
+  //   .getElementById("declineButtonID")
+  //   .addEventListener("click", function (e) {
+  //     e.preventDefault();
+  //     handleTicketAction("decline");
+  //   });
 
   function handleTicketAction(action) {
     const ticketId = document
@@ -726,20 +818,10 @@ document.addEventListener("DOMContentLoaded", function () {
               statusCell.textContent = status; // Update the status in the table
               row.setAttribute("data-status", status); // Update the data-status attribute
             }
-            
-            const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
-            if (durationCell) {
-              const startAt = data.startAt || row.getAttribute("data-start-at");
-              row.setAttribute("data-start-at", startAt); // Update the data-start-at attribute
-            
-              // Call the global updateTimers function to handle the timer
-              updateTimers();
-            }
-            
+            updateDurationCell(row, data);
           }
           console.log("Ticket ID:", ticketId);
           console.log("Status:", data.status);
-       
           console.log("Row:", row);
 
           // Close the modal
@@ -753,4 +835,24 @@ document.addEventListener("DOMContentLoaded", function () {
         alert("An error occurred while processing the request.");
       });
   }
+  // Add event listeners for the buttons
+  document
+    .getElementById("confirmButtonID")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      handleTicketAction("confirm");
+    });
+
+  document
+    .getElementById("declineButtonID")
+    .addEventListener("click", function (e) {
+      e.preventDefault();
+      handleTicketAction("decline");
+    });
+
+  // Update timers every second
+  setInterval(updateTimers, 1000);
+
+  // Initial update
+  updateTimers();
 });
