@@ -100,6 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
   // Define filterButton
   const filterButton = document.getElementById("filterButton");
+  const table = document.getElementById("ticketTable");
+
 
   if (!filterButton) {
     console.error("❌ filterButton element not found!");
@@ -140,11 +142,12 @@ document.addEventListener("DOMContentLoaded", function () {
         option.style.cursor = "pointer";
         option.style.padding = "5px 10px";
         option.addEventListener("click", function () {
-          applyFilter(filter.column);
+          applyFilter(filter.column, filter.label); // Passing filter.column and filter.label
           dropdown.remove(); // Remove dropdown after selection
         });
         dropdown.appendChild(option);
       });
+      
 
       document.body.appendChild(dropdown);
 
@@ -163,11 +166,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Apply filter based on the selected column
-  function applyFilter(columnIndex) {
+  function applyFilter(columnIndex, label) {
     const rows = table.getElementsByTagName("tr");
-    const filterValue = prompt("Enter the value to filter by:");
-
+    const filterValue = prompt("Enter the value to filter by: " + label); // Display the label in the prompt
+  
     if (filterValue) {
       for (let i = 0; i < rows.length; i++) {
         const cell = rows[i].getElementsByTagName("td")[columnIndex];
@@ -180,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
+  
 });
 
 document.addEventListener("DOMContentLoaded", function () {
