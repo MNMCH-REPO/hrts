@@ -762,33 +762,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Function to handle a specific row's duration cell
+
   function updateDurationCell(row, data) {
     const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
     if (durationCell) {
       const startAt = data.startAt || row.getAttribute("data-start-at");
-      row.setAttribute("data-start-at", startAt); // Update the data-start-at attribute
-
+      
+      // Set the attribute on both row and cell for consistency
+      row.setAttribute("data-start-at", startAt); 
+      durationCell.setAttribute("data-start-at", startAt); // <--- Add this line
+  
       // Call the function to calculate elapsed time and update the cell
       durationCell.textContent = calculateElapsedTime(startAt);
     }
   }
-
-  // // Add event listeners for the buttons
-  // document
-  //   .getElementById("confirmButtonID")
-  //   .addEventListener("click", function (e) {
-  //     e.preventDefault();
-  //     handleTicketAction("confirm");
-  //   });
-
-  // document
-  //   .getElementById("declineButtonID")
-  //   .addEventListener("click", function (e) {
-  //     e.preventDefault();
-  //     handleTicketAction("decline");
-  //   });
-
+  // Function to handle ticket action (confirm/decline)
   function handleTicketAction(action) {
     const ticketId = document
       .getElementById("confirmTicketID")
