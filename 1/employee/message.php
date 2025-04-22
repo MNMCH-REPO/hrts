@@ -155,6 +155,12 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
     </div>
 
 
+        <!-- Image Modal -->
+        <div id="imageModal" class="modal">
+        <span class="close" id="closeModal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/messages.js"></script>

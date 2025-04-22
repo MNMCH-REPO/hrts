@@ -126,11 +126,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
 
-                    <div class="input-area" id="inputAreaID">
-                        <input type="file" name="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                    <div class="input-area">
+                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
                         <div class="attach" id="attach">Attachment📎</div>
                         <input type="text" id="message" placeholder="Type a message...">
-                        <button id="sendmesageBtn">Send</button>
+                        <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                            <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                        </button>
                     </div>
 
 
@@ -151,86 +153,6 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <span class="close" id="closeModal">&times;</span>
             <img class="modal-content" id="modalImage">
         </div>
-
-        <style>
-            /* Modal styles */
-            .modal {
-                display: none;
-                /* Hidden by default */
-                position: fixed;
-                /* Stay in place */
-                z-index: 1000;
-                /* Sit on top */
-                left: 0;
-                top: 0;
-                width: 100%;
-                /* Full width */
-                height: 100%;
-                /* Full height */
-                background-color: rgba(0, 0, 0, 0.8);
-                /* Black background with opacity */
-                justify-content: center;
-                /* Center content horizontally */
-                align-items: center;
-                /* Center content vertically */
-                display: flex;
-                /* Flexbox for centering */
-            }
-
-            .modal-content {
-                margin: auto;
-                display: block;
-                max-width: 60%;
-                /* Limit the image size to 60% of the viewport width */
-                max-height: 60%;
-                /* Limit the image size to 60% of the viewport height */
-                width: auto;
-                /* Maintain aspect ratio */
-                height: auto;
-                /* Maintain aspect ratio */
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                /* Add a subtle shadow */
-            }
-
-            .close {
-                position: absolute;
-                top: 20px;
-                right: 35px;
-                color: #fff;
-                font-size: 40px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: red;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .modal-content {
-                    max-width: 80%;
-                    /* Adjust for smaller screens */
-                    max-height: 50%;
-                    /* Adjust for smaller screens */
-                }
-
-                .close {
-                    font-size: 30px;
-                    /* Smaller close button on small screens */
-                }
-            }
-
-
-            .card.active {
-                border: 2px solid #007bff;
-                background-color: #f0f8ff;
-            }
-        </style>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../../assets/js/framework.js"></script>

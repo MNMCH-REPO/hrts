@@ -189,3 +189,94 @@ $(document).ready(function () {
     }
   });
 });
+
+
+function handleFileAction(filePath, action) {
+  if (!filePath) {
+    console.error("File path is missing.");
+    return;
+  }
+
+  if (action === "view") {
+    // Open the file in a new tab for viewing
+    window.open(filePath, "_blank");
+  } else if (action === "download") {
+    // Trigger a download using AJAX
+    const link = document.createElement("a");
+    link.href = filePath;
+    link.download = filePath.split("/").pop(); // Extract the file name from the path
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else {
+    console.error("Invalid action specified.");
+  }
+}
+
+// Ensure modal is hidden on page load
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "none"; // Ensure modal is hidden
+});
+
+
+
+
+// Open the modal and display the image
+function openImageModal(imagePath) {
+    const modal = document.getElementById("imageModal");
+    const modalImage = document.getElementById("modalImage");
+
+    modal.style.display = "flex"; // Use flex to center the modal
+    modalImage.src = imagePath; // Set the image source
+}
+
+// Close the modal
+document.getElementById("closeModal").onclick = function () {
+    const modal = document.getElementById("imageModal");
+    modal.style.display = "none";
+};
+
+// Close the modal when clicking outside the image
+window.onclick = function (event) {
+    const modal = document.getElementById("imageModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+};
+
+
+function renderTickets() {
+  const cardsContainer = document.querySelector(".cards-container");
+  cardsContainer.innerHTML = ""; // Clear existing cards
+
+  if (tickets.length > 0) {
+    tickets.forEach((ticket, index) => {
+      const card = document.createElement("div");
+      card.className = `card card-${(index % 4) + 1}`;
+      card.onclick = () => {
+        loadMessages(ticket.id, ticket.assigned_name);
+        startAutoRefresh(ticket.id, ticket.assigned_name);
+      };
+
+      card.innerHTML = `
+        <h1>Ticket ID: ${ticket.id}</h1>
+        <h1>Employee Name: ${ticket.employee_name}</h1>
+        <h1>Department: ${ticket.department}</h1>
+        <h1>Subject: ${ticket.subject}</h1>
+        <h1>Assigned Name: ${ticket.assigned_name}</h1>
+        <h1>Priority: ${ticket.priority}</h1>
+        <h1>Status: ${ticket.status}</h1>
+        <h1>Created At: ${ticket.created_at}</h1>
+      `;
+
+      cardsContainer.appendChild(card);
+    });
+
+    // Automatically open the newest ticket
+    const newestTicket = tickets[0];
+    loadMessages(newestTicket.id, newestTicket.assigned_name);
+  } else {
+    cardsContainer.innerHTML = "<p>No tickets assigned to you.</p>";
+  }
+}
