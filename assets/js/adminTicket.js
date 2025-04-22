@@ -1,4 +1,8 @@
 //raymond
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const plate = document.getElementById("plate1");
 
@@ -846,4 +850,88 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Initial update
   updateTimers();
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const allRows = Array.from(document.querySelectorAll("#ticketTable tbody tr"));
+  const tbody = document.querySelector("#ticketTable tbody");
+  const paginationContainer = document.getElementById("paginationControls");
+  const rowsPerPage = 5;
+  let currentPage = 1;
+  let currentFilter = "";
+
+  function getRowStatus(row) {
+      return row.children[4].textContent.trim();
+  }
+
+  function renderTable(filter = "") {
+      const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+      const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+      currentPage = Math.min(currentPage, totalPages || 1);
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      tbody.innerHTML = "";
+      filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
+      renderPaginationButtons(totalPages);
+  }
+  let paginationStart = 1; // Tracks which set of pages we're viewing
+
+  function renderPaginationButtons(totalPages) {
+      paginationContainer.innerHTML = "";
+
+      const maxVisible = 10;
+      const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+
+      // Left arrow (go back 10 pages)
+      if (paginationStart > 1) {
+          const leftArrow = document.createElement("button");
+          leftArrow.textContent = "←";
+          leftArrow.addEventListener("click", () => {
+              paginationStart = Math.max(1, paginationStart - maxVisible);
+              renderPaginationButtons(totalPages);
+          });
+          paginationContainer.appendChild(leftArrow);
+      }
+
+      // Page number buttons
+      for (let i = paginationStart; i <= paginationEnd; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className = i === currentPage ? "active" : "";
+          btn.style.margin = "0 5px";
+          btn.style.minWidth = "22px";
+          btn.addEventListener("click", () => {
+              currentPage = i;
+              renderTable(currentFilter);
+          });
+          paginationContainer.appendChild(btn);
+      }
+
+      // Right arrow (go forward 10 pages)
+      if (paginationEnd < totalPages) {
+          const rightArrow = document.createElement("button");
+          rightArrow.textContent = "→";
+          rightArrow.addEventListener("click", () => {
+              paginationStart = paginationStart + maxVisible;
+              renderPaginationButtons(totalPages);
+          });
+          paginationContainer.appendChild(rightArrow);
+      }
+  }
+
+  const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+  plateIDs.forEach(id => {
+      const plate = document.getElementById(id);
+      if (plate) {
+          plate.addEventListener("click", function() {
+              currentFilter = this.getAttribute("data-status") || "";
+              currentPage = 1;
+              paginationStart = 1; // ✅ Reset pagination to start from 1
+              renderTable(currentFilter);
+
+          });
+      }
+  });
+  renderTable();
 });

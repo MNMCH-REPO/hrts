@@ -59,45 +59,45 @@ require_once '../../0/includes/adminDashboardTables.php';
 
             <div class="row plateRow">
                 <div class="col plate" id="plate1" data-status="Open">
-    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-    <div class="plateContent" data-status="Open">
-        <div class="plateTitle">Open</div>
-        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
-    </div>
-</div>
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
+                    <div class="plateContent" data-status="Open">
+                        <div class="plateTitle">Open</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
+                    </div>
+                </div>
 
-<div class="col plate" id="plate2" data-status="In Progress">
-    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-    <div class="plateContent" data-status="In Progress">
-        <div class="plateTitle">In Progress</div>
-        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
-    </div>
-</div>
+                <div class="col plate" id="plate2" data-status="In Progress">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
+                    <div class="plateContent" data-status="In Progress">
+                        <div class="plateTitle">In Progress</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                    </div>
+                </div>
 
-<div class="col plate" id="plate3" data-status="Resolved">
-    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
-    <div class="plateContent">
-        <div class="plateTitle">Resolved</div>
-        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
-    </div>
-</div>
+                <div class="col plate" id="plate3" data-status="Resolved">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Resolved</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                    </div>
+                </div>
 
-<!-- Plates 4 and 5 don't need data-status because they aren't used for ticket filtering -->
-<div class="col plate" id="plate4">
-    <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
-    <div class="plateContent">
-        <div class="plateTitle">HR Representative</div>
-        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
-    </div>
-</div>
+                <!-- Plates 4 and 5 don't need data-status because they aren't used for ticket filtering -->
+                <div class="col plate" id="plate4">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">HR Representative</div>
+                        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
+                    </div>
+                </div>
 
-<div class="col plate" id="plate5">
-    <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
-    <div class="plateContent">
-        <div class="plateTitle">Employee</div>
-        <div class="plateValue"><?= htmlspecialchars($roleCounts['Employee']) ?></div>
-    </div>
-</div>
+                <div class="col plate" id="plate5">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Employee</div>
+                        <div class="plateValue"><?= htmlspecialchars($roleCounts['Employee']) ?></div>
+                    </div>
+                </div>
 
                 <div class="col plate" id="plate6">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/folder.png);"></div>
@@ -111,7 +111,7 @@ require_once '../../0/includes/adminDashboardTables.php';
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                <div id="paginationControls" class="mt-3"></div>
+                    <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
@@ -178,59 +178,6 @@ require_once '../../0/includes/adminDashboardTables.php';
                     color: white;
                 }
             </style>
-
-            <div class="pagination-wrapper">
-                <div class="pagination">
-                <div id="paginationControls" class="mt-3"></div>
-                </div>
-
-                <div class="search-container">
-                    <input type="text" placeholder="SEARCH..." id="searchInput" class="search-input">
-                    <div class="search-icon">
-                        <img src="../../assets/images/icons/search.png" alt="Search">
-                    </div>
-                    <button class="filter-btn">
-                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
-                    </button>
-                </div>
-            </div>
-
-            <div class="tableContainer" id="tableContainerUserID">
-                <table class="ticketTable">
-                    <thead>
-                        <tr>
-                            <th>ID <i class="fas fa-sort"></i></th>
-                            <th>Employee Name <i class="fas fa-sort"></i></th>
-                            <th>Email <i class="fas fa-sort"></i></th>
-                            <th>Department <i class="fas fa-sort"></i></th>
-                            <th>Role <i class="fas fa-sort"></i></th>
-                            <th>Status <i class="fas fa-sort"></i></th>
-                            <th>Created At <i class="fas fa-sort"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($users)): ?>
-                            <?php foreach ($users as $user): ?>
-                                
-                                <tr class="<?= $user['status'] === 'Inactive' ? 'inactive-row' : '' ?>">  
-                                    <td><?= htmlspecialchars($user['id'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['name'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['email'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['department'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['role'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['status'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($user['created_at'] ?? 'N/A') ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="7" style="text-align: center;">No users found</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-
 
             <br><br>
 
@@ -303,44 +250,44 @@ require_once '../../0/includes/adminDashboardTables.php';
             <br><br>
 
             <div class="tableContainer" id="tableContainerCategory">
-    <table>
-        <h1 style="text-align: center; margin-top: 20px;">Top 10 Longest Orders</h1>
-        <br>
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Top 10 Longest Orders</h1>
+                    <br>
 
-        <thead>
-            <tr>
-                <th>Order ID <i class="fas fa-sort"></i></th>
-                <th>Category <i class="fas fa-sort"></i></th>
-                <th>Order Details <i class="fas fa-sort"></i></th>
-                <th>Duration <i class="fas fa-sort"></i></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($longestOrders)): ?>
-                <?php foreach ($longestOrders as $order): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($order['ticket_id'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($order['category'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($order['order_details'] ?? 'N/A') ?></td>
-                        <td>
-                            <?php
-                                // Convert duration from seconds to hours, minutes, and seconds
-                                $hours = floor($order['duration_seconds'] / 3600);
-                                $minutes = floor(($order['duration_seconds'] % 3600) / 60);
-                                $seconds = $order['duration_seconds'] % 60;
-                                echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-                            ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="4" style="text-align: center;">No Orders found</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+                    <thead>
+                        <tr>
+                            <th>Order ID <i class="fas fa-sort"></i></th>
+                            <th>Category <i class="fas fa-sort"></i></th>
+                            <th>Order Details <i class="fas fa-sort"></i></th>
+                            <th>Duration <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($longestOrders)): ?>
+                            <?php foreach ($longestOrders as $order): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($order['ticket_id'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($order['category'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($order['order_details'] ?? 'N/A') ?></td>
+                                    <td>
+                                        <?php
+                                        // Convert duration from seconds to hours, minutes, and seconds
+                                        $hours = floor($order['duration_seconds'] / 3600);
+                                        $minutes = floor(($order['duration_seconds'] % 3600) / 60);
+                                        $seconds = $order['duration_seconds'] % 60;
+                                        echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No Orders found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
 
 
 
@@ -408,97 +355,93 @@ require_once '../../0/includes/adminDashboardTables.php';
 
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const allRows = Array.from(document.querySelectorAll("#tableContainerTicketID tbody tr"));
-        const tbody = document.querySelector("#tableContainerTicketID tbody");
-        const paginationContainer = document.getElementById("paginationControls");
-        const rowsPerPage = 5;
-        let currentPage = 1;
-        let currentFilter = "";
-        function getRowStatus(row) {
-            return row.children[4].textContent.trim();
-        }
-        function renderTable(filter = "") {
-            const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
-            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-            currentPage = Math.min(currentPage, totalPages || 1);
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            tbody.innerHTML = "";
-            filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
-            renderPaginationButtons(totalPages);
-        }
-        function renderPaginationButtons(totalPages) {
-            paginationContainer.innerHTML = "";
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement("button");
-                btn.textContent = i;
-                btn.className = i === currentPage ? "active" : "";
-                btn.style.margin = "0 5px";
-                btn.addEventListener("click", () => {
-                    currentPage = i;
-                    renderTable(currentFilter);
-                });
-                paginationContainer.appendChild(btn);
-            }
-        }
-        const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
-        plateIDs.forEach(id => {
-            const plate = document.getElementById(id);
-            if (plate) {
-                plate.addEventListener("click", function () {
-                    currentFilter = this.getAttribute("data-status") || "";
-                    currentPage = 1;
-                    renderTable(currentFilter);
+        document.addEventListener("DOMContentLoaded", function() {
+            const allRows = Array.from(document.querySelectorAll("#tableContainerTicketID tbody tr"));
+            const tbody = document.querySelector("#tableContainerTicketID tbody");
+            const paginationContainer = document.getElementById("paginationControls");
+            const rowsPerPage = 5;
+            let currentPage = 1;
+            let currentFilter = "";
 
-                });
+            function getRowStatus(row) {
+                return row.children[4].textContent.trim();
             }
+
+            function renderTable(filter = "") {
+                const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
+                renderPaginationButtons(totalPages);
+            }
+            let paginationStart = 1; // Tracks which set of pages we're viewing
+
+            function renderPaginationButtons(totalPages) {
+                paginationContainer.innerHTML = "";
+
+                const maxVisible = 10;
+                const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+
+                // Left arrow (go back 10 pages)
+                if (paginationStart > 1) {
+                    const leftArrow = document.createElement("button");
+                    leftArrow.textContent = "←";
+                    leftArrow.addEventListener("click", () => {
+                        paginationStart = Math.max(1, paginationStart - maxVisible);
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(leftArrow);
+                }
+
+                // Page number buttons
+                for (let i = paginationStart; i <= paginationEnd; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className = i === currentPage ? "active" : "";
+                    btn.style.margin = "0 5px";
+                    btn.style.minWidth = "22px";
+                    btn.addEventListener("click", () => {
+                        currentPage = i;
+                        renderTable(currentFilter);
+                    });
+                    paginationContainer.appendChild(btn);
+                }
+
+                // Right arrow (go forward 10 pages)
+                if (paginationEnd < totalPages) {
+                    const rightArrow = document.createElement("button");
+                    rightArrow.textContent = "→";
+                    rightArrow.addEventListener("click", () => {
+                        paginationStart = paginationStart + maxVisible;
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(rightArrow);
+                }
+            }
+
+            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        currentFilter = this.getAttribute("data-status") || "";
+                        currentPage = 1;
+                        paginationStart = 1; // ✅ Reset pagination to start from 1
+                        renderTable(currentFilter);
+
+                    });
+                }
+            });
+            renderTable();
         });
-        renderTable();
-    });
-// document.addEventListener("DOMContentLoaded", function () {
-//     const rowsPerPage = 5;
-//     const table = document.querySelector("#tableContainerTicketID table");
-//     const tbody = table.querySelector("tbody");
-//     const rows = Array.from(tbody.querySelectorAll("tr"));
-//     const paginationContainer = document.getElementById("paginationControls");
-
-//     function displayPage(page) {
-//         const start = (page - 1) * rowsPerPage;
-//         const end = start + rowsPerPage;
-
-//         rows.forEach((row, index) => {
-//             row.style.display = (index >= start && index < end) ? "" : "none";
-//         });
-
-//         renderPaginationButtons(page);
-//     }
-
-//     function renderPaginationButtons(activePage) {
-//         const totalPages = Math.ceil(rows.length / rowsPerPage);
-//         paginationContainer.innerHTML = "";
-
-//         for (let i = 1; i <= totalPages; i++) {
-//             const btn = document.createElement("button");
-//             btn.textContent = i;
-//             btn.className = (i === activePage) ? "active-page-btn" : "";
-//             btn.style.margin = "0 5px";
-//             btn.style.padding = "5px 10px";
-//             btn.addEventListener("click", () => displayPage(i));
-//             paginationContainer.appendChild(btn);
-//         }
-//     }
-
-//     // Only paginate if there are rows
-//     if (rows.length > 0) {
-//         displayPage(1);
-//     }
-// });
-</script>
+    </script>
 
 
 
-   
+
 
 </body>
 

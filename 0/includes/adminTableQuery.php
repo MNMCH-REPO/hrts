@@ -32,12 +32,11 @@ try {
             LEFT JOIN users e ON t.employee_id = e.id
             LEFT JOIN users a ON t.assigned_to = a.id
             LEFT JOIN categories c ON t.category_id = c.id
-            ORDER BY t.created_at DESC
-            LIMIT :limit OFFSET :offset"; // Pagination 
+            ORDER BY t.created_at DESC";
+        
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+
     $stmt->execute();
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

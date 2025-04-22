@@ -412,17 +412,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
-                    <?php endif; ?>
+                <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
@@ -850,6 +840,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
 
     <script src="../../assets/js/adminTicket.js"></script>
+    <script>
+        
+    </script>
 </body>
 
 </html>
