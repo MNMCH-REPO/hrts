@@ -64,12 +64,20 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             </div>
             <div class="main-convo">
                 <div class="container-convo">
-
+                    <div class="chatbox-container">
                     <div class="chat-container" id="chatbox">
                         <!-- Messages will be loaded here -->
 
                     </div>
-
+                    <div class="input-area">
+                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                        <div class="attach" id="attach">Attachment📎</div>
+                        <input type="text" id="message" placeholder="Type a message...">
+                        <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                            <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                        </button>
+                    </div>
+                </div>
                     <div class="cards-container">
                         <?php
                         require_once '../../0/includes/db.php';
@@ -106,13 +114,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                     echo '<div class="card card-' . (($index % 4) + 1) . '" 
                       data-ticket-id="' . htmlspecialchars($ticket['id']) . '">';
                                     echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                    echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Department: ' . htmlspecialchars($ticket['department'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Subject: ' . htmlspecialchars($ticket['subject'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name'] ?? 'Unassigned') . '</h1>';
-                                    echo '<h1>Priority: ' . htmlspecialchars($ticket['priority'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Status: ' . htmlspecialchars($ticket['status'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at'] ?? 'N/A') . '</h1>';
+                                    echo '<h1>' . ucwords(strtolower(htmlspecialchars($ticket['employee_name'] ?? 'N/A'))) . '</h1>';
+                                    echo '<h1>' . ucwords(strtolower(htmlspecialchars($ticket['department'] ?? 'N/A'))) . '</h1>';
+                                    // echo '<h1>Subject: ' . htmlspecialchars($ticket['subject'] ?? 'N/A') . '</h1>';
+                                    // echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name'] ?? 'Unassigned') . '</h1>';
+                                    // echo '<h1>Priority: ' . htmlspecialchars($ticket['priority'] ?? 'N/A') . '</h1>';
+                                    // echo '<h1>Status: ' . htmlspecialchars($ticket['status'] ?? 'N/A') . '</h1>';
+                                    // echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at'] ?? 'N/A') . '</h1>';
                                     echo '</div>';
                                 }
                             } else {
@@ -123,28 +131,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         }
                         ?>
                     </div>
-
-
-
-                    <div class="input-area">
-                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                        <div class="attach" id="attach">Attachment📎</div>
-                        <input type="text" id="message" placeholder="Type a message...">
-                        <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
-                            <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
-                        </button>
-                    </div>
-
-
                     <br><br>
                     <div class="footer" style="text-align: center;">
                         <p>All rights reserved ©</p>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
 
