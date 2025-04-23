@@ -1,8 +1,12 @@
 <?php
-      $dsn = 'mysql:host=mnmch.com;dbname=mnmchcom_hrts;charset=utf8';
-      $username = 'mnmchcom';
-      $password = '&rh{Q.DYFE[O';
+    //   $dsn = 'mysql:host=mnmch.com;dbname=mnmchcom_hrts;charset=utf8';
+    //   $username = 'mnmchcom';
+    //   $password = '&rh{Q.DYFE[O';
 
+
+    $dsn = 'mysql:host=localhost;dbname=mnmch_hrts_db;charset=utf8';
+    $username = 'root';
+    $password = '';
 
     try {
         $pdo = new PDO($dsn, $username, $password);
