@@ -16,6 +16,42 @@ require_once '../../0/includes/adminDashboardTables.php';
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <title>HRTS</title>
 
+    <style>
+        .time-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--neutral-300);
+            background-color: var(--white);
+            color: var(--black);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--fast);
+        }
+        .time-btn:hover {
+            background-color: var(--neutral-200);
+        }
+        .time-btn.active {
+            background-color: var(--primary-500);
+            color: var(--white);
+            border-color: var(--primary-500);
+        }
+        .report-card {
+            padding: 16px;
+            border: 3px solid var(--neutral-300);
+            border-radius: 8px;
+            background-color: var(--white);
+            cursor: pointer;
+            transition: var(--fast);
+            margin-bottom: 12px;
+        }
+        .report-card:hover {
+            background-color: var(--neutral-200);
+        }
+        .report-card.selected {
+            color: var(--white);
+            border-color: var(--primary-500);
+        }
+    </style>
+
 </head>
 
 <body>
@@ -436,6 +472,95 @@ require_once '../../0/includes/adminDashboardTables.php';
                 }
             });
             renderTable();
+        });
+
+        //open modal
+        document.addEventListener("DOMContentLoaded", function() {
+            let modal = document.getElementById("reportModal");
+            let downloadPlate = document.getElementById("plate6");
+            let closeModal = document.querySelector(".close");
+
+            // Show modal when clicking the download plate
+            downloadPlate.addEventListener("click", function() {
+                modal.style.display = "block";
+            });
+
+            // Close modal when clicking the close button
+            closeModal.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            // Close modal when clicking outside the content
+            window.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+
+
+
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const timeButtons = document.querySelectorAll(".time-btn");
+            const startDateInput = document.getElementById("startDate");
+            const endDateInput = document.getElementById("endDate");
+            const reportCards = document.querySelectorAll(".report-card");
+            function setTodayRange() {
+                const today = new Date();
+                const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+                startDateInput.value = formattedDate;
+                endDateInput.value = formattedDate;
+            }
+            const defaultTimeButton = document.querySelector(".time-btn:nth-child(1)");
+            defaultTimeButton.classList.add("active");
+            setTodayRange();
+
+            // Add click event listeners to time buttons
+            timeButtons.forEach((button) => {
+                button.addEventListener("click", function () {
+                    // Remove active class from all buttons
+                    timeButtons.forEach((btn) => btn.classList.remove("active"));
+
+                    // Add active class to the clicked button
+                    this.classList.add("active");
+
+                    // Set date range based on the selected button
+                    if (this.textContent === "Today") {
+                        setTodayRange();
+                    } else if (this.textContent === "This week") {
+                        const today = new Date();
+                        const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+                        const lastDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 6));
+                        startDateInput.value = firstDayOfWeek.toISOString().split("T")[0];
+                        endDateInput.value = lastDayOfWeek.toISOString().split("T")[0];
+                    } else if (this.textContent === "This month") {
+                        const today = new Date();
+                        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                        startDateInput.value = firstDayOfMonth.toISOString().split("T")[0];
+                        endDateInput.value = lastDayOfMonth.toISOString().split("T")[0];
+                    } else if (this.textContent === "Custom") {
+                        startDateInput.value = "";
+                        endDateInput.value = "";
+                    }
+                });
+            });
+
+            // Set default selected report card
+            const defaultReportCard = document.querySelector(".report-card:nth-child(1)");
+            defaultReportCard.classList.add("selected");
+
+            // Add click event listeners to report cards
+            reportCards.forEach((card) => {
+                card.addEventListener("click", function () {
+                    // Remove selected class from all report cards
+                    reportCards.forEach((c) => c.classList.remove("selected"));
+
+                    // Add selected class to the clicked card
+                    this.classList.add("selected");
+                });
+            });
         });
     </script>
 
