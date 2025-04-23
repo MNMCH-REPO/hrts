@@ -65,19 +65,18 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <div class="main-convo">
                 <div class="container-convo">
                     <div class="chatbox-container">
-                    <div class="chat-container" id="chatbox">
-                        <!-- Messages will be loaded here -->
-
+                        <div class="chat-container" id="chatbox">
+                            <!-- Messages will be loaded here -->
+                        </div>
+                        <div class="input-area">
+                            <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                            <div class="attach" id="attach">Attachment📎</div>
+                            <input type="text" id="message" placeholder="Type a message...">
+                            <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                                <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                            </button>
+                        </div>
                     </div>
-                    <div class="input-area">
-                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                        <div class="attach" id="attach">Attachment📎</div>
-                        <input type="text" id="message" placeholder="Type a message...">
-                        <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
-                            <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
-                        </button>
-                    </div>
-                </div>
                     <div class="cards-container">
                         <?php
                         require_once '../../0/includes/db.php';

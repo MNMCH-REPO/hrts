@@ -62,11 +62,19 @@ require_once '../../0/includes/employeeTicket.php';
         </div>
         <div class="main-convo">
             <div class="container-convo">
-
-                <div class="chat-container" id="chatbox">
-                    <!-- Messages will be loaded here -->
-
-                </div>
+            <div class="chatbox-container">
+                        <div class="chat-container" id="chatbox">
+                            <!-- Messages will be loaded here -->
+                        </div>
+                        <div class="input-area">
+                            <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                            <div class="attach" id="attach">Attachment📎</div>
+                            <input type="text" id="message" placeholder="Type a message...">
+                            <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                                <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                            </button>
+                        </div>
+                    </div>
 
                 <div class="cards-container">
                     <?php
@@ -109,11 +117,11 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
                                 echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
                                 echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name']) . '</h1>'; // Fixed typo
                                 echo '<h1>Department: ' . htmlspecialchars($ticket['department']) . '</h1>';
-                                echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
-                                echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
-                                echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
-                                echo '<h1>Status: ' . htmlspecialchars($ticket['status']) . '</h1>';
-                                echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at']) . '</h1>';
+                                // echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
+                                // echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
+                                // echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
+                                // echo '<h1>Status: ' . htmlspecialchars($ticket['status']) . '</h1>';
+                                // echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at']) . '</h1>';
                                 echo '</div>';
                             }
                         } else {
@@ -125,24 +133,6 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
                     ?>
 
                 </div>
-
-
-
-
-
-
-
-
-                <div class="input-area">
-                    <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                    <div class="attach" id="attach">Attachment📎</div>
-                    <input type="text" id="message" placeholder="Type a message...">
-                    <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
-                        <img src="../../assets/images/icons/send.png"  style="width: 100%; height: 100%; object-fit: contain;">
-                    </button>
-                </div>
-
-
                 <br><br>
                 <div class="footer" style="text-align: center;">
                     <p>All rights reserved ©</p>
