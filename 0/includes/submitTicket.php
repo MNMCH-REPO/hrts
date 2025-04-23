@@ -1,5 +1,5 @@
 <?php
-require 'session.php';
+session_start();
 require "db.php"; // Ensure correct database connection
 
 header("Content-Type: application/json");

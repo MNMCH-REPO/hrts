@@ -145,7 +145,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                         <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                         <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                                        <td><?= htmlspecialchars($ticket['start_at']) ?></td>
+                                        <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                         <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
