@@ -1,6 +1,6 @@
 <?php
 
-require '../../0/includes/db.php';
+require 'db.php';
 
 try {
     // Pagination settings

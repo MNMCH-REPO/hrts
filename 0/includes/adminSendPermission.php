@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../../0/includes/db.php';
+require 'db.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
     echo json_encode(['canReply' => false]);

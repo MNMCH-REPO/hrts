@@ -1,5 +1,5 @@
 <?php
-require_once '../../0/includes/db.php';
+require_once 'db.php';
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filterColumn = isset($_GET['filterColumn']) ? trim($_GET['filterColumn']) : '';

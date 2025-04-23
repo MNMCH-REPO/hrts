@@ -1,5 +1,5 @@
 <?php
-require_once '../../0/includes/db.php'; // Include your database connection file
+require_once 'db.php'; // Include your database connection file
 session_start(); // Start the session to access user data
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {

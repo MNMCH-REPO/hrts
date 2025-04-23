@@ -99,7 +99,7 @@ function uploadFile($pdo, $ticket_id, $user_id, $file)
 
 try {
     session_start();
-    require '../../0/includes/db.php';
+    require 'db.php';
 
     if (!isset($_SESSION['user_id'])) {
         echo json_encode(['success' => false, 'message' => 'User not logged in.']);

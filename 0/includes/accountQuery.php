@@ -1,7 +1,7 @@
 <?php
 
 try {
-    require '../../0/includes/db.php';
+    require 'db.php';
 
     // Pagination settings
     $limit = 10; // Number of records per page

@@ -1,5 +1,5 @@
 <?php
-require_once '../../0/includes/db.php'; // Include your database connection file
+require_once 'db.php'; // Include your database connection file
 
 function createUser($employeeID, $employeeName, $email, $role, $department)
 {

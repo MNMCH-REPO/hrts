@@ -1,5 +1,5 @@
 <?php
-require_once '../../0/includes/db.php'; // Ensure this file initializes the global $pdo variable
+require_once 'db.php'; // Ensure this file initializes the global $pdo variable
 session_start(); // Start the session to access user data
 
 // Check if the user is logged in

@@ -1,6 +1,6 @@
 <?php
-session_start();
-require "../../0/includes/db.php"; // Ensure correct database connection
+require 'session.php';
+require "db.php"; // Ensure correct database connection
 
 header("Content-Type: application/json");
 

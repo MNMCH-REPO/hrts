@@ -1,6 +1,6 @@
 <?php
 try {
-    require '../../0/includes/db.php';
+    require 'db.php';
 
     $currentUserId = $_SESSION['user_id'] ?? null; // Get the current user ID from session
 

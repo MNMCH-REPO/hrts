@@ -1,6 +1,6 @@
 <?php
 try {
-    require '../../0/includes/db.php';
+    require 'db.php';
     require 'platesCount.php';
 
     // Pagination settings
