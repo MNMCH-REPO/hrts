@@ -81,4 +81,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => 'An unexpected error occurred. Please try again later.']);
     }
 }
-?>

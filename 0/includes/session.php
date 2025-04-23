@@ -69,4 +69,3 @@ if (isset($_SESSION['user_id'])) {
 } else {
     echo '<script>console.error("User is not logged in.");</script>';
 }
-?>

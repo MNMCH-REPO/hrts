@@ -66,4 +66,3 @@ try {
     error_log("Database error: " . $e->getMessage());
     echo json_encode(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
 }
-?>
