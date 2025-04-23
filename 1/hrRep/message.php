@@ -69,7 +69,7 @@ require_once '../../0/includes/employeeTicket.php';
                     <div class="input-area">
                         <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
                         <div class="attach" id="attach">Attachment📎</div>
-                        <input type="text" id="message" placeholder="Type a message...">
+                        <input type="text" id="message" name="message" placeholder="Type a message...">
                         <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
                             <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
                         </button>
