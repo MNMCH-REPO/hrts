@@ -348,7 +348,7 @@ body{
     height: 96px;
     width: 100%;
     background-color: var(--primary-500);
-    margin: 47px 0 64px 0;
+    margin: 50px 0 64px 0;
 }
 .sideNav{
     position: fixed;
@@ -375,7 +375,7 @@ body{
     width: 100%;
     border: none;
     margin: 8px 0;
-    padding: 0 8px 0 22px;
+    padding: 0 8px 0 8px;
     gap: 12px;
     cursor: pointer;
     transition: var(--fast);
@@ -404,9 +404,16 @@ body{
     width: 100%;
     height: 100%;
 }
+.sideNav {
+    transition: width 0.3s ease;
+}
+.navBtn a {
+    transition: opacity 0.3s ease;
+}
 .topNav{
     position: fixed;
     top: 0;
+    left: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -416,7 +423,8 @@ body{
     border-bottom: 1px solid var(--neutral-300);
     background-color: var(--neutral-100);
     box-shadow: 4px 2px 4px 0 var(--neutral-300);
-    z-index: 999;
+    z-index: 9999;
+    width: 100%;
 }
 .account{
     display: flex;

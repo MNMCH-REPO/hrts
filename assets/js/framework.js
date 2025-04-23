@@ -29,10 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
             popupConfirm.style.display = 'none';
         });
     });
-    document.querySelectorAll('.topNav').forEach(function(topNav) {
-        topNav.style.left = document.querySelector('.sideNav').offsetWidth + "px";
-        topNav.style.width = "calc(100% - " + document.querySelector('.sideNav').offsetWidth + "px)";
-    });
     document.querySelectorAll('.submit').forEach(function(btn) {
         btn.addEventListener('click', function() {
             this.closest('form').submit();
@@ -65,3 +61,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+const sideNav = document.querySelector(".sideNav");
+const navBtns = document.querySelectorAll(".navBtn a");
+let shrinkDelay = 1000;
+let shrinkTimeout;
+function shrinkSideNav() {
+    sideNav.style.width = "60px";
+    navBtns.forEach((btn) => {
+        btn.style.display = "none";
+    });
+}
+function expandSideNav() {
+    clearTimeout(shrinkTimeout);
+    sideNav.style.width = "260px";
+    navBtns.forEach((btn) => {
+        btn.style.display = "flex";
+    });
+}
+sideNav.addEventListener("mouseleave", () => {
+    shrinkTimeout = setTimeout(shrinkSideNav, shrinkDelay);
+});
+sideNav.addEventListener("mouseenter", expandSideNav);
+shrinkSideNav();

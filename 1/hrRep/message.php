@@ -115,8 +115,8 @@ ORDER BY t.updated_at DESC; -- Sort by newest update
                                 echo '<div class="card card-' . (($index % 4) + 1) . '" 
                                       onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
                                 echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name']) . '</h1>'; // Fixed typo
-                                echo '<h1>Department: ' . htmlspecialchars($ticket['department']) . '</h1>';
+                                echo '<h1>' . htmlspecialchars($ticket['employee_name']) . '</h1>'; // Fixed typo
+                                echo '<h1>' . htmlspecialchars($ticket['department']) . '</h1>';
                                 // echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
                                 // echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
                                 // echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
