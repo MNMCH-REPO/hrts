@@ -55,10 +55,10 @@ if (isset($_SESSION['user_id'])) {
             ];
 
             // Convert the array to a JSON object and output it for JavaScript
-            echo '<script>';
-            echo 'const userData = ' . json_encode($userData, JSON_PRETTY_PRINT) . ';';
-            echo 'console.log(userData);';
-            echo '</script>';
+            // echo '<script>';
+            // echo 'const userData = ' . json_encode($userData, JSON_PRETTY_PRINT) . ';';
+            // echo 'console.log(userData);';
+            // echo '</script>';
         } else {
             // Handle case where user is not found in the database
             echo '<script>console.error("User not found in the database.");</script>';
