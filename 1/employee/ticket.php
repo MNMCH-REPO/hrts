@@ -89,7 +89,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 <div class="pagination-wrapper">
                     <div class="pagination">
-                    <div id="paginationControls" class="mt-3"></div>
+                        <div id="paginationControls" class="mt-3"></div>
                     </div>
 
                     <div class="search-container">
@@ -106,9 +106,57 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
                 <div class="tableContainer">
-                    <?php
-                    require_once 'employeeTable.php'; // Ensure correct database connection
-                    ?>
+                    <table id="ticketTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>ID <i class="fas fa-sort"></i></th>
+                                <th>Employee Name <i class="fas fa-sort"></i></th>
+                                <th>Department <i class="fas fa-sort"></i></th>
+                                <th>Subject <i class="fas fa-sort"></i></th>
+                                <th>Description <i class="fas fa-sort"></i></th>
+                                <th>Status <i class="fas fa-sort"></i></th>
+                                <th>Priority <i class="fas fa-sort"></i></th>
+                                <th>Category ID <i class="fas fa-sort"></i></th>
+                                <th>Assigned To <i class="fas fa-sort"></i></th>
+                                <th>Created At <i class="fas fa-sort"></i></th>
+                                <th>Duration<i class="fas fa-sort"></i></th>
+                                <th>Updated At <i class="fas fa-sort"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($tickets)): ?>
+                                <?php foreach ($tickets as $ticket): ?>
+                                    <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
+                                        data-status="<?= htmlspecialchars($ticket['status']) ?>"
+                                        data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
+                                        data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
+                                        data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
+                                        data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                                        data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"
+                                        data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
+
+                                        <td><?= htmlspecialchars($ticket['id']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['employee_department']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['subject']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['description']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['status']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['priority']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['category_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['start_at']) ?></td>
+                                        <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="10" style="text-align: center;">No tickets found</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+
+                    </table>
                 </div>
 
             </div>
@@ -180,7 +228,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     <div id="confirmModal" class="modal">
         <div class="modal-content">
-            <h1 class="modal-title">ASSIGN TICKET</h1>
+            <h1 class="modal-title">ACCEPT TICKET</h1>
 
             <form id="confirmationForm" method="POST">
                 <div class="input-container">
@@ -245,66 +293,66 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     <!-- Modal -->
     <div id="editStatusModal" class="modal">
-            <div class="modal-content">
-                <h1 class="modal-title">EDIT TICKET STATUS</h1>
+        <div class="modal-content">
+            <h1 class="modal-title">EDIT TICKET STATUS</h1>
 
-                <form id="editStatusForm" method="POST">
-                    <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
-                    </div>
+            <form id="editStatusForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Fnance</p>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Fnance</p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Priority:</strong></h1>
-                        <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
-                        </select>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
 
-                    <div class="input-container">
-                        <h1><strong>Assigned To:</strong></h1>
-                        <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
-                        </select>
-                    </div>
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
+                    </select>
+                </div>
 
-                    <div class="input-container">
-                        <select name="statusEdit" id="statusEditID" required>
-                            <option value="" disabled selected>Select a status</option>
-                            <option value="Resolved">Resolved</option>
-                        </select>
-                    </div>
+                <div class="input-container">
+                    <select name="statusEdit" id="statusEditID" required>
+                        <option value="" disabled selected>Select a status</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
 
-                    <div class="btnContainer">
-                        <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                    </div>
-                </form>
-            </div>
+                <div class="btnContainer">
+                    <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
         </div>
+    </div>
     </div>
 
     <!-- Ticket Summarization Modal -->
@@ -375,10 +423,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     <script src="../../assets/js/framework.js"></script>
 
-<script src="../../assets/js/employeeTicket.js"></script>
+    <script src="../../assets/js/employeeTicket.js"></script>
 
-<script >
-    document.addEventListener("DOMContentLoaded", function() {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
             const allRows = Array.from(document.querySelectorAll("#ticketTable tbody tr"));
             const tbody = document.querySelector("#ticketTable tbody");
             const paginationContainer = document.getElementById("paginationControls");
@@ -460,7 +508,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
             renderTable();
         });
-</script>
+    </script>
 
 </body>
 
