@@ -320,6 +320,61 @@ tbody tr.highlighted {
 }
 
 
+/* Styles specifically for the Ticket Summarization Modal */
+#ticketSummarizationModal .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 95%;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    align-self: center;
+}
+
+#ticketSummarizationModal .input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    
+}
+
+#ticketSummarizationModal .input-container h1 {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    margin: 0;
+    width: 40%;
+}
+
+#ticketSummarizationModal .center-text {
+    width: 60%;
+    font-size: 16px;
+    text-align: left;
+    font-weight: normal;
+}
+
+#ticketSummarizationModal .btnContainer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#ticketSummarizationModal .btnDanger {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#ticketSummarizationModal .btnDanger:hover {
+    background-color: #c0392b;
+}
+
+
 .highlighted {
     background-color: var(--primary-400);
 }

@@ -153,6 +153,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Open the confirmModal
         confirmModal.style.display = "flex";
+
+        
       } else if (status === "In Progress" && assignedTo === currentUser) {
         // Set the values in the editStatusModal
         editStatusModalFields.ticketIdField.textContent = ticketId;
