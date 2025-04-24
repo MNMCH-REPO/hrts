@@ -368,6 +368,7 @@ body{
     margin-top: auto;
 }
 .navBtn{
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -396,6 +397,10 @@ body{
     aspect-ratio: 1/1;
 }
 .navBtn > a{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0 0 0 54px;
     display: flex;
     align-items: center;
     text-decoration: none;
