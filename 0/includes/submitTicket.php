@@ -10,17 +10,41 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 $currentUserId = $_SESSION['user_id'];
-$stmt = $pdo->prepare("select * from leave_balances where id = :id");
-$stmt->execute([':id' => $currentUserId]);
-$leaveBalance = $stmt->fetch(PDO::FETCH_ASSOC);
-echo 'const leaveBalances = {
-        "Sick Leave": '.$leaveBalance[''].',
-        "Service Incentive Leave": 3,
-        "Earned Leave Credit": 2,
-        "Vacation": 10,
-        "Emergency Leave": 1
-    };
-';
+
+//fetch leave balances
+$stmt = $pdo->prepare("
+    SELECT sick_leave_value, service_incentive_leave_value, earned_leave_credit_value, vacation_value, emergency_leave_value 
+    FROM used_balance 
+    WHERE user_id = :user_id
+");
+$stmt->bindParam(':user_id', $currentUserId, PDO::PARAM_INT);
+$stmt->execute();
+$usedBalances = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare("
+    SELECT sick_leave_value, service_incentive_leave_value, earned_leave_credit_value, vacation_value, emergency_leave_value 
+    FROM total_balance 
+    WHERE user_id = :user_id
+");
+$stmt->bindParam(':user_id', $currentUserId, PDO::PARAM_INT);
+$stmt->execute();
+$totalBalances = $stmt->fetch(PDO::FETCH_ASSOC);
+echo '<script>';
+echo 'const usedLeaveBalances = {';
+echo '"Sick Leave": ' . ($usedBalances['sick_leave_value'] ?? 0) . ',';
+echo '"Service Incentive Leave": ' . ($usedBalances['service_incentive_leave_value'] ?? 0) . ',';
+echo '"Earned Leave Credit": ' . ($usedBalances['earned_leave_credit_value'] ?? 0) . ',';
+echo '"Vacation": ' . ($usedBalances['vacation_value'] ?? 0) . ',';
+echo '"Emergency Leave": ' . ($usedBalances['emergency_leave_value'] ?? 0);
+echo '};';
+echo 'const maxLeaveBalances = {';
+echo '"Sick Leave": ' . ($totalBalances['sick_leave_value'] ?? 0) . ',';
+echo '"Service Incentive Leave": ' . ($totalBalances['service_incentive_leave_value'] ?? 0) . ',';
+echo '"Earned Leave Credit": ' . ($totalBalances['earned_leave_credit_value'] ?? 0) . ',';
+echo '"Vacation": ' . ($totalBalances['vacation_value'] ?? 0) . ',';
+echo '"Emergency Leave": ' . ($totalBalances['emergency_leave_value'] ?? 0);
+echo '};';
+echo '</script>';
+//up to here ---------------------------------------------------------------------------------------------------
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
@@ -75,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
         $pdo->commit();
 }
 elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitLeaveBtn'])) {
-    try {
+    // try {
         $employeeId = $_POST['employeeId'] ?? null;
         $employeeName = trim($_POST['employeeName'] ?? '');
         $department = trim($_POST['department'] ?? '');
@@ -90,7 +114,7 @@ elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitLeaveBtn'])
     
         // Insert the leave request into the `leave_requests` table
         $stmt = $pdo->prepare("
-            INSERT INTO leave_requests (employee_id, leave_type, start_date, end_date, created_at) 
+            INSERT INTO leave_requests (employee_id, leave_types, start_date, end_date, created_at) 
             VALUES (:employee_id, :leave_type, :start_date, :end_date, NOW())
         ");
         $stmt->execute([
@@ -124,14 +148,14 @@ elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitLeaveBtn'])
         $stmt->execute();
     
         $pdo->commit();
-        echo json_encode(["success" => true, "message" => "Leave request submitted successfully."]);
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
-    } catch (Exception $e) {
-        $pdo->rollBack();
-        echo json_encode(["success" => false, "message" => "An unexpected error occurred: " . $e->getMessage()]);
-    }
+    //     echo json_encode(["success" => true, "message" => "Leave request submitted successfully."]);
+    // } catch (PDOException $e) {
+    //     $pdo->rollBack();
+    //     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    // } catch (Exception $e) {
+    //     $pdo->rollBack();
+    //     echo json_encode(["success" => false, "message" => "An unexpected error occurred: " . $e->getMessage()]);
+    // }
 } else {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
 }
