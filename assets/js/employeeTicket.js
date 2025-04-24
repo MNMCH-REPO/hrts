@@ -567,49 +567,49 @@ document.addEventListener("DOMContentLoaded", function () {
       formElement = document.getElementById("leaveFormContent");
   }
 
-  if (formElement) {
-    const formData = new FormData(formElement); // Create FormData object
-    const endpoint =
-        requestType === "ticket"
-            ? "../../0/includes/submitTicket.php"
-            : "../../1/employee/submit_leave_request.php"; // Set the endpoint dynamically
+  // if (formElement) {
+  //   const formData = new FormData(formElement); // Create FormData object
+  //   const endpoint =
+  //       requestType === "ticket"
+  //           ? "../../0/includes/submitTicket.php"
+  //           : "../../1/employee/submit_leave_request.php"; // Set the endpoint dynamically
 
             
-        // Submit the form via AJAX
-        fetch(endpoint, {
-          method: "POST",
-          body: formData,
-      })
-            .then((response) => {
-              // Check if the response is JSON
-              const contentType = response.headers.get("content-type");
-              if (!contentType || !contentType.includes("application/json")) {
-                  throw new Error("Invalid response format. Expected JSON.");
-              }
-              return response.json();
-          })
-          .then((data) => {
-              if (data.success) {
-                  alert(data.message || "Form submitted successfully!");
-                  formElement.reset(); // Reset the form
-                  closeModal(); // Close the modal
-                  location.reload(); // Reload the page to reflect changes
-              } else {
-                  alert(data.message || "An error occurred.");
-              }
-          })
-          .catch((error) => {
-              console.error("Error:", error);
-              alert("An error occurred while submitting the form. Please check the server logs.");
-          });
-  } else {
-      alert("Please select a valid request type.");
-  }
+  //       // Submit the form via AJAX
+  //       fetch(endpoint, {
+  //         method: "POST",
+  //         body: formData,
+  //     })
+  //           .then((response) => {
+  //             // Check if the response is JSON
+  //             const contentType = response.headers.get("content-type");
+  //             if (!contentType || !contentType.includes("application/json")) {
+  //                 throw new Error("Invalid response format. Expected JSON.");
+  //             }
+  //             return response.json();
+  //         })
+  //         .then((data) => {
+  //             if (data.success) {
+  //                 alert(data.message || "Form submitted successfully!");
+  //                 formElement.reset(); // Reset the form
+  //                 closeModal(); // Close the modal
+  //                 location.reload(); // Reload the page to reflect changes
+  //             } else {
+  //                 alert(data.message || "An error occurred.");
+  //             }
+  //         })
+  //         .catch((error) => {
+  //             console.error("Error:", error);
+  //             alert("An error occurred while submitting the form. Please check the server logs.");
+  //         });
+  // } else {
+  //     alert("Please select a valid request type.");
+  // }
 }
 
-  // Attach event listeners to the submit buttons
-  document.getElementById("submitTicketID").addEventListener("click", handleFormSubmission);
-  document.getElementById("submitLeaveBtn").addEventListener("click", handleFormSubmission);
+  // // Attach event listeners to the submit buttons
+  // document.getElementById("submitTicketID").addEventListener("click", handleFormSubmission);
+  // document.getElementById("submitLeaveBtn").addEventListener("click", handleFormSubmission);
 });
 
 

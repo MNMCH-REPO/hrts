@@ -16,7 +16,7 @@
         <!-- Ticket Request Form -->
         <div id="ticketForm" class="request-form" style="display:none;">
             <h2>Ticket Form</h2>
-            <form id="ticketFormContent">
+            <form id="ticketFormContent" method="POST">
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
                     <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
@@ -137,10 +137,10 @@
     }
 
     const leaveBalances = {
-        'Sick Leave': 5,
+        'Sick Leave': 10,
         'Service Incentive Leave': 3,
         'Earned Leave Credit': 2,
-        'Vacation': 7,
+        'Vacation': 10,
         'Emergency Leave': 1
     };
 
