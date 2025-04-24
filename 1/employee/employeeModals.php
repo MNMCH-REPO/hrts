@@ -137,11 +137,11 @@
     }
 
     const leaveBalances = {
-        'Sick Leave': 10,
-        'Service Incentive Leave': 3,
-        'Earned Leave Credit': 2,
-        'Vacation': 10,
-        'Emergency Leave': 1
+        'Sick Leave': maxLeaveBalances['Sick Leave'] - usedLeaveBalances['Sick Leave'],
+        'Service Incentive Leave': maxLeaveBalances['Service Incentive Leave'] - usedLeaveBalances['Service Incentive Leave'],
+        'Earned Leave Credit': maxLeaveBalances['Earned Leave Credit'] - usedLeaveBalances['Earned Leave Credit'],
+        'Vacation': maxLeaveBalances['Vacation'] - usedLeaveBalances['Vacation'],
+        'Emergency Leave': maxLeaveBalances['Emergency Leave'] - usedLeaveBalances['Emergency Leave']
     };
 
     function calculateDaysBetween(start, end) {
