@@ -62,14 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($user['role'] === 'Employee') {
                 header('Location: 1/employee/ticket.php');
             } elseif ($user['role'] === 'HR') {
-                header('Location: 1/hrRep/order.php');
+                header('Location: ../../1/hrRep/order.php');
             } elseif ($user['role'] === 'HR HEAD') { // Corrected duplicate 'HR' role
-                header('Location: 1/hrHead/order.php');
+                header('Location: ../../1/hrHead/order.php');
             } elseif ($user['role'] === 'Admin') {
                 header('Location: 1/hrAdmin/dashboard.php');
             } elseif ($user['role'] === 'Super Admin') {
-                header('Location: 1/superAdmin/dashboard.php');
-            } else {
+                header('Location: ../../1/superAdmin/dashboard.php');
+            }
+            else {
                 header('Location: ../index.php');
             }
             exit;
