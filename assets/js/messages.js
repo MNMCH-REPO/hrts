@@ -280,3 +280,20 @@ function renderTickets() {
     cardsContainer.innerHTML = "<p>No tickets assigned to you.</p>";
   }
 }
+
+function handleCardSelection() {
+  const cards = document.querySelectorAll(".card");
+
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      // Remove 'selectedCard' class from all cards
+      cards.forEach((c) => c.classList.remove("selectedCard"));
+
+      // Add 'selectedCard' class to the clicked card
+      card.classList.add("selectedCard");
+    });
+  });
+}
+
+// Call the function to initialize the behavior
+handleCardSelection();

@@ -159,7 +159,9 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
             background-color: var(--primary-300);
         }
-        
+        .selected{
+            background-color: var(--primary-300);
+        }
         .card h1 {
             font-size: 12px;
             margin: 2px 0;
