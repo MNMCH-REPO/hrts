@@ -55,12 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    if (typeof userData !== 'undefined' && userData.Name) {
+    if (typeof currentUserName !== 'undefined' && currentUserName) {
         document.querySelectorAll('.accountName').forEach(function(element) {
-            element.textContent = userData.Name;
-        });
+            element.textContent = currentUserName;
+        });   
     }
 });
+console.log("Current user name set to: " + currentUserName);
 
 const sideNav = document.querySelector(".sideNav");
 const navBtns = document.querySelectorAll(".navBtn a");

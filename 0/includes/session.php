@@ -44,6 +44,8 @@ if (isset($_SESSION['user_id'])) {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['department'] = $user['department'];
+            
+            echo '<script>currentUserName = "'. ucwords(strtolower($_SESSION['name'])) .'"</script>';
 
             // Create an associative array for JavaScript
             $userData = [
