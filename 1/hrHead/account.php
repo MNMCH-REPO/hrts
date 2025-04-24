@@ -21,6 +21,82 @@ require_once '../../0/includes/employeeTicket.php';
             margin: 5% 0 0 260px;
             align-self: center;
         }
+
+
+        .container-account {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            min-height: 70vh;
+            margin: 5% auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            background: white;
+        }
+
+        .account-box {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .account-box-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .account-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .account-box-content-row {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .account-box-content-row-label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .account-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #f8f8f8;
+        }
+
+        .change-password-text {
+            font-size: 12px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .change-password-link {
+            color: blue;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+
+        }
+
+        .btnDefault {
+            border-radius: 50px;
+        }
     </style>
 </head>
 
@@ -29,24 +105,13 @@ require_once '../../0/includes/employeeTicket.php';
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
-                <a href="dashboard.php">Dashboard</a>
-            </div>
-            <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="ticket.php">Tickets</a>
+                <a href="order.php">Tickets</a>
             </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
-                <a href="message.php">Messages</a>
-            </div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
-            </div>
-            <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
-                <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -61,82 +126,6 @@ require_once '../../0/includes/employeeTicket.php';
                 </div>
             </div>
 
-            <style>
-                .container-account {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    width: 80%;
-                    min-height: 70vh;
-                    margin: 5% auto;
-                    border-radius: 10px;
-                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                    padding: 30px;
-                    background: white;
-                }
-
-                .account-box {
-                    width: 100%;
-                    max-width: 600px;
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 10px;
-                    text-align: center;
-                }
-
-                .account-box-title {
-                    font-size: 22px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }
-
-                .account-description {
-                    font-size: 14px;
-                    color: #555;
-                    margin-bottom: 20px;
-                }
-
-                .account-box-content-row {
-                    display: flex;
-                    flex-direction: column;
-                    margin-bottom: 15px;
-                }
-
-                .account-box-content-row-label {
-                    font-size: 14px;
-                    font-weight: 500;
-                    margin-bottom: 5px;
-                    text-align: left;
-                }
-
-                .account-input {
-                    width: 100%;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    background: #f8f8f8;
-                }
-
-                .change-password-text {
-                    font-size: 12px;
-                    margin-top: 15px;
-                    text-align: center;
-                }
-
-                .change-password-link {
-                    color: blue;
-                    font-weight: bold;
-                    text-decoration: none;
-                    cursor: pointer;
-
-                }
-
-                .btnDefault {
-                    border-radius: 50px;
-                }
-            </style>
 
             <?php
             require_once '../../0/includes/db.php'; // Include your database connection file
@@ -164,13 +153,13 @@ require_once '../../0/includes/employeeTicket.php';
                         <input type="hidden" name="id" id="id" value="<?php echo htmlspecialchars($userId); ?>">
                         <h2 class="account-box-title">Account Information</h2>
                         <p class="account-description">
-                        Account information will display your current details such as name, email, role, and department.
+                            Account information will display your current details such as name, email, role, and department.
                         </p>
 
                         <div class="account-box-content">
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Full Name</span>
-                                <input type="text" id="fullName" name="employeeName" value="<?php echo htmlspecialchars($user['name']); ?>" class="account-input" required>
+                                <input type="text" id="fullName" name="employeeName" value="<?php echo htmlspecialchars($user['name']); ?>" class="account-input" readonly>
                             </label>
 
                             <label class="account-box-content-row">

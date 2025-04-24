@@ -10,7 +10,7 @@
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $userId]);
     $user = $stmt->fetch();
-    if (!in_array($user['role'], ['Employee', 'HR', 'Admin', 'SuperAdmin'])) {
+    if (!in_array($user['role'], ['Employee', 'HR','HR HEAD', 'Admin', 'SuperAdmin'])) {
 
         unset($_SESSION['user_id']);
         session_destroy();

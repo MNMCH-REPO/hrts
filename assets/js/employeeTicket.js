@@ -431,7 +431,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const priority = this.children[6]?.textContent.trim();
         const category = this.children[7]?.textContent.trim();
         const assignedTo = this.children[8]?.textContent.trim();
-        
         const startAt = this.getAttribute("data-start-at");
         const updatedAt = this.children[11]?.textContent.trim();
   

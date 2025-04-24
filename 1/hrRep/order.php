@@ -286,6 +286,71 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </div>
 
 
+    
+    <!-- Ticket Summarization Modal -->
+    <div id="ticketSummarizationModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">Ticket Summarization</h1>
+
+            <form id="ticketSummarizationForm" method="POST">
+                <div class="input-container">
+                    <h1><strong>Ticket ID:</strong></h1>
+                    <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="summarizationDepartment" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Subject:</strong></h1>
+                    <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Category:</strong></h1>
+                    <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Description:</strong></h1>
+                    <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Priority:</strong></h1>
+                    <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Assigned To:</strong></h1>
+                    <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Duration:</strong></h1>
+                    <p class="center-text" id="summarizationDuration" data-assigned="<?= htmlspecialchars($ticket['start_at']) ?>">Unassigned</p>
+                </div>
+
+                <div class="btnContainer">
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
 
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>

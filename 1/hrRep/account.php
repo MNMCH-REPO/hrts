@@ -154,9 +154,9 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="account-box">
                     <form action="" id="editAccountForm" method="POST">
                         <input type="hidden" name="id" id="id" value="<?php echo htmlspecialchars($userId); ?>">
-                        <h2 class="account-box-title">Change Password</h2>
+                        <h2 class="account-box-title">Account Information</h2>
                         <p class="account-description">
-                            The password must be in a alphanumeric format and must be at least 8 characters long.
+                        Account information will display your current details such as name, email, role, and department.
                         </p>
 
                         <div class="account-box-content">

@@ -9,10 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $sql = 'SELECT * FROM users WHERE email = :email';
+    $sql = 'SELECT * FROM users  WHERE email = :email';
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
+
 
     if ($user) {
         if (password_verify($password, $user['password'])) {
@@ -48,16 +49,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Redirect
+            if ($user['status'] === 'Inactive') {
+                $emailError = "Your account is inactive. Please contact the administrator.";
+                header('Location: ../index.php?error=' . urlencode($emailError));
+                echo "<script>
+                console.log('Your account is inactive. Please contact the administrator.');
+                alert('Your account is inactive. Please contact the administrator.');
+                </script>";
+                exit;
+            }
+
             if ($user['role'] === 'Employee') {
                 header('Location: ../1/employee/ticket.php');
             } elseif ($user['role'] === 'HR') {
                 header('Location: ../../1/hrRep/order.php');
+            } elseif ($user['role'] === 'HR HEAD') { // Corrected duplicate 'HR' role
+                header('Location: ../../1/hrHead/order.php');
             } elseif ($user['role'] === 'Admin') {
                 header('Location: ../../1/hrAdmin/dashboard.php');
             } elseif ($user['role'] === 'Super Admin') {
                 header('Location: ../../1/superAdmin/dashboard.php');
-            }
-            else {
+            } else {
                 header('Location: ../index.php');
             }
             exit;
