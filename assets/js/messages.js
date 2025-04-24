@@ -139,7 +139,7 @@ function sendTextMessage(messageText) {
   formData.append("message", messageText);
 
   $.ajax({
-    url: "../../0/includes/send_message.php", // Existing backend for sending messages
+    url: "../../../hrts/0/includes/send_message.php", // Existing backend for sending messages
     type: "POST",
     data: formData,
     contentType: false,

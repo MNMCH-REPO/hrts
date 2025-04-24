@@ -1,6 +1,6 @@
 <?php
-require 'session.php';
 require 'db.php';
+require 'session.php';
 
 header("Content-Type: application/json");
 
@@ -16,12 +16,12 @@ if (!isset($_POST['message']) || !isset($_POST['ticket_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$message = trim(string: $_POST['message']);
+$message = trim($_POST['message']);
 $ticket_id = intval($_POST['ticket_id']); // Ensure ticket_id is an integer
 
 // Validate the message content
 if ($message === "") {
-    echo json_encode(value: ['success' => false, 'message' => 'Message cannot be empty.']);
+    echo json_encode(['success' => false, 'message' => 'Message cannot be empty.']);
     exit;
 }
 
