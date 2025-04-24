@@ -91,7 +91,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <div class="pagination">
                         <div id="paginationControls" class="mt-3"></div>
                     </div>
-
                     <div class="search-container">
                         <input type="text" id="searchInput" placeholder="SEARCH..." class="search-input">
                         <div class="search-icon">
