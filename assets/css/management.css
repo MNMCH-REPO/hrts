@@ -251,3 +251,83 @@ tbody tr:nth-child(even) {
     font-size: 12px;
     color: #007BFF;
 }
+
+/* Specific styles for editLeaveRequestModal */
+
+/* Center the modal on the screen */
+#editLeaveRequestModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center; /* Horizontally center the modal */
+    align-items: center; /* Vertically center the modal */
+
+}
+
+/* Modal content */
+#editLeaveRequestModal .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 95%;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Input container */
+#editLeaveRequestModal .input-container {
+    position: relative;
+    margin: 15px 0;
+    width: 100%;
+}
+
+/* Inputs, selects, and textareas */
+#editLeaveRequestModal .input-container input,
+#editLeaveRequestModal .input-container select,
+#editLeaveRequestModal .input-container textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+/* Labels */
+#editLeaveRequestModal .input-container label {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    transition: 0.3s ease-out;
+    background: white;
+    padding: 0 5px;
+    font-size: 16px;
+    color: #666;
+    pointer-events: none;
+}
+
+/* Floating label effect */
+#editLeaveRequestModal .input-container input:focus+label,
+#editLeaveRequestModal .input-container input:not(:placeholder-shown)+label,
+#editLeaveRequestModal .input-container select:focus+label,
+#editLeaveRequestModal .input-container select:not(:placeholder-shown)+label,
+#editLeaveRequestModal .input-container textarea:focus+label,
+#editLeaveRequestModal .input-container textarea:not(:placeholder-shown)+label {
+    top: 5px;
+    font-size: 12px;
+    color: #007BFF;
+}
+
+/* Modal buttons */
+#editLeaveRequestModal .modal-buttons {
+    display: flex;
+    
+    gap: 10px;
+}

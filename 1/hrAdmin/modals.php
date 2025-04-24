@@ -106,8 +106,8 @@
              <div class="input-container">
                  <select id="roleEditID" name="role" required>
                      <option value="" disabled selected>Please select a Role</option>
-                        <option value="Employee">Employee</option>
-                        <option value="HR">HR Repepresentative</option>
+                     <option value="Employee">Employee</option>
+                     <option value="HR">HR Repepresentative</option>
                  </select>
              </div>
 
@@ -159,6 +159,7 @@
 
 
              <div class="btnContainer">
+                 <button type="button" class="btnDefault" name="leaveRequest" id="leaveReaquestBtnID">Leave Request</button>
                  <button type="button" class="btnWarning" name="resetPassword" id="resetPasswordID">Reset Password</button>
                  <button type="submit" class="btnDefault" name="updateAccount" id="updateAccountID">UPDATE</button>
                  <button type="button" class="btnDanger" id="closeEditModal">BACK</button>
@@ -262,6 +263,51 @@
              <div class="btnContainer">
                  <button type="submit" class="btnApprove" name="resetPassword" id="resetPasswordID">Confirm</button>
                  <button type="button" class="btnDanger" id="closeResetModal">Cancel</button>
+             </div>
+         </form>
+     </div>
+ </div>
+
+ <!-- leave Request Modal -->
+ <div id="editLeaveRequestModal" class="modal">
+     <div class="modal-content">
+         <h1 class="modal-title">Edit Leave Request</h1>
+         <form id="editLeaveRequestForm">
+             <input type="hidden" name="leaveRequestId" id="leaveRequestIdHidden">
+             <div class="input-container">
+                 <input type="text" id="leaveEmployeeNameID" name="employeeName" readonly>
+                 <label for="employeeName">Employee Name</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveDeparmentID" name="department" readonly>
+                 <label for="Department">Department</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="sickLeaveID" name="sickLeave" required>
+                 <label for="sickLeave">Sick Leave</label>
+             </div>
+
+             <div class="input-container">
+                 <input type="text" id="leaveServiceIncentiveID" name="serviceIncentive" required>
+                 <label for="leaveServiceIncentiveID">Service Incentive Leave</label>
+             </div>
+
+             <div class="input-container">
+                 <input type="text" id="leaveEarnedLeaveID" name="earnedLeaveCredit" required>
+                 <label for="earnedLeaveCredit">Earned Leave Credit</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveVacationID" name="vacation" required>
+                 <label for="vacation">Vacation</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveEmergencyID" name="emergencyLeave" required>
+                 <label for="emergencyLeave">Emergency Leave</label>
+             </div>
+
+             <div class="modal-buttons btnContainer">
+                 <button type="submit" id="leaveBtnID" name="leaveButton" class="btnDefault">Save Changes</button>
+                 <button type="button" class="btnDanger" onclick="closeModal()">Cancel</button>
              </div>
          </form>
      </div>
