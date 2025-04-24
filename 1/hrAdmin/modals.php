@@ -90,7 +90,7 @@
          <form id="editAccountForm">
              <input type="hidden" name="idhidden" id="idhidden">
              <div class="input-container">
-                 <input type="text" id="employeeEditID" name="employeeID" required>
+                 <input type="text" id="employeeEditID" name="employeeID" readonly>
                  <label for="employeeID">Employee ID</label>
              </div>
              <div class="input-container">
@@ -106,9 +106,8 @@
              <div class="input-container">
                  <select id="roleEditID" name="role" required>
                      <option value="" disabled selected>Please select a Role</option>
-                     <option value="Admin">Admin</option>
-                     <option value="Employee">Employee</option>
-                     <option value="HR Rep">HR Rep</option>
+                        <option value="Employee">Employee</option>
+                        <option value="HR">HR Repepresentative</option>
                  </select>
              </div>
 
