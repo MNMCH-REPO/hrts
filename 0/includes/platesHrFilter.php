@@ -83,3 +83,19 @@ echo "<script>console.log('Total Records:', " . json_encode($totalRecords) . ");
 
 
 
+try {
+    // Query to fetch leave requests ordered by created_at in descending order
+    $stmt = $pdo->prepare("
+        SELECT id, employee_id, leave_types, start_date, end_date, status, created_at, approved_by, updated_at
+        FROM leave_requests
+        ORDER BY created_at DESC
+    ");
+    $stmt->execute();
+
+    // Fetch all leave requests
+    $leave_requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Handle any database errors
+    error_log("Database Error: " . $e->getMessage());
+    $leave_requests = [];
+}

@@ -98,56 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
         // Commit the transaction
         $pdo->commit();
 }
-elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitLeaveBtn'])) {
-    // try {
-        $employeeId = $_POST['employeeId'] ?? null;
-        $employeeName = trim($_POST['employeeName'] ?? '');
-        $department = trim($_POST['department'] ?? '');
-        $leaveType = trim($_POST['leaveType'] ?? '');
-        $startDate = trim($_POST['startDate'] ?? '');
-        $endDate = trim($_POST['endDate'] ?? '');
-        $reason = trim($_POST['reason'] ?? '');
-    
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $pdo->beginTransaction();
-    
-        // Insert the leave request into the `leave_requests` table
-        $stmt = $pdo->prepare("
-            INSERT INTO leave_requests (employee_id, leave_types, start_date, end_date, created_at) 
-            VALUES (:employee_id, :leave_type, :start_date, :end_date, NOW())
-        ");
-        $stmt->execute([
-            ':employee_id' => $employeeId,
-            ':leave_type' => $leaveType,
-            ':start_date' => $startDate,
-            ':end_date' => $endDate
-        ]);
-    
-        // Get the ID of the newly created leave request
-        $leaveRequestId = $pdo->lastInsertId();
-    
-        // Prepare audit trail details
-        $actionType = "CREATE";
-        $affectedTable = 'leave_requests';
-        $affectedId = $leaveRequestId;
-        $details = "Created leave request: Type=$leaveType, Start=$startDate, End=$endDate, Reason=$reason";
-        $timestamp = date('Y-m-d H:i:s');
-    
-        // Insert into the `audit_trail` table
-        $stmt = $pdo->prepare("
-            INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
-        ");
-        $stmt->bindParam(':actionType', $actionType);
-        $stmt->bindParam(':affectedTable', $affectedTable);
-        $stmt->bindParam(':affectedId', $affectedId);
-        $stmt->bindParam(':details', $details);
-        $stmt->bindParam(':userId', $currentUserId);
-        $stmt->bindParam(':timestamp', $timestamp);
-        $stmt->execute();
-    
-        $pdo->commit();
     //     echo json_encode(["success" => true, "message" => "Leave request submitted successfully."]);
     // } catch (PDOException $e) {
     //     $pdo->rollBack();
@@ -156,6 +106,6 @@ elseif ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitLeaveBtn'])
     //     $pdo->rollBack();
     //     echo json_encode(["success" => false, "message" => "An unexpected error occurred: " . $e->getMessage()]);
     // }
-} else {
+else {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
 }

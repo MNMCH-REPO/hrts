@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentUser = document.querySelector(".accountName")?.textContent.trim();
   
         // Open the appropriate modal based on the status
-        if (status === "Open" && assignedTo === currentUser) {
+        if (status === "Open" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
           // Open the confirmModal
           confirmModalFields.ticketIdField.textContent = ticketId;
           confirmModalFields.employeeNameField.textContent = employeeName;
@@ -452,7 +452,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
           confirmModal.style.display = "flex";
           logModalOpened("Confirm Modal", { ticketId, employeeName, department, subject, description, status, priority, category, assignedTo });
-        } else if (status === "In Progress" && assignedTo === currentUser) {
+        } else if (status === "In Progress" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
           // Open the editStatusModal
           editStatusFields.ticketIdField.textContent = ticketId;
           editStatusFields.employeeNameField.textContent = employeeName;

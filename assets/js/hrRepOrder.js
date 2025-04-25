@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .textContent.trim();
 
       // Check the status and assigned user
-      if (status === "Open" && assignedTo === currentUser) {
+      if (status === "Open"  && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
         // Set the values in the confirmModal
         confirmModalFields.ticketIdField.textContent = ticketId;
         confirmModalFields.employeeNameField.textContent = employeeName;
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Open the confirmModal
         confirmModal.style.display = "flex";
-      } else if (status === "In Progress" && assignedTo === currentUser) {
+      } else if (status === "In Progress" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
         // Set the values in the editStatusModal
         editStatusModalFields.ticketIdField.textContent = ticketId;
         editStatusModalFields.employeeNameField.textContent = employeeName;
@@ -221,17 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         ticketSummarizationModal.style.display = "flex";
-        logModalOpened("Ticket Summarization Modal", {
-          ticketId,
-          employeeName,
-          department,
-          subject,
-          description,
-          status,
-          priority,
-          category,
-          assignedTo,
-        });
+
       }
     });
   });
