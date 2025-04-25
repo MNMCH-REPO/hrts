@@ -2,6 +2,7 @@
 require_once '../../0/includes/employeeTicket.php';
 require_once '../../0/includes/adminTableQuery.php';
 require_once '../../0/includes/adminDashboardTables.php';
+require_once '../../0/includes/reportGenerator.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +50,23 @@ require_once '../../0/includes/adminDashboardTables.php';
         .report-card.selected {
             color: var(--white);
             border-color: var(--primary-500);
+        }
+        .suggestion-box {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .suggestion-box div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestion-box div:hover {
+            background-color: #f0f0f0;
         }
     </style>
 
@@ -336,7 +354,7 @@ require_once '../../0/includes/adminDashboardTables.php';
 
 
     <div id="reportModal" class="modal">
-        <div class="modal-content">
+        <form class="modal-content" method="post">
             <span class="close">&times;</span>
             <h2>Generate Report</h2>
             <div class="time-options">
@@ -345,40 +363,39 @@ require_once '../../0/includes/adminDashboardTables.php';
                 <button class="time-btn">This month</button>
                 <button class="time-btn">Custom</button>
             </div>
-
             <div class="date-range">
-                <label>From: <input type="date" id="startDate"></label>
-                <label>To: <input type="date" id="endDate"></label>
+                <label>From: <input type="date" id="startDate" name="startDate"></label>
+                <label>To: <input type="date" id="endDate" name="endDate"></label>
             </div>
-
             <div class="report-options">
                 <div class="report-card">
-                    <h3>Generate Overall Tickets</h3>
-                    <p>This will generate sample rows ("Open, In Progress, Resolved").</p>
+                    <h3>Standard Report</h3>
+                    <br>
+                    <p>This will generate basic report about tickets and employees</p>
                 </div>
-
                 <div class="report-card">
-                    <h3>Generate Tickets per Employee</h3>
-                    <label>Type:
-                        <select>
-                            <option>Please select a category</option>
-                        </select>
-                    </label>
-                    <label>Name: <input type="text" placeholder="Enter Name"></label>
+                    <h3>Tickets of the Employee</h3>
+                    <br>
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " id="employeeNameInput" name="employeeName">
+                        <label class="textInputLabel">Name</label>
+                        <div class="suggestion-box" id="employeeSuggestionBox"></div>
+                    </div>
                 </div>
-
                 <div class="report-card">
-                    <h3>Generate Tickets per Department</h3>
-                    <label>Type:
-                        <select>
-                            <option>Please select a category</option>
-                        </select>
-                    </label>
+                    <h3>Tickets on a Department</h3>
+                    <br>
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " id="departmentNameInput" name="departmentName">
+                        <label class="textInputLabel">Department</label>
+                        <div class="suggestion-box" id="departmentSuggestionBox"></div>
+                    </div>
                 </div>
             </div>
-
-            <button id="downloadReport">Download Report</button>
-        </div>
+            <div class="btnContainer">
+                <button type="submit" name="downloadReport" id="downloadReport" class="btnDefault">Download Report</button>
+            </div>
+        </form>
     </div>
 
 
@@ -563,11 +580,67 @@ require_once '../../0/includes/adminDashboardTables.php';
             });
         });
     </script>
+    <?php 
+        require_once '../../0/includes/employeeList.php';
+        require_once '../../0/includes/departmentList.php';
+    ?>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const employeeInput = document.getElementById("employeeNameInput");
+            const employeeSuggestionBox = document.getElementById("employeeSuggestionBox");
+            const departmentInput = document.getElementById("departmentNameInput");
+            const departmentSuggestionBox = document.getElementById("departmentSuggestionBox");
 
+            // Function to show suggestions
+            function showSuggestions(input, suggestionBox, data) {
+                const query = input.value.toLowerCase();
+                suggestionBox.innerHTML = "";
+                if (query.trim() === "") {
+                    suggestionBox.style.display = "none";
+                    return;
+                }
 
+                const filteredData = data.filter(item =>
+                    item.name ? item.name.toLowerCase().includes(query) : item.toLowerCase().includes(query)
+                );
 
+                if (filteredData.length > 0) {
+                    filteredData.forEach(item => {
+                        const suggestion = document.createElement("div");
+                        suggestion.textContent = item.name || item;
+                        suggestion.addEventListener("click", () => {
+                            input.value = item.name || item;
+                            suggestionBox.style.display = "none";
+                        });
+                        suggestionBox.appendChild(suggestion);
+                    });
+                    suggestionBox.style.display = "block";
+                } else {
+                    suggestionBox.style.display = "none";
+                }
+            }
 
+            // Event listeners for employee input
+            employeeInput.addEventListener("input", () => {
+                showSuggestions(employeeInput, employeeSuggestionBox, employees);
+            });
 
+            // Event listeners for department input
+            departmentInput.addEventListener("input", () => {
+                showSuggestions(departmentInput, departmentSuggestionBox, departments);
+            });
+
+            // Hide suggestion box when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!employeeInput.contains(event.target) && !employeeSuggestionBox.contains(event.target)) {
+                    employeeSuggestionBox.style.display = "none";
+                }
+                if (!departmentInput.contains(event.target) && !departmentSuggestionBox.contains(event.target)) {
+                    departmentSuggestionBox.style.display = "none";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
