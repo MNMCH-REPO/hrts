@@ -17,13 +17,17 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 </head>
 
 
-<style> 
-    #leaveBalanceDisplay, #leaveWarning {
-    display: block;
-    text-align: center; /* Centers the text inside the elements */
-    margin: 0 auto; /* Centers the elements themselves horizontally */
-    width: 100%; /* Ensures it occupies full width */
-}
+<style>
+    #leaveBalanceDisplay,
+    #leaveWarning {
+        display: block;
+        text-align: center;
+        /* Centers the text inside the elements */
+        margin: 0 auto;
+        /* Centers the elements themselves horizontally */
+        width: 100%;
+        /* Ensures it occupies full width */
+    }
 </style>
 
 <body>
@@ -61,25 +65,25 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
             <div class="row plateRow">
-                <div class="col plate" id="plate1" data-status="In Progress">
+                <div class="col plate" id="plate1" data-status="Pending">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Pending</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCountsArray['Pending'] ?? 0) ?></div>
                     </div>
                 </div>
-                <div class="col plate" id="plate2" data-status="Resolved">
+                <div class="col plate" id="plate2" data-status="Approved">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Approved</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCountsArray['Approved'] ?? 0) ?></div>
                     </div>
                 </div>
-                <div class="col plate" id="plate3" data-status="In Progress">
+                <div class="col plate" id="plate3" data-status="Rejected">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Rejected</div>
-                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCountsArray['Rejected'] ?? 0) ?></div>
                     </div>
                 </div>
                 <div class="col plate" id="plate4" data-status="Leave">
@@ -152,7 +156,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             <?php endforeach; ?>
 
 
-
+                        <?php else: ?>
                             <tr>
                                 <td colspan="10" style="text-align: center;">No Leave Request Found</td>
                             </tr>
@@ -461,7 +465,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     </div>
 
-</style>
+    </style>
 
 
 
@@ -502,78 +506,78 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </script>
 
 
-<script>
-// These PHP values must be output into JS **before** any functions use them
-const sickLeaveTotal = <?= $leaveBalances['sick_leave_value'] ?? 0 ?>;
-const sickLeaveUsed = <?= $usedBalances['sick_leave_value'] ?? 0 ?>;
-const silTotal = <?= $leaveBalances['service_incentive_leave_value'] ?? 0 ?>;
-const silUsed = <?= $usedBalances['service_incentive_leave_value'] ?? 0 ?>;
-const elcTotal = <?= $leaveBalances['earned_leave_credit_value'] ?? 0 ?>;
-const elcUsed = <?= $usedBalances['earned_leave_credit_value'] ?? 0 ?>;
-const vacationTotal = <?= $leaveBalances['vacation_value'] ?? 0 ?>;
-const vacationUsed = <?= $usedBalances['vacation_value'] ?? 0 ?>;
-const emergencyTotal = <?= $leaveBalances['emergency_leave_value'] ?? 0 ?>;
-const emergencyUsed = <?= $usedBalances['emergency_leave_value'] ?? 0 ?>;
+    <script>
+        // These PHP values must be output into JS **before** any functions use them
+        const sickLeaveTotal = <?= $leaveBalances['sick_leave_value'] ?? 0 ?>;
+        const sickLeaveUsed = <?= $usedBalances['sick_leave_value'] ?? 0 ?>;
+        const silTotal = <?= $leaveBalances['service_incentive_leave_value'] ?? 0 ?>;
+        const silUsed = <?= $usedBalances['service_incentive_leave_value'] ?? 0 ?>;
+        const elcTotal = <?= $leaveBalances['earned_leave_credit_value'] ?? 0 ?>;
+        const elcUsed = <?= $usedBalances['earned_leave_credit_value'] ?? 0 ?>;
+        const vacationTotal = <?= $leaveBalances['vacation_value'] ?? 0 ?>;
+        const vacationUsed = <?= $usedBalances['vacation_value'] ?? 0 ?>;
+        const emergencyTotal = <?= $leaveBalances['emergency_leave_value'] ?? 0 ?>;
+        const emergencyUsed = <?= $usedBalances['emergency_leave_value'] ?? 0 ?>;
 
-// ✅ Define remainingBalances here FIRST
-const remainingBalances = {
-    sick_leave: sickLeaveTotal - sickLeaveUsed,
-    service_incentive_leave: silTotal - silUsed,
-    earned_leave_credit: elcTotal - elcUsed,
-    vacation_leave: vacationTotal - vacationUsed,
-    emergency_leave: emergencyTotal - emergencyUsed
-};
+        // ✅ Define remainingBalances here FIRST
+        const remainingBalances = {
+            sick_leave: sickLeaveTotal - sickLeaveUsed,
+            service_incentive_leave: silTotal - silUsed,
+            earned_leave_credit: elcTotal - elcUsed,
+            vacation_leave: vacationTotal - vacationUsed,
+            emergency_leave: emergencyTotal - emergencyUsed
+        };
 
-// ✅ Leave type mapping
-const leaveTypeMap = {
-    "Sick Leave": "sick_leave",
-    "Service Incentive Leave": "service_incentive_leave",
-    "Earned Leave Credit": "earned_leave_credit",
-    "Vacation": "vacation_leave",
-    "Emergency Leave": "emergency_leave"
-};
+        // ✅ Leave type mapping
+        const leaveTypeMap = {
+            "Sick Leave": "sick_leave",
+            "Service Incentive Leave": "service_incentive_leave",
+            "Earned Leave Credit": "earned_leave_credit",
+            "Vacation": "vacation_leave",
+            "Emergency Leave": "emergency_leave"
+        };
 
-// ✅ Your existing functions below
-function calculateDaysBetween(start, end) {
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    const diffTime = endDate - startDate;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return diffDays;
-}
-
-function updateLeaveBalance() {
-    const leaveTypeRaw = document.getElementById("leaveTypeSelect").value;
-    const leaveType = leaveTypeMap[leaveTypeRaw] || null;
-    const start = document.getElementById("startDate").value;
-    const end = document.getElementById("endDate").value;
-    const submitBtn = document.getElementById("submitLeaveBtn");
-    const warning = document.getElementById("leaveWarning");
-
-    const balance = remainingBalances[leaveType] ?? 0;
-    document.getElementById("leaveBalance").textContent = balance;
-
-    if (start && end && leaveType) {
-        const requestedDays = calculateDaysBetween(start, end);
-        if (requestedDays > balance) {
-            warning.style.display = "block";
-            leaveBalanceDisplay.style.display = "none";  // Hide the balance display
-            submitBtn.disabled = true;
-            
-        } else {
-            warning.style.display = "none";
-            leaveBalanceDisplay.style.display = "block";  // Hide the balance display
-            submitBtn.disabled = false;
+        // ✅ Your existing functions below
+        function calculateDaysBetween(start, end) {
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            const diffTime = endDate - startDate;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            return diffDays;
         }
-    }
-    
-}
 
-// ✅ Make sure these event listeners come after all above code
-document.getElementById("leaveTypeSelect").addEventListener("change", updateLeaveBalance);
-document.getElementById("startDate").addEventListener("change", updateLeaveBalance);
-document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
-</script>
+        function updateLeaveBalance() {
+            const leaveTypeRaw = document.getElementById("leaveTypeSelect").value;
+            const leaveType = leaveTypeMap[leaveTypeRaw] || null;
+            const start = document.getElementById("startDate").value;
+            const end = document.getElementById("endDate").value;
+            const submitBtn = document.getElementById("submitLeaveBtn");
+            const warning = document.getElementById("leaveWarning");
+
+            const balance = remainingBalances[leaveType] ?? 0;
+            document.getElementById("leaveBalance").textContent = balance;
+
+            if (start && end && leaveType) {
+                const requestedDays = calculateDaysBetween(start, end);
+                if (requestedDays > balance) {
+                    warning.style.display = "block";
+                    leaveBalanceDisplay.style.display = "none"; // Hide the balance display
+                    submitBtn.disabled = true;
+
+                } else {
+                    warning.style.display = "none";
+                    leaveBalanceDisplay.style.display = "block"; // Hide the balance display
+                    submitBtn.disabled = false;
+                }
+            }
+
+        }
+
+        // ✅ Make sure these event listeners come after all above code
+        document.getElementById("leaveTypeSelect").addEventListener("change", updateLeaveBalance);
+        document.getElementById("startDate").addEventListener("change", updateLeaveBalance);
+        document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
+    </script>
 
 
 </body>

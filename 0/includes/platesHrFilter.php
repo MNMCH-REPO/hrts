@@ -99,3 +99,33 @@ try {
     error_log("Database Error: " . $e->getMessage());
     $leave_requests = [];
 }
+
+
+try {
+    // Query to count the statuses
+    $stmt = $pdo->prepare("
+        SELECT status, COUNT(*) AS count
+        FROM leave_requests
+        WHERE status IN ('Pending', 'Approved', 'Rejected')
+        GROUP BY status
+    ");
+    $stmt->execute();
+
+    // Fetch the results
+    $leaveCountsStatus = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Convert the results into an associative array for easier access
+    $statusCountsArray = [];
+    foreach ($leaveCountsStatus as $row) { // Corrected variable name
+        $statusCountsArray[$row['status']] = $row['count'];
+    }
+
+    // Example: Access counts
+    $pendingCount = $statusCountsArray['Pending'] ?? 0;
+    $approvedCount = $statusCountsArray['Approved'] ?? 0;
+    $rejectedCount = $statusCountsArray['Rejected'] ?? 0;
+} catch (PDOException $e) {
+    // Handle any database errors
+    error_log("Database Error: " . $e->getMessage());
+    $pendingCount = $approvedCount = $rejectedCount = 0;
+}

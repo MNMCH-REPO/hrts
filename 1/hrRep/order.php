@@ -30,7 +30,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="order.php">Request Leave</a>
+                <a href="leave.php">Request Leave</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
