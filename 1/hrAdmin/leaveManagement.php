@@ -125,6 +125,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </button>
                     </div>
                 </div>
+
+                
                 <table id="leaveTable" class="table">
                     <thead>
                         <tr>
@@ -154,7 +156,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     data-reason="<?= htmlspecialchars($leave['reason']) ?>"
                                     data-status="<?= htmlspecialchars($leave['status']) ?>"
                                     data-created-at="<?= htmlspecialchars($leave['created_at']) ?>"
-                                    data-approved-by="<?= htmlspecialchars($leave['approved_by']) ?>"
+                                    data-approved-by="<?= htmlspecialchars($leave['approved_by_name']) ?>"
                                     data-updated-at="<?= htmlspecialchars($leave['updated_at']) ?>">
 
                                     <td><?= htmlspecialchars($leave['id']) ?></td>
@@ -166,7 +168,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     <td><?= htmlspecialchars($leave['reason']) ?></td>
                                     <td><?= htmlspecialchars($leave['status']) ?></td>
                                     <td><?= htmlspecialchars($leave['created_at']) ?></td>
-                                    <td><?= htmlspecialchars($leave['approved_by']) ?></td>
+                                    <td><?= htmlspecialchars($leave['approved_by_name']) ?></td>
                                     <td><?= htmlspecialchars($leave['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -233,7 +235,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                     <div class="modal-buttons">
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
-                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnDefault btnContainer">REJECT</button>
+                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                     </div>
                 </form>
@@ -473,7 +475,16 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
     <script src="../../assets/js/framework.js"></script>
+    <script>
+        // Log the current user ID for debugging
+        document.addEventListener("DOMContentLoaded", function() {
+            const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+            console.log("Current User ID in Session:", currentUserId);
 
+            // Ensure currentUserId is used in your logic
+            // Example: Use it in an AJAX request or other functionality
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Elements for modal functionality
@@ -652,6 +663,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         .querySelector(".accountName")
                         .textContent.trim();
 
+
+                    const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+                    console.log("Currnt User ID in Session:" + currentUserId);
+
                     // Check the status
                     if (status === "Pending") {
                         // Set the values in the approveModal
@@ -742,6 +757,45 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     editStatusModal.style.display = "none";
                     ticketSummarizationModal.style.display = "none";
                 });
+            });
+        });
+
+        //approve modal form function
+        document.addEventListener("DOMContentLoaded", function() {
+            const approveButton = document.getElementById("approveLeaveBtnID");
+
+            approveButton.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const leaveId = document.getElementById("approveLeaveID").value;
+                const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>; // Get the current user ID from the session
+
+                console.log("Current User ID in Session:", currentUserId);
+
+                // Send AJAX request to approve the leave
+                fetch("../../0/includes/approveLeaveRequest.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            leaveId: leaveId,
+                            approvedBy: currentUserId, // Include the current user ID
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert("Leave request approved successfully!");
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert("Failed to approve leave request: " + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while approving the leave request.");
+                    });
             });
         });
     </script>

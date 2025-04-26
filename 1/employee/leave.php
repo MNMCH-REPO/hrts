@@ -119,10 +119,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <thead>
                         <tr>
                             <th>ID <i class="fas fa-sort"></i></th>
-                            <th>Employee ID <i class="fas fa-sort"></i></th>
+                            <th>Employee Name <i class="fas fa-sort"></i></th>
+                            <th>Department <i class="fas fa-sort"></i></th>
                             <th>Leave Type <i class="fas fa-sort"></i></th>
                             <th>Start Date <i class="fas fa-sort"></i></th>
                             <th>End Date <i class="fas fa-sort"></i></th>
+                            <th>Reason <i class="fas fa-sort"></i></th>
                             <th>Status <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
                             <th>Approved By <i class="fas fa-sort"></i></th>
@@ -134,23 +136,27 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <?php if (!empty($leave_requests)): ?>
                             <?php foreach ($leave_requests as $leave): ?>
                                 <tr data-id="<?= htmlspecialchars($leave['id']) ?>"
-                                    data-employee-id="<?= htmlspecialchars($leave['employee_id']) ?>"
+                                    data-employee-id="<?= htmlspecialchars($leave['name']) ?>"
+                                    data-department="<?= htmlspecialchars($leave['department']) ?>"
                                     data-leave-type="<?= htmlspecialchars($leave['leave_types']) ?>"
                                     data-start-date="<?= htmlspecialchars($leave['start_date']) ?>"
                                     data-end-date="<?= htmlspecialchars($leave['end_date']) ?>"
+                                    data-reason="<?= htmlspecialchars($leave['reason']) ?>"
                                     data-status="<?= htmlspecialchars($leave['status']) ?>"
                                     data-created-at="<?= htmlspecialchars($leave['created_at']) ?>"
-                                    data-approved-by="<?= htmlspecialchars($leave['approved_by']) ?>"
+                                    data-approved-by="<?= htmlspecialchars($leave['approved_by_name']) ?>"
                                     data-updated-at="<?= htmlspecialchars($leave['updated_at']) ?>">
 
                                     <td><?= htmlspecialchars($leave['id']) ?></td>
-                                    <td><?= htmlspecialchars($leave['employee_id']) ?></td>
+                                    <td><?= htmlspecialchars($leave['name']) ?></td>
+                                    <td><?= htmlspecialchars($leave['department']) ?></tdhidden>
                                     <td><?= htmlspecialchars($leave['leave_types']) ?></td>
                                     <td><?= htmlspecialchars($leave['start_date']) ?></td>
                                     <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                                    <td><?= htmlspecialchars($leave['reason']) ?></td>
                                     <td><?= htmlspecialchars($leave['status']) ?></td>
                                     <td><?= htmlspecialchars($leave['created_at']) ?></td>
-                                    <td><?= htmlspecialchars($leave['approved_by']) ?></td>
+                                    <td><?= htmlspecialchars($leave['approved_by_name']) ?></td>
                                     <td><?= htmlspecialchars($leave['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -372,8 +378,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        <!--request Leave Modal -->
-        <div id="requestLeaveModal" class="modal">
+     <!--request Leave Modal -->
+     <div id="requestLeaveModal" class="modal">
             <div class="modal-content">
                 <!-- Leave Request Form with Balance Checker -->
                 <div id="leaveForm" class="request-form" style="display:none;">
@@ -454,13 +460,14 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </div>
 
                         <div class="modal-buttons">
-                            <button type="submit" id="submitLeaveBtn" name="submitLeaveBtn" class="btnDefault btnContainer">SUBMIT REQUEST</button>
+                        <button type="submit" id="submitLeaveBtn" name="submitLeaveBtn" class="btnDefault btnContainer">SUBMIT REQUEST</button>
                             <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
 
 
     </div>
@@ -579,6 +586,35 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
     </script>
 
+<script>
+$(document).ready(function() {
+    $('#leaveFormContent').on('submit', function(e) {
+        e.preventDefault(); // Prevent normal form submit
+
+        var formData = $(this).serialize(); // Get all form data
+
+        $.ajax({
+            type: 'POST',
+            url: '../../0/includes/submitLeaverequest.php',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert(response.message); // Show success message
+                    closeModal(); // Close modal if you have a closeModal() function
+                    location.reload();
+                    // Optionally reload or update your table/page here
+                } else {
+                    alert('Error: ' + response.message); // Show error message
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('AJAX Error: ' + error); // Connection/Server error
+            }
+        });
+    });
+});
+</script>
 
 </body>
 

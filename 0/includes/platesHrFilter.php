@@ -86,23 +86,24 @@ echo "<script>console.log('Total Records:', " . json_encode($totalRecords) . ");
 try {
     // Query to fetch leave requests ordered by created_at in descending order
     $stmt = $pdo->prepare("
-    SELECT 
-        lr.id, 
-        lr.employee_id,
-        u.name AS name,
-        u.department AS department, 
-        lr.leave_types, 
-        lr.start_date, 
-        lr.end_date, 
-        lr.reason, 
-        lr.status, 
-        lr.created_at, 
-        lr.approved_by, 
-        lr.updated_at
-    FROM leave_requests lr
-    LEFT JOIN users u ON lr.employee_id = u.id
-    ORDER BY lr.created_at DESC
-");
+        SELECT 
+            lr.id, 
+            lr.employee_id,
+            u.name AS name,
+            u.department AS department, 
+            lr.leave_types, 
+            lr.start_date, 
+            lr.end_date, 
+            lr.reason, 
+            lr.status, 
+            lr.created_at, 
+            approver.name AS approved_by_name, -- Fetch the approver's name
+            lr.updated_at
+        FROM leave_requests lr
+        LEFT JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id -- Join to get approver's name
+        ORDER BY lr.created_at DESC
+    ");
     $stmt->execute();
 
     // Fetch all leave requests

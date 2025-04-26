@@ -1,7 +1,16 @@
 <?php
 require_once '../../0/includes/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLeaveBtn'])) {
+if (!isset($_SESSION['user_id'])) {
+    session_start();
+}
+$userId = $_SESSION['user_id'] ?? null;
+if (!$userId) {
+    echo "Error: User not logged in.";
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve and validate form data
     $employeeId = $_POST['employeeId'] ?? null;
     $leaveType = $_POST['leaveType'] ?? null;
@@ -61,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLeaveBtn'])) {
         $affectedTable = 'leave_requests';
         $affectedId = $leaveRequestId;
         $details = "Inserted leave request for employee ID $employeeId with leave type $leaveType.";
-        $userId = $_SESSION['user_id'] ?? null; // Assuming the user ID is stored in the session
+        $userId = $_SESSION['user_id'] ?? null; // The ID of the logged-in user
         $timestamp = date('Y-m-d H:i:s');
 
         $auditStmt = $pdo->prepare("
@@ -80,8 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLeaveBtn'])) {
         // Commit transaction
         $pdo->commit();
 
-        // Redirect to a success page or display a success message
-        header('Location: leaveRequestSuccess.php');
+        // **REMOVE THE REDIRECT** (no header location)
+        // Instead, echo a success message
+        echo json_encode(['status' => 'success', 'message' => 'Leave request submitted successfully.']);
         exit();
     } catch (PDOException $e) {
         // Rollback transaction on error
@@ -89,7 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLeaveBtn'])) {
 
         // Log the error for debugging
         error_log("Database Error: " . $e->getMessage());
-        echo "Error: Unable to process your request at this time.";
+        // **REMOVE THE REDIRECT** (no header location)
+        // Instead, echo an error message
+        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        exit();
     }
 } else {
     // Redirect to the form page if accessed directly
