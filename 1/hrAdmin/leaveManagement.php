@@ -129,10 +129,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <thead>
                         <tr>
                             <th>ID <i class="fas fa-sort"></i></th>
-                            <th>Employee ID <i class="fas fa-sort"></i></th>
+                            <th>Employee Name <i class="fas fa-sort"></i></th>
+                            <th>Department <i class="fas fa-sort"></i></th>
                             <th>Leave Type <i class="fas fa-sort"></i></th>
                             <th>Start Date <i class="fas fa-sort"></i></th>
                             <th>End Date <i class="fas fa-sort"></i></th>
+                            <th>Reason <i class="fas fa-sort"></i></th>
                             <th>Status <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
                             <th>Approved By <i class="fas fa-sort"></i></th>
@@ -144,20 +146,24 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <?php if (!empty($leave_requests)): ?>
                             <?php foreach ($leave_requests as $leave): ?>
                                 <tr data-id="<?= htmlspecialchars($leave['id']) ?>"
-                                    data-employee-id="<?= htmlspecialchars($leave['employee_id']) ?>"
+                                    data-employee-id="<?= htmlspecialchars($leave['name']) ?>"
+                                    data-department="<?= htmlspecialchars($leave['department']) ?>"
                                     data-leave-type="<?= htmlspecialchars($leave['leave_types']) ?>"
                                     data-start-date="<?= htmlspecialchars($leave['start_date']) ?>"
                                     data-end-date="<?= htmlspecialchars($leave['end_date']) ?>"
+                                    data-reason="<?= htmlspecialchars($leave['reason']) ?>"
                                     data-status="<?= htmlspecialchars($leave['status']) ?>"
                                     data-created-at="<?= htmlspecialchars($leave['created_at']) ?>"
                                     data-approved-by="<?= htmlspecialchars($leave['approved_by']) ?>"
                                     data-updated-at="<?= htmlspecialchars($leave['updated_at']) ?>">
 
                                     <td><?= htmlspecialchars($leave['id']) ?></td>
-                                    <td><?= htmlspecialchars($leave['employee_id']) ?></td>
+                                    <td><?= htmlspecialchars($leave['name']) ?></td>
+                                    <td><?= htmlspecialchars($leave['department']) ?></tdhidden>
                                     <td><?= htmlspecialchars($leave['leave_types']) ?></td>
                                     <td><?= htmlspecialchars($leave['start_date']) ?></td>
                                     <td><?= htmlspecialchars($leave['end_date']) ?></td>
+                                    <td><?= htmlspecialchars($leave['reason']) ?></td>
                                     <td><?= htmlspecialchars($leave['status']) ?></td>
                                     <td><?= htmlspecialchars($leave['created_at']) ?></td>
                                     <td><?= htmlspecialchars($leave['approved_by']) ?></td>
@@ -191,42 +197,43 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <input type="hidden" id="approveLeaveID" name="leaveId" value="<?= htmlspecialchars($leave['id'] ?? '') ?>">
 
                     <div class="input-container">
-                        <h1>Employee Name:</h1>
-                        <p><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
+                        <h1><strong>Employee Name:</strong></h1>
+                        <p class="center-text" id="approveNameId"><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>Department:</h1>
-                        <p><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
+                        <h1><strong>Department:</strong></h1>
+                        <p class="center-text" id="approveDepartmentId"><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>Leave Type:</h1>
-                        <p><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
+                        <h1><strong>Leave Type:</strong></h1>
+                        <p class="center-text" id="approveLeaveTypeId"><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>Start Date:</h1>
+                        <h1><strong>Start Date:</strong></h1>
                         <p class="center-text" id="approveStartDateId"><?= htmlspecialchars($leave['start_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>End Date:</h1>
+                        <h1><strong>End Date:</strong></h1>
                         <p class="center-text" id="approveEndDateId"><?= htmlspecialchars($leave['end_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>Reason:</h1>
+                        <h1><strong>Reason:</strong></h1>
                         <p class="center-text" id="approveReasonId"><?= htmlspecialchars($leave['reason'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1>Status:</h1>
+                        <h1><strong>Ststus:</strong></h1>
                         <p class="center-text" id="approveStatusId"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="submit" id="approveLeaveBtn" name="approveLeaveBtn" class="btnDefault btnContainer">SUBMIT</button>
+                        <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
+                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnDefault btnContainer">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                     </div>
                 </form>
@@ -582,15 +589,15 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             // Modal fields for approveModal
             const approveModalFields = {
-                ticketIdField: document.getElementById("confirmTicketID"),
-                employeeNameField: document.getElementById("confirmemployeeID"),
-                departmentField: document.getElementById("confirmdepartmentID"),
-                subjectField: document.getElementById("confirmsubjectID"),
-                categoryField: document.getElementById("confirmcategoryID"),
-                descriptionField: document.getElementById("confirmdescriptionID"),
-                priorityField: document.getElementById("confirmpriorityID"),
-                assignedToField: document.getElementById("confirmassignedID"),
-                statusField: document.getElementById("confirmStatusID"),
+                leaveIdField: document.getElementById("approveLeaveID"),
+                employeeNameField: document.getElementById("approveNameId"),
+                departmentField: document.getElementById("approveDepartmentId"),
+                leaveTypeField: document.getElementById("approveLeaveTypeId"),
+                startDateField: document.getElementById("approveStartDateId"),
+                reasonField: document.getElementById("approveReasonId"),
+                endDateField: document.getElementById("approveEndDateId"),
+                reasonField: document.getElementById("approveReasonId"),
+                statusField: document.getElementById("approveStatusId"),
             };
 
             // Modal fields for editStatusModal
@@ -629,34 +636,33 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     this.classList.add("highlighted");
 
                     // Get the values from the clicked row
-                    const ticketId = this.children[0].textContent.trim();
-                    const employeeName = this.children[1].textContent.trim();
-                    const assignedDepartment = this.children[2].textContent.trim();
-                    const subject = this.children[3].textContent.trim();
-                    const description = this.children[4].textContent.trim();
-                    const status = this.children[5].textContent.trim();
-                    const priority = this.children[6].textContent.trim();
-                    const category = this.children[7].textContent.trim();
-                    const assignedTo = this.children[8].textContent.trim();
-                    const startAt = this.getAttribute("data-start-at");
-                    const updatedAt = this.children[11]?.textContent.trim();
-
+                    const leaveId = this.children[0].textContent.trim(); // ID
+                    const employeeId = this.children[1].textContent.trim(); // Employee ID
+                    const department = this.children[2].textContent.trim(); // Department
+                    const leaveType = this.children[3].textContent.trim(); // Leave Type
+                    const startDate = this.children[4].textContent.trim(); // Start Date
+                    const endDate = this.children[5].textContent.trim(); // End Date
+                    const reason = this.children[6].textContent.trim(); // Reason
+                    const status = this.children[7].textContent.trim(); // Status
+                    const createdAt = this.children[8].textContent.trim(); // Created At
+                    const approvedBy = this.children[9].textContent.trim(); // Approved By
+                    const updatedAt = this.children[10].textContent.trim(); // Updated At
                     // Get the current user from the session
                     const currentUser = document
                         .querySelector(".accountName")
                         .textContent.trim();
 
-                    // Check the status and assigned user
-                    if (status === "Open" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
+                    // Check the status
+                    if (status === "Pending") {
                         // Set the values in the approveModal
-                        approveModalFields.ticketIdField.textContent = ticketId;
-                        approveModalFields.employeeNameField.textContent = employeeName;
-                        approveModalFields.departmentField.textContent = assignedDepartment;
-                        approveModalFields.subjectField.textContent = subject;
-                        approveModalFields.categoryField.textContent = category;
-                        approveModalFields.descriptionField.textContent = description;
-                        approveModalFields.priorityField.textContent = priority;
-                        approveModalFields.assignedToField.textContent = assignedTo;
+                        approveModalFields.leaveIdField.textContent = leaveId;
+                        approveModalFields.employeeNameField.textContent = employeeId;
+                        approveModalFields.departmentField.textContent = department; // No department field in the table rows
+                        approveModalFields.leaveTypeField.textContent = leaveType;
+                        approveModalFields.startDateField.textContent = startDate;
+                        approveModalFields.endDateField.textContent = endDate;
+                        approveModalFields.reasonField.textContent = reason; // No reason field in the table rows
+                        approveModalFields.statusField.style.color = "red";
                         approveModalFields.statusField.textContent = status;
 
                         // Open the approveModal
