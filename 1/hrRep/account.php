@@ -113,6 +113,7 @@ require_once '../../0/includes/employeeTicket.php';
                     border-radius: 5px;
                     font-size: 14px;
                     background: #f8f8f8;
+                    text-align: left;
                 }
 
                 .change-password-text {
@@ -166,22 +167,26 @@ require_once '../../0/includes/employeeTicket.php';
                         <div class="account-box-content">
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Full Name</span>
-                                <input type="text" id="fullName" name="employeeName" value="<?php echo htmlspecialchars($user['name']); ?>" class="account-input" readonly>
+                                <!-- <input type="text" id="fullName" name="employeeName" value="<?php echo htmlspecialchars($user['name']); ?>" class="account-input" readonly> -->
+                                <div class="account-input"><?php echo ucwords(strToLower(htmlspecialchars($user['name']))); ?></div>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Email</span>
-                                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" readonly>
+                                <!-- <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" class="account-input" readonly> -->
+                                 <div class="account-input"><?php echo strToLower(htmlspecialchars($user['email'])); ?></div>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Role</span>
-                                <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" readonly>
+                                <!-- <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" class="account-input" readonly> -->
+                                 <div class="account-input"><?php echo ucwords(strToLower(htmlspecialchars($user['role']))); ?></div>
                             </label>
 
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Department</span>
-                                <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" readonly>
+                                <!-- <input type="text" id="department" name="department" value="<?php echo htmlspecialchars($user['department']); ?>" class="account-input" readonly> -->
+                                 <div class="account-input"><?php echo ucwords(strToLower(htmlspecialchars($user['department']))); ?></div>
                             </label>
 
                             <p class="change-password-text">
