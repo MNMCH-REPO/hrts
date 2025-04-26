@@ -51,6 +51,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <a href="management.php">Management</a>
             </div>
             <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leaveManagement.php">Leave Management</a>
+            </div>
+            <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
