@@ -35,12 +35,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="order.php">Order Management</a>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
+                <a href="dashboard.php">Dashboard</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
-                <a href="leave.php">Leave Management</a>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
@@ -50,11 +50,21 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
+
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
+                <a href="management.php">Management</a>
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leaveManagement.php">Leave Management</a>
+            </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
+
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -181,42 +191,38 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <input type="hidden" id="approveLeaveID" name="leaveId" value="<?= htmlspecialchars($leave['id'] ?? '') ?>">
 
                     <div class="input-container">
-                        <input type="text" name="employeeName" value="<?= htmlspecialchars($leave['employee_name'] ?? '') ?>" readonly>
-                        <label for="employeeName">Employee Name</label>
+                        <h1>Employee Name:</h1>
+                        <p><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <input type="text" name="department" value="<?= htmlspecialchars($leave['department'] ?? '') ?>" readonly>
-                        <label for="department">Department</label>
+                        <h1>Department:</h1>
+                        <p><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <input type="text" name="leaveType" value="<?= htmlspecialchars($leave['leave_types'] ?? '') ?>" readonly>
-                        <label for="leaveType">Leave Type</label>
+                        <h1>Leave Type:</h1>
+                        <p><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <input type="date" name="startDate" value="<?= htmlspecialchars($leave['start_date'] ?? '') ?>" readonly>
-                        <label for="startDate">Start Date</label>
+                        <h1>Start Date:</h1>
+                        <p class="center-text" id="approveStartDateId"><?= htmlspecialchars($leave['start_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <input type="date" name="endDate" value="<?= htmlspecialchars($leave['end_date'] ?? '') ?>" readonly>
-                        <label for="endDate">End Date</label>
+                        <h1>End Date:</h1>
+                        <p class="center-text" id="approveEndDateId"><?= htmlspecialchars($leave['end_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <textarea name="reason" readonly><?= htmlspecialchars($leave['reason'] ?? '') ?></textarea>
-                        <label for="reason">Reason</label>
+                        <h1>Reason:</h1>
+                        <p class="center-text" id="approveReasonId"><?= htmlspecialchars($leave['reason'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <select name="status" id="approveStatusSelect" required>
-                            <option value="" disabled selected>Select Status</option>
-                            <option value="Approved">Approve</option>
-                            <option value="Rejected">Reject</option>
-                        </select>
-                        <label for="status">Status</label>
+                        <h1>Status:</h1>
+                        <p class="center-text" id="approveStatusId"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="modal-buttons">
@@ -460,8 +466,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
     <script src="../../assets/js/framework.js"></script>
-    <script src="../../assets/js/hrRepOrder.js"></script>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -565,6 +569,175 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         document.getElementById("leaveTypeSelect").addEventListener("change", updateLeaveBalance);
         document.getElementById("startDate").addEventListener("change", updateLeaveBalance);
         document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const tableRows = document.querySelectorAll("tbody tr");
+            const approveModal = document.getElementById("approveModal");
+            const editStatusModal = document.getElementById("editStatusModal");
+            const ticketSummarizationModal = document.getElementById(
+                "ticketSummarizationModal"
+            );
+
+            // Modal fields for approveModal
+            const approveModalFields = {
+                ticketIdField: document.getElementById("confirmTicketID"),
+                employeeNameField: document.getElementById("confirmemployeeID"),
+                departmentField: document.getElementById("confirmdepartmentID"),
+                subjectField: document.getElementById("confirmsubjectID"),
+                categoryField: document.getElementById("confirmcategoryID"),
+                descriptionField: document.getElementById("confirmdescriptionID"),
+                priorityField: document.getElementById("confirmpriorityID"),
+                assignedToField: document.getElementById("confirmassignedID"),
+                statusField: document.getElementById("confirmStatusID"),
+            };
+
+            // Modal fields for editStatusModal
+            const editStatusModalFields = {
+                ticketIdField: document.getElementById("editTicketID"),
+                employeeNameField: document.getElementById("editemployeeID"),
+                departmentField: document.getElementById("editdepartmentID"),
+                subjectField: document.getElementById("editsubjectID"),
+                categoryField: document.getElementById("editcategoryID"),
+                descriptionField: document.getElementById("editdescriptionID"),
+                priorityField: document.getElementById("editpriorityID"),
+                assignedToField: document.getElementById("editassignedID"),
+            };
+
+            // Fields in the Ticket Summarization Modal
+            const summarizationFields = {
+                ticketIdField: document.getElementById("summarizationTicketID"),
+                employeeNameField: document.getElementById("summarizationEmployeeName"),
+                departmentField: document.getElementById("summarizationDepartment"),
+                subjectField: document.getElementById("summarizationSubject"),
+                categoryField: document.getElementById("summarizationCategory"),
+                descriptionField: document.getElementById("summarizationDescription"),
+                priorityField: document.getElementById("summarizationPriority"),
+                assignedToField: document.getElementById("summarizationAssignedTo"),
+                statusField: document.getElementById("summarizationStatus"),
+                durationField: document.getElementById("summarizationDuration"),
+            };
+
+            // Add click event listener to each row
+            tableRows.forEach((row) => {
+                row.addEventListener("click", function() {
+                    // Remove highlight from all rows
+                    tableRows.forEach((r) => r.classList.remove("highlighted"));
+
+                    // Highlight the clicked row
+                    this.classList.add("highlighted");
+
+                    // Get the values from the clicked row
+                    const ticketId = this.children[0].textContent.trim();
+                    const employeeName = this.children[1].textContent.trim();
+                    const assignedDepartment = this.children[2].textContent.trim();
+                    const subject = this.children[3].textContent.trim();
+                    const description = this.children[4].textContent.trim();
+                    const status = this.children[5].textContent.trim();
+                    const priority = this.children[6].textContent.trim();
+                    const category = this.children[7].textContent.trim();
+                    const assignedTo = this.children[8].textContent.trim();
+                    const startAt = this.getAttribute("data-start-at");
+                    const updatedAt = this.children[11]?.textContent.trim();
+
+                    // Get the current user from the session
+                    const currentUser = document
+                        .querySelector(".accountName")
+                        .textContent.trim();
+
+                    // Check the status and assigned user
+                    if (status === "Open" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
+                        // Set the values in the approveModal
+                        approveModalFields.ticketIdField.textContent = ticketId;
+                        approveModalFields.employeeNameField.textContent = employeeName;
+                        approveModalFields.departmentField.textContent = assignedDepartment;
+                        approveModalFields.subjectField.textContent = subject;
+                        approveModalFields.categoryField.textContent = category;
+                        approveModalFields.descriptionField.textContent = description;
+                        approveModalFields.priorityField.textContent = priority;
+                        approveModalFields.assignedToField.textContent = assignedTo;
+                        approveModalFields.statusField.textContent = status;
+
+                        // Open the approveModal
+                        approveModal.style.display = "flex";
+                    } else if (status === "In Progress" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
+                        // Set the values in the editStatusModal
+                        editStatusModalFields.ticketIdField.textContent = ticketId;
+                        editStatusModalFields.employeeNameField.textContent = employeeName;
+                        editStatusModalFields.departmentField.textContent = assignedDepartment;
+                        editStatusModalFields.subjectField.textContent = subject;
+                        editStatusModalFields.categoryField.textContent = category;
+                        editStatusModalFields.descriptionField.textContent = description;
+                        editStatusModalFields.priorityField.textContent = priority;
+                        editStatusModalFields.assignedToField.textContent = assignedTo;
+
+                        // Open the editStatusModal
+                        editStatusModal.style.display = "flex";
+                    } else if (status === "Resolved") {
+                        // Populate the modal fields
+                        console.log("Resolved ticket clicked:", ticketId); // Debugging line
+                        console.log("Childeren:", this.children); // Debugging line
+                        summarizationFields.ticketIdField.textContent = ticketId;
+                        summarizationFields.employeeNameField.textContent = employeeName;
+                        editStatusModalFields.departmentField.textContent = assignedDepartment;
+                        summarizationFields.subjectField.textContent = subject;
+                        summarizationFields.categoryField.textContent = category;
+                        summarizationFields.descriptionField.textContent = description;
+                        summarizationFields.priorityField.textContent = priority;
+                        summarizationFields.assignedToField.textContent = assignedTo;
+                        summarizationFields.statusField.textContent = status;
+
+                        // Calculate and populate the duration
+                        if (Date.parse(startAt) && Date.parse(updatedAt)) {
+                            const startDate = new Date(startAt);
+                            const updatedDate = new Date(updatedAt);
+                            const durationMs = updatedDate - startDate;
+
+                            // Convert duration to days, hours, and minutes
+                            const days = Math.floor(durationMs / (1000 * 60 * 60 * 24));
+                            const hours = Math.floor(
+                                (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                            );
+                            const minutes = Math.floor(
+                                (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+                            );
+                            const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
+
+                            summarizationFields.durationField.textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                        } else {
+                            summarizationFields.durationField.textContent = "N/A";
+                        }
+
+                        ticketSummarizationModal.style.display = "flex";
+
+                    }
+                });
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === approveModal) {
+                    approveModal.style.display = "none";
+                }
+                if (event.target === editStatusModal) {
+                    editStatusModal.style.display = "none";
+                }
+                if (event.target === ticketSummarizationModal) {
+                    ticketSummarizationModal.style.display = "none";
+                }
+            });
+
+            // Close the modal when clicking the "BACK" button
+            const closeModalButtons = document.querySelectorAll(".btnDanger");
+            closeModalButtons.forEach((button) => {
+                button.addEventListener("click", function() {
+                    approveModal.style.display = "none";
+                    editStatusModal.style.display = "none";
+                    ticketSummarizationModal.style.display = "none";
+                });
+            });
+        });
     </script>
 
 
