@@ -305,12 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-function logModalOpened(modalName, details = {}) {
-    console.log(`Modal Opened: ${modalName}`, details);
-  }
-
-
-
 //timer
 // Function to handle the timer
 document.addEventListener("DOMContentLoaded", function () {
@@ -383,7 +377,6 @@ document.addEventListener("DOMContentLoaded", function () {
       assignedToField: document.getElementById("confirmassignedID"),
       statusField: document.getElementById("confirmStatusID"),
     };
-    console.log("Confirm Modal Fields:", confirmModalFields);
     // Modal fields for editStatusModal
     const editStatusFields = {
       ticketIdField: document.getElementById("editTicketID"),
@@ -451,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
           confirmModalFields.statusField.textContent = status;
   
           confirmModal.style.display = "flex";
-          logModalOpened("Confirm Modal", { ticketId, employeeName, department, subject, description, status, priority, category, assignedTo });
+          console.log("Confirm Modal Open");
         } else if (status === "In Progress" && assignedTo.toLowerCase() === currentUser.toLowerCase()) {
           // Open the editStatusModal
           editStatusFields.ticketIdField.textContent = ticketId;
@@ -464,8 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
           editStatusFields.assignedToField.textContent = assignedTo;
   
           editStatusModal.style.display = "flex";
-
-          logModalOpened("Edit Status Modal", { ticketId, employeeName, department, subject, description, status, priority, category, assignedTo });
+          console.log("EDit Modal Open");
         } else if (status === "Resolved") {
           // Populate the modal fields
           summarizationFields.ticketIdField.textContent = ticketId;
@@ -496,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
   
           ticketSummarizationModal.style.display = "flex";
-          logModalOpened("Ticket Summarization Modal", { ticketId, employeeName, department, subject, description, status, priority, category, assignedTo });
+          console.log("Summarize Modal Open");
 
         }
       });
@@ -528,88 +520,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
 //create ticket modal
 document.addEventListener("DOMContentLoaded", function () {
   // Open modal function
   function openModal() {
-      document.getElementById("addTicketModal").style.display = "flex";
+    document.getElementById("addTicketModal").style.display = "flex";
 
-      // Auto-fill department correctly
-      const departmentField = document.getElementById("departmentInputField");
-      if (!departmentField) {
-          console.error("❌ Department field not found!");
-      }
+    // Auto-fill department correctly
+
+    let departmentField = document.getElementById("departmentInputField");
+
+    if (departmentField) {
+      departmentField = document.getElementById("departmentInputField");
+    } else {
+      console.error("❌ Department field not found!");
+    }
   }
 
-  // Close modal function
-  function closeModal() {
-      document.getElementById("addTicketModal").style.display = "none";
-  }
-
-  // Make the functions globally accessible
+  // Make the function globally accessible
   window.openModal = openModal;
-  window.closeModal = closeModal;
 
   // Attach event listener to "ADD" button
   document.getElementById("plate4").addEventListener("click", openModal);
 
-  // Function to handle form submission
-  function handleFormSubmission(event) {
-      event.preventDefault(); // Prevent default form submission
-
-      const requestType = document.getElementById("requestType").value; // Get the selected request type
-      let formElement;
-
-    // Determine which form to submit
-    if (requestType === "ticket") {
-      formElement = document.getElementById("ticketFormContent");
-  } else if (requestType === "leave") {
-      formElement = document.getElementById("leaveFormContent");
+  // Close modal function
+  function closeModal() {
+    document.getElementById("addTicketModal").style.display = "none";
   }
 
-  // if (formElement) {
-  //   const formData = new FormData(formElement); // Create FormData object
-  //   const endpoint =
-  //       requestType === "ticket"
-  //           ? "../../0/includes/submitTicket.php"
-  //           : "../../1/employee/submit_leave_request.php"; // Set the endpoint dynamically
+  window.closeModal = closeModal;
 
-            
-  //       // Submit the form via AJAX
-  //       fetch(endpoint, {
-  //         method: "POST",
-  //         body: formData,
-  //     })
-  //           .then((response) => {
-  //             // Check if the response is JSON
-  //             const contentType = response.headers.get("content-type");
-  //             if (!contentType || !contentType.includes("application/json")) {
-  //                 throw new Error("Invalid response format. Expected JSON.");
-  //             }
-  //             return response.json();
-  //         })
-  //         .then((data) => {
-  //             if (data.success) {
-  //                 alert(data.message || "Form submitted successfully!");
-  //                 formElement.reset(); // Reset the form
-  //                 closeModal(); // Close the modal
-  //                 location.reload(); // Reload the page to reflect changes
-  //             } else {
-  //                 alert(data.message || "An error occurred.");
-  //             }
-  //         })
-  //         .catch((error) => {
-  //             console.error("Error:", error);
-  //             alert("An error occurred while submitting the form. Please check the server logs.");
-  //         });
-  // } else {
-  //     alert("Please select a valid request type.");
-  // }
-}
+  // Submit form via AJAX
+  document
+    .getElementById("ticketForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
 
-  // // Attach event listeners to the submit buttons
-  // document.getElementById("submitTicketID").addEventListener("click", handleFormSubmission);
-  // document.getElementById("submitLeaveBtn").addEventListener("click", handleFormSubmission);
+      let formData = new FormData(this);
+
+      fetch("../../0/includes/submitTicket.php", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert("Ticket submitted successfully!");
+            document.getElementById("ticketForm").reset();
+            closeModal();
+            location.reload();
+          } else {
+            alert("Error: " + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("❌ Fetch Error:", error);
+        });
+    });
 });
 
 

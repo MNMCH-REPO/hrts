@@ -1,7 +1,6 @@
 <?php
     require_once '../../0/includes/employeeTicket.php';
     require_once '../../0/includes/platesHrFilter.php';
-    require_once '../../0/includes/submitTicket.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

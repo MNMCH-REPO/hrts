@@ -1,22 +1,10 @@
-<!-- Modal -->
-<div id="addTicketModal" class="modal">
-    <div class="modal-content">
-        <h1 class="modal-title">REQUEST FORM</h1>
+    <!-- Modal -->
+    <div id="addTicketModal" class="modal">
+        <div class="modal-content">
+            <h1 class="modal-title">TICKET FORM</h1>
 
-        <!-- Form Selection for Leave or Ticket -->
-        <div class="input-container">
-            <label for="requestType">Choose Request Type</label>
-            <select id="requestType" name="requestType" required onchange="toggleRequestForm()">
-                <option value="" disabled selected>Select Request Type</option>
-                <option value="ticket">Ticket Request</option>
-                <option value="leave">Leave Request</option>
-            </select>
-        </div>
+            <form id="ticketForm">
 
-        <!-- Ticket Request Form -->
-        <div id="ticketForm" class="request-form" style="display:none;">
-            <h2>Ticket Form</h2>
-            <form id="ticketFormContent" method="POST">
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
                     <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
@@ -29,7 +17,9 @@
                 </div>
 
                 <div class="input-container">
-                    <input type="text" id="departmentInputField" class="form-control" value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+                    <input type="text" id="departmentInputField" class="form-control"
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+
                     <label for="department">Department</label>
                 </div>
 
@@ -37,7 +27,8 @@
                     <select id="category" name="category" required>
                         <option value="" disabled selected>Select a category</option>
                         <?php
-                        require "../../0/includes/db.php";
+                        require "../../0/includes/db.php"; // Ensure correct database connection
+
                         try {
                             $stmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
                             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -51,133 +42,20 @@
                     <label for="category">Category</label>
                 </div>
 
+
                 <div class="input-container">
                     <textarea id="description" name="description" required></textarea>
                     <label for="description">Description</label>
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" name="subtmitTicketBtn" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
-                    <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Leave Request Form with Balance Checker -->
-        <div id="leaveForm" class="request-form" style="display:none;">
-            <h2>Leave Request Form</h2>
-            <form id="leaveFormContent" method="POST">
-                <input type="hidden" name="employeeId" value="<?= $_SESSION['user_id'] ?>">
-
-                <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" readonly>
-                    <label for="employeeName">Employee Name</label>
-                </div>
-
-                <div class="input-container">
-                    <input type="text" name="department" value="<?= $_SESSION['department'] ?>" readonly>
-                    <label for="department">Department</label>
-                </div>
-
-                <div class="input-container">
-                    <select name="leaveType" id="leaveTypeSelect" required>
-                        <option value="" disabled selected>Select Leave Type</option>
-                        <option value="Sick Leave">Sick Leave</option>
-                        <option value="Service Incentive Leave">Service Incentive Leave</option>
-                        <option value="Earned Leave Credit">Earned Leave Credit</option>
-                        <option value="Vacation">Vacation</option>
-                        <option value="Emergency Leave">Emergency Leave</option>
-                    </select>
-                    <label for="leaveType">Leave Type</label>
-                </div>
-
-                <div class="input-container">
-                    <input type="date" name="startDate" id="startDate" required>
-                    <label for="startDate">Start Date</label>
-                </div>
-
-                <div class="input-container">
-                    <input type="date" name="endDate" id="endDate" required>
-                    <label for="endDate">End Date</label>
-                </div>
-
-                <div class="input-container">
-                    <textarea name="reason" required></textarea>
-                    <label for="reason">Reason</label>
-                </div>
-
-                <!-- Balance and warning -->
-                <div class="input-container">
-                    <p id="leaveBalanceDisplay"><strong>Leave Balance:</strong> <span id="leaveBalance">--</span> days</p>
-                    <p id="leaveWarning" style="color:red; display:none;">You do not have enough leave balance.</p>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit" id="submitLeaveBtn" name="submitLeaveBtn" class="btnDefault">SUBMIT REQUEST</button>
+                    <button type="submit" name="submitTicketBtn" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
 
-<script>
-    function toggleRequestForm() {
-        const requestType = document.getElementById('requestType').value;
-        const ticketForm = document.getElementById('ticketForm');
-        const leaveForm = document.getElementById('leaveForm');
-
-        if (requestType === 'ticket') {
-            ticketForm.style.display = 'block';
-            leaveForm.style.display = 'none';
-        } else if (requestType === 'leave') {
-            leaveForm.style.display = 'block';
-            ticketForm.style.display = 'none';
-        }
-    }
-
-    const leaveBalances = {
-        'Sick Leave': maxLeaveBalances['Sick Leave'] - usedLeaveBalances['Sick Leave'],
-        'Service Incentive Leave': maxLeaveBalances['Service Incentive Leave'] - usedLeaveBalances['Service Incentive Leave'],
-        'Earned Leave Credit': maxLeaveBalances['Earned Leave Credit'] - usedLeaveBalances['Earned Leave Credit'],
-        'Vacation': maxLeaveBalances['Vacation'] - usedLeaveBalances['Vacation'],
-        'Emergency Leave': maxLeaveBalances['Emergency Leave'] - usedLeaveBalances['Emergency Leave']
-    };
-
-    function calculateDaysBetween(start, end) {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        const diffTime = endDate - startDate;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-        return diffDays;
-    }
-
-    function updateLeaveBalance() {
-        const leaveType = document.getElementById("leaveTypeSelect").value;
-        const start = document.getElementById("startDate").value;
-        const end = document.getElementById("endDate").value;
-        const balance = leaveBalances[leaveType] || 0;
-
-        document.getElementById("leaveBalance").textContent = balance;
-        const submitBtn = document.getElementById("submitLeaveBtn");
-        const warning = document.getElementById("leaveWarning");
-
-        if (start && end && leaveType) {
-            const requestedDays = calculateDaysBetween(start, end);
-            if (requestedDays > balance) {
-                warning.style.display = "block";
-                submitBtn.disabled = true;
-            } else {
-                warning.style.display = "none";
-                submitBtn.disabled = false;
-            }
-        }
-    }
-
-    document.getElementById("leaveTypeSelect").addEventListener("change", updateLeaveBalance);
-    document.getElementById("startDate").addEventListener("change", updateLeaveBalance);
-    document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
-</script>
 
 
 
@@ -372,47 +250,6 @@
         </form>
     </div>
 </div>
-
-<script>
-    // Open modal function
-    function openModal(id) {
-        document.getElementById(id).style.display = 'flex'; // Open the modal
-        toggleFormType(); // Ensure the correct form is shown when modal opens
-    }
-
-    // Close modal function
-    function closeModal() {
-        document.getElementById('addTicketModal').style.display = 'none'; // Close the modal
-    }
-
-    // Toggle between ticket and leave form
-    function toggleFormType() {
-        const formType = document.getElementById('requestType'); // Corrected id from 'formType' to 'requestType'
-
-        if (!formType) {
-            console.error("Element with id 'requestType' not found.");
-            return;
-        }
-
-        const selectedValue = formType.value; // Get the selected form type
-
-        // Toggle visibility based on the selected form
-        if (selectedValue === 'ticket') {
-            document.getElementById('ticketForm').style.display = 'block'; // Show ticket form
-            document.getElementById('leaveForm').style.display = 'none'; // Hide leave form
-            document.getElementById('modalTitle').textContent = "TICKET FORM"; // Update title
-        } else if (selectedValue === 'leave') {
-            document.getElementById('ticketForm').style.display = 'none'; // Hide ticket form
-            document.getElementById('leaveForm').style.display = 'block'; // Show leave form
-            document.getElementById('modalTitle').textContent = "LEAVE REQUEST FORM"; // Update title
-        }
-    }
-
-    // Ensure the correct form is displayed when the page loads
-    window.onload = function() {
-        toggleFormType(); // Toggle form type on page load
-    };
-</script>
 
 
 

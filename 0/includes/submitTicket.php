@@ -1,53 +1,18 @@
 <?php
-// session_start();
-// require "db.php"; // Ensure correct database connection
+session_start();
+require "db.php"; // Ensure correct database connection
 
-// header("Content-Type: application/json");
+header("Content-Type: application/json");
 
-// // Get the current logged-in user's ID from the session
+// Get the current logged-in user's ID from the session
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in.']);
     exit;
 }
 $currentUserId = $_SESSION['user_id'];
 
-//fetch leave balances
-$stmt = $pdo->prepare("
-    SELECT sick_leave_value, service_incentive_leave_value, earned_leave_credit_value, vacation_value, emergency_leave_value 
-    FROM used_balance 
-    WHERE user_id = :user_id
-");
-$stmt->bindParam(':user_id', $currentUserId, PDO::PARAM_INT);
-$stmt->execute();
-$usedBalances = $stmt->fetch(PDO::FETCH_ASSOC);
-$stmt = $pdo->prepare("
-    SELECT sick_leave_value, service_incentive_leave_value, earned_leave_credit_value, vacation_value, emergency_leave_value 
-    FROM total_balance 
-    WHERE user_id = :user_id
-");
-$stmt->bindParam(':user_id', $currentUserId, PDO::PARAM_INT);
-$stmt->execute();
-$totalBalances = $stmt->fetch(PDO::FETCH_ASSOC);
-echo '<script>';
-echo 'const usedLeaveBalances = {';
-echo '"Sick Leave": ' . ($usedBalances['sick_leave_value'] ?? 0) . ',';
-echo '"Service Incentive Leave": ' . ($usedBalances['service_incentive_leave_value'] ?? 0) . ',';
-echo '"Earned Leave Credit": ' . ($usedBalances['earned_leave_credit_value'] ?? 0) . ',';
-echo '"Vacation": ' . ($usedBalances['vacation_value'] ?? 0) . ',';
-echo '"Emergency Leave": ' . ($usedBalances['emergency_leave_value'] ?? 0);
-echo '};';
-echo 'const maxLeaveBalances = {';
-echo '"Sick Leave": ' . ($totalBalances['sick_leave_value'] ?? 0) . ',';
-echo '"Service Incentive Leave": ' . ($totalBalances['service_incentive_leave_value'] ?? 0) . ',';
-echo '"Earned Leave Credit": ' . ($totalBalances['earned_leave_credit_value'] ?? 0) . ',';
-echo '"Vacation": ' . ($totalBalances['vacation_value'] ?? 0) . ',';
-echo '"Emergency Leave": ' . ($totalBalances['emergency_leave_value'] ?? 0);
-echo '};';
-echo '</script>';
-//up to here ---------------------------------------------------------------------------------------------------
-
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    try {
         $employeeId = $_POST['employeeId'] ?? null;
         $employeeName = trim($_POST['employeeName'] ?? '');
         $subject = trim($_POST['subject'] ?? '');
@@ -55,9 +20,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
         $category = trim($_POST['category'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
+        // Validate required fields
+        if (!$employeeId || empty($employeeName) || empty($subject) || empty($department) || empty($category) || empty($description)) {
+            echo json_encode(["success" => false, "message" => "All fields are required."]);
+            exit();
+        }
+
         // Establish a PDO connection
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+        // Check if employee ID exists and validate both name and department
+        $stmt = $pdo->prepare("SELECT name, department FROM users WHERE id = :employee_id");
+        $stmt->execute([':employee_id' => $employeeId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            echo json_encode(["success" => false, "message" => "Invalid Employee ID."]);
+            exit();
+        }
+
+        if ($user['name'] !== $employeeName) {
+            echo json_encode(["success" => false, "message" => "Employee Name does not match our records."]);
+            exit();
+        }
+
+        if ($user['department'] !== $department) {
+            echo json_encode(["success" => false, "message" => "Selected department does not match your registered department."]);
+            exit();
+        }
+
+        // Begin a transaction
         $pdo->beginTransaction();
 
         // Insert the ticket into the `tickets` table
@@ -97,15 +90,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['submitTicketBtn'])) {
 
         // Commit the transaction
         $pdo->commit();
-}
-    //     echo json_encode(["success" => true, "message" => "Leave request submitted successfully."]);
-    // } catch (PDOException $e) {
-    //     $pdo->rollBack();
-    //     echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
-    // } catch (Exception $e) {
-    //     $pdo->rollBack();
-    //     echo json_encode(["success" => false, "message" => "An unexpected error occurred: " . $e->getMessage()]);
-    // }
-else {
+
+        echo json_encode(["success" => true, "message" => "Ticket submitted successfully."]);
+    } catch (PDOException $e) {
+        // Rollback the transaction on error
+        $pdo->rollBack();
+        echo json_encode(["success" => false, "message" => "Database error: " . $e->getMessage()]);
+    }
+} else {
     echo json_encode(["success" => false, "message" => "Invalid request method."]);
 }
