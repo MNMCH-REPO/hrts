@@ -361,10 +361,10 @@ require_once '../../0/includes/reportGenerator.php';
             <span class="close">&times;</span>
             <h2>Generate Report</h2>
             <div class="time-options">
-                <button class="time-btn">Today</button>
-                <button class="time-btn">This week</button>
-                <button class="time-btn">This month</button>
-                <button class="time-btn">Custom</button>
+                <div class="time-btn">Today</div>
+                <div class="time-btn">This week</div>
+                <div class="time-btn">This month</div>
+                <div class="time-btn">Custom</div>
             </div>
             <div class="date-range">
                 <label>From: <input type="date" id="startDate" name="startDate"></label>
@@ -512,7 +512,7 @@ require_once '../../0/includes/reportGenerator.php';
 
             // Close modal when clicking outside the content
             window.addEventListener("click", function(event) {
-                if (event.target === modal) {
+                if (event.target === modal && !event.target.classList.contains("time-btn")) {
                     modal.style.display = "none";
                 }
             });
