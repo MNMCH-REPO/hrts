@@ -174,70 +174,58 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
         <!-- Modal -->
 
-        <div id="confirmModal" class="modal">
+        <div id="approveModal" class="modal">
             <div class="modal-content">
-                <h1 class="modal-title">ASSIGN TICKET</h1>
+                <h2>APPROVE LEAVE REQUEST</h2>
+                <form id="approveFormContent" action="../../0/includes/approveLeaveRequest.php" method="POST">
+                    <input type="hidden" id="approveLeaveID" name="leaveId" value="<?= htmlspecialchars($leave['id'] ?? '') ?>">
 
-                <form id="confirmationForm" method="POST">
                     <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" id="confirmTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
+                        <input type="text" name="employeeName" value="<?= htmlspecialchars($leave['employee_name'] ?? '') ?>" readonly>
+                        <label for="employeeName">Employee Name</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" id="confirmemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                        <input type="text" name="department" value="<?= htmlspecialchars($leave['department'] ?? '') ?>" readonly>
+                        <label for="department">Department</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                        <input type="text" name="leaveType" value="<?= htmlspecialchars($leave['leave_types'] ?? '') ?>" readonly>
+                        <label for="leaveType">Leave Type</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" id="confirmsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                        <input type="date" name="startDate" value="<?= htmlspecialchars($leave['start_date'] ?? '') ?>" readonly>
+                        <label for="startDate">Start Date</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" id="confirmcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                        <input type="date" name="endDate" value="<?= htmlspecialchars($leave['end_date'] ?? '') ?>" readonly>
+                        <label for="endDate">End Date</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" id="confirmdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                        <textarea name="reason" readonly><?= htmlspecialchars($leave['reason'] ?? '') ?></textarea>
+                        <label for="reason">Reason</label>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Priority:</strong></h1>
-                        <p class="center-text" id="confirmpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
+                        <select name="status" id="approveStatusSelect" required>
+                            <option value="" disabled selected>Select Status</option>
+                            <option value="Approved">Approve</option>
+                            <option value="Rejected">Reject</option>
                         </select>
+                        <label for="status">Status</label>
                     </div>
 
-                    <div class="input-container">
-                        <h1><strong>Assigned To:</strong></h1>
-                        <p class="center-text" id="confirmassignedID" name="confirmAssigned" value="<?= htmlspecialchars($tickets['assigned_to_name']) ?>"></p>
-                        </select>
-                    </div>
-
-
-                    <div class="input-container">
-                        <h1><strong>Status:</strong></h1>
-                        <p class="center-text" id="confirmStatusID" value="<?= htmlspecialchars($ticketStatus['status']) ?>"></p>
-                        </select>
-                    </div>
-
-
-                    <div class="btnContainer">
-                        <button type="submit" name="confirmButton" id="confirmButtonID" class="btnDefault">CONFIRM ORDER</button>
-                        <button type="submit" name="declineButton" id="declineButtonID" class="btnWarning">DECLINE ORDER</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                    <div class="modal-buttons">
+                        <button type="submit" id="approveLeaveBtn" name="approveLeaveBtn" class="btnDefault btnContainer">SUBMIT</button>
+                        <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                     </div>
                 </form>
             </div>
         </div>
-
 
 
 

@@ -37,6 +37,10 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="order.php">Orders</a>
             </div>
             <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leave.php">Leave Management</a>
+            </div>
+            <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
                 </div>
                 <a href="message.php">Messages</a>

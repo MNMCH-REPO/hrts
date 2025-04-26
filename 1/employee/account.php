@@ -34,6 +34,10 @@ require_once '../../0/includes/employeeTicket.php';
                 <a href="ticket.php">Tickets</a>
             </div>
             <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leave.php">Leave Management</a>
+            </div>
+            <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
                 <a href="message.php">Messages</a>
             </div>
@@ -185,9 +189,6 @@ require_once '../../0/includes/employeeTicket.php';
                             <p class="change-password-text">
                                 IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
                             </p>
-                            <div class="btnContainer">
-                                <button class="btnDefault" name="saveChanges">Save Changes</button>
-                            </div>
                         </div>
                     </form>
                 </div>

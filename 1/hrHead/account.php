@@ -180,9 +180,6 @@ require_once '../../0/includes/employeeTicket.php';
                             <p class="change-password-text">
                                 IF YOU WANT TO CHANGE YOUR PASSWORD <a href="accountPassword.php" class="change-password-link">CLICK THIS</a>
                             </p>
-                            <div class="btnContainer">
-                                <button class="btnDefault" name="saveChanges">Save Changes</button>
-                            </div>
                         </div>
                     </form>
                 </div>

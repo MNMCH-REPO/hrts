@@ -29,8 +29,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <a href="order.php">Orders</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
-                <a href="leave.php">Request Leave</a>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leave.php">Leave Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
