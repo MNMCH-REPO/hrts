@@ -1,86 +1,136 @@
 <?php
-session_start(); // Start the session
-require_once '../../0/includes/db.php';
+session_start();
+require_once 'db.php'; // Ensure the database connection is included
 
-if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'User not logged in.']);
-    exit();
-}
+// // Suppress warnings and log errors
+// ini_set('display_errors', 0);
+// ini_set('log_errors', 1);
+// ini_set('error_log', __DIR__ . '/error_log.txt');
+// error_reporting(E_ALL);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Decode the JSON payload
+header('Content-Type: application/json'); // Ensure the response is JSON
+
+try {
+    // Read the raw POST body
     $data = json_decode(file_get_contents('php://input'), true);
 
-    $leaveId = $data['leaveId'];
-    $approvedBy = $_SESSION['user_id'];
-
-    // Extract leave type and dates from the request
-    $leaveType = $data['leaveType']; // e.g., 'Sick Leave', 'Vacation'
-    $startDate = $data['startDate']; // start date (e.g., '2025-04-27')
-    $endDate = $data['endDate'];     // end date (e.g., '2025-04-29')
-
-    // Validate input
-    if (!$leaveId || !$approvedBy || !$leaveType || !$startDate || !$endDate) {
-        echo json_encode(['success' => false, 'message' => 'Invalid input.']);
-        exit();
+    // Validate incoming data
+    if (!isset($data['leaveId'], $data['approvedBy'], $data['leaveType'], $data['startDate'], $data['endDate'])) {
+        echo json_encode(['success' => false, 'message' => 'Incomplete data.']);
+        exit;
     }
 
-    // Function to calculate the number of days between start and end date
-    function calculateDaysBetween($start, $end) {
-        $startDate = new DateTime($start);
-        $endDate = new DateTime($end);
-        $diff = $startDate->diff($endDate);
-        return $diff->days + 1; // +1 to include both the start and end dates
+    $leaveId = intval($data['leaveId']);
+    $approvedBy = intval($data['approvedBy']);
+    $leaveTypeRaw = $data['leaveType'];
+    $startDate = $data['startDate'];
+    $endDate = $data['endDate'];
+
+    // Map frontend leave type to database column
+    $leaveTypeColumnMap = [
+        "Sick Leave" => "sl",
+        "Service Incentive Leave" => "sil",
+        "Earned Leave Credit" => "elc",
+        "Birthday Leave" => "bl",
+        "Maternity Leave" => "ml",
+        "Paternity Leave" => "pl",
+        "Solo Parent Leave" => "spl",
+        "Bereavement Leave" => "brl",
+        "Special Leave" => "s",
+        "Leave Without Pay" => "lwop",
+    ];
+
+    $leaveTypeColumn = $leaveTypeColumnMap[$leaveTypeRaw] ?? null;
+
+    if (!$leaveTypeColumn) {
+        echo json_encode(['success' => false, 'message' => 'Invalid leave type.']);
+        exit;
     }
 
-    // Calculate the requested leave days
-    $requestedDays = calculateDaysBetween($startDate, $endDate);
+    // Calculate leave days (inclusive of start and end dates)
+    $start = new DateTime($startDate);
+    $end = new DateTime($endDate);
+    $interval = $start->diff($end);
+    $leaveDays = $interval->days + 1;
 
-    // Convert leave type to the column name in the database (e.g., "Sick Leave" => "sick_leave_value")
-    $leaveColumn = strtolower(str_replace(" ", "_", $leaveType));
+    $pdo->beginTransaction();
 
-    try {
-        // Step 1: Approve the leave request (update leave_requests table)
-        $stmtLeave = $pdo->prepare("
-            UPDATE leave_requests
-            SET status = 'Approved', approved_by = :approvedBy, updated_at = NOW()
-            WHERE id = :leaveId
-        ");
-        $stmtLeave->bindParam(':approvedBy', $approvedBy, PDO::PARAM_INT);
-        $stmtLeave->bindParam(':leaveId', $leaveId, PDO::PARAM_INT);
-        $stmtLeave->execute();
+    // 1. Approve the leave
+    $updateLeaveSql = "UPDATE leave_requests SET status = 'Approved', approved_by = :approvedBy, updated_at = NOW() WHERE id = :leaveId";
+    $stmt = $pdo->prepare($updateLeaveSql);
+    $stmt->execute([
+        ':approvedBy' => $approvedBy,
+        ':leaveId' => $leaveId,
+    ]);
 
-        if ($stmtLeave->rowCount() === 0) {
-            echo json_encode(['success' => false, 'message' => 'Leave request not found or already approved.']);
-            exit();
-        }
+    // 2. Get the employee_id from leave_requests
+    $fetchEmployeeSql = "SELECT employee_id FROM leave_requests WHERE id = :leaveId";
+    $stmt = $pdo->prepare($fetchEmployeeSql);
+    $stmt->execute([':leaveId' => $leaveId]);
+    $employee = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Step 2: Update the total_balance table (subtract the requested days from the appropriate leave type)
-        $stmtTotalUpdate = $pdo->prepare("
-            UPDATE total_balance
-            SET {$leaveColumn}_value = {$leaveColumn}_value - :requestedDays
-            WHERE user_id = :user_id
-        ");
-        $stmtTotalUpdate->bindParam(':requestedDays', $requestedDays, PDO::PARAM_INT);
-        $stmtTotalUpdate->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmtTotalUpdate->execute();
-
-        // Step 3: Insert the calculated leave days into the used_balance table
-        $stmtUsedInsert = $pdo->prepare("
-            INSERT INTO used_balance (user_id, {$leaveColumn}_value)
-            VALUES (:user_id, :requestedDays)
-        ");
-        $stmtUsedInsert->bindParam(':requestedDays', $requestedDays, PDO::PARAM_INT);
-        $stmtUsedInsert->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmtUsedInsert->execute();
-
-        // If all queries are successful
-        echo json_encode(['success' => true, 'message' => 'Leave request approved and balances updated successfully.']);
-
-    } catch (PDOException $e) {
-        error_log("Database Error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    if (!$employee) {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => 'Employee not found.']);
+        exit;
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+
+    $employeeId = $employee['employee_id'];
+
+    // 3. Check if the employee has a record in used_balance
+    $checkBalanceSql = "SELECT * FROM used_balance WHERE user_id = :employeeId";
+    $stmt = $pdo->prepare($checkBalanceSql);
+    $stmt->execute([':employeeId' => $employeeId]);
+    $usedBalance = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($usedBalance) {
+        // Record exists, update it
+        $currentValue = (int)($usedBalance[$leaveTypeColumn] ?? 0);
+        $newValue = $currentValue + $leaveDays;
+
+        $updateUsedSql = "UPDATE used_balance SET {$leaveTypeColumn} = :newValue WHERE user_id = :employeeId";
+        $stmt = $pdo->prepare($updateUsedSql);
+        $stmt->execute([
+            ':newValue' => $newValue,
+            ':employeeId' => $employeeId
+        ]);
+    } else {
+        // No record yet, insert a new one
+        $insertUsedSql = "INSERT INTO used_balance (user_id, {$leaveTypeColumn}) VALUES (:employeeId, :leaveDays)";
+        $stmt = $pdo->prepare($insertUsedSql);
+        $stmt->execute([
+            ':employeeId' => $employeeId,
+            ':leaveDays' => $leaveDays
+        ]);
+    }
+
+    // 4. Update total_balance (subtract leave days)
+    $fetchTotalSql = "SELECT {$leaveTypeColumn} FROM total_balance WHERE user_id = :employeeId";
+    $stmt = $pdo->prepare($fetchTotalSql);
+    $stmt->execute([':employeeId' => $employeeId]);
+    $totalBalance = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($totalBalance) {
+        $currentTotal = (int)($totalBalance[$leaveTypeColumn] ?? 0);
+        $newTotal = max($currentTotal - $leaveDays, 0); // Prevent negative balance
+
+        $updateTotalSql = "UPDATE total_balance SET {$leaveTypeColumn} = :newTotal WHERE user_id = :employeeId";
+        $stmt = $pdo->prepare($updateTotalSql);
+        $stmt->execute([
+            ':newTotal' => $newTotal,
+            ':employeeId' => $employeeId
+        ]);
+    } else {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => 'Total balance record not found.']);
+        exit;
+    }
+
+    $pdo->commit();
+
+    echo json_encode(['success' => true, 'message' => 'Leave approved and balance updated.']);
+} catch (Exception $e) {
+    $pdo->rollBack();
+    error_log('Error: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }

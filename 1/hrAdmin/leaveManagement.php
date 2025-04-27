@@ -373,8 +373,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                 // Fetch leave balances from the total_balance table for the logged-in user
                                 $userId = $_SESSION['user_id'] ?? null; // Assuming user_id is stored in the session
                                 if ($userId) {
-                                    $stmt = $pdo->prepare("
-                                    SELECT 
+                                    $stmt = $pdo->prepare("SELECT 
                                         sl AS sick_leave,
                                         sil AS service_incentive_leave,
                                         elc AS earned_leave_credit,
@@ -389,14 +388,18 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
                                     $stmt->execute();
                                     $leaveBalances = $stmt->fetch(PDO::FETCH_ASSOC);
-                                    // Display the leave balances with default words
+
+                                    // Debug: Check if $leaveBalances contains the expected data
+                                    var_dump($leaveBalances); // Use this to debug
+
                                     if ($leaveBalances) {
+                                        // Ensure that we have data to work with before rendering options
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
                                         echo '<option value="Birthday Leave">Birthday Leave</option>';
                                         echo '<option value="Maternity Leave">Maternity Leave</option>';
-                                        echo '<option value="Paterniity Leave">Paternity Leave</option>';
+                                        echo '<option value="Paternity Leave">Paternity Leave</option>';
                                         echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
                                         echo '<option value="Bereavement Leave">Bereavement Leave</option>';
                                     } else {
@@ -447,32 +450,89 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             // Elements for modal functionality
             const plate4 = document.getElementById('plate4');
             const requestLeaveModal = document.getElementById('requestLeaveModal');
             const leaveForm = document.getElementById('leaveForm');
+            const leaveFormContent = document.getElementById('leaveFormContent');
 
+            // Open modal functionality
             if (plate4 && requestLeaveModal && leaveForm) {
                 plate4.addEventListener('click', () => {
-                    // Open the modal
-                    requestLeaveModal.style.display = 'flex';
-                    leaveForm.style.display = 'block';
+                    requestLeaveModal.style.display = 'flex'; // Show the modal
+                    leaveForm.style.display = 'block'; // Show the form
                 });
             } else {
                 console.error('One or more required elements not found.');
             }
 
             // Close modal functionality
+            const closeModal = () => {
+                if (requestLeaveModal) {
+                    requestLeaveModal.style.display = 'none'; // Hide the modal
+                }
+            };
+
             if (requestLeaveModal) {
                 const closeModalButtons = requestLeaveModal.querySelectorAll('.btnDanger');
                 closeModalButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        requestLeaveModal.style.display = 'none'; // Close the modal
-                        leaveForm.style.display = 'none'; // Hide the form again
-                    });
+                    button.addEventListener('click', closeModal); // Use the closeModal function to close the modal
                 });
             }
+
+            // Form submission functionality
+            if (leaveFormContent) {
+                leaveFormContent.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent normal form submission
+
+                    // Serialize form data
+                    const formData = new FormData(leaveFormContent);
+                    const data = new URLSearchParams();
+                    formData.forEach((value, key) => {
+                        data.append(key, value);
+                    });
+
+                    // Send AJAX request using Fetch API
+                    fetch('../../0/includes/submitLeaverequest.php', {
+                            method: 'POST',
+                            body: data,
+                        })
+                        .then((response) => response.json())
+                        .then((response) => {
+                            if (response.status === 'success') {
+                                alert(response.message); // Show success message
+                                closeModal(); // Close modal using the closeModal function
+                                location.reload(); // Reload the page
+                            } else {
+                                alert('Error: ' + response.message); // Show error message
+                            }
+                        })
+                        .catch((error) => {
+                            alert('AJAX Error: ' + error); // Handle connection/server error
+                        });
+                });
+            }
+        });
+    </script>
+
+    <script>
+        // Function to close the modal
+        function closeModal() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        // Event listener for clicking outside the modal to close it
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
         });
     </script>
 
@@ -736,16 +796,27 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
         });
 
+
+        // Approve Leave Request Form
         document.addEventListener("DOMContentLoaded", function() {
             const approveButton = document.getElementById("approveLeaveBtnID");
 
             approveButton.addEventListener("click", function(event) {
                 event.preventDefault();
 
-                const leaveId = document.getElementById("approveLeaveID").textContent.trim(); // corrected here
-                console.log("Approving Leave ID:", leaveId);
-                console.log("Current User ID in Session:", currentUserId); // use existing variable
+                // Retrieve values from the modal
+                const leaveId = document.getElementById("approveLeaveID").textContent.trim();
+                const leaveType = document.getElementById("approveLeaveTypeId").textContent.trim(); // Retrieve leave type
+                const startDate = document.getElementById("approveStartDateId").textContent.trim(); // Retrieve start date
+                const endDate = document.getElementById("approveEndDateId").textContent.trim(); // Retrieve end date
 
+                console.log("Approving Leave ID:", leaveId);
+                console.log("Leave Type:", leaveType);
+                console.log("Start Date:", startDate);
+                console.log("End Date:", endDate);
+                console.log("Current User ID in Session:", currentUserId);
+
+                // Send the data to the backend
                 fetch("../../0/includes/approveLeaveRequest.php", {
                         method: "POST",
                         headers: {
@@ -754,13 +825,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         body: JSON.stringify({
                             leaveId: leaveId,
                             approvedBy: currentUserId,
-                            leaveType: leaveType, // Include leave type
-                            startDate: startDate, // Include start date
-                            endDate: endDate // Include end date
-
+                            leaveType: leaveType,
+                            startDate: startDate,
+                            endDate: endDate
                         }),
                     })
-                    .then((response) => response.json())
+                    .then((response) => response.json()) // Parse the JSON response
                     .then((data) => {
                         if (data.success) {
                             alert("Leave request approved successfully!");
@@ -773,6 +843,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         console.error("Error:", error);
                         alert("An error occurred while approving the leave request.");
                     });
+
             });
         });
     </script>
