@@ -375,14 +375,17 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                 if ($userId) {
                                     $stmt = $pdo->prepare("
                                     SELECT 
-                                        sick_leave_value, 
-                                        service_incentive_leave_value, 
-                                        earned_leave_credit_value, 
-                                        vacation_value, 
-                                        emergency_leave_value 
+                                        sl AS sick_leave,
+                                        sil AS service_incentive_leave,
+                                        elc AS earned_leave_credit,
+                                        bl AS birthday_leave,
+                                        ml AS maternity_leave,
+                                        pl AS paternity_leave,
+                                        spl AS solo_parent_leave,
+                                        brl AS bereavement_leave
                                     FROM total_balance
-                                    WHERE user_id = :user_id
-                                ");
+                                    WHERE user_id = :user_id");
+
                                     $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
                                     $stmt->execute();
                                     $leaveBalances = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -391,8 +394,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
-                                        echo '<option value="Vacation">Vacation</option>';
-                                        echo '<option value="Emergency Leave">Emergency Leave</option>';
+                                        echo '<option value="Birthday Leave">Birthday Leave</option>';
+                                        echo '<option value="Maternity Leave">Maternity Leave</option>';
+                                        echo '<option value="Paterniity Leave">Paternity Leave</option>';
+                                        echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
+                                        echo '<option value="Bereavement Leave">Bereavement Leave</option>';
                                     } else {
                                         echo '<option value="" disabled>No Leave Types found</option>';
                                     }
@@ -469,37 +475,50 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             }
         });
     </script>
-    
+
     <script>
         // These PHP values must be output into JS **before** any functions use them
-        const sickLeaveTotal = <?= $leaveBalances['sick_leave_value'] ?? 0 ?>;
-        const sickLeaveUsed = <?= $usedBalances['sick_leave_value'] ?? 0 ?>;
-        const silTotal = <?= $leaveBalances['service_incentive_leave_value'] ?? 0 ?>;
-        const silUsed = <?= $usedBalances['service_incentive_leave_value'] ?? 0 ?>;
-        const elcTotal = <?= $leaveBalances['earned_leave_credit_value'] ?? 0 ?>;
-        const elcUsed = <?= $usedBalances['earned_leave_credit_value'] ?? 0 ?>;
-        const vacationTotal = <?= $leaveBalances['vacation_value'] ?? 0 ?>;
-        const vacationUsed = <?= $usedBalances['vacation_value'] ?? 0 ?>;
-        const emergencyTotal = <?= $leaveBalances['emergency_leave_value'] ?? 0 ?>;
-        const emergencyUsed = <?= $usedBalances['emergency_leave_value'] ?? 0 ?>;
+        const sickLeaveTotal = <?= $leaveBalances['sick_leave'] ?? 0 ?>;
+        const sickLeaveUsed = <?= $usedBalances['sick_leave'] ?? 0 ?>;
+        const serviceIncentiveLeaveTotal = <?= $leaveBalances['service_incentive_leave'] ?? 0 ?>;
+        const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
+        const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
+        const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
+        const birthdayLeaveTotal = <?= $leaveBalances['birthday_leave'] ?? 0 ?>;
+        const birthdayLeaveUsed = <?= $usedBalances['birthday_leave'] ?? 0 ?>;
+        const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
+        const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
+        const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
+        const paternityLeaveUsed = <?= $usedBalances['paternity_leave'] ?? 0 ?>;
+        const soloParentLeaveTotal = <?= $leaveBalances['solo_parent_leave'] ?? 0 ?>;
+        const soloParentLeaveUsed = <?= $usedBalances['solo_parent_leave'] ?? 0 ?>;
+        const bereavementLeaveTotal = <?= $leaveBalances['bereavement_leave'] ?? 0 ?>;
+        const bereavementLeaveUsed = <?= $usedBalances['bereavement_leave'] ?? 0 ?>;
 
         // ✅ Define remainingBalances here FIRST
         const remainingBalances = {
-            sick_leave: sickLeaveTotal - sickLeaveUsed,
-            service_incentive_leave: silTotal - silUsed,
-            earned_leave_credit: elcTotal - elcUsed,
-            vacation_leave: vacationTotal - vacationUsed,
-            emergency_leave: emergencyTotal - emergencyUsed
+            sl: sickLeaveTotal - sickLeaveUsed,
+            sil: serviceIncentiveLeaveTotal - serviceIncentiveLeaveUsed,
+            elc: earnedLeaveCreditTotal - earnedLeaveCreditUsed,
+            bl: birthdayLeaveTotal - birthdayLeaveUsed,
+            ml: maternityLeaveTotal - maternityLeaveUsed,
+            pl: paternityLeaveTotal - paternityLeaveUsed,
+            spl: soloParentLeaveTotal - soloParentLeaveUsed,
+            brl: bereavementLeaveTotal - bereavementLeaveUsed
         };
 
         // ✅ Leave type mapping
         const leaveTypeMap = {
-            "Sick Leave": "sick_leave",
-            "Service Incentive Leave": "service_incentive_leave",
-            "Earned Leave Credit": "earned_leave_credit",
-            "Vacation": "vacation_leave",
-            "Emergency Leave": "emergency_leave"
+            "Sick Leave": "sl",
+            "Service Incentive Leave": "sil",
+            "Earned Leave Credit": "elc",
+            "Birthday Leave": "bl",
+            "Maternity Leave": "ml",
+            "Paternity Leave": "pl",
+            "Solo Parent Leave": "spl",
+            "Bereavement Leave": "brl"
         };
+
 
         // ✅ Your existing functions below
         function calculateDaysBetween(start, end) {
