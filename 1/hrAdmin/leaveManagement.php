@@ -15,8 +15,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <link rel="stylesheet" href="../../assets/css/hrRepOrder.css">
     <title>HRTS</title>
 </head>
-
-
 <style>
     #leaveBalanceDisplay,
     #leaveWarning {
@@ -64,7 +62,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
-
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -72,8 +69,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <div class="accountIcon img-contain"></div>
                 </div>
             </div>
-
-
             <div class="row plateRow">
                 <div class="col plate" id="plate1" data-status="Pending">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
@@ -103,18 +98,13 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
                 </div>
             </div>
-
-
             <br><br>
-
             <div class="tableContainer">
                 <h1 class="table-title">LEAVE REQUEST TICKET</h1>
                 <div class="pagination-wrapper">
                     <div class="pagination" id="pageNationID">
                         <div id="paginationControls" class="mt-3"></div>
                     </div>
-
-
                     <div class="search-container">
                         <input type="text" id="searchInput" placeholder="SEARCH..." class="search-input">
                         <div class="search-icon">
@@ -125,8 +115,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </button>
                     </div>
                 </div>
-
-                
                 <table id="leaveTable" class="table">
                     <thead>
                         <tr>
@@ -183,19 +171,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                 </table>
             </div>
-
-
-
-
         </div>
-
-
-        <!-- Modal -->
-
+        <!-- approve Modal -->
         <div id="approveModal" class="modal">
             <div class="modal-content">
                 <h2>APPROVE LEAVE REQUEST</h2>
-                <form id="approveFormContent" action="../../0/includes/approveLeaveRequest.php" method="POST">
+                <form id="approveFormContent" method="POST">
                     <input type="hidden" id="approveLeaveID" name="leaveId" value="<?= htmlspecialchars($leave['id'] ?? '') ?>">
 
                     <div class="input-container">
@@ -229,7 +210,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Ststus:</strong></h1>
+                        <h1><strong>Status:</strong></h1>
                         <p class="center-text" id="approveStatusId"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
                     </div>
 
@@ -241,10 +222,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
-
-
-
-        <!-- Modal -->
+        <!-- edit Modal -->
         <div id="editStatusModal" class="modal">
             <div class="modal-content">
                 <h1 class="modal-title">EDIT TICKET STATUS</h1>
@@ -306,10 +284,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
-
-
-
-
         <!-- Ticket Summarization Modal -->
         <div id="ticketSummarizationModal" class="modal">
             <div class="modal-content">
@@ -372,9 +346,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
-
-
-
         <!--request Leave Modal -->
         <div id="requestLeaveModal" class="modal">
             <div class="modal-content">
@@ -464,27 +435,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </div>
             </div>
         </div>
-
-
     </div>
-
-    </style>
-
-
-
 
 
     <script src="../../assets/js/framework.js"></script>
-    <script>
-        // Log the current user ID for debugging
-        document.addEventListener("DOMContentLoaded", function() {
-            const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
-            console.log("Current User ID in Session:", currentUserId);
 
-            // Ensure currentUserId is used in your logic
-            // Example: Use it in an AJAX request or other functionality
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Elements for modal functionality
@@ -514,8 +469,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             }
         });
     </script>
-
-
+    
     <script>
         // These PHP values must be output into JS **before** any functions use them
         const sickLeaveTotal = <?= $leaveBalances['sick_leave_value'] ?? 0 ?>;
@@ -590,6 +544,9 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
+        // Ensure the currentUserId is available globally
+        const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+        console.log("Current User ID in Session:" + currentUserId);
         document.addEventListener("DOMContentLoaded", function() {
             const tableRows = document.querySelectorAll("tbody tr");
             const approveModal = document.getElementById("approveModal");
@@ -760,19 +717,16 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
         });
 
-        //approve modal form function
         document.addEventListener("DOMContentLoaded", function() {
             const approveButton = document.getElementById("approveLeaveBtnID");
 
             approveButton.addEventListener("click", function(event) {
-                event.preventDefault(); // Prevent the default form submission
+                event.preventDefault();
 
-                const leaveId = document.getElementById("approveLeaveID").value;
-                const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>; // Get the current user ID from the session
+                const leaveId = document.getElementById("approveLeaveID").textContent.trim(); // corrected here
+                console.log("Approving Leave ID:", leaveId);
+                console.log("Current User ID in Session:", currentUserId); // use existing variable
 
-                console.log("Current User ID in Session:", currentUserId);
-
-                // Send AJAX request to approve the leave
                 fetch("../../0/includes/approveLeaveRequest.php", {
                         method: "POST",
                         headers: {
@@ -780,14 +734,18 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         },
                         body: JSON.stringify({
                             leaveId: leaveId,
-                            approvedBy: currentUserId, // Include the current user ID
+                            approvedBy: currentUserId,
+                            leaveType: leaveType, // Include leave type
+                            startDate: startDate, // Include start date
+                            endDate: endDate // Include end date
+
                         }),
                     })
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.success) {
                             alert("Leave request approved successfully!");
-                            location.reload(); // Reload the page to reflect changes
+                            location.reload();
                         } else {
                             alert("Failed to approve leave request: " + data.message);
                         }

@@ -140,7 +140,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     data-end-date="<?= htmlspecialchars($leave['end_date']) ?>"
                                     data-status="<?= htmlspecialchars($leave['status']) ?>"
                                     data-created-at="<?= htmlspecialchars($leave['created_at']) ?>"
-                                    data-approved-by="<?= htmlspecialchars($leave['approved_by']) ?>"
+                                    data-approved-by="<?= htmlspecialchars($leave['approved_by_name']) ?>"
                                     data-updated-at="<?= htmlspecialchars($leave['updated_at']) ?>">
 
                                     <td><?= htmlspecialchars($leave['id']) ?></td>
@@ -150,7 +150,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                     <td><?= htmlspecialchars($leave['end_date']) ?></td>
                                     <td><?= htmlspecialchars($leave['status']) ?></td>
                                     <td><?= htmlspecialchars($leave['created_at']) ?></td>
-                                    <td><?= htmlspecialchars($leave['approved_by']) ?></td>
+                                    <td><?= htmlspecialchars($leave['approved_by_name']) ?></td>
                                     <td><?= htmlspecialchars($leave['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>

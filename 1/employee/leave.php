@@ -378,8 +378,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-     <!--request Leave Modal -->
-     <div id="requestLeaveModal" class="modal">
+        <!--request Leave Modal -->
+        <div id="requestLeaveModal" class="modal">
             <div class="modal-content">
                 <!-- Leave Request Form with Balance Checker -->
                 <div id="leaveForm" class="request-form" style="display:none;">
@@ -460,7 +460,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </div>
 
                         <div class="modal-buttons">
-                        <button type="submit" id="submitLeaveBtn" name="submitLeaveBtn" class="btnDefault btnContainer">SUBMIT REQUEST</button>
+                            <button type="submit" id="submitLeaveBtn" name="submitLeaveBtn" class="btnDefault btnContainer">SUBMIT REQUEST</button>
                             <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                         </div>
                     </form>
@@ -481,7 +481,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
 
-
+<!-- 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Elements for modal functionality
@@ -509,8 +509,93 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     });
                 });
             }
+
+            // Define the closeModal function
+            function closeModal() {
+                const requestLeaveModal = document.getElementById('requestLeaveModal');
+                const leaveForm = document.getElementById('leaveForm');
+
+                if (requestLeaveModal && leaveForm) {
+                    requestLeaveModal.style.display = 'none'; // Hide the modal
+                    leaveForm.style.display = 'none'; // Hide the form
+                }
+            }
         });
-    </script>
+    </script> -->
+
+
+    <script>
+    // Define the closeModal function in the global scope
+    function closeModal() {
+        const requestLeaveModal = document.getElementById('requestLeaveModal');
+        const leaveForm = document.getElementById('leaveForm');
+
+        if (requestLeaveModal && leaveForm) {
+            requestLeaveModal.style.display = 'none'; // Hide the modal
+            leaveForm.style.display = 'none'; // Hide the form
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elements for modal functionality
+        const plate4 = document.getElementById('plate4');
+        const requestLeaveModal = document.getElementById('requestLeaveModal');
+        const leaveForm = document.getElementById('leaveForm');
+        const leaveFormContent = document.getElementById('leaveFormContent');
+
+        // Open modal functionality
+        if (plate4 && requestLeaveModal && leaveForm) {
+            plate4.addEventListener('click', () => {
+                requestLeaveModal.style.display = 'flex'; // Show the modal
+                leaveForm.style.display = 'block'; // Show the form
+            });
+        } else {
+            console.error('One or more required elements not found.');
+        }
+
+        // Close modal functionality
+        if (requestLeaveModal) {
+            const closeModalButtons = requestLeaveModal.querySelectorAll('.btnDanger');
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', closeModal); // Use the global closeModal function
+            });
+        }
+
+        // Form submission functionality
+        if (leaveFormContent) {
+            leaveFormContent.addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevent normal form submission
+
+                // Serialize form data
+                const formData = new FormData(leaveFormContent);
+                const data = new URLSearchParams();
+                formData.forEach((value, key) => {
+                    data.append(key, value);
+                });
+
+                // Send AJAX request using Fetch API
+                fetch('../../0/includes/submitLeaverequest.php', {
+                    method: 'POST',
+                    body: data,
+                })
+                    .then((response) => response.json())
+                    .then((response) => {
+                        if (response.status === 'success') {
+                            alert(response.message); // Show success message
+                            closeModal(); // Close modal using the global function
+                            location.reload(); // Reload the page
+                        } else {
+                            alert('Error: ' + response.message); // Show error message
+                        }
+                    })
+                    .catch((error) => {
+                        alert('AJAX Error: ' + error); // Handle connection/server error
+                    });
+            });
+        }
+    });
+</script>
+
 
 
     <script>
@@ -586,7 +671,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
     </script>
 
-<script>
+    <!-- <script>
 $(document).ready(function() {
     $('#leaveFormContent').on('submit', function(e) {
         e.preventDefault(); // Prevent normal form submit
@@ -614,8 +699,47 @@ $(document).ready(function() {
         });
     });
 });
-</script>
+</script> -->
 
+
+<!-- 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const leaveFormContent = document.getElementById('leaveFormContent');
+
+            if (leaveFormContent) {
+                leaveFormContent.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent normal form submission
+
+                    // Serialize form data
+                    const formData = new FormData(leaveFormContent);
+                    const data = new URLSearchParams();
+                    formData.forEach((value, key) => {
+                        data.append(key, value);
+                    });
+
+                    // Send AJAX request using Fetch API
+                    fetch('../../0/includes/submitLeaverequest.php', {
+                            method: 'POST',
+                            body: data,
+                        })
+                        .then((response) => response.json())
+                        .then((response) => {
+                            if (response.status === 'success') {
+                                alert(response.message); // Show success message
+                                closeModal(); // Close modal if you have a closeModal() function
+                                location.reload(); // Reload the page
+                            } else {
+                                alert('Error: ' + response.message); // Show error message
+                            }
+                        })
+                        .catch((error) => {
+                            alert('AJAX Error: ' + error); // Handle connection/server error
+                        });
+                });
+            }
+        });
+    </script> -->
 </body>
 
 </html>
