@@ -268,11 +268,11 @@
      </div>
  </div>
 
- <!-- leave Request Modal -->
- <div id="editLeaveRequestModal" class="modal">
+ <!-- leave Request Balances Modal -->
+ <div id="leaveRequestBalanceModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">Edit Leave Request</h1>
-         <form id="editLeaveRequestForm">
+         <form id="leaveBalancesForm">
              <input type="hidden" name="leaveRequestId" id="leaveRequestIdHidden">
              <div class="input-container">
                  <input type="text" id="leaveEmployeeNameID" name="employeeName" readonly>

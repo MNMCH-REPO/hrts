@@ -422,22 +422,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-document
-  .getElementById("leaveReaquestBtnID")
-  .addEventListener("click", function () {
-    // Get the modals
-    const editLeaveRequestModal = document.getElementById(
-      "editLeaveRequestModal"
-    );
-    const editAccountModal = document.getElementById("editAccountModal");
-
-    // Close the editAccountModal
-    editAccountModal.style.display = "none";
-
-    // Open the editLeaveRequestModal
-    editLeaveRequestModal.style.display = "flex";
-  });
-
+  
 // Function to close modals (optional utility)
 function closeModal() {
   const modals = document.querySelectorAll(".modal");
