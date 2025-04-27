@@ -465,8 +465,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
     </div>
 
-    </style>
-
 
 
 
