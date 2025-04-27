@@ -111,7 +111,7 @@ try {
 
     $user_id = $_SESSION['user_id'];
     $ticket_id = intval($_POST['ticket_id']);
-    $ticket_id = 27;
+
 
     if (!isset($_FILES['file'])) {
         echo json_encode(['success' => false, 'message' => 'No file uploaded.']);

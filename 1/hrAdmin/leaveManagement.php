@@ -97,8 +97,56 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <div class="plateTitle">Request</div>
                     </div>
                 </div>
+                <div class="col plate" id="plate5" data-status="ResetLeave">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/reset.png);"></div>
+                    <div class="plateContent">
+                        <div class="plateTitle">Reset Leave Balances</div>
+                    </div>
+                </div>
+
             </div>
             <br><br>
+
+
+            <!-- Add this button to trigger the modal
+            <div class="btnContainer">
+                <button type="button" class="btnContainer btnDefault" id="resetLeaveButtonID">Reset Leave Request Values</button>
+            </div> -->
+
+
+            <style>
+                /* Specific styles for the Reset Leave Request Modal */
+                #resetLeaveModal {
+                    display: none;
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.5);
+                    /* Semi-transparent background */
+                    justify-content: center;
+                    /* Horizontally center the modal */
+                    align-items: center;
+                    /* Vertically center the modal */
+
+                }
+
+                #resetLeaveModal .modal-content {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    width: 600px;
+                    max-width: 95%;
+                    text-align: center;
+                    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+                }
+
+                /* Modal buttons */
+                #resetLeaveModal .modal-buttons {
+                    display: flex;
+                }
+            </style>
+
             <div class="tableContainer">
                 <h1 class="table-title">LEAVE REQUEST TICKET</h1>
                 <div class="pagination-wrapper">
@@ -444,11 +492,28 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </div>
             </div>
         </div>
+        <!-- Reset Leave Request Modal -->
+        <div id="resetLeaveModal" class="modal">
+            <div class="modal-content">
+                <h2>Confirm Reset Leave Values</h2>
+                <p>Are you sure you want to reset all leave request values? This action cannot be undone.</p>
+                <div class="btnContainer">
+                    <form id="resetLeaveForm" method="POST">
+                        <button type="submit" class="btnWarning " name="resetValueButton">Confirm Reset</button>
+                        <button type="button" class="btnDefault" id="cancelReset">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 
-    <script src="../../assets/js/framework.js"></script>
 
+
+
+    <script src="../../assets/js/framework.js"></script>
+    <!-- function plate 4 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements for modal functionality
@@ -515,7 +580,71 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             }
         });
     </script>
+    <!-- function plate 5 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resetLeaveModal = document.getElementById('resetLeaveModal');
+            const cancelResetButton = document.getElementById('cancelReset');
+            const plate5 = document.getElementById('plate5');
+            const resetLeaveForm = document.getElementById('resetLeaveForm');
 
+            // Check if the form exists
+            if (!resetLeaveForm) {
+                console.error("resetLeaveForm element not found!");
+                return;
+            }
+
+            // Open the modal when the plate is clicked
+            plate5.addEventListener('click', () => {
+                resetLeaveModal.style.display = 'flex';
+            });
+
+            // Close the modal when the cancel button is clicked
+            cancelResetButton.addEventListener('click', () => {
+                resetLeaveModal.style.display = 'none';
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', (event) => {
+                if (event.target === resetLeaveModal) {
+                    resetLeaveModal.style.display = 'none';
+                }
+            });
+
+            // Handle form submission via AJAX
+       
+            resetLeaveForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(resetLeaveForm);
+    formData.append('resetValueButton', true);
+
+    fetch('../../0/includes/resetLeaveValue.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then((data) => {
+        alert(data.message);
+        if (data.success) {
+            location.reload();
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred: ' + error.message);
+    });
+});
+       
+       
+        });
+    </script>
+    <!-- function close modal -->
     <script>
         // Function to close the modal
         function closeModal() {

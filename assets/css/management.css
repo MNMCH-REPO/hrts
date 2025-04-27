@@ -328,6 +328,5 @@ tbody tr:nth-child(even) {
 /* Modal buttons */
 #editLeaveRequestModal .modal-buttons {
     display: flex;
-    
     gap: 10px;
 }
