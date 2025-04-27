@@ -82,55 +82,96 @@ echo "<script>console.log('Tickets:', " . json_encode($tickets) . ");</script>";
 echo "<script>console.log('Total Records:', " . json_encode($totalRecords) . ");</script>";
 
 
+// Assuming you have these variables from your session
+$userRole = $_SESSION['role']; // Example: "Employee" or "Admin"
+$userId = $_SESSION['user_id']; // The current logged-in user's ID
 
 try {
-    // Query to fetch leave requests ordered by created_at in descending order
-    $stmt = $pdo->prepare("
-        SELECT 
-            lr.id, 
-            lr.employee_id,
-            u.name AS name,
-            u.department AS department, 
-            lr.leave_types, 
-            lr.start_date, 
-            lr.end_date, 
-            lr.reason, 
-            lr.status, 
-            lr.created_at, 
-            approver.name AS approved_by_name, -- Fetch the approver's name
-            lr.updated_at
-        FROM leave_requests lr
-        LEFT JOIN users u ON lr.employee_id = u.id
-        LEFT JOIN users approver ON lr.approved_by = approver.id -- Join to get approver's name
-        ORDER BY lr.created_at DESC
-    ");
+    if ($userRole === 'Employee') {
+        // Employee can only see their own leave requests
+        $stmt = $pdo->prepare("
+            SELECT 
+                lr.id, 
+                lr.employee_id,
+                u.name AS name,
+                u.department AS department, 
+                lr.leave_types, 
+                lr.start_date, 
+                lr.end_date, 
+                lr.reason, 
+                lr.status, 
+                lr.created_at, 
+                approver.name AS approved_by_name,
+                lr.updated_at
+            FROM leave_requests lr
+            LEFT JOIN users u ON lr.employee_id = u.id
+            LEFT JOIN users approver ON lr.approved_by = approver.id
+            WHERE lr.employee_id = :user_id
+            ORDER BY lr.created_at DESC
+        ");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    } else {
+        // Admin, Manager, etc. can see all leave requests
+        $stmt = $pdo->prepare("
+            SELECT 
+                lr.id, 
+                lr.employee_id,
+                u.name AS name,
+                u.department AS department, 
+                lr.leave_types, 
+                lr.start_date, 
+                lr.end_date, 
+                lr.reason, 
+                lr.status, 
+                lr.created_at, 
+                approver.name AS approved_by_name,
+                lr.updated_at
+            FROM leave_requests lr
+            LEFT JOIN users u ON lr.employee_id = u.id
+            LEFT JOIN users approver ON lr.approved_by = approver.id
+            ORDER BY lr.created_at DESC
+        ");
+    }
     $stmt->execute();
 
-    // Fetch all leave requests
     $leave_requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Handle any database errors
     error_log("Database Error: " . $e->getMessage());
     $leave_requests = [];
 }
 
 
+$userRole = $_SESSION['role']; // Example: "Employee" or "Admin"
+$userId = $_SESSION['user_id']; // The current logged-in user's ID
+
 try {
-    // Query to count the statuses
-    $stmt = $pdo->prepare("
-        SELECT status, COUNT(*) AS count
-        FROM leave_requests
-        WHERE status IN ('Pending', 'Approved', 'Rejected')
-        GROUP BY status
-    ");
+    if ($userRole === 'Employee') {
+        // Only count the logged-in employee's own leave requests
+        $stmt = $pdo->prepare("
+            SELECT status, COUNT(*) AS count
+            FROM leave_requests
+            WHERE status IN ('Pending', 'Approved', 'Rejected')
+            AND employee_id = :user_id
+            GROUP BY status
+        ");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+    } else {
+        // Admin/Manager: count all leave requests
+        $stmt = $pdo->prepare("
+            SELECT status, COUNT(*) AS count
+            FROM leave_requests
+            WHERE status IN ('Pending', 'Approved', 'Rejected')
+            GROUP BY status
+        ");
+    }
+    
     $stmt->execute();
 
-    // Fetch the results
     $leaveCountsStatus = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Convert the results into an associative array for easier access
     $statusCountsArray = [];
-    foreach ($leaveCountsStatus as $row) { // Corrected variable name
+    foreach ($leaveCountsStatus as $row) {
         $statusCountsArray[$row['status']] = $row['count'];
     }
 
@@ -138,8 +179,8 @@ try {
     $pendingCount = $statusCountsArray['Pending'] ?? 0;
     $approvedCount = $statusCountsArray['Approved'] ?? 0;
     $rejectedCount = $statusCountsArray['Rejected'] ?? 0;
+
 } catch (PDOException $e) {
-    // Handle any database errors
     error_log("Database Error: " . $e->getMessage());
     $pendingCount = $approvedCount = $rejectedCount = 0;
 }
