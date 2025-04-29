@@ -18,7 +18,7 @@ try {
         // Reset leave balances for all users
         $pdo->beginTransaction();
 
-        $resetQuery = "UPDATE used_balance SET sl = 0, sil = 0, elc = 0, bl = 0, ml = 0, pl = 0, spl = 0, brl = 0";
+        $resetQuery = "UPDATE used_balance SET sl = 0, sil = 0, elc = 0, mil = 0, ml = 0, pl = 0, spl = 0, brl = 0";
         $stmt1 = $pdo->prepare($resetQuery);
         if (!$stmt1->execute()) {
             $pdo->rollBack();

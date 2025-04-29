@@ -31,7 +31,7 @@ try {
         "Sick Leave" => "sl",
         "Service Incentive Leave" => "sil",
         "Earned Leave Credit" => "elc",
-        "Management Initiated Leave" => "mil",
+        "Birthday Leave" => "bl",
         "Maternity Leave" => "ml",
         "Paternity Leave" => "pl",
         "Solo Parent Leave" => "spl",
@@ -125,28 +125,7 @@ try {
         echo json_encode(['success' => false, 'message' => 'Total balance record not found.']);
         exit;
     }
-    // Step 5: Insert into the `audit_trail` table
-    $actionType = 'APPROVE_LEAVE'; // Action type
-    $affectedTable = 'leave_requests'; // The table being updated
-    $affectedId = $leaveId; // The ID of the approved leave request
-    $details = "Approved leave request ID $leaveId for employee ID $employeeId. Leave type: $leaveTypeRaw, Start date: $startDate, End date: $endDate, Days: $leaveDays.";
-    $userId = $_SESSION['user_id']; // The ID of the logged-in user performing the action
-
-    $auditStmt = $pdo->prepare("
-    INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-    VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
-");
-    $auditStmt->bindParam(':actionType', $actionType);
-    $auditStmt->bindParam(':affectedTable', $affectedTable);
-    $auditStmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
-    $auditStmt->bindParam(':details', $details);
-    $auditStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-
-    if (!$auditStmt->execute()) {
-        $pdo->rollBack();
-        echo json_encode(['success' => false, 'message' => 'Failed to log audit trail.']);
-        exit;
-    }
+    
 
     $pdo->commit();
 

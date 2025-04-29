@@ -47,18 +47,18 @@ try {
     $affectedTable = 'ticket_responses'; // The table being updated
     $affectedId = $responseId; // The ID of the created response
     $details = "Added response to ticket ID $ticket_id: $message";
-    $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
 
     $stmt = $pdo->prepare("
         INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
     ");
     $stmt->bindParam(':actionType', $actionType);
     $stmt->bindParam(':affectedTable', $affectedTable);
     $stmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
     $stmt->bindParam(':details', $details);
     $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT); // Use the logged-in user's ID
-    $stmt->bindParam(':timestamp', $timestamp);
+
     $stmt->execute();
 
     // Commit the transaction

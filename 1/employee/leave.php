@@ -408,7 +408,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         sl AS sick_leave,
                                         sil AS service_incentive_leave,
                                         elc AS earned_leave_credit,
-                                        bl AS birthday_leave,
+                                        bl AS management_initiated_leave,
                                         ml AS maternity_leave,
                                         pl AS paternity_leave,
                                         spl AS solo_parent_leave,
@@ -428,7 +428,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
-                                        echo '<option value="Birthday Leave">Birthday Leave</option>';
+                                        echo '<option value="Management Intiated Leave">Management Intiated Leave</option>';
                                         echo '<option value="Maternity Leave">Maternity Leave</option>';
                                         echo '<option value="Paternity Leave">Paternity Leave</option>';
                                         echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
@@ -488,47 +488,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
 
-<!-- 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elements for modal functionality
-            const plate4 = document.getElementById('plate4');
-            const requestLeaveModal = document.getElementById('requestLeaveModal');
-            const leaveForm = document.getElementById('leaveForm');
-
-            if (plate4 && requestLeaveModal && leaveForm) {
-                plate4.addEventListener('click', () => {
-                    // Open the modal
-                    requestLeaveModal.style.display = 'flex';
-                    leaveForm.style.display = 'block';
-                });
-            } else {
-                console.error('One or more required elements not found.');
-            }
-
-            // Close modal functionality
-            if (requestLeaveModal) {
-                const closeModalButtons = requestLeaveModal.querySelectorAll('.btnDanger');
-                closeModalButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        requestLeaveModal.style.display = 'none'; // Close the modal
-                        leaveForm.style.display = 'none'; // Hide the form again
-                    });
-                });
-            }
-
-            // Define the closeModal function
-            function closeModal() {
-                const requestLeaveModal = document.getElementById('requestLeaveModal');
-                const leaveForm = document.getElementById('leaveForm');
-
-                if (requestLeaveModal && leaveForm) {
-                    requestLeaveModal.style.display = 'none'; // Hide the modal
-                    leaveForm.style.display = 'none'; // Hide the form
-                }
-            }
-        });
-    </script> -->
 
 
     <script>
@@ -613,8 +572,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
         const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
         const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
-        const birthdayLeaveTotal = <?= $leaveBalances['birthday_leave'] ?? 0 ?>;
-        const birthdayLeaveUsed = <?= $usedBalances['birthday_leave'] ?? 0 ?>;
+        const managementInitiatedTotal = <?= $leaveBalances['management_initiated_leave'] ?? 0 ?>;
+        const managementInitiatedUsed = <?= $usedBalances['management_initiated_leave'] ?? 0 ?>;
         const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
         const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
         const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
@@ -629,7 +588,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             sl: sickLeaveTotal - sickLeaveUsed,
             sil: serviceIncentiveLeaveTotal - serviceIncentiveLeaveUsed,
             elc: earnedLeaveCreditTotal - earnedLeaveCreditUsed,
-            bl: birthdayLeaveTotal - birthdayLeaveUsed,
+            mil: managementInitiatedTotal - managementInitiatedUsed,
             ml: maternityLeaveTotal - maternityLeaveUsed,
             pl: paternityLeaveTotal - paternityLeaveUsed,
             spl: soloParentLeaveTotal - soloParentLeaveUsed,
@@ -641,7 +600,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             "Sick Leave": "sl",
             "Service Incentive Leave": "sil",
             "Earned Leave Credit": "elc",
-            "Birthday Leave": "bl",
+            "Management Intiated Leave": "mil",
             "Maternity Leave": "ml",
             "Paternity Leave": "pl",
             "Solo Parent Leave": "spl",
@@ -690,75 +649,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
     </script>
 
-    <!-- <script>
-$(document).ready(function() {
-    $('#leaveFormContent').on('submit', function(e) {
-        e.preventDefault(); // Prevent normal form submit
 
-        var formData = $(this).serialize(); // Get all form data
-
-        $.ajax({
-            type: 'POST',
-            url: '../../0/includes/submitLeaverequest.php',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert(response.message); // Show success message
-                    closeModal(); // Close modal if you have a closeModal() function
-                    location.reload();
-                    // Optionally reload or update your table/page here
-                } else {
-                    alert('Error: ' + response.message); // Show error message
-                }
-            },
-            error: function(xhr, status, error) {
-                alert('AJAX Error: ' + error); // Connection/Server error
-            }
-        });
-    });
-});
-</script> -->
-
-
-<!-- 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const leaveFormContent = document.getElementById('leaveFormContent');
-
-            if (leaveFormContent) {
-                leaveFormContent.addEventListener('submit', function(e) {
-                    e.preventDefault(); // Prevent normal form submission
-
-                    // Serialize form data
-                    const formData = new FormData(leaveFormContent);
-                    const data = new URLSearchParams();
-                    formData.forEach((value, key) => {
-                        data.append(key, value);
-                    });
-
-                    // Send AJAX request using Fetch API
-                    fetch('../../0/includes/submitLeaverequest.php', {
-                            method: 'POST',
-                            body: data,
-                        })
-                        .then((response) => response.json())
-                        .then((response) => {
-                            if (response.status === 'success') {
-                                alert(response.message); // Show success message
-                                closeModal(); // Close modal if you have a closeModal() function
-                                location.reload(); // Reload the page
-                            } else {
-                                alert('Error: ' + response.message); // Show error message
-                            }
-                        })
-                        .catch((error) => {
-                            alert('AJAX Error: ' + error); // Handle connection/server error
-                        });
-                });
-            }
-        });
-    </script> -->
 </body>
 
 </html>

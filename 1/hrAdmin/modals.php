@@ -83,7 +83,7 @@
      </div>
  </div>
 
-
+ <!-- edit -->
  <div id="editAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">EDIT ACCOUNT</h1>
@@ -169,7 +169,7 @@
  </div>
 
 
-
+ <!-- disable -->
  <div id="disableAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">DISABLE ACCOUNT</h1>
@@ -208,6 +208,7 @@
      </div>
  </div>
 
+ <!-- enable -->
  <div id="enableAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">ENABLE ACCOUNT</h1>
@@ -248,7 +249,7 @@
      </div>
  </div>
 
-
+ <!-- reset -->
  <div id="resetPasswordModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">RESET PASSWORD</h1>
@@ -283,31 +284,149 @@
                  <label for="Department">Department</label>
              </div>
              <div class="input-container">
-                 <input type="text" id="sickLeaveID" name="sickLeave" required>
-                 <label for="sickLeave">Sick Leave</label>
-             </div>
-
-             <div class="input-container">
-                 <input type="text" id="leaveServiceIncentiveID" name="serviceIncentive" required>
-                 <label for="leaveServiceIncentiveID">Service Incentive Leave</label>
-             </div>
-
-             <div class="input-container">
-                 <input type="text" id="leaveEarnedLeaveID" name="earnedLeaveCredit" required>
-                 <label for="earnedLeaveCredit">Earned Leave Credit</label>
+                 <input type="text" id="sickLeaveID" name="sl" required>
+                 <label for="sickLeaveID">Sick Leave (SL)</label>
              </div>
              <div class="input-container">
-                 <input type="text" id="leaveVacationID" name="vacation" required>
-                 <label for="vacation">Vacation</label>
+                 <input type="text" id="leaveServiceIncentiveID" name="sil" required>
+                 <label for="leaveServiceIncentiveID">Service Incentive Leave (SIL)</label>
              </div>
              <div class="input-container">
-                 <input type="text" id="leaveEmergencyID" name="emergencyLeave" required>
-                 <label for="emergencyLeave">Emergency Leave</label>
+                 <input type="text" id="leaveEarnedLeaveID" name="elc" required>
+                 <label for="leaveEarnedLeaveID">Earned Leave Credit (ELC)</label>
              </div>
-
+             <div class="input-container">
+                 <input type="text" id="managementInitiatedID" name="bl" required>
+                 <label for="managementInitiatedID">Birthday Leave (BL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveMaternityLeaveID" name="ml" required>
+                 <label for="leaveMaternityLeaveID">Maternity Leave (ML)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leavePaternityLeaveID" name="pl" required>
+                 <label for="leavePaternityLeaveID">Paternity Leave (PL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveSoloParentLeaveID" name="spl" required>
+                 <label for="leaveSoloParentLeaveID">Solo Parent Leave (SPL)</label>
+             </div>
+             <!-- <div class="input-container">
+                 <input type="text" id="leaveWithoutPayID" name="lwop" required>
+                 <label for="leaveWithoutPayID">Leave Without Pay (LWOP)</label>
+             </div> -->
+             <div class="input-container">
+                 <input type="text" id="leaveBereavementLeaveID" name="brl" required>
+                 <label for="leaveBereavementLeaveID">Bereavement Leave (BRL)</label>
+             </div>
              <div class="modal-buttons btnContainer">
+                 <button type="button" class="btnWarning" name="markLWOP" id="markLWOPBtnID">Mark as LWOP</button>
+                 <button type="button" class="btnWarning" name="suspensionBtn" id="suspensionBtnId">Suspension</button>
                  <button type="submit" id="leaveBtnID" name="leaveButton" class="btnDefault">Save Changes</button>
                  <button type="button" class="btnDanger" onclick="closeModal()">Cancel</button>
+             </div>
+         </form>
+     </div>
+ </div>
+
+
+ <div id="markLWOPModal" class="modal">
+    <div class="modal-content">
+        <h1 class="modal-title">MARK AS LEAVE WITHOUT PAY</h1>
+        <form id="markLWOPForm">
+            <input type="hidden" name="leaveRequestId" id="markLWOPRequestIdHidden">
+            <p class="center-text">
+                Are you sure you want to mark <strong id="markLWOPEmployeeName"></strong> today
+                <br>as Leave Without Pay (LWOP)?
+            </p>
+
+            <br><br>
+
+            <?php
+            require '../../0/includes/db.php'; // Ensure you have a database connection file
+            $lwopBalanceQuery = "SELECT SUM(lwop) AS totalLWOP FROM total_balance WHERE user_id = :user_id";
+            $stmt = $pdo->prepare($lwopBalanceQuery);
+            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT); // Assuming you have a session variable for user ID
+            $stmt->execute();
+
+            $lwopBalance = $stmt->fetch(PDO::FETCH_ASSOC);
+            $totalLWOP = $lwopBalance['totalLWOP'] ?? 0; // Default to 0 if no result found
+            $lwopBalances = $totalLWOP; // Use the fetched value in your JavaScript
+
+            ?>
+
+            <p class="center-text">
+                Total Leave Without Pay (LWOP): <strong id="lwopBalances"> <? echo $lwopBalances['lwop'] ?></strong>
+            </p>
+            <div class="btnContainer">
+                <button type="submit" class="btnApprove" name="confirmMarkLWOP" id="confirmMarkLWOPID">Confirm</button>
+                <button type="button" class="btnDanger" id="closeMarkLWOPModal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const markLWOPButton = document.getElementById("markLWOPBtnID");
+        const markLWOPModal = document.getElementById("markLWOPModal");
+        const markLWOPEmployeeName = document.getElementById("markLWOPEmployeeName");
+        const markLWOPRequestIdHidden = document.getElementById("markLWOPRequestIdHidden");
+        const lwopBalancesElement = document.getElementById("lwopBalances");
+        const closeMarkLWOPModal = document.getElementById("closeMarkLWOPModal");
+
+        if (!markLWOPModal || !markLWOPButton) {
+            console.error("Required elements for Mark LWOP modal not found!");
+            return;
+        }
+
+        // Open Mark LWOP Modal
+        markLWOPButton.addEventListener("click", function () {
+            console.log("Mark LWOP button clicked");
+
+            // Fetch values from the form or other elements
+            const employeeName = document.getElementById("leaveEmployeeNameID").value; // Ensure this ID exists
+            const leaveRequestId = document.getElementById("leaveRequestIdHidden").value; // Ensure this ID exists
+            const lwopBalances = document.getElementById("leaveWithoutPayID")?.value || "0"; // Optional chaining for safety
+
+            // Populate modal fields
+            markLWOPEmployeeName.textContent = employeeName;
+            markLWOPRequestIdHidden.value = leaveRequestId;
+            lwopBalancesElement.textContent = lwopBalances;
+
+            // Show the modal
+            markLWOPModal.style.display = "flex";
+        });
+
+        // Close Mark LWOP Modal
+        closeMarkLWOPModal.addEventListener("click", function () {
+            console.log("Close Mark LWOP modal button clicked");
+            markLWOPModal.style.display = "none";
+        });
+    });
+</script>
+
+
+ <!-- suspension -->
+ <div id="suspensionModal" class="modal">
+     <div class="modal-content">
+         <h1 class="modal-title">SUSPENSION</h1>
+         <form id="suspensionForm">
+             <input type="hidden" name="leaveRequestId" id="suspensionID">
+
+             <input type="date" id="suspensionDateID" name="startDateSuspension" required>
+             <label for="suspensionDateID">Start Date</label>
+
+             <input type="date" id="suspensionEndDateID" name="endDateSuspension" required>
+             <label for="suspensionEndDateID">End Date</label>
+
+            <p class="text-center">
+                Total Days of Suspension: <strong id="suspensionDays"></strong>
+            </p>
+
+             <div class="btnContainer">
+                 <button type="submit" class="btnWarning" name="confirmSuspension" id="confirmSuspensionID">Confirm</button>
+                 <button type="button" class="btnDanger" id="closeSuspensionModal">Cancel</button>
              </div>
          </form>
      </div>

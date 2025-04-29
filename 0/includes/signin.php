@@ -30,11 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $affectedTable = 'users';
                 $affectedId = $user['id'];
                 $details = "User ID {$user['id']} logged in successfully.";
-                $timestamp = date('Y-m-d H:i:s');
+
 
                 $auditStmt = $pdo->prepare("
                     INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-                    VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+                    VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
                 ");
                 $auditStmt->execute([
                     ':actionType' => $actionType,
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':affectedId' => $affectedId,
                     ':details' => $details,
                     ':userId' => $affectedId,
-                    ':timestamp' => $timestamp,
+
                 ]);
             } catch (PDOException $e) {
                 error_log("Audit trail error: " . $e->getMessage());

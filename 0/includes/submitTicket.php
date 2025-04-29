@@ -73,19 +73,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $affectedTable = 'tickets';
         $affectedId = $ticketId; // The ID of the created ticket
         $details = "Created ticket: Subject=$subject, Category=$category, Description=$description";
-        $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
 
         // Insert into the `audit_trail` table
         $stmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
         ");
         $stmt->bindParam(':actionType', $actionType);
         $stmt->bindParam(':affectedTable', $affectedTable);
         $stmt->bindParam(':affectedId', $affectedId);
         $stmt->bindParam(':details', $details);
         $stmt->bindParam(':userId', $currentUserId); // Use the logged-in user's ID
-        $stmt->bindParam(':timestamp', $timestamp);
+
         $stmt->execute();
 
         // Commit the transaction

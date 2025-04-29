@@ -39,7 +39,7 @@ function editUser($id, $employeeName, $email, $role, $department) {
         $affectedId = $id; // The ID of the updated user
         $details = "Updated user details: Name=$employeeName, Email=$email, Role=$role, Department=$department";
         $userId = $_SESSION['user_id'] ?? null; // The ID of the logged-in user performing the action
-        $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
 
         if (!$userId) {
             $pdo->rollBack();
@@ -48,14 +48,14 @@ function editUser($id, $employeeName, $email, $role, $department) {
 
         $auditStmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOw())
         ");
         $auditStmt->bindParam(':actionType', $actionType);
         $auditStmt->bindParam(':affectedTable', $affectedTable);
         $auditStmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
         $auditStmt->bindParam(':details', $details);
         $auditStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-        $auditStmt->bindParam(':timestamp', $timestamp);
+
 
         if (!$auditStmt->execute()) {
             $pdo->rollBack();

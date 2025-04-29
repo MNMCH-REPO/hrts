@@ -34,18 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $affectedId = $accountId; // The ID of the user whose password was reset
             $details = "Password for User ID $accountId was reset to a blank password.";
             $adminId = $_SESSION['user_id']; // The ID of the admin performing the reset
-            $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
 
             $auditStmt = $pdo->prepare("
                 INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-                VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+                VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
             ");
             $auditStmt->bindParam(':actionType', $actionType);
             $auditStmt->bindParam(':affectedTable', $affectedTable);
             $auditStmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
             $auditStmt->bindParam(':details', $details);
             $auditStmt->bindParam(':userId', $adminId, PDO::PARAM_INT);
-            $auditStmt->bindParam(':timestamp', $timestamp);
+
             $auditStmt->execute();
 
             echo json_encode(['success' => true, 'message' => 'Password reset successfully.']);

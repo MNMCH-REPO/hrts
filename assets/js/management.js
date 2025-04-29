@@ -78,6 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+let selectedRow = null;
+
 document.addEventListener("DOMContentLoaded", function () {
   // Shared variables
   const tableRows = document.querySelectorAll(".tableContainer tbody tr");
@@ -88,8 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const disableModal = document.getElementById("disableAccountModal");
   const closeEditModalButton = document.getElementById("closeEditModal");
   const enableModal = document.getElementById("enableAccountModal");
-
-  let selectedRow = null;
 
   // Utility functions
   function enableButtons() {
@@ -144,11 +144,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  document.addEventListener("click", function (event) {
-    if (!event.target.closest(".tableContainer")) {
-      resetSelection();
-    }
-  });
+  // document.addEventListener("click", function (event) {
+  //   if (!event.target.closest(".tableContainer")) {
+  //     resetSelection();
+  //   }
+  // });
 
   // Add Account Modal
   document
@@ -298,6 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  //disable account form submission
   document
     .getElementById("disableAccountForm")
     .addEventListener("submit", function (e) {
@@ -330,6 +331,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+//enable account form submission
 document
   .getElementById("enableAccountForm")
   .addEventListener("submit", function (e) {
@@ -373,12 +375,17 @@ document.addEventListener("DOMContentLoaded", function () {
   setupCloseButtons();
 });
 
-//this is reset  modal
+//reet password modal
 document.addEventListener("DOMContentLoaded", function () {
   const resetPasswordButton = document.getElementById("resetPasswordID");
   const resetPasswordModal = document.getElementById("resetPasswordModal");
   const resetAccountName = document.getElementById("resetAccountName");
   const idResetHidden = document.getElementById("idResetHidden");
+
+  if (!resetPasswordModal) {
+    console.error("resetPasswordModal element not found!");
+    return;
+  }
 
   // Open Reset Password Modal
   resetPasswordButton.addEventListener("click", function () {
@@ -394,6 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// reset password form submission
 document.addEventListener("DOMContentLoaded", function () {
   const resetPasswordForm = document.getElementById("resetPasswordForm");
   const resetPasswordModal = document.getElementById("resetPasswordModal");
@@ -422,7 +430,126 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-  
+// Logic for populating the Leave Request modal
+document.addEventListener("DOMContentLoaded", function () {
+  const leaveRequestButton = document.getElementById("leaveReaquestBtnID");
+  const leaveRequestModal = document.getElementById("leaveRequestBalanceModal");
+  const leaveEmployeeName = document.getElementById("leaveEmployeeNameID");
+  const leaveDepartment = document.getElementById("leaveDeparmentID");
+  const leaveRequestIdHidden = document.getElementById("leaveRequestIdHidden");
+  const sickLeave = document.getElementById("sickLeaveID");
+  const serviceIncentiveLeave = document.getElementById(
+    "leaveServiceIncentiveID"
+  );
+  const earnedLeaveCredit = document.getElementById("leaveEarnedLeaveID");
+  const managementInitiated = document.getElementById("managementInitiatedID");
+  const maternityLeave = document.getElementById("leaveMaternityLeaveID");
+  const paternityLeave = document.getElementById("leavePaternityLeaveID");
+  const soloParentLeave = document.getElementById("leaveSoloParentLeaveID");
+  // const leaveWithoutPay = document.getElementById("leaveWithoutPayID");
+  // if (leaveWithoutPay) {
+  //   leaveWithoutPay.style.color = "red";
+  // }
+  const bereavementLeave = document.getElementById("leaveBereavementLeaveID");
+  // let selectedRow = null; // Global variable to store the selected row
+
+  // Add event listener to the Leave Request button
+  leaveRequestButton.addEventListener("click", function () {
+    if (!selectedRow) {
+      alert("Please select a row to view leave request details.");
+      return;
+    }
+
+    const userId = selectedRow.getAttribute("data-id");
+
+    fetch(`../../0/includes/getLeaveBalancesQuery.php?userId=${userId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          // Populate the modal with the fetched data
+          leaveRequestIdHidden.value = userId;
+          leaveEmployeeName.value = data.leaveBalances.name || "";
+          leaveDepartment.value = data.leaveBalances.department || "";
+          sickLeave.value = data.leaveBalances.sl || 0;
+          serviceIncentiveLeave.value = data.leaveBalances.sil || 0;
+          earnedLeaveCredit.value = data.leaveBalances.elc || 0;
+          managementInitiated.value = data.leaveBalances.bl || 0;
+          maternityLeave.value = data.leaveBalances.ml || 0;
+          paternityLeave.value = data.leaveBalances.pl || 0;
+          soloParentLeave.value = data.leaveBalances.spl || 0;
+          // leaveWithoutPay.value = data.leaveBalances.lwop || 0;
+          bereavementLeave.value = data.leaveBalances.brl || 0;
+
+          // Open the modal
+          leaveRequestModal.style.display = "flex";
+        } else {
+          alert("Error: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred while fetching leave balances.");
+      });
+  });
+
+  // Close the modal when clicking outside of it
+  window.addEventListener("click", function (event) {
+    if (event.target === leaveRequestModal) {
+      leaveRequestModal.style.display = "none";
+    }
+  });
+
+  // Optional: Add a close button functionality inside the modal
+  const closeButtons = leaveRequestModal.querySelectorAll(".btnDanger");
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      leaveRequestModal.style.display = "none";
+    });
+  });
+});
+// leave request form 
+document.addEventListener("DOMContentLoaded", function () {
+  const leaveBalancesForm = document.getElementById("leaveBalancesForm");
+  const leaveRequestModal = document.getElementById("leaveRequestBalanceModal");
+
+  leaveBalancesForm.addEventListener("submit", function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Collect form data
+    const formData = new FormData(leaveBalancesForm);
+
+    // Add the user ID to the form data
+    const userId = document.getElementById("leaveRequestIdHidden").value;
+    formData.append("userId", userId);
+
+    // Send the AJAX request
+    fetch("../../0/includes/updateLeaveBalances.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert(data.message); // Show success message
+          leaveRequestModal.style.display = "none"; // Close the modal
+          location.reload(); // Reload the page to reflect changes
+        } else {
+          alert("Error: " + data.message); // Show error message
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred while updating leave balances.");
+      });
+  });
+});
+
+
 // Function to close modals (optional utility)
 function closeModal() {
   const modals = document.querySelectorAll(".modal");

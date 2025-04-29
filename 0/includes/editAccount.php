@@ -68,18 +68,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $affectedTable = 'users'; // The table being updated
         $affectedId = $employeeID; // The new ID of the updated user
         $details = "Updated user details: Name=$employeeName, Email=$email, Role=$role, Department=$department";
-        $timestamp = date('Y-m-d H:i:s'); // Current timestamp
 
         $auditStmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
         ");
         $auditStmt->bindParam(':actionType', $actionType);
         $auditStmt->bindParam(':affectedTable', $affectedTable);
         $auditStmt->bindParam(':affectedId', $affectedId);
         $auditStmt->bindParam(':details', $details);
         $auditStmt->bindParam(':userId', $currentUserId); // Use the logged-in user's ID
-        $auditStmt->bindParam(':timestamp', $timestamp);
+
 
         if (!$auditStmt->execute()) {
             $pdo->rollBack();

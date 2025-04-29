@@ -37,18 +37,18 @@ try {
     $actionType = 'ENABLE';
     $affectedTable = 'users';
     $details = "Enabled account with ID $accountId.";
-    $timestamp = date('Y-m-d H:i:s');
+
 
     $auditStmt = $pdo->prepare("
         INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
     ");
     $auditStmt->bindParam(':actionType', $actionType);
     $auditStmt->bindParam(':affectedTable', $affectedTable);
     $auditStmt->bindParam(':affectedId', $accountId, PDO::PARAM_INT);
     $auditStmt->bindParam(':details', $details);
     $auditStmt->bindParam(':userId', $currentUserId, PDO::PARAM_INT);
-    $auditStmt->bindParam(':timestamp', $timestamp);
+
 
     if (!$auditStmt->execute()) {
         $pdo->rollBack();

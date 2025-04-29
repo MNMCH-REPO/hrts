@@ -60,18 +60,18 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
         $actionType = 'INSERT';
         $affectedTable = 'attachments';
         $details = "Added attachment to ticket ID $ticket_id: $file_path";
-        $timestamp = date('Y-m-d H:i:s');
+
 
         $stmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
         ");
         $stmt->bindParam(':actionType', $actionType);
         $stmt->bindParam(':affectedTable', $affectedTable);
         $stmt->bindParam(':affectedId', $attachmentId, PDO::PARAM_INT);
         $stmt->bindParam(':details', $details);
         $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':timestamp', $timestamp);
+
 
         if (!$stmt->execute()) {
             throw new Exception("Failed to insert audit trail for attachment: " . implode(", ", $stmt->errorInfo()));

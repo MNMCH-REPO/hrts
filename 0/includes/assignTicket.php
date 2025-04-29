@@ -61,18 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $affectedId = $ticketId; // The ID of the updated ticket
         $details = "Assigned ticket ID $ticketId to user $assignedToName (ID: $assignTo) with priority $priority.";
         $userId = $_SESSION['user_id']; // The ID of the logged-in user performing the action
-        $timestamp = date('Y-m-d H:i:s'); // Current timestamp
+
 
         $auditStmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, :timestamp)
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
         ");
         $auditStmt->bindParam(':actionType', $actionType);
         $auditStmt->bindParam(':affectedTable', $affectedTable);
         $auditStmt->bindParam(':affectedId', $affectedId, PDO::PARAM_INT);
         $auditStmt->bindParam(':details', $details);
         $auditStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
-        $auditStmt->bindParam(':timestamp', $timestamp);
+
 
         if (!$auditStmt->execute()) {
             $pdo->rollBack();

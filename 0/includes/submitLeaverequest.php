@@ -71,18 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $affectedId = $leaveRequestId;
         $details = "Inserted leave request for employee ID $employeeId with leave type $leaveType.";
         $userId = $_SESSION['user_id'] ?? null; // The ID of the logged-in user
-        $timestamp = date('Y-m-d H:i:s');
+
 
         $auditStmt = $pdo->prepare("
         INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp)
-        VALUES (:action_type, :affected_table, :affected_id, :details, :user_id, :timestamp)
+        VALUES (:action_type, :affected_table, :affected_id, :details, :user_id, NOW())
     ");
         $auditStmt->bindParam(':action_type', $actionType, PDO::PARAM_STR);
-        $auditStmt->bindParam(':affected_table', $affectedTable, PDO::PARAM_STR);
+        $auditStmt->bindParam(':affected_table', $affectedTable, type: PDO::PARAM_STR);
         $auditStmt->bindParam(':affected_id', $affectedId, PDO::PARAM_INT);
         $auditStmt->bindParam(':details', $details, PDO::PARAM_STR);
         $auditStmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $auditStmt->bindParam(':timestamp', $timestamp, PDO::PARAM_STR);
 
         $auditStmt->execute();
 
