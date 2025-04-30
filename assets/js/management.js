@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function () {
           sickLeave.value = data.leaveBalances.sl || 0;
           serviceIncentiveLeave.value = data.leaveBalances.sil || 0;
           earnedLeaveCredit.value = data.leaveBalances.elc || 0;
-          managementInitiated.value = data.leaveBalances.bl || 0;
+          managementInitiated.value = data.leaveBalances.mil || 0;
           maternityLeave.value = data.leaveBalances.ml || 0;
           paternityLeave.value = data.leaveBalances.pl || 0;
           soloParentLeave.value = data.leaveBalances.spl || 0;

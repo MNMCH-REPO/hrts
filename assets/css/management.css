@@ -147,6 +147,7 @@ tbody tr:nth-child(even) {
 }
 
 .pagination {
+    width: 100%;
     display: flex;
     gap: 5px;
 }

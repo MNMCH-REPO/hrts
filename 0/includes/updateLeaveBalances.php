@@ -15,7 +15,6 @@ try {
         $maternityLeave = isset($_POST['ml']) ? (int)$_POST['ml'] : 0;
         $paternityLeave = isset($_POST['pl']) ? (int)$_POST['pl'] : 0;
         $soloParentLeave = isset($_POST['spl']) ? (int)$_POST['spl'] : 0;
-        $leaveWithoutPay = isset($_POST['lwop']) ? (int)$_POST['lwop'] : 0;
         $bereavementLeave = isset($_POST['brl']) ? (int)$_POST['brl'] : 0;
 
         if ($userId > 0) {
@@ -30,7 +29,6 @@ try {
                     ml = :ml,
                     pl = :pl,
                     spl = :spl,
-                    lwop = :lwop,
                     brl = :brl
                 WHERE user_id = :user_id
             ";
@@ -42,7 +40,6 @@ try {
             $stmt->bindParam(':ml', $maternityLeave, PDO::PARAM_INT);
             $stmt->bindParam(':pl', $paternityLeave, PDO::PARAM_INT);
             $stmt->bindParam(':spl', $soloParentLeave, PDO::PARAM_INT);
-            $stmt->bindParam(':lwop', $leaveWithoutPay, PDO::PARAM_INT);
             $stmt->bindParam(':brl', $bereavementLeave, PDO::PARAM_INT);
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
 
@@ -58,7 +55,7 @@ try {
                 $affectedTable = 'total_balance'; // The table being updated
                 $affectedId = $userId; // The ID of the affected user
                 $details = sprintf(
-                    "Updated leave balances for user ID %d: SL=%d, SIL=%d, ELC=%d, MIL=%d, ML=%d, PL=%d, SPL=%d, LWOP=%d, BRL=%d",
+                    "Updated leave balances for user ID %d: SL=%d, SIL=%d, ELC=%d, MIL=%d, ML=%d, PL=%d, SPL=%d, BRL=%d",
                     $userId,
                     $sickLeave,
                     $serviceIncentiveLeave,
@@ -67,7 +64,6 @@ try {
                     $maternityLeave,
                     $paternityLeave,
                     $soloParentLeave,
-                    $leaveWithoutPay,
                     $bereavementLeave
                 );
             

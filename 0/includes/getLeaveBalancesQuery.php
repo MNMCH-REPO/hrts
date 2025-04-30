@@ -20,7 +20,8 @@ try {
                 total_balance.pl AS paternity_leave, 
                 total_balance.spl AS solo_parent_leave, 
                 total_balance.lwop AS leave_without_pay,
-                total_balance.brl AS bereavement_leave
+                total_balance.brl AS bereavement_leave,
+                total_balance.awol AS absent_without_leave
             FROM total_balance 
             LEFT JOIN users ON users.id = total_balance.user_id 
             WHERE total_balance.user_id = :user_id
@@ -45,7 +46,9 @@ try {
                     'pl' => $leaveBalances['paternity_leave'],
                     'spl' => $leaveBalances['solo_parent_leave'],
                     'lwop' => $leaveBalances['leave_without_pay'],
-                    'brl' => $leaveBalances['bereavement_leave']
+                    'brl' => $leaveBalances['bereavement_leave'],
+                    'awol' => $leaveBalances['absent_without_leave']
+
                 ]
             ]);
         } else {

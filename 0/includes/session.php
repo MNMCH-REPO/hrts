@@ -22,7 +22,7 @@ if (!isset($_SESSION['CREATED'])) {
     // $_SESSION['CREATED'] = time();  // Update creation time
     session_unset();            // Clear session variables
     session_destroy();          // Destroy the session
-    header("Location: ../../index.php"); // Redirect to login page
+    header("Location: hrts../../index.php"); // Redirect to login page
     exit();
 }
 

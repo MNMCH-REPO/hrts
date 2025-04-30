@@ -108,10 +108,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             <br><br>
 
 
-            <!-- Add this button to trigger the modal
-            <div class="btnContainer">
-                <button type="button" class="btnContainer btnDefault" id="resetLeaveButtonID">Reset Leave Request Values</button>
-            </div> -->
 
 
             <style>
@@ -425,7 +421,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         sl AS sick_leave,
                                         sil AS service_incentive_leave,
                                         elc AS earned_leave_credit,
-                                        bl AS birthday_leave,
+                                        mil AS management_initiated_leaave,
                                         ml AS maternity_leave,
                                         pl AS paternity_leave,
                                         spl AS solo_parent_leave,
@@ -445,11 +441,12 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
-                                        echo '<option value="Birthday Leave">Birthday Leave</option>';
+                                        echo '<option value="Management Intiated Leave">Management Intiated Leave</option>';
                                         echo '<option value="Maternity Leave">Maternity Leave</option>';
                                         echo '<option value="Paternity Leave">Paternity Leave</option>';
                                         echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
                                         echo '<option value="Bereavement Leave">Bereavement Leave</option>';
+                                        echo '<option value="Leave Without Pay">Leave Without Pay</option>';
                                     } else {
                                         echo '<option value="" disabled>No Leave Types found</option>';
                                     }
@@ -673,8 +670,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
         const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
         const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
-        const birthdayLeaveTotal = <?= $leaveBalances['birthday_leave'] ?? 0 ?>;
-        const birthdayLeaveUsed = <?= $usedBalances['birthday_leave'] ?? 0 ?>;
+        const birthdayLeaveTotal = <?= $leaveBalances['management_initiated_leaave'] ?? 0 ?>;
+        const birthdayLeaveUsed = <?= $usedBalances['management_initiated_leaave'] ?? 0 ?>;
         const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
         const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
         const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
@@ -701,7 +698,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             "Sick Leave": "sl",
             "Service Incentive Leave": "sil",
             "Earned Leave Credit": "elc",
-            "Birthday Leave": "bl",
+            "Management Intiated Leave": "mil",
             "Maternity Leave": "ml",
             "Paternity Leave": "pl",
             "Solo Parent Leave": "spl",
@@ -726,23 +723,30 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             const submitBtn = document.getElementById("submitLeaveBtn");
             const warning = document.getElementById("leaveWarning");
 
-            const balance = remainingBalances[leaveType] ?? 0;
-            document.getElementById("leaveBalance").textContent = balance;
+            if(leaveTypeRaw == 'Leave Without Pay'){
+                warning.style.display = "none";
+                leaveBalanceDisplay.style.display = "block";
+                leaveBalanceDisplay.textContent = "Leave duradtion: " +  (calculateDaysBetween(start, end) > 0 ? calculateDaysBetween(start, end) : 0) + " days"// Hide the balance display
+                submitBtn.disabled = false;
+            }
+            else{
+                const balance = remainingBalances[leaveType] ?? 0;
+                document.getElementById("leaveBalance").textContent = balance;
 
-            if (start && end && leaveType) {
-                const requestedDays = calculateDaysBetween(start, end);
-                if (requestedDays > balance) {
-                    warning.style.display = "block";
-                    leaveBalanceDisplay.style.display = "none"; // Hide the balance display
-                    submitBtn.disabled = true;
+                if (start && end && leaveType !== null ) {
+                    const requestedDays = calculateDaysBetween(start, end);
+                    if (requestedDays > balance) {
+                        warning.style.display = "block";
+                        leaveBalanceDisplay.style.display = "none"; // Hide the balance display
+                        submitBtn.disabled = true;
 
-                } else {
-                    warning.style.display = "none";
-                    leaveBalanceDisplay.style.display = "block"; // Hide the balance display
-                    submitBtn.disabled = false;
+                    } else {
+                        warning.style.display = "none";
+                        leaveBalanceDisplay.style.display = "block"; // Hide the balance display
+                        submitBtn.disabled = false;
+                    }
                 }
             }
-
         }
 
         // ✅ Make sure these event listeners come after all above code
@@ -924,6 +928,92 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 });
             });
         });
+
+
+        // Pagination and filtering for leave requests
+        document.addEventListener("DOMContentLoaded", function() {
+            const allRows = Array.from(document.querySelectorAll("#leaveTable tbody tr"));
+            const tbody = document.querySelector("#leaveTable tbody");
+            const paginationContainer = document.getElementById("paginationControls");
+            const rowsPerPage = 5;
+            let currentPage = 1;
+            let currentFilter = "";
+
+            function getRowStatus(row) {
+                return row.children[7].textContent.trim();
+            }
+
+            function renderTable(filter = "") {
+                const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
+                renderPaginationButtons(totalPages);
+            }
+            let paginationStart = 1; // Tracks which set of pages we're viewing
+
+            function renderPaginationButtons(totalPages) {
+                paginationContainer.innerHTML = "";
+
+                const maxVisible = 10;
+                const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+
+                // Left arrow (go back 10 pages)
+                if (paginationStart > 1) {
+                    const leftArrow = document.createElement("button");
+                    leftArrow.textContent = "←";
+                    leftArrow.addEventListener("click", () => {
+                        paginationStart = Math.max(1, paginationStart - maxVisible);
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(leftArrow);
+                }
+
+                // Page number buttons
+                for (let i = paginationStart; i <= paginationEnd; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className = i === currentPage ? "active" : "";
+                    btn.style.margin = "0 5px";
+                    btn.style.minWidth = "22px";
+                    btn.addEventListener("click", () => {
+                        currentPage = i;
+                        renderTable(currentFilter);
+                    });
+                    paginationContainer.appendChild(btn);
+                }
+
+                // Right arrow (go forward 10 pages)
+                if (paginationEnd < totalPages) {
+                    const rightArrow = document.createElement("button");
+                    rightArrow.textContent = "→";
+                    rightArrow.addEventListener("click", () => {
+                        paginationStart = paginationStart + maxVisible;
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(rightArrow);
+                }
+            }
+
+            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        currentFilter = this.getAttribute("data-status") || "";
+                        currentPage = 1;
+                        paginationStart = 1; // ✅ Reset pagination to start from 1
+                        renderTable(currentFilter);
+
+                    });
+                }
+            });
+            renderTable();
+        });
+
 
 
         // Approve Leave Request Form

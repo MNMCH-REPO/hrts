@@ -297,7 +297,7 @@
              </div>
              <div class="input-container">
                  <input type="text" id="managementInitiatedID" name="bl" required>
-                 <label for="managementInitiatedID">Birthday Leave (BL)</label>
+                 <label for="managementInitiatedID">Management Initiated Leave (BL)</label>
              </div>
              <div class="input-container">
                  <input type="text" id="leaveMaternityLeaveID" name="ml" required>
@@ -320,8 +320,7 @@
                  <label for="leaveBereavementLeaveID">Bereavement Leave (BRL)</label>
              </div>
              <div class="modal-buttons btnContainer">
-                 <button type="button" class="btnWarning" name="markLWOP" id="markLWOPBtnID">Mark as LWOP</button>
-                 <button type="button" class="btnWarning" name="suspensionBtn" id="suspensionBtnId">Suspension</button>
+                 <button type="button" class="btnWarning" name="markLWOP" id="markAWOLBtnID">Mark as AWOL</button>
                  <button type="submit" id="leaveBtnID" name="leaveButton" class="btnDefault">Save Changes</button>
                  <button type="button" class="btnDanger" onclick="closeModal()">Cancel</button>
              </div>
@@ -330,104 +329,106 @@
  </div>
 
 
- <div id="markLWOPModal" class="modal">
+
+ <div id="markAWOLModal" class="modal">
     <div class="modal-content">
-        <h1 class="modal-title">MARK AS LEAVE WITHOUT PAY</h1>
-        <form id="markLWOPForm">
-            <input type="hidden" name="leaveRequestId" id="markLWOPRequestIdHidden">
+        <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
+        <br><br><br>
+        <?php
+        require '../../0/includes/db.php'; // Ensure you have a database connection file
+
+        try {
+            // Correct query to fetch the `id` from the `used_balance` table
+            $awolBalanceQuery = "SELECT id, SUM(awol) AS totalAWOL FROM used_balance WHERE user_id = :user_id";
+            $stmt = $pdo->prepare($awolBalanceQuery);
+            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT); // Assuming you have a session variable for user ID
+            $stmt->execute();
+            $awolBalance = $stmt->fetch(PDO::FETCH_ASSOC);
+            $usedBalanceId = $awolBalance['id'] ?? null; // Fetch the `id` from the `used_balance` table
+            $totalAWOL = $awolBalance['totalAWOL'] ?? 0; // Default to 0 if no result found
+        
+            echo "<script>console.log('Used Balance ID: " . $usedBalanceId . "');</script>";
+            echo "<script>console.log('Total AWOL: " . $totalAWOL . "');</script>";
+        } catch (PDOException $e) {
+
+
+        } catch (PDOException $e) {
+            die("Database error: " . $e->getMessage());
+        }
+        ?>
+        <form id="markAWOLForm">
+            <input type="hidden" name="usedBalanceId" id="markAWOLRequestIdHidden" value="<?php echo $usedBalanceId; ?>">
             <p class="center-text">
-                Are you sure you want to mark <strong id="markLWOPEmployeeName"></strong> today
-                <br>as Leave Without Pay (LWOP)?
+                Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
+                <br>as Absent Without Official Leave (AWOL)?
             </p>
 
             <br><br>
 
-            <?php
-            require '../../0/includes/db.php'; // Ensure you have a database connection file
-            $lwopBalanceQuery = "SELECT SUM(lwop) AS totalLWOP FROM total_balance WHERE user_id = :user_id";
-            $stmt = $pdo->prepare($lwopBalanceQuery);
-            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT); // Assuming you have a session variable for user ID
-            $stmt->execute();
-
-            $lwopBalance = $stmt->fetch(PDO::FETCH_ASSOC);
-            $totalLWOP = $lwopBalance['totalLWOP'] ?? 0; // Default to 0 if no result found
-            $lwopBalances = $totalLWOP; // Use the fetched value in your JavaScript
-
-            ?>
-
             <p class="center-text">
-                Total Leave Without Pay (LWOP): <strong id="lwopBalances"> <? echo $lwopBalances['lwop'] ?></strong>
+                Total Absent Without Official Leave (AWOL): <strong id="awolBalances"><?php echo $totalAWOL; ?></strong>
             </p>
+            <br>
             <div class="btnContainer">
-                <button type="submit" class="btnApprove" name="confirmMarkLWOP" id="confirmMarkLWOPID">Confirm</button>
-                <button type="button" class="btnDanger" id="closeMarkLWOPModal">Cancel</button>
+                <button type="submit" class="btnApprove" name="confirmMarkAWOL" id="confirmMarkAWOLID">Confirm</button>
+                <button type="button" class="btnDanger" id="closemarkAWOLModal">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const markLWOPButton = document.getElementById("markLWOPBtnID");
-        const markLWOPModal = document.getElementById("markLWOPModal");
-        const markLWOPEmployeeName = document.getElementById("markLWOPEmployeeName");
-        const markLWOPRequestIdHidden = document.getElementById("markLWOPRequestIdHidden");
-        const lwopBalancesElement = document.getElementById("lwopBalances");
-        const closeMarkLWOPModal = document.getElementById("closeMarkLWOPModal");
+        const markAWOLButton = document.getElementById("markAWOLBtnID");
+        const markAWOLModal = document.getElementById("markAWOLModal");
+        const markAWOLEmployeeName = document.getElementById("markAWOLEmployeeName");
+        const markAWOLRequestIdHidden = document.getElementById("markAWOLRequestIdHidden");
+        const awolBalancesElement = document.getElementById("awolBalances");
+        const closemarkAWOLModal = document.getElementById("closemarkAWOLModal");
 
-        if (!markLWOPModal || !markLWOPButton) {
-            console.error("Required elements for Mark LWOP modal not found!");
+        // Check if required elements exist
+        if (!markAWOLModal || !markAWOLButton) {
+            console.error("Required elements for Mark AWOL modal not found!");
             return;
         }
 
-        // Open Mark LWOP Modal
-        markLWOPButton.addEventListener("click", function () {
-            console.log("Mark LWOP button clicked");
+        // Check and style AWOL balances
+        if (awolBalancesElement) {
+            const awolValue = parseInt(awolBalancesElement.textContent.trim(), 10) || 0;
+
+            if (awolValue === 3) {
+                awolBalancesElement.style.color = "orange"; // Set color to orange if value is 3
+            } else if (awolValue >= 5) {
+                awolBalancesElement.style.color = "red"; // Set color to red if value is 5 or more
+            }
+        }
+
+        // Open Mark AWOL Modal
+        markAWOLButton.addEventListener("click", function () {
+            console.log("Mark AWOL button clicked");
 
             // Fetch values from the form or other elements
-            const employeeName = document.getElementById("leaveEmployeeNameID").value; // Ensure this ID exists
-            const leaveRequestId = document.getElementById("leaveRequestIdHidden").value; // Ensure this ID exists
-            const lwopBalances = document.getElementById("leaveWithoutPayID")?.value || "0"; // Optional chaining for safety
+            const employeeName = document.getElementById("leaveEmployeeNameID")?.value || "Unknown"; // Ensure this ID exists
+            const usedBalanceId = markAWOLRequestIdHidden?.value || "0"; // Ensure this ID exists
+            const awolBalances = awolBalancesElement?.textContent.trim() || "0"; // Ensure this element exists
 
             // Populate modal fields
-            markLWOPEmployeeName.textContent = employeeName;
-            markLWOPRequestIdHidden.value = leaveRequestId;
-            lwopBalancesElement.textContent = lwopBalances;
+            markAWOLEmployeeName.textContent = employeeName;
+            markAWOLRequestIdHidden.value = usedBalanceId;
+
+            console.log("Used Balance ID:", usedBalanceId);
+            console.log("Employee Name:", employeeName);
+            console.log("AWOL Balances Value:", awolBalances);
 
             // Show the modal
-            markLWOPModal.style.display = "flex";
+            markAWOLModal.style.display = "flex";
         });
 
-        // Close Mark LWOP Modal
-        closeMarkLWOPModal.addEventListener("click", function () {
-            console.log("Close Mark LWOP modal button clicked");
-            markLWOPModal.style.display = "none";
+        // Close Mark AWOL Modal
+        closemarkAWOLModal.addEventListener("click", function () {
+            console.log("Close Mark AWOL modal button clicked");
+            markAWOLModal.style.display = "none";
         });
     });
 </script>
-
-
- <!-- suspension -->
- <div id="suspensionModal" class="modal">
-     <div class="modal-content">
-         <h1 class="modal-title">SUSPENSION</h1>
-         <form id="suspensionForm">
-             <input type="hidden" name="leaveRequestId" id="suspensionID">
-
-             <input type="date" id="suspensionDateID" name="startDateSuspension" required>
-             <label for="suspensionDateID">Start Date</label>
-
-             <input type="date" id="suspensionEndDateID" name="endDateSuspension" required>
-             <label for="suspensionEndDateID">End Date</label>
-
-            <p class="text-center">
-                Total Days of Suspension: <strong id="suspensionDays"></strong>
-            </p>
-
-             <div class="btnContainer">
-                 <button type="submit" class="btnWarning" name="confirmSuspension" id="confirmSuspensionID">Confirm</button>
-                 <button type="button" class="btnDanger" id="closeSuspensionModal">Cancel</button>
-             </div>
-         </form>
-     </div>
- </div>

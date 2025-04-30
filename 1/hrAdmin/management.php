@@ -70,18 +70,8 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
 
             <div class="pagination-wrapper">
-                <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
-                    <?php endif; ?>
+                <div class="pagination" id="pageNationID">
+                    <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="btnContainer">
@@ -116,7 +106,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
 
             <div class="tableContainer">
-                <table>
+                <table id="usersTable">
                     <thead>
                         <tr>
                             <th>ID <i class="fas fa-sort"></i></th>
@@ -169,6 +159,90 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
 
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/management.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const allRows = Array.from(document.querySelectorAll("#usersTable tbody tr"));
+            const tbody = document.querySelector("#usersTable tbody");
+            const paginationContainer = document.getElementById("paginationControls");
+            const rowsPerPage = 5;
+            let currentPage = 1;
+            let currentFilter = "";
+
+            function getRowStatus(row) {
+                return row.children[7].textContent.trim();
+            }
+
+            function renderTable(filter = "") {
+                const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
+                renderPaginationButtons(totalPages);
+            }
+            let paginationStart = 1; // Tracks which set of pages we're viewing
+
+            function renderPaginationButtons(totalPages) {
+                paginationContainer.innerHTML = "";
+
+                const maxVisible = 10;
+                const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+
+                // Left arrow (go back 10 pages)
+                if (paginationStart > 1) {
+                    const leftArrow = document.createElement("button");
+                    leftArrow.textContent = "←";
+                    leftArrow.addEventListener("click", () => {
+                        paginationStart = Math.max(1, paginationStart - maxVisible);
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(leftArrow);
+                }
+
+                // Page number buttons
+                for (let i = paginationStart; i <= paginationEnd; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className = i === currentPage ? "active" : "";
+                    btn.style.margin = "0 5px";
+                    btn.style.minWidth = "22px";
+                    btn.addEventListener("click", () => {
+                        currentPage = i;
+                        renderTable(currentFilter);
+                    });
+                    paginationContainer.appendChild(btn);
+                }
+
+                // Right arrow (go forward 10 pages)
+                if (paginationEnd < totalPages) {
+                    const rightArrow = document.createElement("button");
+                    rightArrow.textContent = "→";
+                    rightArrow.addEventListener("click", () => {
+                        paginationStart = paginationStart + maxVisible;
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(rightArrow);
+                }
+            }
+
+            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        currentFilter = this.getAttribute("data-status") || "";
+                        currentPage = 1;
+                        paginationStart = 1; // ✅ Reset pagination to start from 1
+                        renderTable(currentFilter);
+
+                    });
+                }
+            });
+            renderTable();
+        });
+    </script>
 </body>
 
 </html>

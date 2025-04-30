@@ -36,7 +36,6 @@ try {
         "Paternity Leave" => "pl",
         "Solo Parent Leave" => "spl",
         "Bereavement Leave" => "brl",
-        "Special Leave" => "s",
         "Leave Without Pay" => "lwop",
     ];
 
@@ -104,28 +103,8 @@ try {
         ]);
     }
 
-    // 4. Update total_balance (subtract leave days)
-    $fetchTotalSql = "SELECT {$leaveTypeColumn} FROM total_balance WHERE user_id = :employeeId";
-    $stmt = $pdo->prepare($fetchTotalSql);
-    $stmt->execute([':employeeId' => $employeeId]);
-    $totalBalance = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($totalBalance) {
-        $currentTotal = (int)($totalBalance[$leaveTypeColumn] ?? 0);
-        $newTotal = max($currentTotal - $leaveDays, 0); // Prevent negative balance
-
-        $updateTotalSql = "UPDATE total_balance SET {$leaveTypeColumn} = :newTotal WHERE user_id = :employeeId";
-        $stmt = $pdo->prepare($updateTotalSql);
-        $stmt->execute([
-            ':newTotal' => $newTotal,
-            ':employeeId' => $employeeId
-        ]);
-    } else {
-        $pdo->rollBack();
-        echo json_encode(['success' => false, 'message' => 'Total balance record not found.']);
-        exit;
-    }
-    // Step 5: Insert into the `audit_trail` table
+    // Step 4: Insert into the `audit_trail` table
     $actionType = 'APPROVE_LEAVE'; // Action type
     $affectedTable = 'leave_requests'; // The table being updated
     $affectedId = $leaveId; // The ID of the approved leave request
