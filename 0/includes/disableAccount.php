@@ -41,7 +41,7 @@ try {
 
     $auditStmt = $pdo->prepare("
         INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
-        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, )
+        VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
     ");
     $auditStmt->bindParam(':actionType', $actionType);
     $auditStmt->bindParam(':affectedTable', $affectedTable);

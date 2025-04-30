@@ -485,6 +485,18 @@ document.addEventListener("DOMContentLoaded", function () {
           // leaveWithoutPay.value = data.leaveBalances.lwop || 0;
           bereavementLeave.value = data.leaveBalances.brl || 0;
 
+          console.log("User ID:", userId);
+          console.log("Employee Name:", data.leaveBalances.name || "N/A");
+          console.log("Department:", data.leaveBalances.department || "N/A");
+          console.log("Sick Leave (SL):", data.leaveBalances.sl || 0);
+          console.log("Service Incentive Leave (SIL):", data.leaveBalances.sil || 0);
+          console.log("Earned Leave Credit (ELC):", data.leaveBalances.elc || 0);
+          console.log("Management Initiated Leave (MIL):", data.leaveBalances.mil || 0);
+          console.log("Maternity Leave (ML):", data.leaveBalances.ml || 0);
+          console.log("Paternity Leave (PL):", data.leaveBalances.pl || 0);
+          console.log("Solo Parent Leave (SPL):", data.leaveBalances.spl || 0);
+          console.log("Bereavement Leave (BRL):", data.leaveBalances.brl || 0);
+
           // Open the modal
           leaveRequestModal.style.display = "flex";
         } else {

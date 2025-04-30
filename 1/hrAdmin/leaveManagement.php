@@ -510,6 +510,94 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
     <script src="../../assets/js/framework.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const filterButton = document.querySelector("#filterButton");
+            const rows = document.querySelectorAll("#leaveTable tbody tr");
+            let selectedColumn = null;
+
+            function filterTable(filterValue) {
+                rows.forEach((row) => {
+                    const cellText =
+                        row.cells[selectedColumn]?.textContent.toLowerCase() || "";
+                    row.style.display = cellText.includes(filterValue.toLowerCase()) ?
+                        "" :
+                        "none";
+                });
+            }
+
+            // Filter dropdown functionality
+            if (filterButton) {
+                filterButton.addEventListener("click", function() {
+                    // Create a dropdown menu dynamically
+                    let dropdown = document.querySelector(".filter-dropdown");
+                    if (!dropdown) {
+                        dropdown = document.createElement("div");
+                        dropdown.classList.add("filter-dropdown");
+                        dropdown.style.position = "absolute";
+                        dropdown.style.backgroundColor = "#fff";
+                        dropdown.style.border = "1px solid #ccc";
+                        dropdown.style.padding = "10px";
+                        dropdown.style.zIndex = "1000";
+
+                        // Add filter options
+                        const filters = [{
+                                column: 7,
+                                label: "Status"
+                            }, // Status column
+                            {
+                                column: 2,
+                                label: "Department"
+                            }, // Department column
+                            {
+                                column: 9,
+                                label: "Approved By"
+                            }, // Approved By column
+                        ];
+
+                        filters.forEach((filter) => {
+                            const option = document.createElement("div");
+                            option.textContent = filter.label;
+                            option.style.cursor = "pointer";
+                            option.style.padding = "5px 10px";
+                            option.addEventListener("click", function() {
+                                selectedColumn = filter.column;
+
+                                // Show a prompt to input the filter value
+                                const filterValue = prompt(
+                                    `Enter the value to filter by for ${filter.label}:`
+                                );
+                                if (filterValue) {
+                                    filterTable(filterValue); // Apply the filter
+                                }
+
+                                dropdown.remove(); // Remove dropdown after selection
+                            });
+                            dropdown.appendChild(option);
+                        });
+
+                        document.body.appendChild(dropdown);
+
+                        // Position the dropdown below the filter button
+                        const rect = filterButton.getBoundingClientRect();
+                        dropdown.style.left = `${rect.left}px`;
+                        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+
+                        // Close dropdown when clicking outside
+                        document.addEventListener("click", function closeDropdown(event) {
+                            if (
+                                !dropdown.contains(event.target) &&
+                                event.target !== filterButton
+                            ) {
+                                dropdown.remove();
+                                document.removeEventListener("click", closeDropdown);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
     <!-- function plate 4 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -609,36 +697,36 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             });
 
             // Handle form submission via AJAX
-       
-            resetLeaveForm.addEventListener('submit', function (event) {
-    event.preventDefault();
 
-    const formData = new FormData(resetLeaveForm);
-    formData.append('resetValueButton', true);
+            resetLeaveForm.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-    fetch('../../0/includes/resetLeaveValue.php', {
-        method: 'POST',
-        body: formData,
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then((data) => {
-        alert(data.message);
-        if (data.success) {
-            location.reload();
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred: ' + error.message);
-    });
-});
-       
-       
+                const formData = new FormData(resetLeaveForm);
+                formData.append('resetValueButton', true);
+
+                fetch('../../0/includes/resetLeaveValue.php', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        alert(data.message);
+                        if (data.success) {
+                            location.reload();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('An error occurred: ' + error.message);
+                    });
+            });
+
+
         });
     </script>
     <!-- function close modal -->
@@ -723,17 +811,16 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             const submitBtn = document.getElementById("submitLeaveBtn");
             const warning = document.getElementById("leaveWarning");
 
-            if(leaveTypeRaw == 'Leave Without Pay'){
+            if (leaveTypeRaw == 'Leave Without Pay') {
                 warning.style.display = "none";
                 leaveBalanceDisplay.style.display = "block";
-                leaveBalanceDisplay.textContent = "Leave duradtion: " +  (calculateDaysBetween(start, end) > 0 ? calculateDaysBetween(start, end) : 0) + " days"// Hide the balance display
+                leaveBalanceDisplay.textContent = "Leave duradtion: " + (calculateDaysBetween(start, end) > 0 ? calculateDaysBetween(start, end) : 0) + " days" // Hide the balance display
                 submitBtn.disabled = false;
-            }
-            else{
+            } else {
                 const balance = remainingBalances[leaveType] ?? 0;
                 document.getElementById("leaveBalance").textContent = balance;
 
-                if (start && end && leaveType !== null ) {
+                if (start && end && leaveType !== null) {
                     const requestedDays = calculateDaysBetween(start, end);
                     if (requestedDays > balance) {
                         warning.style.display = "block";
@@ -1011,6 +1098,25 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     });
                 }
             });
+
+            // Search functionality
+            function filterTableBySearch() {
+                const searchValue = searchInput.value.toLowerCase(); // Get the search input value
+                const filteredRows = allRows.filter((row) =>
+                    row.textContent.toLowerCase().includes(searchValue)
+                ); // Filter rows based on search value
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                filteredRows.slice(start, end).forEach((row) => tbody.appendChild(row));
+                renderPaginationButtons(totalPages);
+            }
+
+            // Add event listener to the search input
+            searchInput.addEventListener("input", filterTableBySearch);
+
             renderTable();
         });
 
