@@ -25,10 +25,11 @@
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['downloadReport'])) {
         $startDate = $_POST['startDate'] ?? date('Y-m-d');
         $endDate = $_POST['endDate'] ?? date('Y-m-d');
-        generateAndDownloadReport($pdo, $startDate, $endDate);
+        generateStandardReportOnServer($pdo, $startDate, $endDate);
+        downloadStandardReport($pdo, $startDate, $endDate);
     }
 
-    function generateStandardReport($pdo, $startDate, $endDate) {
+    function generateStandardReportOnServer($pdo, $startDate, $endDate) {
         $stmt = $pdo->prepare("
         SELECT 
             u.department,
@@ -90,7 +91,7 @@
     $writer->save($filePath);
     return $filePath;
     }
-    function generateAndDownloadReport($pdo, $startDate, $endDate) {
+    function downloadStandardReport($pdo, $startDate, $endDate) {
         $stmt = $pdo->prepare("
             SELECT 
                 u.department,
