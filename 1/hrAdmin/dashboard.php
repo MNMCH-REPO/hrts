@@ -359,6 +359,7 @@ require_once '../../0/includes/reportGenerator.php';
 
     <div id="reportModal" class="modal">
         <form class="modal-content" method="post">
+            <input type="hidden" name="reportType" value="standard">
             <span class="close">&times;</span>
             <h2>Generate Report</h2>
             <div class="time-options">
@@ -642,6 +643,29 @@ require_once '../../0/includes/reportGenerator.php';
                 if (!departmentInput.contains(event.target) && !departmentSuggestionBox.contains(event.target)) {
                     departmentSuggestionBox.style.display = "none";
                 }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const reportCards = document.querySelectorAll(".report-card");
+            const reportTypeInput = document.querySelector("input[name='reportType']");
+            reportCards.forEach((card) => {
+                card.addEventListener("click", function () {
+                    // Remove the 'selected' class from all report cards
+                    reportCards.forEach((c) => c.classList.remove("selected"));
+
+                    // Add the 'selected' class to the clicked card
+                    this.classList.add("selected");
+
+                    // Update the hidden input with the report type
+                    const reportType = this.querySelector("h3").textContent.trim();
+                    if (reportType === "Standard Report") {
+                        reportTypeInput.value = "standard";
+                    } else if (reportType === "Tickets of the Employee") {
+                        reportTypeInput.value = "employee";
+                    } else if (reportType === "Tickets on a Department") {
+                        reportTypeInput.value = "department";
+                    }
+                });
             });
         });
     </script>
