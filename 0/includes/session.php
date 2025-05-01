@@ -4,7 +4,7 @@ ini_set('session.gc_maxlifetime', 3600); // 1 hour
 session_set_cookie_params(3600); // 1 hour
 
 session_set_cookie_params([
-    'lifetime' => 3600, // 1 hour
+    'lifetime' => 28800, // 8 hours
     'path' => '/',
     'domain' => '', // Set to your domain
     'samesite' => 'Strict' // Prevent CSRF attacks
@@ -22,7 +22,7 @@ if (!isset($_SESSION['CREATED'])) {
     // $_SESSION['CREATED'] = time();  // Update creation time
     session_unset();            // Clear session variables
     session_destroy();          // Destroy the session
-    header("Location: hrts../../index.php"); // Redirect to login page
+    header("Location: ../../index.php"); // Redirect to login page
     exit();
 }
 
