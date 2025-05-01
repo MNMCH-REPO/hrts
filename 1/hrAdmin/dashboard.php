@@ -171,16 +171,6 @@ require_once '../../0/includes/reportGenerator.php';
                 <div class="pagination">
                     <div id="paginationControls" class="mt-3"></div>
                 </div>
-
-                <div class="search-container">
-                    <input type="text" placeholder="SEARCH..." class="search-input">
-                    <div class="search-icon">
-                        <img src="../../assets/images/icons/search.png" alt="Search">
-                    </div>
-                    <button class="filter-btn">
-                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
-                    </button>
-                </div>
             </div>
 
             <div class="tableContainer" id="tableContainerTicketID">
