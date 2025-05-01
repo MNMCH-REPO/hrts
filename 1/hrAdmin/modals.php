@@ -335,7 +335,7 @@
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
 
-         <form id="markAWOLForm">
+         <form id="markAWOLForm" method="post">
              <input type="hidden" name="usedBalanceId" id="markAWOLID" value="">
              <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID" value="">
              <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
@@ -453,30 +453,30 @@
         });
 
         // Submit the Mark AWOL form via AJAX
-        const markAWOLForm = document.getElementById("markAWOLForm");
-        markAWOLForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent the default form submission
+        // const markAWOLForm = document.getElementById("markAWOLForm");
+        // markAWOLForm.addEventListener("submit", function (event) {
+        //     event.preventDefault(); // Prevent the default form submission
 
-            const formData = new FormData(markAWOLForm); // Collect form data
+        //     const formData = new FormData(markAWOLForm); // Collect form data
 
-            fetch("../../0/includes/markAWOLQuery.php", {
-                method: "POST",
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        alert(data.message); // Show success message
-                        markAWOLModal.style.display = "none"; // Close the modal
-                        location.reload(); // Reload the page to reflect changes
-                    } else {
-                        alert(data.message); // Show error message
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error submitting Mark AWOL form:", error);
-                    alert("An error occurred while processing the request.");
-                });
-        });
+        //     fetch("../../0/includes/markAWOLQuery.php", {
+        //         method: "POST",
+        //         body: formData,
+        //     })
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             if (data.success) {
+        //                 alert(data.message); // Show success message
+        //                 markAWOLModal.style.display = "none"; // Close the modal
+        //                 location.reload(); // Reload the page to reflect changes
+        //             } else {
+        //                 alert(data.message); // Show error message
+        //             }
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error submitting Mark AWOL form:", error);
+        //             alert("An error occurred while processing the request.");
+        //         });
+        // });
     });
 </script>

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $status = 'AWOL';
+    $status = 'Approved';
     $reason = 'AWOL';
 
     try {
