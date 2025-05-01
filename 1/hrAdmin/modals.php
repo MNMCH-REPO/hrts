@@ -335,9 +335,9 @@
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
 
-         <form id="markAWOLForm" method="post">
-             <input type="hidden" name="usedBalanceId" id="markAWOLID" value="">
-             <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID" value="">
+         <form id="markAWOLForm" method="POST" >
+             <input type="text" name="usedBalanceId" id="markAWOLID">
+             <input type="text" name="employeeLeaveUserId" id="markAWOLEmployeeID">
              <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
              <p class="center-text">
                  Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
@@ -356,33 +356,7 @@
      </div>
  </div>
 
- 
- <!-- Mark AWOL Modal -->
-<div id="markAWOLModal" class="modal">
-    <div class="modal-content">
-        <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
-        <br><br><br>
 
-        <form id="markAWOLForm">
-            <input type="hidden" name="usedBalanceId" id="markAWOLID" value="">
-            <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID" value="">
-            <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
-            <p class="center-text">
-                Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
-                <br>as Absent Without Official Leave (AWOL)?
-            </p>
-            <br><br>
-            <p class="center-text">
-                Total Absent Without Official Leave (AWOL): <strong id="awolBalances"><?php echo htmlspecialchars($totalAWOL); ?></strong>
-            </p>
-            <br>
-            <div class="btnContainer">
-                <button type="submit" class="btnApprove" name="confirmMarkAWOL" id="confirmMarkAWOLID">Confirm</button>
-                <button type="button" class="btnDanger" id="closemarkAWOLModal">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -417,7 +391,9 @@
 
                         // Populate the input fields
                         markAWOLID.value = data.leaveBalances.usedBalanceId || ""; // Populate usedBalanceId
+              
                         markAWOLEmployeeID.value = data.leaveBalances.user_id || "";
+
 
                         // Convert totalAWOL to an integer for comparison
                         const totalAWOLValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
@@ -431,6 +407,8 @@
                             awolBalancesElement.style.color = ""; // Reset color for other values
                         }
 
+
+                        console.log("Mark AWOL Employee ID:", markAWOLEmployeeID.value);
                         console.log("Data fetched successfully:", data);
 
                         // Show the modal
