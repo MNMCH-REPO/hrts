@@ -423,7 +423,7 @@
                         const totalAWOLValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
 
                         // Apply color based on the value of totalAWOL
-                        if (totalAWOLValue === 3) {
+                        if (totalAWOLValue === 3 || totalAWOLValue === 4) {
                             awolBalancesElement.style.color = "orange"; // Set color to orange if value is 3
                         } else if (totalAWOLValue >= 5) {
                             awolBalancesElement.style.color = "red"; // Set color to red if value is 5 or greater
