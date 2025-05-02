@@ -296,8 +296,8 @@
                  <label for="leaveEarnedLeaveID">Earned Leave Credit (ELC)</label>
              </div>
              <div class="input-container">
-                 <input type="text" id="managementInitiatedID" name="bl" required>
-                 <label for="managementInitiatedID">Management Initiated Leave (BL)</label>
+                 <input type="text" id="managementInitiatedID" name="mil" required>
+                 <label for="managementInitiatedID">Management Initiated Leave (MIL)</label>
              </div>
              <div class="input-container">
                  <input type="text" id="leaveMaternityLeaveID" name="ml" required>
@@ -334,35 +334,11 @@
      <div class="modal-content">
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
-         <?php
-            require '../../0/includes/db.php'; // Ensure you have a database connection file
 
-            try {
-                // Assuming you have a session variable or request parameter for user ID
-                // $userId = $_SESSION['user_id'] ?? null; // Replace with the actual source of the user ID
-
-                if (!$userId) {
-                    throw new Exception("User ID is required.");
-                }
-
-                $awolBalanceQuery = "SELECT id, user_id, SUM(awol) AS totalAWOL FROM used_balance WHERE user_id = :user_id";
-                $stmt = $pdo->prepare($awolBalanceQuery);
-                $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT); // Bind the correct parameter
-                $stmt->execute();
-
-                $awolBalance = $stmt->fetch(PDO::FETCH_ASSOC);
-                $leaveRequestId = $awolBalance['id'] ?? null; // Fetch the leave request ID
-                $employeeLeaveUserId = $awolBalance['user_id'] ?? null; // Fetch the employee leave user ID
-                $totalAWOL = $awolBalance['totalAWOL'] ?? 0; // Default to 0 if no result found
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
-            }
-            ?>
-         <form id="markAWOLForm">
-             <input type="text" name="leaveRequestId" id="markAWOLRequestIdHidden" value="<?php echo htmlspecialchars($leaveRequestId); ?>">
-             <input type="text" name="employeeLeaveUserId" id="markAWOLEmployeeLeaveUserIdHidden" value="<?php echo htmlspecialchars($employeeLeaveUserId); ?>">
+         <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php" >
+             <input type="text" name="usedBalanceId" id="markAWOLID">
+             <input type="text" name="employeeLeaveUserId" id="markAWOLEmployeeID">
+             <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
              <p class="center-text">
                  Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
                  <br>as Absent Without Official Leave (AWOL)?
@@ -380,61 +356,105 @@
      </div>
  </div>
 
- <script>
-     document.addEventListener("DOMContentLoaded", function() {
-         const markAWOLButton = document.getElementById("markAWOLBtnID");
-         const markAWOLModal = document.getElementById("markAWOLModal");
-         const markAWOLEmployeeName = document.getElementById("markAWOLEmployeeName");
-         const awolBalancesElement = document.getElementById("awolBalances");
-         const markAWOLRequestIdHidden = document.getElementById("markAWOLRequestIdHidden");
-         const markAWOLEmployeeLeaveUserIdHidden = document.getElementById("markAWOLEmployeeLeaveUserIdHidden");
-         const closemarkAWOLModal = document.getElementById("closemarkAWOLModal");
-
-         // Check if required elements exist
-         if (!markAWOLModal || !markAWOLButton) {
-             console.error("Required elements for Mark AWOL modal not found!");
-             return;
-         }
-
-         // Check and style AWOL balances
-         if (awolBalancesElement) {
-             const awolValue = parseInt(awolBalancesElement.textContent.trim(), 10) || 0;
 
 
-             if (awolValue === 3) {
-                 awolBalancesElement.style.color = "orange"; // Set color to orange if value is 3
-             } else if (awolValue >= 5) {
-                 awolBalancesElement.style.color = "red"; // Set color to red if value is 5 or more
-             }
-         }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const markAWOLButton = document.getElementById("markAWOLBtnID");
+        const markAWOLModal = document.getElementById("markAWOLModal");
+        const markAWOLEmployeeName = document.getElementById("markAWOLEmployeeName");
+        const awolBalancesElement = document.getElementById("awolBalances");
+        const markAWOLID = document.getElementById("markAWOLID");
+        const markAWOLEmployeeID = document.getElementById("markAWOLEmployeeID");
+        const closemarkAWOLModal = document.getElementById("closemarkAWOLModal");
 
-         // Open Mark AWOL Modal
-         markAWOLButton.addEventListener("click", function() {
-             console.log("Mark AWOL button clicked");
+        // Check if required elements exist
+        if (!markAWOLModal || !markAWOLButton) {
+            console.error("Required elements for Mark AWOL modal not found!");
+            return;
+        }
 
-             // Fetch values from the form or other elements
-             const employeeName = document.getElementById("leaveEmployeeNameID")?.value || "Unknown"; // Ensure this ID exists
-             const awolBalances = awolBalancesElement?.textContent.trim() || "0"; // Ensure this element exists
-             const leaveRequestId = markAWOLRequestIdHidden?.value || ""; // Ensure this ID exists
-             const employeeLeaveUserId = markAWOLEmployeeLeaveUserIdHidden?.value || ""; // Ensure this ID exists
+        // Open Mark AWOL Modal
+        markAWOLButton.addEventListener("click", function () {
+            console.log("Mark AWOL button clicked");
 
-             // Populate modal fields
-             markAWOLEmployeeName.textContent = employeeName;
-             awolBalancesElement.textContent = awolBalances; // Update the displayed value
+            const userId = selectedRow.getAttribute("data-id");
 
-             console.log("Employee Name:", employeeName);
-             console.log("Leave Request ID:", leaveRequestId);
-             console.log("Employee Leave User ID:", employeeLeaveUserId);
-             console.log("AWOL Balances Value:", awolBalances);
+            // Fetch data from getLeaveBalancesQuery.php
+            fetch(`../../0/includes/getLeaveBalancesQuery.php?userId=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Populate modal fields with fetched data
+                        markAWOLEmployeeName.textContent = data.leaveBalances.name || "Unknown";
+                        awolBalancesElement.textContent = data.leaveBalances.totalAWOL || "0";
 
-             // Show the modal
-             markAWOLModal.style.display = "flex";
-         });
+                        // Populate the input fields
+                        markAWOLID.value = data.leaveBalances.usedBalanceId || ""; // Populate usedBalanceId
+              
+                        markAWOLEmployeeID.value = data.leaveBalances.userId || "";
 
-         // Close Mark AWOL Modal
-         closemarkAWOLModal.addEventListener("click", function() {
-             console.log("Close Mark AWOL modal button clicked");
-             markAWOLModal.style.display = "none";
-         });
-     });
- </script>
+
+                        // Convert totalAWOL to an integer for comparison
+                        const totalAWOLValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
+
+                        // Apply color based on the value of totalAWOL
+                        if (totalAWOLValue === 3 || totalAWOLValue === 4) {
+                            awolBalancesElement.style.color = "orange"; // Set color to orange if value is 3
+                        } else if (totalAWOLValue >= 5) {
+                            awolBalancesElement.style.color = "red"; // Set color to red if value is 5 or greater
+                        } else {
+                            awolBalancesElement.style.color = ""; // Reset color for other values
+                        }
+
+
+                        console.log("Mark AWOL Employee ID:", markAWOLEmployeeID.value);
+                        console.log("Data fetched successfully:", data);
+
+                        // Show the modal
+                        markAWOLModal.style.display = "flex";
+                    } else {
+                        console.error("Failed to fetch leave balances:", data.message);
+                        alert("Failed to fetch leave balances. Please try again.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching leave balances:", error);
+                    alert("An error occurred while fetching leave balances.");
+                });
+        });
+
+        // Close Mark AWOL Modal
+        closemarkAWOLModal.addEventListener("click", function () {
+            console.log("Close Mark AWOL modal button clicked");
+            markAWOLModal.style.display = "none";
+        });
+
+        // Submit the Mark AWOL form via AJAX
+        // const markAWOLForm = document.getElementById("markAWOLForm");
+        // markAWOLForm.addEventListener("submit", function (event) {
+        //     event.preventDefault(); // Prevent the default form submission
+
+        //     const formData = new FormData(markAWOLForm); // Collect form data
+
+        //     fetch("../../0/includes/markAWOLQuery.php", {
+        //         method: "POST",
+        //         body: formData,
+        //     })
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             if (data.success) {
+        //                 alert(data.message); // Show success message
+        //                 markAWOLModal.style.display = "none"; // Close the modal
+        //                 location.reload(); // Reload the page to reflect changes
+        //             } else {
+        //                 alert(data.message); // Show error message
+        //             }
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error submitting Mark AWOL form:", error);
+        //             alert("An error occurred while processing the request.");
+        //         });
+        // });
+    });
+</script>

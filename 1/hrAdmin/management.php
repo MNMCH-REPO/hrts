@@ -217,7 +217,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     <?php
 
     require_once 'modals.php';
-    require_once '../../0/includes/markAWOLQuery.php';
+
 
     ?>
 
