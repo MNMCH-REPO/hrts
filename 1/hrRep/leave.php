@@ -395,6 +395,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
+
+        
         <!--request Leave Modal -->
         <div id="requestLeaveModal" class="modal">
             <div class="modal-content">
@@ -649,7 +651,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     });
 
                     // Send AJAX request using Fetch API
-                    fetch('../../0/includes/submitLeaverequest.php', {
+                    fetch('../../../hrts/0/includes/submitLeaverequest.php', {
                             method: 'POST',
                             body: data,
                         })

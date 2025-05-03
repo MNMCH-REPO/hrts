@@ -1,7 +1,11 @@
 <?php
+ob_start(); // Start output buffering
+
 require 'db.php';
 require 'session.php';
 
+
+ob_clean(); // Clear the output buffer
 header("Content-Type: application/json");
 
 // Check if the user is logged in and required fields are provided

@@ -1,3 +1,6 @@
+
+
+
 $(document).ready(function () {
   // Handle card click to load messages and check permissions
   $(document).on("click", ".card", function () {

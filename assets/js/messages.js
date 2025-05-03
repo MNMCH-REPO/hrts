@@ -33,7 +33,7 @@ function loadMessages(ticketId = null, assignedName = null) {
 
   // Load messages via AJAX
   $.ajax({
-      url: "../../0/includes/employeeLoad_messages.php",
+      url: "../../../hrts/0/includes/employeeLoad_messages.php",
       type: "GET",
       data: { ticket_id: selectedTicketId },
       success: function (response) {
@@ -80,7 +80,7 @@ function uploadFile(fileInput, ticketId, callback) {
   formData.append("file", fileInput);
 
   $.ajax({
-    url: "../../0/includes/upload_file.php", // New backend file for file uploads
+    url: "../../../hrts/0/includes/upload_file.php", // New backend file for file uploads
     type: "POST",
     data: formData,
     contentType: false,
@@ -156,6 +156,7 @@ function sendTextMessage(messageText) {
     },
     error: function (xhr, status, error) {
       console.error("Error sending message:", error);
+      console.error("Raw response:", xhr.responseText); // Add this
       alert("An error occurred while sending the message.");
     },
   });
@@ -171,7 +172,8 @@ $(document).ready(function () {
   $("#fileInput").change(function () {
     let file = this.files[0];
     if (file) {
-      $("#message").val(`${file.name}`); // Set the file name in the message input
+      $("#message").attr("placeholder", `Attached: ${file.name}`);
+
     } else {
       $("#message").val(""); // Clear the message input if no file is selected
     }

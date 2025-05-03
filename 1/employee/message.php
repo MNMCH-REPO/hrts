@@ -66,19 +66,19 @@ require_once '../../0/includes/employeeTicket.php';
         </div>
         <div class="main-convo">
             <div class="container-convo">
-            <div class="chatbox-container">
-                        <div class="chat-container" id="chatbox">
-                            <!-- Messages will be loaded here -->
-                        </div>
-                        <div class="input-area">
-                            <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                            <div class="attach" id="attach">Attachment📎</div>
-                            <input type="text" id="message" placeholder="Type a message...">
-                            <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
-                                <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
-                            </button>
-                        </div>
+                <div class="chatbox-container">
+                    <div class="chat-container" id="chatbox">
+                        <!-- Messages will be loaded here -->
                     </div>
+                    <div class="input-area">
+                        <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                        <div class="attach" id="attach">Attachment📎</div>
+                        <input type="text" id="message" placeholder="Type a message...">
+                        <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                            <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                        </button>
+                    </div>
+                </div>
 
                 <div class="cards-container">
                     <?php
@@ -96,19 +96,19 @@ require_once '../../0/includes/employeeTicket.php';
                         $stmt = $pdo->prepare("
                         SELECT 
                             
-    t.id, 
-    t.subject, 
-    u2.department, -- Fetch the department from the user who created the ticket
-    t.description, 
-    t.priority, 
-    t.status,
-    t.created_at,
-    COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
-    u2.name AS employee_name -- Employee who created the ticket
-FROM tickets t
-LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
-LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
-WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
+                            t.id, 
+                            t.subject, 
+                            u2.department, -- Fetch the department from the user who created the ticket
+                            t.description, 
+                            t.priority, 
+                            t.status,
+                            t.created_at,
+                            COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
+                            u2.name AS employee_name -- Employee who created the ticket
+                        FROM tickets t
+                        LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
+                        LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
+                        WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
                             ");
                         $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_INT);
                         $stmt->execute();
@@ -119,9 +119,9 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
                                 echo '<div class="card card-' . (($index % 4) + 1) . '" 
                                       onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
                                 echo '<h1>' . htmlspecialchars($ticket['id']) . '</h1>';
-                                echo '<h1>' . htmlspecialchars($ticket['employee_name']) . '</h1>'; // Fixed typo
+                                echo '<h1>' . htmlspecialchars($ticket['assigned_name']) . '</h1>'; // Fixed typo
                                 echo '<h1>' . htmlspecialchars($ticket['department']) . '</h1>';
-                                // echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
+                                echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
                                 // echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
                                 // echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
                                 // echo '<h1>Status: ' . htmlspecialchars($ticket['status']) . '</h1>';
@@ -149,8 +149,8 @@ WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
     </div>
 
 
-        <!-- Image Modal -->
-        <div id="imageModal" class="modal">
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
         <span class="close" id="closeModal">&times;</span>
         <img class="modal-content" id="modalImage">
     </div>

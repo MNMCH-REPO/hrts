@@ -259,6 +259,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
 
                     <div class="modal-buttons">
+                        <button type="button" id="approveViewAttachID" name="viewAttachmentBtn" class="btnDefault btnContainer">View Attachment</button>
+                        <button type="button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
                         <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
@@ -476,6 +478,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <div class="input-container">
                             <input type="date" name="endDate" id="endDate" required>
                             <label for="endDate">End Date</label>
+                        </div>
+
+                        <div class="input-container">
+                            <input type="file" name="leaveAttachment" id="leaveAttachmentId" required>
+                            <label for="attachment">Approval Attachment</label>
                         </div>
 
                         <div class="input-container">

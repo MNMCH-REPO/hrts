@@ -426,36 +426,7 @@
 
 
 
-         document.addEventListener("DOMContentLoaded", function() {
-             const markAWOLForm = document.getElementById("markAWOLForm");
-             const markAWOLModal = document.getElementById("markAWOLModal"); // Ensure it's defined
-
-             markAWOLForm.addEventListener("submit", function(event) {
-                 event.preventDefault();
-
-                 const formData = new FormData(markAWOLForm);
-
-                 fetch("../../0/includes/markAWOLQuery.php", {
-                         method: "POST",
-                         body: formData,
-                     })
-                     .then(response => response.json())
-                     .then(data => {
-                         if (data.success) {
-                             alert(data.message);
-                             markAWOLModal.style.display = "none";
-                             location.reload();
-                         } else {
-                             alert(data.message);
-                         }
-                     })
-                     .catch(error => {
-                         console.error("Error submitting Mark AWOL form:", error);
-                         alert("An error occurred while marking AWOL.");
-                     });
-             });
-         });
-
+         
          // Close Mark AWOL Modal
          closemarkAWOLModal.addEventListener("click", function() {
              console.log("Close Mark AWOL modal button clicked");

@@ -18,8 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $endDate = $_POST['endDate'] ?? null;
     $reason = $_POST['reason'] ?? null;
 
+
+
     // Validate required fields
-    if (!$employeeId || !$leaveType || !$startDate || !$endDate || !$reason) {
+    if (!$employeeId || !$leaveType || !$startDate || !$endDate || !$attachmentLeave || !$reason) {
         echo "Error: All fields are required.";
         exit();
     }
@@ -42,6 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Set default values for status and created_at
     $status = 'Pending';
     $createdAt = date('Y-m-d H:i:s'); // Current timestamp
+
+
+
+
+
 
     try {
         // Begin transaction

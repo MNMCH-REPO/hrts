@@ -1,14 +1,6 @@
 <?php
 
 require 'db.php';
-
-header('Content-Type: application/json');
-
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 if (!isset($_SESSION['user_id'])) {
     session_start();
 }
@@ -37,31 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
 
-                // Step 0: Check for existing AWOL record for today
-                $awolCheckSql = "
-                SELECT COUNT(*) as count
-                FROM leave_requests
-                WHERE employee_id = :employee_id
-                AND leave_types = 'AWOL'
-                AND reason = 'AWOL'
-                AND DATE(start_date) = CURDATE()
-                AND DATE(end_date) = CURDATE()
-                ";
-                $checkStmt = $pdo->prepare($awolCheckSql);
-                $checkStmt->bindParam(':employee_id', $employeeId, PDO::PARAM_INT);
-                $checkStmt->execute();
-                $awolCheck = $checkStmt->fetch(PDO::FETCH_ASSOC);
-        
-                if ($awolCheck['count'] > 0) {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => 'This employee has already been marked as AWOL today.'
-                    ]);
-                    exit();
-                }
-        
-        
 
+    
         // Begin transaction
         $pdo->beginTransaction();
 

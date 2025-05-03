@@ -16,11 +16,15 @@ try {
             t.id, 
             t.employee_id, -- ID of the user who submitted the ticket
             t.assigned_to, -- ID of the user assigned to the ticket
+            t.category_id, -- Category ID of the ticket
+            c.id AS categoryId, -- Category ID from the categories table
+            c.name AS category_name, -- Category name from the categories table
             u_assigned.name AS assigned_name, -- Name of the user assigned to the ticket
             u_creator.name AS creator_name   -- Name of the user who submitted the ticket
         FROM tickets t
         LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id -- Join to get the assigned user's name
         LEFT JOIN users u_creator ON t.employee_id = u_creator.id  -- Join to get the creator's name
+        LEFT JOIN categories c ON t.category_id = c.id
         WHERE t.id = :ticket_id AND (t.assigned_to = :user_id OR t.employee_id = :user_id)
     ");
     $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
@@ -65,6 +69,7 @@ try {
     $attachmentStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $attachmentStmt->execute();
     $attachments = $attachmentStmt->fetchAll(PDO::FETCH_ASSOC);
+
 
     // Display the conversation header
     echo '<style>
@@ -112,12 +117,12 @@ try {
 }
     </style>';
 
-    echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
+    echo '<h5 class="convo-assigned">Ticket Category: ' . htmlspecialchars($ticketInfo['category_name']) . '</h5>';
     echo '<h3 class="assigned-name">' . $displayName . '</h3>';
 
     // Display messages
     if (!$messages && !$attachments) {
-    
+
         echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
         foreach ($messages as $row) {
@@ -156,7 +161,7 @@ try {
         // Display attachments
         foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
-            $file_path = htmlspecialchars($attachment['file_path']);
+            $file_path = 'hrts/'.htmlspecialchars($attachment['file_path']);
             $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
             $uploaded_at = date('F j, Y - h:i A', strtotime($attachment['uploaded_at']));
 

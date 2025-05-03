@@ -178,195 +178,181 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         </div>
 
 
-        <!-- Modal -->
-
-        <div id="confirmModal" class="modal">
+        <!-- approve Modal -->
+        <div id="approveModal" class="modal">
             <div class="modal-content">
-                <h1 class="modal-title">ASSIGN TICKET</h1>
-
-                <form id="confirmationForm" method="POST">
-                    <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" id="confirmTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
-                    </div>
+                <h2>APPROVE LEAVE REQUEST</h2>
+                <form id="approveFormContent" method="POST">
+                    <input type="hidden" id="approveLeaveID" name="leaveId" value="<?= htmlspecialchars($leave['id'] ?? '') ?>">
 
                     <div class="input-container">
                         <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" id="confirmemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
+                        <p class="center-text" id="approveNameId"><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
                         <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                        <p class="center-text" id="approveDepartmentId"><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" id="confirmsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
+                        <h1><strong>Leave Type:</strong></h1>
+                        <p class="center-text" id="approveLeaveTypeId"><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" id="confirmcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
+                        <h1><strong>Start Date:</strong></h1>
+                        <p class="center-text" id="approveStartDateId"><?= htmlspecialchars($leave['start_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" id="confirmdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
+                        <h1><strong>End Date:</strong></h1>
+                        <p class="center-text" id="approveEndDateId"><?= htmlspecialchars($leave['end_date'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Priority:</strong></h1>
-                        <p class="center-text" id="confirmpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
-                        </select>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Assigned To:</strong></h1>
-                        <p class="center-text" id="confirmassignedID" name="confirmAssigned" value="<?= htmlspecialchars($tickets['assigned_to_name']) ?>"></p>
-                        </select>
-                    </div>
-
-
-                    <div class="input-container">
-                        <h1><strong>Status:</strong></h1>
-                        <p class="center-text" id="confirmStatusID" value="<?= htmlspecialchars($ticketStatus['status']) ?>"></p>
-                        </select>
-                    </div>
-
-
-                    <div class="btnContainer">
-                        <button type="submit" name="confirmButton" id="confirmButtonID" class="btnDefault">CONFIRM ORDER</button>
-                        <button type="submit" name="declineButton" id="declineButtonID" class="btnWarning">DECLINE ORDER</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-
-
-        <!-- Modal -->
-        <div id="editStatusModal" class="modal">
-            <div class="modal-content">
-                <h1 class="modal-title">EDIT TICKET STATUS</h1>
-
-                <form id="editStatusForm" method="POST">
-                    <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" id="editTicketID" name="editticketID" value="<?= htmlspecialchars($ticket['id']) ?>"></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" id="editemployeeID" value="<?= htmlspecialchars($ticket['employee_name']) ?>">John Doe</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Fnance</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" id="editsubjectID" value="<?= htmlspecialchars($ticket['subject']) ?>">Paycheck Calculation</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" id="editcategoryID" value="<?= htmlspecialchars($ticket['category']) ?>">Paycheck</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" id="editdescriptionID" value="<?= htmlspecialchars($ticket['description']) ?>">Paycheck miscalculation</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Priority:</strong></h1>
-                        <p class="center-text" id="editpriorityID" value="<?= htmlspecialchars($ticket['priority']) ?>">Paycheck miscalculation</p>
-                        </select>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Assigned To:</strong></h1>
-                        <p class="center-text" id="editassignedID" value="<?= htmlspecialchars($ticket['assigned_to_name']) ?>">Paycheck miscalculation</p>
-                        </select>
-                    </div>
-
-                    <div class="input-container">
-                        <select name="statusEdit" id="statusEditID" required>
-                            <option value="" disabled selected>Select a status</option>
-                            <option value="Resolved">Resolved</option>
-                        </select>
-                    </div>
-
-                    <div class="btnContainer">
-                        <button type="submit" name="editStatusID" id="editStatusID" class="btnDefault">SUBMIT</button>
-                        <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-
-
-
-        <!-- Ticket Summarization Modal -->
-        <div id="ticketSummarizationModal" class="modal">
-            <div class="modal-content">
-                <h1 class="modal-title">Ticket Summarization</h1>
-
-                <form id="ticketSummarizationForm" method="POST">
-                    <div class="input-container">
-                        <h1><strong>Ticket ID:</strong></h1>
-                        <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Employee Name:</strong></h1>
-                        <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Department:</strong></h1>
-                        <p class="center-text" id="summarizationDepartment" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Subject:</strong></h1>
-                        <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Category:</strong></h1>
-                        <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Description:</strong></h1>
-                        <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Priority:</strong></h1>
-                        <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
-                    </div>
-
-                    <div class="input-container">
-                        <h1><strong>Assigned To:</strong></h1>
-                        <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
+                        <h1><strong>Reason:</strong></h1>
+                        <p class="center-text" id="approveReasonId"><?= htmlspecialchars($leave['reason'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
                         <h1><strong>Status:</strong></h1>
-                        <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
+                        <p class="center-text" id="approveStatusId"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Approved Summarization Modal -->
+        <div id="approvedSummarizationModal" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">Approved Leave Summarization</h1>
+                <div class="input-container">
+                    <h1><strong>Leave ID:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationLeaveID"><?= htmlspecialchars($leave['id'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Employee Name:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationEmployeeName"><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Department:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationDepartment"><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Leave Type:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationLeaveType"><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Start Date:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationStartDate"><?= htmlspecialchars($leave['start_date'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>End Date:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationEndDate"><?= htmlspecialchars($leave['end_date'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Reason:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationReason"><?= htmlspecialchars($leave['reason'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Status:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationStatus"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Created At:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationCreatedAt"><?= htmlspecialchars($leave['created_at'] ?? 'N/A') ?></p>
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Updated At:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationUpdatedAt"><?= htmlspecialchars($leave['updated_at'] ?? 'N/A') ?></p>
+
+                </div>
+
+                <div class="input-container">
+                    <h1><strong>Approved By:</strong></h1>
+                    <p class="center-text" id="approvedSummarizationApprovedBy"><?= htmlspecialchars($leave['approved_by_name'] ?? 'N/A') ?></p>
+                </div>
+
+
+                <div class="btnContainer">
+                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
+                </div>
+            </div>
+        </div>
+        <!-- Rejected Summarization Modal -->
+        <div id="rejectedSummarizationModal" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">Rejected Leave Summarization</h1>
+
+                <form id="rejectedSummarizationForm" method="POST">
+                    <div class="input-container">
+                        <h1><strong>Leave ID:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationLeaveID"><?= htmlspecialchars($leave['id'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="input-container">
-                        <h1><strong>Duration:</strong></h1>
-                        <p class="center-text" id="summarizationDuration" data-assigned="<?= htmlspecialchars($ticket['start_at']) ?>">Unassigned</p>
+                        <h1><strong>Employee Name:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationEmployeeName"><?= htmlspecialchars($leave['employee_name'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Department:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationDepartment"><?= htmlspecialchars($leave['department'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Leave Type:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationLeaveType"><?= htmlspecialchars($leave['leave_types'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Start Date:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationStartDate"><?= htmlspecialchars($leave['start_date'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>End Date:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationEndDate"><?= htmlspecialchars($leave['end_date'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Reason:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationReason"><?= htmlspecialchars($leave['reason'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Status:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationStatus"><?= htmlspecialchars($leave['status'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Created At:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationCreatedAt"><?= htmlspecialchars($leave['created_at'] ?? 'N/A') ?></p>
+                    </div>
+
+                    <div class="input-container">
+                        <h1><strong>Updated At:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationUpdatedAt"><?= htmlspecialchars($leave['updated_at'] ?? 'N/A') ?></p>
+                    </div>
+
+
+                    <div class="input-container">
+                        <h1><strong>Rejected By:</strong></h1>
+                        <p class="center-text" id="rejectedSummarizationRejectedBy"><?= htmlspecialchars($leave['rejected_by_name'] ?? 'N/A') ?></p>
                     </div>
 
                     <div class="btnContainer">
@@ -375,6 +361,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
+
+
 
 
         <!-- Leave Request Modal -->
@@ -383,7 +371,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <!-- Leave Request Form with Balance Checker -->
                 <div id="leaveForm" class="request-form" style="display:none;">
                     <h2>LEAVE REQUEST FORM</h2>
-                    <form id="leaveFormContent" action="../../0/includes/submitLeaverequest.php" method="POST">
+                    <form id="leaveFormContent" action="../../0/includes/submitLeaverequest.php" method="POST" enctype="multipart/form-data">
                         <input type="hidden" id="leaveEmployeeID" name="employeeId" value="<?= $_SESSION['user_id'] ?>">
                         <div class="input-container">
                             <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" readonly>
@@ -456,6 +444,11 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </div>
 
                         <div class="input-container">
+                            <input type="file" name="leaveAttachment" id="leaveAttachmentID" required>
+                            <label for="leaveDuration">Leave Attachment Approval</label>
+                        </div>
+
+                        <div class="input-container">
                             <textarea name="reason" required></textarea>
                             <label for="reason">Reason</label>
                         </div>
@@ -490,91 +483,175 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/hrRepOrder.js"></script>
 
 
-
     <script>
-    // Define the closeModal function in the global scope
-    function closeModal() {
-        const requestLeaveModal = document.getElementById('requestLeaveModal');
-        const leaveForm = document.getElementById('leaveForm');
+        document.addEventListener("DOMContentLoaded", function() {
+            const filterButton = document.querySelector("#filterButton");
+            const rows = document.querySelectorAll("#leaveTable tbody tr");
+            let selectedColumn = null;
 
-        if (requestLeaveModal && leaveForm) {
-            requestLeaveModal.style.display = 'none'; // Hide the modal
-            leaveForm.style.display = 'none'; // Hide the form
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        // Elements for modal functionality
-        const plate4 = document.getElementById('plate4');
-        const requestLeaveModal = document.getElementById('requestLeaveModal');
-        const leaveForm = document.getElementById('leaveForm');
-        const leaveFormContent = document.getElementById('leaveFormContent');
-
-        // Open modal functionality
-        if (plate4 && requestLeaveModal && leaveForm) {
-            plate4.addEventListener('click', () => {
-                requestLeaveModal.style.display = 'flex'; // Show the modal
-                leaveForm.style.display = 'block'; // Show the form
-            });
-        } else {
-            console.error('One or more required elements not found.');
-        }
-
-        // Close modal functionality
-        if (requestLeaveModal) {
-            const closeModalButtons = requestLeaveModal.querySelectorAll('.btnDanger');
-            closeModalButtons.forEach(button => {
-                button.addEventListener('click', closeModal); // Use the global closeModal function
-            });
-        }
-
-        // Form submission functionality
-        if (leaveFormContent) {
-            leaveFormContent.addEventListener('submit', function (e) {
-                e.preventDefault(); // Prevent normal form submission
-
-                // Serialize form data
-                const formData = new FormData(leaveFormContent);
-                const data = new URLSearchParams();
-                formData.forEach((value, key) => {
-                    data.append(key, value);
+            function filterTable(filterValue) {
+                rows.forEach((row) => {
+                    const cellText =
+                        row.cells[selectedColumn]?.textContent.toLowerCase() || "";
+                    row.style.display = cellText.includes(filterValue.toLowerCase()) ?
+                        "" :
+                        "none";
                 });
+            }
 
-                // Send AJAX request using Fetch API
-                fetch('../../0/includes/submitLeaverequest.php', {
-                    method: 'POST',
-                    body: data,
-                })
-                    .then((response) => response.json())
-                    .then((response) => {
-                        if (response.status === 'success') {
-                            alert(response.message); // Show success message
-                            closeModal(); // Close modal using the global function
-                            location.reload(); // Reload the page
-                        } else {
-                            alert('Error: ' + response.message); // Show error message
-                        }
-                    })
-                    .catch((error) => {
-                        alert('AJAX Error: ' + error); // Handle connection/server error
+            // Filter dropdown functionality
+            if (filterButton) {
+                filterButton.addEventListener("click", function() {
+                    // Create a dropdown menu dynamically
+                    let dropdown = document.querySelector(".filter-dropdown");
+                    if (!dropdown) {
+                        dropdown = document.createElement("div");
+                        dropdown.classList.add("filter-dropdown");
+                        dropdown.style.position = "absolute";
+                        dropdown.style.backgroundColor = "#fff";
+                        dropdown.style.border = "1px solid #ccc";
+                        dropdown.style.padding = "10px";
+                        dropdown.style.zIndex = "1000";
+
+                        // Add filter options
+                        const filters = [{
+                                column: 7,
+                                label: "Status"
+                            }, // Status column
+                            {
+                                column: 2,
+                                label: "Department"
+                            }, // Department column
+                            {
+                                column: 9,
+                                label: "Approved By"
+                            }, // Approved By column
+                        ];
+
+                        filters.forEach((filter) => {
+                            const option = document.createElement("div");
+                            option.textContent = filter.label;
+                            option.style.cursor = "pointer";
+                            option.style.padding = "5px 10px";
+                            option.addEventListener("click", function() {
+                                selectedColumn = filter.column;
+
+                                // Show a prompt to input the filter value
+                                const filterValue = prompt(
+                                    `Enter the value to filter by for ${filter.label}:`
+                                );
+                                if (filterValue) {
+                                    filterTable(filterValue); // Apply the filter
+                                }
+
+                                dropdown.remove(); // Remove dropdown after selection
+                            });
+                            dropdown.appendChild(option);
+                        });
+
+                        document.body.appendChild(dropdown);
+
+                        // Position the dropdown below the filter button
+                        const rect = filterButton.getBoundingClientRect();
+                        dropdown.style.left = `${rect.left}px`;
+                        dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+
+                        // Close dropdown when clicking outside
+                        document.addEventListener("click", function closeDropdown(event) {
+                            if (
+                                !dropdown.contains(event.target) &&
+                                event.target !== filterButton
+                            ) {
+                                dropdown.remove();
+                                document.removeEventListener("click", closeDropdown);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements for modal functionality
+            const plate4 = document.getElementById('plate4');
+            const requestLeaveModal = document.getElementById('requestLeaveModal');
+            const leaveForm = document.getElementById('leaveForm');
+            const leaveFormContent = document.getElementById('leaveFormContent');
+
+            // Open modal functionality
+            if (plate4 && requestLeaveModal && leaveForm) {
+                plate4.addEventListener('click', () => {
+                    requestLeaveModal.style.display = 'flex'; // Show the modal
+                    leaveForm.style.display = 'block'; // Show the form
+                });
+            } else {
+                console.error('One or more required elements not found.');
+            }
+
+            // Close modal functionality
+            const closeModal = () => {
+                if (requestLeaveModal) {
+                    requestLeaveModal.style.display = 'none'; // Hide the modal
+                }
+            };
+
+            if (requestLeaveModal) {
+                const closeModalButtons = requestLeaveModal.querySelectorAll('.btnDanger');
+                closeModalButtons.forEach(button => {
+                    button.addEventListener('click', closeModal); // Use the closeModal function to close the modal
+                });
+            }
+
+            // Form submission functionality
+            if (leaveFormContent) {
+                leaveFormContent.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevent normal form submission
+
+                    // Serialize form data
+                    const formData = new FormData(leaveFormContent);
+                    const data = new URLSearchParams();
+                    formData.forEach((value, key) => {
+                        data.append(key, value);
                     });
-            });
-        }
-    });
-</script>
+
+                    // Send AJAX request using Fetch API
+                    fetch('../../../hrts/0/includes/submitLeaverequest.php', {
+                            method: 'POST',
+                            body: data,
+                        })
+                        .then((response) => response.json())
+                        .then((response) => {
+                            if (response.status === 'success') {
+                                alert(response.message); // Show success message
+                                closeModal(); // Close modal using the closeModal function
+                                location.reload(); // Reload the page
+                            } else {
+                                alert('Error: ' + response.message); // Show error message
+                            }
+                        })
+                        .catch((error) => {
+                            alert('AJAX Error: ' + error); // Handle connection/server error
+                        });
+                });
+            }
+        });
+    </script>
 
 
 
     <script>
-        // These PHP values must be output into JS **before** any functions use them
-        const sickLeaveTotal = <?= $leaveBalances['sick_leave'] ?? 0 ?>;
+          // These PHP values must be output into JS **before** any functions use them
+          const sickLeaveTotal = <?= $leaveBalances['sick_leave'] ?? 0 ?>;
         const sickLeaveUsed = <?= $usedBalances['sick_leave'] ?? 0 ?>;
         const serviceIncentiveLeaveTotal = <?= $leaveBalances['service_incentive_leave'] ?? 0 ?>;
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
         const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
         const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
-        const managementInitiatedTotal = <?= $leaveBalances['management_initiated_leave'] ?? 0 ?>;
-        const managementInitiatedUsed = <?= $usedBalances['management_initiated_leave'] ?? 0 ?>;
+        const birthdayLeaveTotal = <?= $leaveBalances['management_initiated_leaave'] ?? 0 ?>;
+        const birthdayLeaveUsed = <?= $usedBalances['management_initiated_leaave'] ?? 0 ?>;
         const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
         const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
         const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
@@ -589,7 +666,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             sl: sickLeaveTotal - sickLeaveUsed,
             sil: serviceIncentiveLeaveTotal - serviceIncentiveLeaveUsed,
             elc: earnedLeaveCreditTotal - earnedLeaveCreditUsed,
-            mil: managementInitiatedTotal - managementInitiatedUsed,
+            bl: birthdayLeaveTotal - birthdayLeaveUsed,
             ml: maternityLeaveTotal - maternityLeaveUsed,
             pl: paternityLeaveTotal - paternityLeaveUsed,
             spl: soloParentLeaveTotal - soloParentLeaveUsed,
@@ -608,6 +685,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             "Bereavement Leave": "brl"
         };
 
+
         // ✅ Your existing functions below
         function calculateDaysBetween(start, end) {
             const startDate = new Date(start);
@@ -625,29 +703,198 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             const submitBtn = document.getElementById("submitLeaveBtn");
             const warning = document.getElementById("leaveWarning");
 
-            const balance = remainingBalances[leaveType] ?? 0;
-            document.getElementById("leaveBalance").textContent = balance;
+            if (leaveTypeRaw == 'Leave Without Pay') {
+                warning.style.display = "none";
+                leaveBalanceDisplay.style.display = "block";
+                leaveBalanceDisplay.textContent = "Leave duradtion: " + (calculateDaysBetween(start, end) > 0 ? calculateDaysBetween(start, end) : 0) + " days" // Hide the balance display
+                submitBtn.disabled = false;
+            } else {
+                const balance = remainingBalances[leaveType] ?? 0;
+                document.getElementById("leaveBalance").textContent = balance;
 
-            if (start && end && leaveType) {
-                const requestedDays = calculateDaysBetween(start, end);
-                if (requestedDays > balance) {
-                    warning.style.display = "block";
-                    leaveBalanceDisplay.style.display = "none"; // Hide the balance display
-                    submitBtn.disabled = true;
+                if (start && end && leaveType !== null) {
+                    const requestedDays = calculateDaysBetween(start, end);
+                    if (requestedDays > balance) {
+                        warning.style.display = "block";
+                        leaveBalanceDisplay.style.display = "none"; // Hide the balance display
+                        submitBtn.disabled = true;
 
-                } else {
-                    warning.style.display = "none";
-                    leaveBalanceDisplay.style.display = "block"; // Hide the balance display
-                    submitBtn.disabled = false;
+                    } else {
+                        warning.style.display = "none";
+                        leaveBalanceDisplay.style.display = "block"; // Hide the balance display
+                        submitBtn.disabled = false;
+                    }
                 }
             }
-
         }
 
         // ✅ Make sure these event listeners come after all above code
         document.getElementById("leaveTypeSelect").addEventListener("change", updateLeaveBalance);
         document.getElementById("startDate").addEventListener("change", updateLeaveBalance);
         document.getElementById("endDate").addEventListener("change", updateLeaveBalance);
+
+
+
+
+        // Ensure the currentUserId is available globally
+        const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+        console.log("Current User ID in Session:" + currentUserId);
+        document.addEventListener("DOMContentLoaded", function() {
+            const tableRows = document.querySelectorAll("tbody tr");
+            const approveModal = document.getElementById("approveModal");
+            const approvedSummarizationModal = document.getElementById("approvedSummarizationModal");
+            const rejectedSummarizationModal = document.getElementById("rejectedSummarizationModal");
+
+            // Modal fields for approveModal
+            const approveModalFields = {
+                leaveIdField: document.getElementById("approveLeaveID"),
+                employeeNameField: document.getElementById("approveNameId"),
+                departmentField: document.getElementById("approveDepartmentId"),
+                leaveTypeField: document.getElementById("approveLeaveTypeId"),
+                startDateField: document.getElementById("approveStartDateId"),
+                reasonField: document.getElementById("approveReasonId"),
+                endDateField: document.getElementById("approveEndDateId"),
+                reasonField: document.getElementById("approveReasonId"),
+                statusField: document.getElementById("approveStatusId"),
+            };
+
+            // Modal fields for Approved Summarize
+            const approvedSummarizationModalFields = {
+                leaveIdField: document.getElementById("approvedSummarizationLeaveID"),
+                employeeNameField: document.getElementById("approvedSummarizationEmployeeName"),
+                departmentField: document.getElementById("approvedSummarizationDepartment"),
+                leaveTypeField: document.getElementById("approvedSummarizationLeaveType"),
+                startDateField: document.getElementById("approvedSummarizationStartDate"),
+                endDateField: document.getElementById("approvedSummarizationEndDate"),
+                reasonField: document.getElementById("approvedSummarizationReason"),
+                statusField: document.getElementById("approvedSummarizationStatus"),
+                createdAtField: document.getElementById("approvedSummarizationCreatedAt"),
+                updatedAtField: document.getElementById("approvedSummarizationUpdatedAt"),
+                approvedByField: document.getElementById("approvedSummarizationApprovedBy"),
+            };
+
+            // Fields in the Ticket Summarization Modal
+            const rejectedSummarizationModalFields = {
+                leaveIdField: document.getElementById("rejectedSummarizationLeaveID"),
+                employeeNameField: document.getElementById("rejectedSummarizationEmployeeName"),
+                departmentField: document.getElementById("rejectedSummarizationDepartment"),
+                leaveTypeField: document.getElementById("rejectedSummarizationLeaveType"),
+                startDateField: document.getElementById("rejectedSummarizationStartDate"),
+                endDateField: document.getElementById("rejectedSummarizationEndDate"),
+                reasonField: document.getElementById("rejectedSummarizationReason"),
+                statusField: document.getElementById("rejectedSummarizationStatus"),
+                rejectedByField: document.getElementById("rejectedSummarizationRejectedBy"),
+                rejectionReasonField: document.getElementById("rejectedSummarizationRejectionReason"),
+                createdAtField: document.getElementById("rejectedSummarizationCreatedAt"),
+                updatedAtField: document.getElementById("rejectedSummarizationUpdatedAt"),
+            };
+
+            // Add click event listener to each row
+            tableRows.forEach((row) => {
+                row.addEventListener("click", function() {
+                    // Remove highlight from all rows
+                    tableRows.forEach((r) => r.classList.remove("highlighted"));
+
+                    // Highlight the clicked row
+                    this.classList.add("highlighted");
+
+                    // Get the values from the clicked row
+                    const leaveId = this.children[0].textContent.trim(); // ID
+                    const employeeId = this.children[1].textContent.trim(); // Employee ID
+                    const department = this.children[2].textContent.trim(); // Department
+                    const leaveType = this.children[3].textContent.trim(); // Leave Type
+                    const startDate = this.children[4].textContent.trim(); // Start Date
+                    const endDate = this.children[5].textContent.trim(); // End Date
+                    const reason = this.children[6].textContent.trim(); // Reason
+                    const status = this.children[7].textContent.trim(); // Status
+                    const createdAt = this.children[8].textContent.trim(); // Created At
+                    const approvedBy = this.children[9].textContent.trim(); // Approved By
+                    const updatedAt = this.children[10].textContent.trim(); // Updated At
+                    // Get the current user from the session
+                    const currentUser = document
+                        .querySelector(".accountName")
+                        .textContent.trim();
+
+
+                    const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>;
+                    console.log("Currnt User ID in Session:" + currentUserId);
+
+                    // Check the status
+                    if (status === "Pending") {
+                        // Set the values in the approveModal
+                        approveModalFields.leaveIdField.textContent = leaveId;
+                        approveModalFields.employeeNameField.textContent = employeeId;
+                        approveModalFields.departmentField.textContent = department; // No department field in the table rows
+                        approveModalFields.leaveTypeField.textContent = leaveType;
+                        approveModalFields.startDateField.textContent = startDate;
+                        approveModalFields.endDateField.textContent = endDate;
+                        approveModalFields.reasonField.textContent = reason; // No reason field in the table rows
+                        approveModalFields.statusField.style.color = "red";
+                        approveModalFields.statusField.textContent = status;
+
+                        // Open the approveModal
+                        approveModal.style.display = "flex";
+                    } else if (status === "Approved") {
+                        // Set the values in the Approved Summarization Modal
+                        approvedSummarizationModalFields.leaveIdField.textContent = leaveId || "N/A";
+                        approvedSummarizationModalFields.employeeNameField.textContent = employeeId || "N/A";
+                        approvedSummarizationModalFields.departmentField.textContent = department || "N/A";
+                        approvedSummarizationModalFields.leaveTypeField.textContent = leaveType || "N/A";
+                        approvedSummarizationModalFields.startDateField.textContent = startDate || "N/A";
+                        approvedSummarizationModalFields.endDateField.textContent = endDate || "N/A";
+                        approvedSummarizationModalFields.reasonField.textContent = reason || "N/A";
+                        approvedSummarizationModalFields.statusField.textContent = status || "N/A";
+                        approvedSummarizationModalFields.createdAtField.textContent = createdAt || "N/A";
+                        approvedSummarizationModalFields.updatedAtField.textContent = updatedAt || "N/A";
+                        approvedSummarizationModalFields.approvedByField.textContent = approvedBy || "N/A";
+
+                        approvedSummarizationModal.style.display = "flex";
+
+                    } else if (status === "Rejected") {
+                        // Populate the modal fields
+                        rejectedSummarizationModalFields.leaveIdField.textContent = leaveId || "N/A";
+                        rejectedSummarizationModalFields.employeeNameField.textContent = employeeId || "N/A";
+                        rejectedSummarizationModalFields.departmentField.textContent = department || "N/A";
+                        rejectedSummarizationModalFields.leaveTypeField.textContent = leaveType || "N/A";
+                        rejectedSummarizationModalFields.startDateField.textContent = startDate || "N/A";
+                        rejectedSummarizationModalFields.endDateField.textContent = endDate|| "N/A";
+                        rejectedSummarizationModalFields.reasonField.textContent = reason|| "N/A";
+                        rejectedSummarizationModalFields.statusField.textContent = status || "N/A";
+                        rejectedSummarizationModalFields.createdAtField.textContent = createdAt || "N/A";
+                        rejectedSummarizationModalFields.updatedAtField.textContent = updatedAt || "N/A";
+                        rejectedSummarizationModalFields.rejectedByField.textContent = approvedBy || "N/A";
+                        
+                        rejectedSummarizationModal.style.display = "flex";
+                    }
+                });
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === approveModal) {
+                    approveModal.style.display = "none";
+                }
+                if (event.target === approvedSummarizationModal) {
+                    approvedSummarizationModal.style.display = "none";
+                }
+                if (event.target === rejectedSummarizationModal) {
+                    rejectedSummarizationModal.style.display = "none";
+                }
+            });
+
+            // Close the modal when clicking the "BACK" button
+            const closeModalButtons = document.querySelectorAll(".btnDanger");
+            closeModalButtons.forEach((button) => {
+                button.addEventListener("click", function() {
+                    approveModal.style.display = "none";
+                    approvedSummarizationModal.style.display = "none";
+                    rejectedSummarizationModal.style.display = "none";
+                });
+            });
+        });
+
+
+
 
 
         // Pagination and filtering for leave requests
@@ -718,7 +965,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 }
             }
 
-            const plateIDs = ["plate1", "plate2", "plate3"];
+            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
             plateIDs.forEach(id => {
                 const plate = document.getElementById(id);
                 if (plate) {
@@ -731,8 +978,28 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     });
                 }
             });
+
+            // Search functionality
+            function filterTableBySearch() {
+                const searchValue = searchInput.value.toLowerCase(); // Get the search input value
+                const filteredRows = allRows.filter((row) =>
+                    row.textContent.toLowerCase().includes(searchValue)
+                ); // Filter rows based on search value
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                filteredRows.slice(start, end).forEach((row) => tbody.appendChild(row));
+                renderPaginationButtons(totalPages);
+            }
+
+            // Add event listener to the search input
+            searchInput.addEventListener("input", filterTableBySearch);
+
             renderTable();
         });
+
 
 
     </script>
