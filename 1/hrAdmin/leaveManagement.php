@@ -259,8 +259,14 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" id="approveViewAttachID" name="viewAttachmentBtn" class="btnDefault btnContainer">View Attachment</button>
-                        <button type="button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
+                        <button type="button"
+                            id="approveViewAttachID"
+                            name="viewAttachmentBtn"
+                            class="btnDefault btnContainer viewAttachmentBtn"
+                            data-leave-id="<?= htmlspecialchars($leave['id']) ?>">
+                            View Attachment
+                        </button>
+                        <button type=" button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
                         <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
@@ -481,8 +487,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </div>
 
                         <div class="input-container">
-                            <input type="file" name="leaveAttachment" id="leaveAttachmentId" required>
-                            <label for="attachment">Approval Attachment</label>
+                            <input type="file" name="leaveAttachment" id="leaveAttachmentID" required>
+                            <label for="attachment">Leave Attachment Approval</label>
                         </div>
 
                         <div class="input-container">
@@ -520,7 +526,21 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             </div>
         </div>
 
+
+
+        <!-- Image Modal -->
+        <div id="imageModal" class="modal">
+            <span class="close" id="closeModal">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+
+
+
+
+
+
     </div>
+
 
 
 
@@ -616,6 +636,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         });
     </script>
     <!-- function plate 4 -->
+    <!-- plate 4 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements for modal functionality
@@ -653,35 +674,32 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 leaveFormContent.addEventListener('submit', function(e) {
                     e.preventDefault(); // Prevent normal form submission
 
-                    // Serialize form data
-                    const formData = new FormData(leaveFormContent);
-                    const data = new URLSearchParams();
-                    formData.forEach((value, key) => {
-                        data.append(key, value);
-                    });
+                    const formData = new FormData(leaveFormContent); // Keep it as FormData!
 
-                    // Send AJAX request using Fetch API
-                    fetch('../../0/includes/submitLeaverequest.php', {
+                    fetch('../../../hrts/0/includes/submitLeaverequest.php', {
                             method: 'POST',
-                            body: data,
+                            body: formData,
                         })
                         .then((response) => response.json())
                         .then((response) => {
                             if (response.status === 'success') {
-                                alert(response.message); // Show success message
-                                closeModal(); // Close modal using the closeModal function
-                                location.reload(); // Reload the page
+                                alert(response.message);
+                                closeModal();
+                                location.reload();
                             } else {
-                                alert('Error: ' + response.message); // Show error message
+                                alert('Error: ' + response.message);
                             }
                         })
                         .catch((error) => {
-                            alert('AJAX Error: ' + error); // Handle connection/server error
+                            alert('AJAX Error: ' + error);
                         });
                 });
             }
+
         });
     </script>
+
+
     <!-- function plate 5 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -958,6 +976,9 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                         // Open the approveModal
                         approveModal.style.display = "flex";
+                        console.log("Leave ID:", leaveId);
+                        console.log("Employee ID:", employeeId);
+                        
                     } else if (status === "Approved") {
                         // Set the values in the Approved Summarization Modal
                         approvedSummarizationModalFields.leaveIdField.textContent = leaveId || "N/A";
@@ -981,13 +1002,13 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         rejectedSummarizationModalFields.departmentField.textContent = department || "N/A";
                         rejectedSummarizationModalFields.leaveTypeField.textContent = leaveType || "N/A";
                         rejectedSummarizationModalFields.startDateField.textContent = startDate || "N/A";
-                        rejectedSummarizationModalFields.endDateField.textContent = endDate|| "N/A";
-                        rejectedSummarizationModalFields.reasonField.textContent = reason|| "N/A";
+                        rejectedSummarizationModalFields.endDateField.textContent = endDate || "N/A";
+                        rejectedSummarizationModalFields.reasonField.textContent = reason || "N/A";
                         rejectedSummarizationModalFields.statusField.textContent = status || "N/A";
                         rejectedSummarizationModalFields.createdAtField.textContent = createdAt || "N/A";
                         rejectedSummarizationModalFields.updatedAtField.textContent = updatedAt || "N/A";
                         rejectedSummarizationModalFields.rejectedByField.textContent = approvedBy || "N/A";
-                        
+
                         rejectedSummarizationModal.style.display = "flex";
                     }
                 });
@@ -1172,6 +1193,69 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             });
         });
+
+
+
+
+
+        
+
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById("imageModal");
+        const modalImage = document.getElementById("modalImage");
+
+        // Hide modal on load
+        modal.style.display = "none";
+
+        // Event delegation for dynamic buttons
+        document.addEventListener("click", function(e) {
+            if (e.target.classList.contains("viewAttachmentBtn")) {
+                const leaveRequestId = e.target.getAttribute("data-leave-id");
+                console.log("Leave Request ID:", leaveRequestId); // Debugging line
+                
+                if (!leaveRequestId) {
+                    console.error("Missing leave_request_id");
+                    return;
+                }
+
+                // Fetch the image path via AJAX (relative path expected)
+                fetch(`../../../hrts/0/includes/leaveAttachmentsQuery.php?leave_id=${leaveRequestId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success" && data.path) {
+                            // Set relative path directly if already correct (e.g. assets/uploads/filename.jpg)
+                            openImageModal(data.path);
+                        } else {
+                            alert(data.message || "Attachment not found.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching attachment:", error);
+                    });
+            }
+        });
+
+        // Open the modal with image
+        function openImageModal(imagePath) {
+            modalImage.src = imagePath;
+            modal.style.display = "flex";
+        }
+
+        // Close modal
+        document.getElementById("closeModal").onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // Close modal when clicking outside the image
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    });
+
+
     </script>
 
 

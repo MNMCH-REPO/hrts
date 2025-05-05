@@ -452,9 +452,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             <textarea name="reason" required></textarea>
                             <label for="reason">Reason</label>
                         </div>
-
-
-
                         <!-- Balance and warning -->
                         <div class="input-container">
                             <p id="leaveBalanceDisplay"><strong>Leave Balance:</strong> <span id="leaveBalance">--</span> days</p>
@@ -482,7 +479,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/hrRepOrder.js"></script>
 
-
+    <!-- Filter -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const filterButton = document.querySelector("#filterButton");
@@ -572,7 +569,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         });
     </script>
 
-
+    <!-- plate 4 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements for modal functionality
@@ -610,41 +607,36 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 leaveFormContent.addEventListener('submit', function(e) {
                     e.preventDefault(); // Prevent normal form submission
 
-                    // Serialize form data
-                    const formData = new FormData(leaveFormContent);
-                    const data = new URLSearchParams();
-                    formData.forEach((value, key) => {
-                        data.append(key, value);
-                    });
+                    const formData = new FormData(leaveFormContent); // Keep it as FormData!
 
-                    // Send AJAX request using Fetch API
                     fetch('../../../hrts/0/includes/submitLeaverequest.php', {
                             method: 'POST',
-                            body: data,
+                            body: formData,
                         })
                         .then((response) => response.json())
                         .then((response) => {
                             if (response.status === 'success') {
-                                alert(response.message); // Show success message
-                                closeModal(); // Close modal using the closeModal function
-                                location.reload(); // Reload the page
+                                alert(response.message);
+                                closeModal();
+                                location.reload();
                             } else {
-                                alert('Error: ' + response.message); // Show error message
+                                alert('Error: ' + response.message);
                             }
                         })
                         .catch((error) => {
-                            alert('AJAX Error: ' + error); // Handle connection/server error
+                            alert('AJAX Error: ' + error);
                         });
                 });
             }
+
         });
     </script>
 
 
 
     <script>
-          // These PHP values must be output into JS **before** any functions use them
-          const sickLeaveTotal = <?= $leaveBalances['sick_leave'] ?? 0 ?>;
+        // These PHP values must be output into JS **before** any functions use them
+        const sickLeaveTotal = <?= $leaveBalances['sick_leave'] ?? 0 ?>;
         const sickLeaveUsed = <?= $usedBalances['sick_leave'] ?? 0 ?>;
         const serviceIncentiveLeaveTotal = <?= $leaveBalances['service_incentive_leave'] ?? 0 ?>;
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
@@ -857,13 +849,13 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         rejectedSummarizationModalFields.departmentField.textContent = department || "N/A";
                         rejectedSummarizationModalFields.leaveTypeField.textContent = leaveType || "N/A";
                         rejectedSummarizationModalFields.startDateField.textContent = startDate || "N/A";
-                        rejectedSummarizationModalFields.endDateField.textContent = endDate|| "N/A";
-                        rejectedSummarizationModalFields.reasonField.textContent = reason|| "N/A";
+                        rejectedSummarizationModalFields.endDateField.textContent = endDate || "N/A";
+                        rejectedSummarizationModalFields.reasonField.textContent = reason || "N/A";
                         rejectedSummarizationModalFields.statusField.textContent = status || "N/A";
                         rejectedSummarizationModalFields.createdAtField.textContent = createdAt || "N/A";
                         rejectedSummarizationModalFields.updatedAtField.textContent = updatedAt || "N/A";
                         rejectedSummarizationModalFields.rejectedByField.textContent = approvedBy || "N/A";
-                        
+
                         rejectedSummarizationModal.style.display = "flex";
                     }
                 });
@@ -999,9 +991,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             renderTable();
         });
-
-
-
     </script>
 
 

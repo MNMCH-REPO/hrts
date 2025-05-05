@@ -476,6 +476,10 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </div>
 
                         <div class="input-container">
+                            <input type="file" name="leaveAttachment" id="leaveAttachmentID" required>
+                            <label for="attachmentLeave">Leave Attachment Approval</label>
+
+                        <div class="input-container">
                             <textarea name="reason" required></textarea>
                             <label for="reason">Reason</label>
                         </div>
@@ -606,6 +610,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         });
     </script>
     <!-- function plate 4 -->
+    <!-- plate 4 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements for modal functionality
@@ -643,35 +648,32 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 leaveFormContent.addEventListener('submit', function(e) {
                     e.preventDefault(); // Prevent normal form submission
 
-                    // Serialize form data
-                    const formData = new FormData(leaveFormContent);
-                    const data = new URLSearchParams();
-                    formData.forEach((value, key) => {
-                        data.append(key, value);
-                    });
+                    const formData = new FormData(leaveFormContent); // Keep it as FormData!
 
-                    // Send AJAX request using Fetch API
                     fetch('../../../hrts/0/includes/submitLeaverequest.php', {
                             method: 'POST',
-                            body: data,
+                            body: formData,
                         })
                         .then((response) => response.json())
                         .then((response) => {
                             if (response.status === 'success') {
-                                alert(response.message); // Show success message
-                                closeModal(); // Close modal using the closeModal function
-                                location.reload(); // Reload the page
+                                alert(response.message);
+                                closeModal();
+                                location.reload();
                             } else {
-                                alert('Error: ' + response.message); // Show error message
+                                alert('Error: ' + response.message);
                             }
                         })
                         .catch((error) => {
-                            alert('AJAX Error: ' + error); // Handle connection/server error
+                            alert('AJAX Error: ' + error);
                         });
                 });
             }
+
         });
     </script>
+
+
     <!-- function plate 5 -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
