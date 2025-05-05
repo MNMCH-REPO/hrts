@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $originalFilename = basename($_FILES['leaveAttachment']['name']);
-                $safeFilename = time() . '_' . preg_replace("/[^a-zA-Z0-9.]/", "_", $originalFilename);
+                $safeFilename = preg_replace("/[^a-zA-Z0-9.]/", "_", $originalFilename);
                 $targetFilePath = $uploadDir . $safeFilename;
                 $relativePath = 'assets/uploads/' . $safeFilename;
 

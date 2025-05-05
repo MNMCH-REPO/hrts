@@ -263,7 +263,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             id="approveViewAttachID"
                             name="viewAttachmentBtn"
                             class="btnDefault btnContainer viewAttachmentBtn"
-                            data-leave-id="<?= htmlspecialchars($leave['id']) ?>">
+                            data-leave-id="">
                             View Attachment
                         </button>
                         <button type=" button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
@@ -535,7 +535,47 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         </div>
 
 
+        <style>
+            #imageModal .modal-content {
+                margin: auto;
+                display: block;
+                max-width: 60%;
+                max-height: 60%;
+                width: auto;
+                height: auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
 
+            #imageModal .close {
+                position: absolute;
+                top: 20px;
+                right: 35px;
+                color: #fff;
+                font-size: 40px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            #imageModal .close:hover,
+            #imageModal .close:focus {
+                color: red;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            /* Responsive adjustments for #imageModal */
+            @media (max-width: 768px) {
+                #imageModal .modal-content {
+                    max-width: 80%;
+                    max-height: 50%;
+                }
+
+                #imageModal .close {
+                    font-size: 30px;
+                }
+            }
+        </style>
 
 
 
@@ -934,6 +974,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             // Add click event listener to each row
             tableRows.forEach((row) => {
                 row.addEventListener("click", function() {
+
                     // Remove highlight from all rows
                     tableRows.forEach((r) => r.classList.remove("highlighted"));
 
@@ -978,7 +1019,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         approveModal.style.display = "flex";
                         console.log("Leave ID:", leaveId);
                         console.log("Employee ID:", employeeId);
-                        
+
                     } else if (status === "Approved") {
                         // Set the values in the Approved Summarization Modal
                         approvedSummarizationModalFields.leaveIdField.textContent = leaveId || "N/A";
@@ -1198,66 +1239,62 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("imageModal");
+            const modalImage = document.getElementById("modalImage");
 
-    
-    document.addEventListener("DOMContentLoaded", function() {
-        const modal = document.getElementById("imageModal");
-        const modalImage = document.getElementById("modalImage");
-
-        // Hide modal on load
-        modal.style.display = "none";
-
-        // Event delegation for dynamic buttons
-        document.addEventListener("click", function(e) {
-            if (e.target.classList.contains("viewAttachmentBtn")) {
-                const leaveRequestId = e.target.getAttribute("data-leave-id");
-                console.log("Leave Request ID:", leaveRequestId); // Debugging line
-                
-                if (!leaveRequestId) {
-                    console.error("Missing leave_request_id");
-                    return;
-                }
-
-                // Fetch the image path via AJAX (relative path expected)
-                fetch(`../../../hrts/0/includes/leaveAttachmentsQuery.php?leave_id=${leaveRequestId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === "success" && data.path) {
-                            // Set relative path directly if already correct (e.g. assets/uploads/filename.jpg)
-                            openImageModal(data.path);
-                        } else {
-                            alert(data.message || "Attachment not found.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error fetching attachment:", error);
-                    });
-            }
-        });
-
-        // Open the modal with image
-        function openImageModal(imagePath) {
-            modalImage.src = imagePath;
-            modal.style.display = "flex";
-        }
-
-        // Close modal
-        document.getElementById("closeModal").onclick = function() {
+            // Hide image modal initially
             modal.style.display = "none";
-        };
 
-        // Close modal when clicking outside the image
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
+            // Handle click on "View Attachment" button
+            document.addEventListener("click", function(e) {
+                if (e.target.classList.contains("viewAttachmentBtn")) {
+                    const leaveId = document.getElementById("approveLeaveID").textContent.trim();
+                    console.log("Leave Request ID:", leaveId);
+
+                    if (!leaveId) {
+                        console.error("Missing leave_request_id");
+                        return;
+                    }
+
+                    fetch(`../../../hrts/0/includes/leaveAttachmentsQuery.php?leave_id=${leaveId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success" && data.path) {
+                                openImageModal(data.path);
+                            } else {
+                                alert(data.message || "Attachment not found.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching attachment:", error);
+                        });
+                }
+            });
+
+            // Open image modal
+            function openImageModal(imagePath) {
+                modalImage.src = imagePath;
+                modal.style.display = "flex";
             }
-        };
-    });
+            // Close the modal
+            document.getElementById("closeModal").onclick = function() {
+                const modal = document.getElementById("imageModal");
+                modal.style.display = "none";
+            };
 
-
+            // Close the modal when clicking outside the image
+            window.onclick = function(event) {
+                const modal = document.getElementById("imageModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        });
     </script>
 
+
+    
 
 </body>
 

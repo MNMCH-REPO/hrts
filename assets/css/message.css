@@ -1,195 +1,219 @@
+body {
+    font-family: Arial, sans-serif;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-        }
+.chat-container {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+}
 
-        .chat-container {
-            width: 100%;
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 80vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            background-color: #f9f9f9;
-        }
+.message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+    word-wrap: break-word;
+}
 
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 10px;
-            max-width: 60%;
-            word-wrap: break-word;
-        }
+.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    text-align: right;
+}
 
-        .sent {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-            text-align: right;
-        }
+.received {
+    background-color: #f1f0f0;
+    align-self: flex-start;
+    text-align: left;
+}
 
-        .received {
-            background-color: #f1f0f0;
-            align-self: flex-start;
-            text-align: left;
-        }
+.input-area {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    gap: 8px;
+}
 
-        .input-area {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            gap: 8px;
-        }
+.attach {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #ddd;
+    color: black;
+    /* Ensures text is black */
+    font-weight: bold;
+    /* Optional: makes text stand out */
+    border-radius: 5px;
+    margin-right: 5px;
 
-        .attach {
-            padding: 10px;
-            cursor: pointer;
-            background-color: #ddd;
-            color: black;
-            /* Ensures text is black */
-            font-weight: bold;
-            /* Optional: makes text stand out */
-            border-radius: 5px;
-            margin-right: 5px;
+    /* Add spacing between attach and input */
+}
 
-            /* Add spacing between attach and input */
-        }
+input[type="text"] {
+    flex: 1;
+    padding: 10px;
+}
 
-        input[type="text"] {
-            flex: 1;
-            padding: 10px;
-        }
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
 
-        button {
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+.container-convo {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+}
 
-        .container-convo{
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            width: 100%;
-        }
+.convo-assigned {
+    text-transform: uppercase;
+    font-size: small;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
 
-        .convo-assigned {
-            text-transform: uppercase;
-            font-size: small;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 1px;
-            margin-top: 20px;
-        }
-        .assigned-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-align: center;
-            display: block;
-            margin-top: 5px;
-        }
+.assigned-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    margin-top: 5px;
+}
 
-        .sent {
-            background-color: #d1ffd1;
-            text-align: right;
-        }
-        .received {
-            background-color: #f1f1f1;
-            text-align: left;
-        }
-        .attachment {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
+.sent {
+    background-color: #d1ffd1;
+    text-align: right;
+}
 
-        .attachment-image {
-            max-width: 300px; /* Limit the width to 300px */
-            height: auto; /* Maintain aspect ratio */
-            border-radius: 5px; /* Add rounded corners */
-            margin-top: 10px; /* Add spacing above the image */
-        }
+.received {
+    background-color: #f1f1f1;
+    text-align: left;
+}
+
+.attachment {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.attachment-image {
+    max-width: 300px;
+    /* Limit the width to 300px */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 5px;
+    /* Add rounded corners */
+    margin-top: 10px;
+    /* Add spacing above the image */
+}
 
 
-        .no-messages {
-            text-align: center; /* Center the text horizontally */
-            margin-top: 20px; /* Add some spacing from the top */
-            font-size: 16px; /* Adjust font size if needed */
-            color: #555; /* Optional: Change text color */
-        }
-        
-        /* Sidebar styles */
-        .sidebar {
-            width: 30%;
-            display: flex-end;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .chatbox-container{
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 70%;
-        }
-        .cards-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            width: 20%;
-            height: 80vh;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            border-left: none;
-        }
-        .card {
-            width: 100%;
-            max-height: 72px;
-            background-color: #ffffff;
-            border: 1px solid #f1f1f1;
-            padding: 4px 12px;
-            transition: all 120ms;
-            cursor: pointer !important;
-            margin: -1px 0 0 0;
-        }
-        
-        .card:hover {
-            background-color: var(--primary-300);
-            border: 1px solid var(--primary-300);
-        }
-        .selected{
-            background-color: var(--primary-300);
-            border: 1px solid var(--primary-300);
-        }
-        .card h1 {
-            font-size: 12px;
-            margin: 2px 0;
-            color: var(--black);
-            font-weight: 500;
-            cursor: pointer;
-        }
+.no-messages {
+    text-align: center;
+    /* Center the text horizontally */
+    margin-top: 20px;
+    /* Add some spacing from the top */
+    font-size: 16px;
+    /* Adjust font size if needed */
+    color: #555;
+    /* Optional: Change text color */
+}
 
-        /* Horizontal button container for view and download buttons */
+/* Sidebar styles */
+.sidebar {
+    width: 30%;
+    display: flex-end;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chatbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 70%;
+}
+
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 20%;
+    height: 80vh;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-left: none;
+}
+
+.card {
+    width: 100%;
+    max-height: 72px;
+    background-color: #ffffff;
+    border: 1px solid #f1f1f1;
+    padding: 4px 12px;
+    transition: all 120ms;
+    cursor: pointer !important;
+    margin: -1px 0 0 0;
+}
+
+.card:hover {
+    background-color: var(--primary-300);
+    border: 1px solid var(--primary-300);
+}
+
+.selected {
+    background-color: var(--primary-300);
+    border: 1px solid var(--primary-300);
+}
+
+.card h1 {
+    font-size: 12px;
+    margin: 2px 0;
+    color: var(--black);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Horizontal button container for view and download buttons */
 .button-container {
-    display: flex; /* Use flexbox for horizontal layout */
-    gap: 10px; /* Add spacing between buttons */
-    margin-top: 10px; /* Add some margin above the buttons */
+    display: flex;
+    /* Use flexbox for horizontal layout */
+    gap: 10px;
+    /* Add spacing between buttons */
+    margin-top: 10px;
+    /* Add some margin above the buttons */
 }
 
 .btnWarning {
-    background-color: transparent; /* Transparent background */
-    border: none; /* Remove border */
-    cursor: pointer; /* Pointer cursor on hover */
-    padding: 5px; /* Add some padding */
+    background-color: transparent;
+    /* Transparent background */
+    border: none;
+    /* Remove border */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    padding: 5px;
+    /* Add some padding */
 }
 
 .btnWarning img {
-    width: 20px; /* Set icon width */
-    height: 20px; /* Set icon height */
+    width: 20px;
+    /* Set icon width */
+    height: 20px;
+    /* Set icon height */
 }
 
 .modal {
