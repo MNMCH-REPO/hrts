@@ -478,6 +478,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         <div class="input-container">
                             <input type="file" name="leaveAttachment" id="leaveAttachmentID" required>
                             <label for="attachmentLeave">Leave Attachment Approval</label>
+                        </div>
 
                         <div class="input-container">
                             <textarea name="reason" required></textarea>
