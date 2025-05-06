@@ -1,27 +1,23 @@
 <?php
-header('Content-Type: application/json');
+header("Content-Type: application/json");
 
-function uploadFile($pdo, $ticket_id, $user_id, $file)
-{
+function uploadFile($pdo, $ticket_id, $user_id, $file) {
     $file_path = null;
     $file_name = null;
 
     try {
-        // Check if the ticket exists in the tickets table
         $stmt = $pdo->prepare("
-            SELECT id 
-            FROM tickets 
-            WHERE id = :ticket_id
+            SELECT tr.id 
+            FROM ticket_responses tr
+            INNER JOIN tickets t ON tr.ticket_id = t.id
+            WHERE t.id = :ticket_id
         ");
-        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($stmt->rowCount() === 0) {
-            throw new Exception("Invalid ticket_id: No matching ticket found in tickets.");
-        }
-
-        // Debugging: Log ticket validation success
-        error_log("Ticket ID $ticket_id validated successfully.");
+    $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    if ($stmt->rowCount() === 0) {
+        throw new Exception("Invalid ticket_id: No matching ticket found in tickets or ticket_responses.");
+    }
 
         // Check if a file is provided and valid
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -45,9 +41,6 @@ function uploadFile($pdo, $ticket_id, $user_id, $file)
         $file_path = 'assets/uploads/' . $fileName; // Save relative path to the database
         $file_name = $fileName; // Save the file name to the database
 
-        // Debugging: Log file upload success
-        error_log("File uploaded successfully to $file_path.");
-
         // Insert the file into the attachments table
         $stmt = $pdo->prepare("
             INSERT INTO attachments (ticket_id, uploaded_by, file_path, file_name, uploaded_at) 
@@ -62,23 +55,27 @@ function uploadFile($pdo, $ticket_id, $user_id, $file)
             throw new Exception("Failed to insert attachment into database: " . implode(", ", $stmt->errorInfo()));
         }
 
-        // Debugging: Log database insertion success
-        error_log("Attachment inserted into database successfully.");
+        // Log the attachment in the audit trail
+        $attachmentId = $pdo->lastInsertId();
+        $actionType = 'INSERT';
+        $affectedTable = 'attachments';
+        $details = "Added attachment to ticket ID $ticket_id: $file_path";
 
-        // ✅ ADDITION: Also insert a message into ticket_responses table
-        $response_text = "$file_name";
+
         $stmt = $pdo->prepare("
-    INSERT INTO ticket_responses (ticket_id, user_id, response_text, created_at)
-    VALUES (:ticket_id, :user_id, :response_text, NOW())
-");
-        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $stmt->bindParam(':response_text', $response_text, PDO::PARAM_STR);
+            INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
+            VALUES (:actionType, :affectedTable, :affectedId, :details, :userId, NOW())
+        ");
+        $stmt->bindParam(':actionType', $actionType);
+        $stmt->bindParam(':affectedTable', $affectedTable);
+        $stmt->bindParam(':affectedId', $attachmentId, PDO::PARAM_INT);
+        $stmt->bindParam(':details', $details);
+        $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
+
 
         if (!$stmt->execute()) {
-            throw new Exception("Failed to insert file message into ticket_responses.");
+            throw new Exception("Failed to insert audit trail for attachment: " . implode(", ", $stmt->errorInfo()));
         }
-        // ✅ Done
 
         // Return success response
         return [
@@ -97,6 +94,7 @@ function uploadFile($pdo, $ticket_id, $user_id, $file)
     }
 }
 
+// Main script logic
 try {
     session_start();
     require 'db.php';
@@ -114,16 +112,11 @@ try {
     $user_id = $_SESSION['user_id'];
     $ticket_id = intval($_POST['ticket_id']);
 
-    // Debugging: Log the incoming data
-    error_log("User ID: $user_id, Ticket ID: $ticket_id");
 
     if (!isset($_FILES['file'])) {
         echo json_encode(['success' => false, 'message' => 'No file uploaded.']);
         exit;
     }
-
-    // Debugging: Log file details
-    error_log("File Details: " . print_r($_FILES['file'], true));
 
     // Call the uploadFile function
     $response = uploadFile($pdo, $ticket_id, $user_id, $_FILES['file']);

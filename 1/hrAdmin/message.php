@@ -79,7 +79,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         <div class="input-area">
                             <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
                             <div class="attach" id="attach">Attachment📎</div>
-                            <input type="text" id="message" name="message" placeholder="Type a message...">
+                            <input type="text" id="message" name="message">
                             <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
                                 <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
                             </button>
@@ -89,9 +89,6 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                     <div class="cards-container" id="cardsContainer">
                         <div class="search">
                             <input type="text" id="search" placeholder="Search...">
-                            <button id="searchBtn" aria-label="Search">
-                                <img src="../../assets/images/icons/search.png">
-                            </button>
                         </div>
 
                         <?php
@@ -158,27 +155,33 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             });
 
 
+                            // Render
                             if ($items) {
                                 foreach ($items as $index => $item) {
-                                    echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
+                                    if (!empty($item['id']) && !empty($item['type'])) {
+                                        // Debug output
+                                        echo '<!-- DEBUG: ID=' . $item['id'] . ', TYPE=' . $item['type'] . ' -->';
 
-                                    echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
-                                    echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
+                                        echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
 
-                                    // Display ID
-                                    echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
+                                        echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
+                                        echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
+                                        echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
 
-                                    if ($item['type'] === 'ticket') {
-                                        echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
-                                        echo '<h1>Subject: ' . htmlspecialchars($item['subject'] ?? 'N/A') . '</h1>';
-                                        echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
+                                        if ($item['type'] === 'ticket') {
+                                            echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
+                                            echo '<h1>Subject: ' . htmlspecialchars($item['subject'] ?? 'N/A') . '</h1>';
+                                            echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
+                                        } else {
+                                            echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
+                                            echo '<h1>Start Date: ' . htmlspecialchars($item['start_date'] ?? 'N/A') . '</h1>';
+                                            echo '<h1>End Date: ' . htmlspecialchars($item['end_date'] ?? 'N/A') . '</h1>';
+                                        }
+
+                                        echo '</div>';
                                     } else {
-                                        echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
-                                        echo '<h1>Start Date: ' . htmlspecialchars($item['start_date'] ?? 'N/A') . '</h1>';
-                                        echo '<h1>End Date: ' . htmlspecialchars($item['end_date'] ?? 'N/A') . '</h1>';
+                                        echo '<!-- Skipped item: Missing id or type -->';
                                     }
-
-                                    echo '</div>';
                                 }
                             } else {
                                 echo '<p>No tickets or leave requests found.</p>';
@@ -197,6 +200,8 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             </div>
         </div>
 
+
+        
 
         <!-- Image Modal -->
         <div id="imageModal" class="modal">
@@ -324,6 +329,42 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 }
             }
         </script>
+
+<script>
+$(document).ready(function () {
+    let selectedTicketId = null; // Declare globally
+
+    $(document).on("click", ".card", function () {
+        const itemId = $(this).data("id");
+        const itemType = $(this).data("type");
+
+        console.log("Clicked card. ID:", itemId, "Type:", itemType);
+
+        $(".card").removeClass("selected");
+        $(this).addClass("selected");
+
+        if (!itemId || !itemType) {
+            console.error("No ticket ID or type found for this card.");
+            return;
+        }
+
+        selectedTicketId = itemId;
+
+        if (itemType === "ticket") {
+            console.log("Selected Ticket ID:", selectedTicketId);
+            checkTicketPermissions(itemId);
+            loadMessages(itemId);
+        } else if (itemType === "leave") {
+            console.log("Selected Leave ID:", selectedTicketId);
+            checkTicketPermissions(itemId);
+            loadMessages(itemId);
+        } else {
+            console.warn("Unknown item type:", itemType);
+        }
+    });
+});
+</script>
+
 
 </body>
 

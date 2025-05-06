@@ -1,26 +1,4 @@
-$(document).ready(function () {
-  $(document).on("click", ".card", function () {
-    const itemId = $(this).data("id");
-    const itemType = $(this).data("type");
 
-    $(".card").removeClass("selected");
-    $(this).addClass("selected");
-
-    if (itemType === "ticket") {
-      console.log("Selected Ticket ID:", itemId);
-      selectedTicketId = itemId;
-      checkTicketPermissions(itemId);
-      loadMessages(itemId);
-    } else if (itemType === "leave") {
-      console.log("Selected Ticket ID:", itemId);
-      selectedTicketId = itemId;
-      checkTicketPermissions(itemId);
-      loadMessages(itemId);
-    } else {
-      console.warn("Unknown item type.");
-    }
-  });
-});
 
 
 
@@ -124,29 +102,40 @@ function selectTicket(ticketId) {
   loadMessages(ticketId);
 }
 
+
+
+function resetSendState() {
+  isSending = false;
+  $("#sendmesageBtn").prop("disabled", false);
+}
+
+function resumeSendState() {
+  resetSendState();
+  // Restart the refresh
+  if (!refreshInterval) {
+    refreshInterval = setInterval(() => loadMessages(), 1000);
+  }
+}
+
+
 function uploadFile(fileInput, ticketId, callback) {
   let formData = new FormData();
   formData.append("ticket_id", ticketId);
   formData.append("file", fileInput);
 
-  // Debugging: Log FormData content
-  console.log("Uploading file with Ticket ID:", ticketId);
-  console.log("File Input:", fileInput);
-
   $.ajax({
-    url: "../../0/includes/admin_upload_file.php",
+    url: "../../../hrts/0/includes/admin_upload_file.php", // New backend file for file uploads
     type: "POST",
     data: formData,
     contentType: false,
     processData: false,
-    dataType: "json", // <- Add this line
     success: function (response) {
-      console.log("Backend Response:", response);
+      console.log("File uploaded successfully:", response);
       if (response.success) {
-        if (callback) callback(response);
+        if (callback) callback(response); // Call the callback function after file upload
       } else {
         console.error("File upload failed:", response.message);
-        alert(response.message);
+        alert(response.message); // Show error message to the user
       }
     },
     error: function (xhr, status, error) {
@@ -155,6 +144,7 @@ function uploadFile(fileInput, ticketId, callback) {
     },
   });
 }
+
 
 function sendMessage(event) {
   if (event) event.preventDefault();
@@ -169,31 +159,25 @@ function sendMessage(event) {
   }
 
   if (fileInput) {
-    // Upload the file first, then send the message
+    // Upload the file first, then send the filename as message (even if messageText is empty)
     uploadFile(fileInput, selectedTicketId, function (fileResponse) {
-      console.log("Upload callback response:", fileResponse); // Moved inside the callback
-      // After file upload, send the message
-      sendTextMessage(messageText);
+      let fileName = fileResponse.file_name || "File uploaded";
+
+      // ✅ Send filenfame as message only if no manual message is written
+      sendTextMessage(messageText || fileName);
     });
   } else {
-    // If no file, just send the message
     sendTextMessage(messageText);
   }
 }
 
 function sendTextMessage(messageText) {
-  if (!messageText) {
-    console.warn("No message to send.");
-    alert("Please enter a message before sending.");
-    return;
-  }
-
   let formData = new FormData();
   formData.append("ticket_id", selectedTicketId);
   formData.append("message", messageText);
 
   $.ajax({
-    url: "../../0/includes/adminSendMessage.php", // Backend for sending messages
+    url: "../../../hrts/0/includes/adminSendMessage.php", // Existing backend for sending messages
     type: "POST",
     data: formData,
     contentType: false,
@@ -201,7 +185,9 @@ function sendTextMessage(messageText) {
     success: function (response) {
       console.log("Message sent successfully:", response);
       if (response.success) {
-        $("#message").val(""); // Clear message input
+        $("#fileInput").val(""); // ✅ Clear file input
+        $("#message").val("");   // ✅ Clear message input
+        $("#message").attr("placeholder", "Type your message..."); // Reset placeholder
         loadMessages(); // Refresh messages
       } else {
         console.error("Message sending failed:", response.message);
@@ -210,6 +196,7 @@ function sendTextMessage(messageText) {
     },
     error: function (xhr, status, error) {
       console.error("Error sending message:", error);
+      console.error("Raw response:", xhr.responseText); // Add this
       alert("An error occurred while sending the message.");
     },
   });
@@ -225,7 +212,10 @@ $(document).ready(function () {
   $("#fileInput").change(function () {
     let file = this.files[0];
     if (file) {
-      $("#message").val(`${file.name}`); // Set the file name in the message input
+      console.log(`Setting message value: ${file.name}`);
+      $("#message").attr("placeholder", ""); // Clear the placeholder
+      $("#message").val(file.name); // Set the file name as the message text
+
     } else {
       $("#message").val(""); // Clear the message input if no file is selected
     }
@@ -243,6 +233,7 @@ $(document).ready(function () {
     }
   });
 });
+
 
 function handleFileAction(filePath, action) {
   if (!filePath) {

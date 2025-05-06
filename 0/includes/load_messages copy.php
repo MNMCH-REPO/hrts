@@ -138,7 +138,7 @@ try {
 
     // Display messages
     if (!$messages && !$attachments) {
-
+        
         echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
         foreach ($messages as $row) {
@@ -166,11 +166,11 @@ try {
             echo "</div>";
         }
 
-
+      
         // Display attachments
         foreach ($attachments as $attachment) {
             $file_name = htmlspecialchars($attachment['file_name']);
-            $file_path = 'hrts/' . htmlspecialchars($attachment['file_path']);
+            $file_path = 'hrts/'.htmlspecialchars($attachment['file_path']);
             $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
             $uploaded_at = date('F j, Y - h:i A', strtotime($attachment['uploaded_at']));
 

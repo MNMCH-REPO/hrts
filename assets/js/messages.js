@@ -1,30 +1,31 @@
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
 
-
 function loadMessages(ticketId = null, assignedName = null) {
   if (ticketId && ticketId !== selectedTicketId) {
-      selectedTicketId = ticketId;
+    selectedTicketId = ticketId;
 
-      $("#message").val("");       // Clear message input
-      $("#fileInput").val("");     // Clear file input
+    $("#message").val(""); // Clear message input
+    $("#fileInput").val(""); // Clear file input
 
-      // Clear existing interval
-      if (refreshInterval) clearInterval(refreshInterval);
+    // Clear existing interval
+    if (refreshInterval) clearInterval(refreshInterval);
 
-      // Auto-refresh messages every second
-      refreshInterval = setInterval(() => {
-          loadMessages(); // Refresh only if the same ticket is still selected
-      }, 1000);
+    // Auto-refresh messages every second
+    refreshInterval = setInterval(() => {
+      loadMessages(); // Refresh only if the same ticket is still selected
+    }, 1000);
   }
 
   if (!selectedTicketId) {
-      console.error("No ticket selected.");
-      return;
+    console.error("No ticket selected.");
+    return;
   }
 
   if (assignedName) {
-      $("#assignedName").text("You are now having a conversation with: " + assignedName);
+    $("#assignedName").text(
+      "You are now having a conversation with: " + assignedName
+    );
   }
 
   // Save the current scroll position
@@ -33,18 +34,18 @@ function loadMessages(ticketId = null, assignedName = null) {
 
   // Load messages via AJAX
   $.ajax({
-      url: "../../../hrts/0/includes/employeeLoad_messages.php",
-      type: "GET",
-      data: { ticket_id: selectedTicketId },
-      success: function (response) {
-          chatbox.html(response);
+    url: "../../../hrts/0/includes/employeeLoad_messages.php",
+    type: "GET",
+    data: { ticket_id: selectedTicketId },
+    success: function (response) {
+      chatbox.html(response);
 
-          // Restore the scroll position
-          chatbox.scrollTop(scrollPosition);
-      },
-      error: function (xhr, status, error) {
-          console.error("Error loading messages:", error);
-      }
+      // Restore the scroll position
+      chatbox.scrollTop(scrollPosition);
+    },
+    error: function (xhr, status, error) {
+      console.error("Error loading messages:", error);
+    },
   });
 }
 
@@ -64,15 +65,13 @@ function selectTicket(ticketId) {
   selectedTicketId = ticketId;
 
   if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify({ action: "select_ticket", ticket_id: ticketId }));
+    socket.send(
+      JSON.stringify({ action: "select_ticket", ticket_id: ticketId })
+    );
   }
 
   loadMessages(ticketId);
 }
-
-
-
-
 
 function uploadFile(fileInput, ticketId, callback) {
   let formData = new FormData();
@@ -100,15 +99,12 @@ function uploadFile(fileInput, ticketId, callback) {
     },
   });
 }
-
 function sendMessage(event) {
   if (event) event.preventDefault();
 
   let messageText = $("#message").val().trim();
   let fileInput = $("#fileInput")[0].files[0];
 
-
-  
   if (!selectedTicketId) {
     console.warn("No ticket selected.");
     alert("Please select a ticket before sending a message.");
@@ -116,24 +112,19 @@ function sendMessage(event) {
   }
 
   if (fileInput) {
-    // Upload the file first, then send the message
+    // Upload the file first, then send the filename as message (even if messageText is empty)
     uploadFile(fileInput, selectedTicketId, function (fileResponse) {
-      // After file upload, send the message
-      sendTextMessage(messageText);
+      let fileName = fileResponse.file_name || "File uploaded";
+
+      // ✅ Send filenfame as message only if no manual message is written
+      sendTextMessage(messageText || fileName);
     });
   } else {
-    // If no file, just send the message
     sendTextMessage(messageText);
   }
 }
 
 function sendTextMessage(messageText) {
-  if (!messageText) {
-    console.warn("No message to send.");
-    alert("Please enter a message before sending.");
-    return;
-  }
-
   let formData = new FormData();
   formData.append("ticket_id", selectedTicketId);
   formData.append("message", messageText);
@@ -147,7 +138,9 @@ function sendTextMessage(messageText) {
     success: function (response) {
       console.log("Message sent successfully:", response);
       if (response.success) {
-        $("#message").val(""); // Clear message input
+        $("#fileInput").val(""); // Clear file input
+        $("#message").attr("placeholder", "Type your message..."); // Reset placeholder
+
         loadMessages(); // Refresh messages
       } else {
         console.error("Message sending failed:", response.message);
@@ -172,8 +165,9 @@ $(document).ready(function () {
   $("#fileInput").change(function () {
     let file = this.files[0];
     if (file) {
-      $("#message").attr("placeholder", `Attached: ${file.name}`);
-
+      console.log(`Setting message value: ${file.name}`);
+      $("#message").attr("placeholder", ""); // Clear the placeholder
+      $("#message").val(file.name); // Set the file name as the message text
     } else {
       $("#message").val(""); // Clear the message input if no file is selected
     }
@@ -217,36 +211,32 @@ function handleFileAction(filePath, action) {
 
 // Ensure modal is hidden on page load
 document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("imageModal");
-    modal.style.display = "none"; // Ensure modal is hidden
+  const modal = document.getElementById("imageModal");
+  modal.style.display = "none"; // Ensure modal is hidden
 });
-
-
-
 
 // Open the modal and display the image
 function openImageModal(imagePath) {
-    const modal = document.getElementById("imageModal");
-    const modalImage = document.getElementById("modalImage");
+  const modal = document.getElementById("imageModal");
+  const modalImage = document.getElementById("modalImage");
 
-    modal.style.display = "flex"; // Use flex to center the modal
-    modalImage.src = imagePath; // Set the image source
+  modal.style.display = "flex"; // Use flex to center the modal
+  modalImage.src = imagePath; // Set the image source
 }
 
 // Close the modal
 document.getElementById("closeModal").onclick = function () {
-    const modal = document.getElementById("imageModal");
-    modal.style.display = "none";
+  const modal = document.getElementById("imageModal");
+  modal.style.display = "none";
 };
 
 // Close the modal when clicking outside the image
 window.onclick = function (event) {
-    const modal = document.getElementById("imageModal");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
+  const modal = document.getElementById("imageModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
 };
-
 
 function renderTickets() {
   const cardsContainer = document.querySelector(".cards-container");
