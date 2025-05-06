@@ -335,7 +335,7 @@
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
 
-         <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php">
+         <form id="markAWOLForm" method="POST">
 
              <input type="hidden" name="usedBalanceId" id="markAWOLID">
              <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID">
