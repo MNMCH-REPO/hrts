@@ -217,7 +217,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     <?php
 
     require_once 'modals.php';
-    require_once '../../0/includes/markAWOLQuery.php';
+    
 
     ?>
 
@@ -324,7 +324,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
         }
     }
 
-    const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+    const plateIDs = ["plate1", "plate2", "plate3"];
     plateIDs.forEach(id => {
         const plate = document.getElementById(id);
         if (plate) {
