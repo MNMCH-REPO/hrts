@@ -335,9 +335,10 @@
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
 
-         <form id="markAWOLForm" method="POST">
-             <input type="text" name="usedBalanceId" id="markAWOLID">
-             <input type="text" name="employeeLeaveUserId" id="markAWOLEmployeeID">
+         <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php">
+
+             <input type="hidden" name="usedBalanceId" id="markAWOLID">
+             <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID">
              <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
              <p class="center-text">
                  Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
