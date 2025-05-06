@@ -1,21 +1,28 @@
-
-
-
 $(document).ready(function () {
-  // Handle card click to load messages and check permissions
   $(document).on("click", ".card", function () {
-    const ticketId = $(this).data("ticket-id");
-    if (ticketId) {
-      console.log("Selected Ticket ID:", ticketId);
-      $(".card").removeClass("selected"); // Remove the selected class from all cards
-      $(this).addClass("selected"); // Add the selected class to the clicked card
-      checkTicketPermissions(ticketId); // Check permissions for the clicked ticket
-      loadMessages(ticketId); // Load messages for the clicked ticket
+    const itemId = $(this).data("id");
+    const itemType = $(this).data("type");
+
+    $(".card").removeClass("selected");
+    $(this).addClass("selected");
+
+    if (itemType === "ticket") {
+      console.log("Selected Ticket ID:", itemId);
+      selectedTicketId = itemId;
+      checkTicketPermissions(itemId);
+      loadMessages(itemId);
+    } else if (itemType === "leave") {
+      console.log("Selected Ticket ID:", itemId);
+      selectedTicketId = itemId;
+      checkTicketPermissions(itemId);
+      loadMessages(itemId);
     } else {
-      console.warn("No ticket ID found for this card.");
+      console.warn("Unknown item type.");
     }
   });
 });
+
+
 
 function checkTicketPermissions(ticketId) {
   $.ajax({

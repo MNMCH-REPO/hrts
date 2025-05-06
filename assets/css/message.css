@@ -147,6 +147,51 @@ button {
     width: 70%;
 }
 
+.search {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 180px;
+}
+
+#search {
+    flex: 1;
+    padding: 4px;
+    font-size: 12px;
+}
+
+#searchBtn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+
+#searchBtn img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#searchBtn:hover {
+    cursor: pointer;
+}
+
+#searchBtn:focus {
+    outline: none;
+}
+
+#searchBtn:active {
+    transform: scale(0.95);
+}
+
+#searchBtn:active img {
+    transform: scale(0.95);
+}
+
+
+
 .cards-container {
     display: flex;
     flex-direction: column;
