@@ -177,8 +177,8 @@ function sendMessage(event) {
   let fileInput = $("#fileInput")[0].files[0];
 
   if (!selectedTicketId) {
-    console.warn("No ticket selected.");
-    alert("Please select a ticket before sending a message.");
+    console.warn("No ticket or leave request selected.");
+    alert("Please select a ticket or leave request before sending a message.");
     return;
   }
 
@@ -187,7 +187,7 @@ function sendMessage(event) {
     uploadFile(fileInput, selectedTicketId, function (fileResponse) {
       let fileName = fileResponse.file_name || "File uploaded";
 
-      // ✅ Send filenfame as message only if no manual message is written
+      // ✅ Send filename as message only if no manual message is written
       sendTextMessage(messageText || fileName);
     });
   } else {
@@ -197,7 +197,11 @@ function sendMessage(event) {
 
 function sendTextMessage(messageText) {
   let formData = new FormData();
-  formData.append("ticket_id", selectedTicketId);
+  if (selectedTicketType === "ticket") {
+    formData.append("ticket_id", selectedTicketId);
+  } else if (selectedTicketType === "leave") {
+    formData.append("leave_id", selectedTicketId);
+  }
   formData.append("message", messageText);
 
   $.ajax({
