@@ -268,7 +268,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         </button>
                         <button type=" button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
-                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer">REJECT</button>
+                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer" data-leave-id="">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                     </div>
                 </form>
@@ -521,6 +521,22 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     <form id="resetLeaveForm" method="POST">
                         <button type="submit" class="btnWarning " name="resetValueButton">Confirm Reset</button>
                         <button type="button" class="btnDefault" id="cancelReset">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reject Confirmation Modal -->
+        <div id="rejectConfirmModal" class="modal">
+            <div class="modal-content">
+                <h2>Confirm Reject Leave Request</h2>
+                <p>Are you sure you want to reject this leave request? This action cannot be undone.</p>
+                <div class="btnContainer">
+                    <form id="rejectConfirmForm" method="POST">
+
+                        <input type="text" id="rejectLeaveID" name="leaveId" value=""> <!-- Hidden input for leave ID -->
+                        <button type="submit" class="btnWarning" id="confirmRejectButton">Confirm Reject</button>
+                        <button type="button" class="btnDefault" id="cancelRejectButton">Cancel</button>
                     </form>
                 </div>
             </div>
@@ -1237,6 +1253,84 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
+        document.addEventListener("DOMContentLoaded", function() {
+            const rejectConfirmModal = document.getElementById("rejectConfirmModal");
+            const cancelRejectButton = document.getElementById("cancelRejectButton");
+            const confirmRejectButton = document.getElementById("confirmRejectButton");
+            const rejectLeaveIDInput = document.getElementById("rejectLeaveID");
+
+            // Open the modal when the "REJECT" button is clicked
+            document.getElementById("declineLeaveBtnID").addEventListener("click", function(event) {
+                event.preventDefault();
+
+                // Get the leave ID from the modal or table row
+                const rejectID = document.getElementById("approveLeaveID").textContent.trim();
+                if (!rejectID) {
+                    alert("Leave ID is missing.");
+                    return;
+                }
+
+
+                // Set the leave ID in the hidden input
+                rejectLeaveIDInput.value = rejectID;
+
+                // Show the reject confirmation modal
+                rejectConfirmModal.style.display = "flex";
+            });
+
+            // Close the modal when the "Cancel" button is clicked
+            cancelRejectButton.addEventListener("click", function() {
+                rejectConfirmModal.style.display = "none";
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === rejectConfirmModal) {
+                    rejectConfirmModal.style.display = "none";
+                }
+            });
+
+            // Handle the form submission
+            document.getElementById("rejectConfirmForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const leaveId = rejectLeaveIDInput.value.trim();
+                const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>; // Current user ID from session
+
+                if (!leaveId) {
+                    alert("Leave ID is missing.");
+                    return;
+                }
+
+                // Send AJAX request to reject the leave request
+                fetch("../../../hrts/0/includes/rejectLeave.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            leave_id: leaveId,
+                            approved_by: currentUserId,
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while rejecting the leave request.");
+                    });
+
+                // Close the modal after submission
+                rejectConfirmModal.style.display = "none";
+            });
+        });
 
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -1294,7 +1388,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     </script>
 
 
-    
+
 
 </body>
 
