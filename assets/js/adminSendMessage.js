@@ -1,7 +1,3 @@
-
-
-
-
 function checkTicketPermissions(ticketId) {
   $.ajax({
     url: "../../0/includes/adminSendPermission.php", // Backend to check permissions
@@ -30,9 +26,10 @@ function checkTicketPermissions(ticketId) {
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
 
-function loadMessages(ticketId = null, assignedName = null) {
+function loadMessages(ticketId = null, assignedName = null, type = "ticket") {
   if (ticketId && ticketId !== selectedTicketId) {
     selectedTicketId = ticketId;
+    selectedTicketType = type; // Set the type (ticket or leave)
 
     $("#message").val(""); // Clear message input
     $("#fileInput").val(""); // Clear file input
@@ -42,7 +39,7 @@ function loadMessages(ticketId = null, assignedName = null) {
 
     // Auto-refresh messages every second
     refreshInterval = setInterval(() => {
-      loadMessages(); // Refresh only if the same ticket is still selected
+      loadMessages(selectedTicketId, assignedName, selectedTicketType); // Pass type during refresh
     }, 1000);
   }
 
@@ -65,7 +62,7 @@ function loadMessages(ticketId = null, assignedName = null) {
   $.ajax({
     url: "../../0/includes/load_messages.php",
     type: "GET",
-    data: { ticket_id: selectedTicketId },
+    data: { ticket_id: selectedTicketId, type: selectedTicketType }, // Pass the type parameter
     success: function (response) {
       chatbox.html(response);
 
@@ -93,16 +90,8 @@ function updateChatbox(message) {
 function selectTicket(ticketId) {
   selectedTicketId = ticketId;
 
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(
-      JSON.stringify({ action: "select_ticket", ticket_id: ticketId })
-    );
-  }
-
   loadMessages(ticketId);
 }
-
-
 
 function resetSendState() {
   isSending = false;
@@ -116,7 +105,6 @@ function resumeSendState() {
     refreshInterval = setInterval(() => loadMessages(), 1000);
   }
 }
-
 
 function uploadFile(fileInput, ticketId, callback) {
   let formData = new FormData();
@@ -144,7 +132,6 @@ function uploadFile(fileInput, ticketId, callback) {
     },
   });
 }
-
 
 function sendMessage(event) {
   if (event) event.preventDefault();
@@ -186,7 +173,7 @@ function sendTextMessage(messageText) {
       console.log("Message sent successfully:", response);
       if (response.success) {
         $("#fileInput").val(""); // ✅ Clear file input
-        $("#message").val("");   // ✅ Clear message input
+        $("#message").val(""); // ✅ Clear message input
         $("#message").attr("placeholder", "Type your message..."); // Reset placeholder
         loadMessages(); // Refresh messages
       } else {
@@ -215,7 +202,6 @@ $(document).ready(function () {
       console.log(`Setting message value: ${file.name}`);
       $("#message").attr("placeholder", ""); // Clear the placeholder
       $("#message").val(file.name); // Set the file name as the message text
-
     } else {
       $("#message").val(""); // Clear the message input if no file is selected
     }
@@ -233,7 +219,6 @@ $(document).ready(function () {
     }
   });
 });
-
 
 function handleFileAction(filePath, action) {
   if (!filePath) {
@@ -300,15 +285,19 @@ function renderTickets() {
       };
 
       card.innerHTML = `
-<h1>Ticket ID: ${ticket.id}</h1>
-<h1>Employee Name: ${ticket.employee_name}</h1>
-<h1>Department: ${ticket.department}</h1>
-<h1>Subject: ${ticket.subject}</h1>
-<h1>Assigned Name: ${ticket.assigned_name}</h1>
-<h1>Priority: ${ticket.priority}</h1>
-<h1>Status: ${ticket.status}</h1>
-<h1>Created At: ${ticket.created_at}</h1>
-`;
+    <h1>Ticket ID: ${ticket.id}</h1>
+    <h1>Employee Name: ${ticket.employee_name}</h1>
+    <h1>Department: ${ticket.department}</h1>
+    <h1>Subject: ${ticket.subject}</h1>
+    <h1>Assigned Name: ${ticket.assigned_name}</h1>
+    <h1>Priority: ${ticket.priority}</h1>
+    <h1>Status: ${ticket.status}</h1>
+    <h1>Created At: ${ticket.created_at}</h1>
+    `;
+
+      card.setAttribute("data-id", ticket.id); // Add ticket ID
+      card.setAttribute("data-type", "ticket"); // Set type to 'ticket' (adjust if needed based on your use case)
+      card.setAttribute("data-name", ticket.assigned_name); // Optionally store the assigned name
 
       cardsContainer.appendChild(card);
     });

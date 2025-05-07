@@ -165,17 +165,15 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                         echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
 
                                         echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
-                                        echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
                                         echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
+                                        echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
+                                        echo '<h1>Subject: ' . htmlspecialchars($item['subject'] ?? 'N/A') . '</h1>';
 
                                         if ($item['type'] === 'ticket') {
                                             echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
-                                            echo '<h1>Subject: ' . htmlspecialchars($item['subject'] ?? 'N/A') . '</h1>';
                                             echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
                                         } else {
                                             echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
-                                            echo '<h1>Start Date: ' . htmlspecialchars($item['start_date'] ?? 'N/A') . '</h1>';
-                                            echo '<h1>End Date: ' . htmlspecialchars($item['end_date'] ?? 'N/A') . '</h1>';
                                         }
 
                                         echo '</div>';
