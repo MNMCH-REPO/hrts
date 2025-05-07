@@ -149,8 +149,10 @@
     }
     
     .modal-content {
+        display: flex;
+        flex-direction: column;
         background: white;
-        width: 50%;
+        width: 90%;
         margin: 10% auto;
         padding: 20px;
         border-radius: 8px;
@@ -162,41 +164,42 @@
         font-size: 20px;
         cursor: pointer;
     }
-    
     .time-options {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
+        gap: 2px;
     }
-    
     .time-btn {
-        padding: 10px;
+        flex: 1;
+        padding: 2px 6px;
         border: none;
         background: #ddd;
         cursor: pointer;
     }
     
     .date-range {
+        display: flex;
         margin: 10px 0;
     }
     
     .report-options {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        padding: 20px 0;
     }
     
     .report-card {
+        flex: 1;
         border: 1px solid #ddd;
-        padding: 10px;
-        width: 30%;
+        padding: 2px;
         text-align: center;
     }
     
     #downloadReport {
         background: black;
         color: white;
-        padding: 10px;
+        padding: 6px 12px;
         cursor: pointer;
     }
     
