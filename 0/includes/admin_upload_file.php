@@ -1,23 +1,35 @@
 <?php
 header("Content-Type: application/json");
 
-function uploadFile($pdo, $ticket_id, $user_id, $file) {
+function uploadFile($pdo, $type, $id, $user_id, $file) {
     $file_path = null;
     $file_name = null;
-
     try {
-        $stmt = $pdo->prepare("
-            SELECT tr.id 
-            FROM ticket_responses tr
-            INNER JOIN tickets t ON tr.ticket_id = t.id
-            WHERE t.id = :ticket_id
-        ");
-    $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    if ($stmt->rowCount() === 0) {
-        throw new Exception("Invalid ticket_id: No matching ticket found in tickets or ticket_responses.");
-    }
+        // Validate the type and ID
+        if ($type === 'ticket') {
+            $stmt = $pdo->prepare("
+                SELECT tr.id 
+                FROM ticket_responses tr
+                INNER JOIN tickets t ON tr.ticket_id = t.id
+                WHERE t.id = :id
+            ");
+        } elseif ($type === 'leave') {
+            $stmt = $pdo->prepare("
+                SELECT lr.id 
+                FROM leave_responses lr
+                INNER JOIN leave_requests l ON lr.leave_id = l.id
+                WHERE l.id = :id
+            ");
+        } else {
+            throw new Exception("Invalid type provided. Must be 'ticket' or 'leave'.");
+        }
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() === 0) {
+            throw new Exception("Invalid ID: No matching record found for the provided type and ID.");
+        }
 
         // Check if a file is provided and valid
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
@@ -25,7 +37,7 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
         }
 
         $uploadDir = '../../assets/uploads/';
-        $fileName = basename($file['name']); // Extract the file name
+        $fileName = time() . '_' . basename($file['name']); // Add timestamp to avoid conflicts
         $targetFilePath = $uploadDir . $fileName;
 
         // Ensure the upload directory exists and is writable
@@ -39,17 +51,24 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
         }
 
         $file_path = 'assets/uploads/' . $fileName; // Save relative path to the database
-        $file_name = $fileName; // Save the file name to the database
 
-        // Insert the file into the attachments table
-        $stmt = $pdo->prepare("
-            INSERT INTO attachments (ticket_id, uploaded_by, file_path, file_name, uploaded_at) 
-            VALUES (:ticket_id, :uploaded_by, :file_path, :file_name, NOW())
-        ");
-        $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        // Insert the file into the appropriate table
+        if ($type === 'ticket') {
+            $stmt = $pdo->prepare("
+                INSERT INTO attachments (ticket_id, uploaded_by, file_path, file_name, uploaded_at) 
+                VALUES (:id, :uploaded_by, :file_path, :file_name, NOW())
+            ");
+        } elseif ($type === 'leave') {
+            $stmt = $pdo->prepare("
+                INSERT INTO leave_attachments (leave_request_id, uploaded_by, file_path, file_name, uploaded_at) 
+                VALUES (:id, :uploaded_by, :file_path, :file_name, NOW())
+            ");
+        }
+
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->bindParam(':uploaded_by', $user_id, PDO::PARAM_INT);
         $stmt->bindParam(':file_path', $file_path, PDO::PARAM_STR);
-        $stmt->bindParam(':file_name', $file_name, PDO::PARAM_STR);
+        $stmt->bindParam(':file_name', $fileName, PDO::PARAM_STR);
 
         if (!$stmt->execute()) {
             throw new Exception("Failed to insert attachment into database: " . implode(", ", $stmt->errorInfo()));
@@ -58,9 +77,8 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
         // Log the attachment in the audit trail
         $attachmentId = $pdo->lastInsertId();
         $actionType = 'INSERT';
-        $affectedTable = 'attachments';
-        $details = "Added attachment to ticket ID $ticket_id: $file_path";
-
+        $affectedTable = $type === 'ticket' ? 'attachments' : 'leave_attachments';
+        $details = "Added attachment to $type ID $id: $file_path";
 
         $stmt = $pdo->prepare("
             INSERT INTO audit_trail (action_type, affected_table, affected_id, details, user_id, timestamp) 
@@ -71,7 +89,6 @@ function uploadFile($pdo, $ticket_id, $user_id, $file) {
         $stmt->bindParam(':affectedId', $attachmentId, PDO::PARAM_INT);
         $stmt->bindParam(':details', $details);
         $stmt->bindParam(':userId', $user_id, PDO::PARAM_INT);
-
 
         if (!$stmt->execute()) {
             throw new Exception("Failed to insert audit trail for attachment: " . implode(", ", $stmt->errorInfo()));
@@ -104,14 +121,14 @@ try {
         exit;
     }
 
-    if (!isset($_POST['ticket_id'])) {
-        echo json_encode(['success' => false, 'message' => 'Ticket ID is required.']);
+    if (!isset($_POST['type']) || !isset($_POST['id'])) {
+        echo json_encode(['success' => false, 'message' => 'Type and ID are required.']);
         exit;
     }
 
     $user_id = $_SESSION['user_id'];
-    $ticket_id = intval($_POST['ticket_id']);
-
+    $type = $_POST['type']; // 'ticket' or 'leave'
+    $id = intval($_POST['id']);
 
     if (!isset($_FILES['file'])) {
         echo json_encode(['success' => false, 'message' => 'No file uploaded.']);
@@ -119,7 +136,7 @@ try {
     }
 
     // Call the uploadFile function
-    $response = uploadFile($pdo, $ticket_id, $user_id, $_FILES['file']);
+    $response = uploadFile($pdo, $type, $id, $user_id, $_FILES['file']);
     echo json_encode($response);
 } catch (Exception $e) {
     error_log("Error in admin_upload_file.php: " . $e->getMessage());

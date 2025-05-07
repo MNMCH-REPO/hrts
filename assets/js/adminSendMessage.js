@@ -2,6 +2,11 @@ $(document).ready(function () {
   let selectedTicketId = null; // Declare globally
   let selectedTicketType = null;
 
+
+
+  
+
+
   $(document).on("click", ".card", function () {
       const itemId = $(this).data("id");
       const itemType = $(this).data("type");
@@ -33,31 +38,50 @@ $(document).ready(function () {
   });
 });
 
-// Function to check permissions
+
+// Already existing: your checkTicketPermissions function
 function checkTicketPermissions(id, type) {
-  $.ajax({
-      url: "../../0/includes/adminSendPermission.php", // Backend to check permissions
+
+    $.ajax({
+      url: "../../0/includes/adminSendPermission.php",
       type: "GET",
-      data: type === "ticket" ? { ticket_id: id } : { leave_id: id }, // Dynamically set the data based on type
-      success: function (response) {
-          try {
-              const res = JSON.parse(response); // Parse the JSON response
-              if (res.canReply) {
-                  $(".input-area").show(); // Show the input area if the user can reply
-              } else {
-                  $(".input-area").hide(); // Hide the input area if the user cannot reply
-              }
-          } catch (e) {
-              console.error("Error parsing permissions response:", e, response);
-              $(".input-area").hide(); // Hide the input area on error
-          }
+      dataType: "json", // ✅ Let jQuery parse the response as JSON
+      data: type === "ticket" ? { ticket_id: id } : { leave_id: id },
+      success: function (res) {
+        console.log("Permissions response:", res); // Already parsed
+  
+        if (res.canReply) {
+          $(".input-area").show();
+        } else {
+          $(".input-area").hide();
+        }
       },
       error: function (xhr, status, error) {
-          console.error("Error checking permissions:", error);
-          $(".input-area").hide(); // Hide the input area on error
+        console.error("Error checking permissions:", error);
+        $(".input-area").hide();
       },
+    });
+  }
+
+  
+
+// ✅ Add this part at the bottom of adminSendMessage.js
+  $(document).ready(function () {
+    $(document).on("click", ".card", function () {
+      const id = $(this).data("id");
+      const type = $(this).data("type");
+  
+      console.log("Clicked card ID:", id, "Type:", type);
+  
+      if (id && type) {
+        checkTicketPermissions(id, type);
+      } else {
+        console.warn("Card clicked missing ID or type.");
+        $(".input-area").hide();
+      }
+    });
   });
-}
+
 
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
@@ -143,13 +167,14 @@ function resumeSendState() {
   }
 }
 
-function uploadFile(fileInput, ticketId, callback) {
+function uploadFile(fileInput, ticketId, type, callback) {
   let formData = new FormData();
-  formData.append("ticket_id", ticketId);
-  formData.append("file", fileInput);
+  formData.append("id", ticketId); // Send the ID
+  formData.append("type", type); // Send the type (ticket or leave)
+  formData.append("file", fileInput); // Send the file
 
   $.ajax({
-    url: "../../../hrts/0/includes/admin_upload_file.php", // New backend file for file uploads
+    url: "../../../hrts/0/includes/admin_upload_file.php", // Backend file for file uploads
     type: "POST",
     data: formData,
     contentType: false,
@@ -184,7 +209,7 @@ function sendMessage(event) {
 
   if (fileInput) {
     // Upload the file first, then send the filename as message (even if messageText is empty)
-    uploadFile(fileInput, selectedTicketId, function (fileResponse) {
+    uploadFile(fileInput, selectedTicketId, selectedTicketType, function (fileResponse) {
       let fileName = fileResponse.file_name || "File uploaded";
 
       // ✅ Send filename as message only if no manual message is written

@@ -266,7 +266,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             data-leave-id="">
                             View Attachment
                         </button>
-                        <button type=" button" id="approveMessageID" name="appproveMessageBtn" class="btnDefault btnContainer">Message</button>
+                        <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
                         <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer" data-leave-id="">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
@@ -599,7 +599,22 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const messageButton = document.getElementById("messageApprovalID");
 
+    messageButton.addEventListener("click", function () {
+        const messageLeaveID = document.getElementById("approveLeaveID").value; // Get the leave ID
+        if (!messageLeaveID) {
+            alert("Leave ID is missing.");
+            return;
+        }
+
+        // Redirect to message.php with type=leave and the leave ID
+        window.location.href = `message.php?type=leave&id=${messageLeaveID}`;
+    });
+});
+</script>
 
 
     <script src="../../assets/js/framework.js"></script>
@@ -1333,6 +1348,30 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         });
 
 
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const messageButton = document.getElementById("messageApprovalID");
+
+    messageButton.addEventListener("click", function () {
+        const messageLeaveID = document.getElementById("approveLeaveID").textContent.trim();
+        console.log("Storing Leave ID in session storage:", messageLeaveID); // Debugging
+
+        if (!messageLeaveID) {
+            alert("Leave ID is missing.");
+            return;
+        }
+
+        // Store the leave ID and type in session storage
+        sessionStorage.setItem("leaveID", messageLeaveID);
+        sessionStorage.setItem("type", "leave");
+
+        // Redirect to message.php
+        window.location.href = "message.php";
+    });
+});
+
+
+
         document.addEventListener("DOMContentLoaded", function() {
             const modal = document.getElementById("imageModal");
             const modalImage = document.getElementById("modalImage");
@@ -1386,6 +1425,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             };
         });
     </script>
+
+
 
 
 
