@@ -1,32 +1,68 @@
-function checkTicketPermissions(ticketId) {
-  $.ajax({
-    url: "../../0/includes/adminSendPermission.php", // Backend to check permissions
-    type: "GET",
-    data: { ticket_id: ticketId },
-    success: function (response) {
-      try {
-        const res = JSON.parse(response); // Parse the JSON response
-        if (res.canReply) {
-          $(".input-area").show(); // Show the input area if the user can reply
-        } else {
-          $(".input-area").hide(); // Hide the input area if the user cannot reply
-        }
-      } catch (e) {
-        console.error("Error parsing permissions response:", e, response);
-        $(".input-area").hide(); // Hide the input area on error
+$(document).ready(function () {
+  let selectedTicketId = null; // Declare globally
+  let selectedTicketType = null;
+
+  $(document).on("click", ".card", function () {
+      const itemId = $(this).data("id");
+      const itemType = $(this).data("type");
+
+      console.log("Clicked card. ID:", itemId, "Type:", itemType);
+
+      $(".card").removeClass("selected");
+      $(this).addClass("selected");
+
+      if (!itemId || !itemType) {
+          console.error("No ticket ID or type found for this card.");
+          return;
       }
-    },
-    error: function (xhr, status, error) {
-      console.error("Error checking ticket permissions:", error);
-      $(".input-area").hide(); // Hide the input area on error
-    },
+
+      selectedTicketId = itemId;
+      selectedTicketType = itemType;
+
+      if (itemType === "ticket") {
+          console.log("Selected Ticket ID:", selectedTicketId);
+          checkTicketPermissions(itemId);
+          loadMessages(itemId, null, itemType);
+      } else if (itemType === "leave") {
+          console.log("Selected Leave ID:", selectedTicketId);
+          checkTicketPermissions(itemId);
+          loadMessages(itemId, null, itemType);
+      } else {
+          console.warn("Unknown item type:", itemType);
+      }
+  });
+});
+
+// Function to check permissions
+function checkTicketPermissions(id, type) {
+  $.ajax({
+      url: "../../0/includes/adminSendPermission.php", // Backend to check permissions
+      type: "GET",
+      data: type === "ticket" ? { ticket_id: id } : { leave_id: id }, // Dynamically set the data based on type
+      success: function (response) {
+          try {
+              const res = JSON.parse(response); // Parse the JSON response
+              if (res.canReply) {
+                  $(".input-area").show(); // Show the input area if the user can reply
+              } else {
+                  $(".input-area").hide(); // Hide the input area if the user cannot reply
+              }
+          } catch (e) {
+              console.error("Error parsing permissions response:", e, response);
+              $(".input-area").hide(); // Hide the input area on error
+          }
+      },
+      error: function (xhr, status, error) {
+          console.error("Error checking permissions:", error);
+          $(".input-area").hide(); // Hide the input area on error
+      },
   });
 }
 
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
 
-function loadMessages(ticketId = null, assignedName = null, type = "ticket") {
+function loadMessages(ticketId = null, assignedName = null, type = null) {
   if (ticketId && ticketId !== selectedTicketId) {
     selectedTicketId = ticketId;
     selectedTicketType = type; // Set the type (ticket or leave)
@@ -62,7 +98,8 @@ function loadMessages(ticketId = null, assignedName = null, type = "ticket") {
   $.ajax({
     url: "../../0/includes/load_messages.php",
     type: "GET",
-    data: { ticket_id: selectedTicketId, type: selectedTicketType }, // Pass the type parameter
+    data: { ticket_id: selectedTicketId, ticket_type: selectedTicketType },
+
     success: function (response) {
       chatbox.html(response);
 

@@ -329,38 +329,11 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </script>
 
 <script>
-$(document).ready(function () {
-    let selectedTicketId = null; // Declare globally
 
-    $(document).on("click", ".card", function () {
-        const itemId = $(this).data("id");
-        const itemType = $(this).data("type");
 
-        console.log("Clicked card. ID:", itemId, "Type:", itemType);
 
-        $(".card").removeClass("selected");
-        $(this).addClass("selected");
 
-        if (!itemId || !itemType) {
-            console.error("No ticket ID or type found for this card.");
-            return;
-        }
 
-        selectedTicketId = itemId;
-
-        if (itemType === "ticket") {
-            console.log("Selected Ticket ID:", selectedTicketId);
-            checkTicketPermissions(itemId);
-            loadMessages(itemId);
-        } else if (itemType === "leave") {
-            console.log("Selected Leave ID:", selectedTicketId);
-            checkTicketPermissions(itemId);
-            loadMessages(itemId);
-        } else {
-            console.warn("Unknown item type:", itemType);
-        }
-    });
-});
 </script>
 
 

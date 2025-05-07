@@ -9,40 +9,91 @@ if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
 $user_id = $_SESSION['user_id'];
 $roleUser = $_SESSION['role'];
 $ticket_id = intval($_GET['ticket_id']);
-$type = isset($_GET['type']) && $_GET['type'] === 'leave' ? 'leave' : 'ticket'; // Determine type
+// echo $_GET['ticket_type'];
+if($_GET['ticket_type'] == 'leave'){
+    $type = 'leave';
+}
+else{
+    $type = 'ticket';
+}
 
 try {
     // Admins can view all tickets
-    if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
-        $checkStmt = $pdo->prepare("
-            SELECT 
-                t.id, 
-                t.employee_id, 
-                t.assigned_to, 
-                u_assigned.name AS assigned_name, 
-                u_creator.name AS creator_name
-            FROM tickets t
-            LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id
-            LEFT JOIN users u_creator ON t.employee_id = u_creator.id
-            WHERE t.id = :ticket_id
-        ");
-        $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-    } else {
-        $checkStmt = $pdo->prepare("
-            SELECT 
-                t.id, 
-                t.employee_id, 
-                t.assigned_to, 
-                u_assigned.name AS assigned_name, 
-                u_creator.name AS creator_name
-            FROM tickets t
-            LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id
-            LEFT JOIN users u_creator ON t.employee_id = u_creator.id
-            WHERE t.id = :ticket_id AND (t.assigned_to = :user_id OR t.employee_id = :user_id)
-        ");
-        $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
-        $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    if($type == 'ticket'){
+        if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
+            $checkStmt = $pdo->prepare("
+                SELECT 
+                    t.id, 
+                    t.employee_id, 
+                    t.assigned_to, 
+                    t.category_id,
+                    u_assigned.name AS assigned_name, 
+                    u_creator.name AS creator_name,
+                    c.id AS categories_id,
+                    c.name AS category_name
+                FROM tickets t
+                LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id
+                LEFT JOIN users u_creator ON t.employee_id = u_creator.id
+                LEFT JOIN categories c ON t.category_id = c.id
+                WHERE t.id = :ticket_id
+            ");
+            $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        } else {
+            $checkStmt = $pdo->prepare("
+                SELECT 
+                    t.id, 
+                    t.employee_id, 
+                    t.assigned_to,
+                    t.category_id,
+                    u_assigned.name AS assigned_name, 
+                    u_creator.name AS creator_name,
+                    c.id AS categories_id,
+                    c.name AS category_name
+                FROM tickets t
+                LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id
+                LEFT JOIN users u_creator ON t.employee_id = u_creator.id
+                LEFT JOIN categories c ON t.category_id = c.id
+                WHERE t.id = :ticket_id AND (t.assigned_to = :user_id OR t.employee_id = :user_id)
+            ");
+            $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+            $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
     }
+    else{
+        if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
+            $checkStmt = $pdo->prepare("
+                SELECT 
+                    lr.id, 
+                    lr.employee_id,
+                    lr.approved_by as assigned_to,
+                    lr.leave_types,
+                    u_assigned.name AS assigned_name, 
+                    u_creator.name AS creator_name
+                FROM leave_requests lr
+                LEFT JOIN users u_assigned ON lr.approved_by = u_assigned.id
+                LEFT JOIN users u_creator ON lr.employee_id = u_creator.id
+                WHERE lr.id = :ticket_id
+            ");
+            $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+        } else {
+            $checkStmt = $pdo->prepare("
+                SELECT 
+                    lr.id, 
+                    lr.employee_id,
+                    lr.approved_by as assigned_to,
+                    lr.leave_types,
+                    u_assigned.name AS assigned_name, 
+                    u_creator.name AS creator_name
+                FROM leave_requests lr
+                LEFT JOIN users u_assigned ON lr.approved_by = u_assigned.id
+                LEFT JOIN users u_creator ON lr.employee_id = u_creator.id
+                WHERE lr.id = :ticket_id AND (lr.assigned_to = :user_id OR lr.employee_id = :user_id)
+            ");
+            $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
+            $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
+    }
+    
 
     $checkStmt->execute();
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
@@ -67,13 +118,13 @@ try {
     if ($type === 'leave') {
         $stmt = $pdo->prepare("
             SELECT 
-                leave_responses.response_text, 
+                leave_responses.response_text_leave AS response_text, 
                 leave_responses.created_at, 
                 users.name AS sender_name, 
                 leave_responses.user_id
             FROM leave_responses
             JOIN users ON leave_responses.user_id = users.id
-            WHERE leave_responses.ticket_id = :ticket_id
+            WHERE leave_responses.leave_id = :ticket_id
             ORDER BY leave_responses.created_at ASC
         ");
     } else {
@@ -103,7 +154,7 @@ try {
                 users.name AS uploaded_by_name
             FROM leave_attachments
             JOIN users ON leave_attachments.uploaded_by = users.id
-            WHERE leave_attachments.ticket_id = :ticket_id
+            WHERE leave_attachments.leave_request_id = :ticket_id
             ORDER BY leave_attachments.uploaded_at ASC
         ");
     } else {
@@ -158,8 +209,19 @@ try {
         }
     </style>';
 
-    echo '<h5 class="convo-assigned">You are now having a conversation with:</h5>';
-    echo '<h3 class="assigned-name">' . $displayName . '</h3>';
+
+
+
+    if ($type === 'ticket') {
+        echo '<h5 class="convo-assigned">TICKET CONCERN</h5>';
+        echo '<h5 class="convo-assigned">Category: ' . htmlspecialchars($ticketInfo['category_name'] ?? 'N/A') . '</h5>';
+        echo '<h3 class="assigned-name">' . $displayName . '</h3>';
+    } elseif ($type === 'leave') {
+        echo '<h5 class="convo-assigned">LEAVE REQUEST</h5>';
+        echo '<h5 class="convo-assigned">Leave Type: ' . htmlspecialchars($ticketInfo['leave_types'] ?? 'N/A') . '</h5>';
+
+        echo '<h3 class="assigned-name">' . $displayName . '</h3>';
+    }
 
     if (!$messages && !$attachments) {
         echo '<div class="no-messages">No messages or attachments yet.</div>';
