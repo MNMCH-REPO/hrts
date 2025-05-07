@@ -16,13 +16,24 @@ require_once '../../0/includes/employeeTicket.php';
     <link rel="stylesheet" href="../../assets/css/message.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 98%;
+                min-height: 90vh;
+                align-self: center;
+            }
+        }
+        @media screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            }
         }
     </style>
 </head>

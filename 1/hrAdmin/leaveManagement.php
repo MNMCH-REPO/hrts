@@ -20,11 +20,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     #leaveWarning {
         display: block;
         text-align: center;
-        /* Centers the text inside the elements */
         margin: 0 auto;
-        /* Centers the elements themselves horizontally */
         width: 100%;
-        /* Ensures it occupies full width */
     }
 </style>
 

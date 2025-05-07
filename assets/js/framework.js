@@ -68,20 +68,38 @@ const navBtns = document.querySelectorAll(".navBtn a");
 let shrinkDelay = 1000;
 let shrinkTimeout;
 function shrinkSideNav() {
-    sideNav.style.width = "60px";
-    navBtns.forEach((btn) => {
-        btn.style.display = "none";
-    });
+    if (window.innerWidth >= 600) { // Check if the viewport width is 600px or more
+        sideNav.style.width = "60px";
+        navBtns.forEach((btn) => {
+            btn.style.display = "none";
+        });
+    }
 }
+
 function expandSideNav() {
-    clearTimeout(shrinkTimeout);
-    sideNav.style.width = "260px";
-    navBtns.forEach((btn) => {
-        btn.style.display = "flex";
-    });
+    if (window.innerWidth >= 600) { // Check if the viewport width is 600px or more
+        clearTimeout(shrinkTimeout);
+        sideNav.style.width = "260px";
+        navBtns.forEach((btn) => {
+            btn.style.display = "flex";
+        });
+    }
 }
+
+// Add event listeners for mouseenter and mouseleave
 sideNav.addEventListener("mouseleave", () => {
-    shrinkTimeout = setTimeout(shrinkSideNav, shrinkDelay);
+    if (window.innerWidth >= 600) { // Ensure the condition is checked here as well
+        shrinkTimeout = setTimeout(shrinkSideNav, shrinkDelay);
+    }
 });
-sideNav.addEventListener("mouseenter", expandSideNav);
-shrinkSideNav();
+
+sideNav.addEventListener("mouseenter", () => {
+    if (window.innerWidth >= 600) { // Ensure the condition is checked here as well
+        expandSideNav();
+    }
+});
+
+// Initial state
+if (window.innerWidth >= 600) {
+    shrinkSideNav();
+}

@@ -15,14 +15,27 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <link rel="stylesheet" href="../../assets/css/message.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media only screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                min-height: 90vh;
+                margin: 5% 0 0 0;
+                align-self: center;
+            } 
         }
+        @media only screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            } 
+        }
+        
     </style>
 </head>
 
@@ -327,16 +340,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 }
             }
         </script>
-
 <script>
-
-
-
-
-
 </script>
-
-
 </body>
-
 </html>

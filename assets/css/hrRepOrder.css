@@ -1,358 +1,563 @@
-.content {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    min-height: 90vh;
-    margin: 5% 0 0 260px;
-    align-self: center;
+@media screen and (max-width: 600px) {
+    .content {
+        display: flex;
+        flex-direction: column;
+        width: 98%;
+        min-height: 90vh;
+        align-self: center;
+    }
+    .tableContainer {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--neutral-300);
+        border-radius: 8px;
+        width: 100%;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-title{
+        text-align: center;
+        margin-top: 10px;
+    }
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+    th {
+        background-color: var(--neutral-300);
+        font-weight: bold;
+    }
+    tbody tr:nth-child(even) {
+        background-color: var(--primary-100);
+    }
+    tbody tr.highlighted {
+        background-color: var(--primary-500) !important;
+        color: white;
+    }
+    .highlighted {
+        background-color: var(--primary-400);
+    }
+    .search-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: #D3D3D3;
+        border-radius: 30px;
+        padding: 5px;
+        width: 320px;
+    }
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px;
+        border-radius: 30px;
+        outline: none;
+        font-size: 14px;
+    }
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+    }
+    .search-icon img {
+        width: 16px;
+        height: 16px;
+    }
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: 1px solid #888;
+    }
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+        margin-left: 5px;
+    }
+    .pagination-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .pagination {
+        display: flex;
+        gap: 5px;
+    }
+    .pagination a {
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        color: var(--primary-500);
+        background: var(--neutral-100);
+    }
+    .pagination a.active {
+        background: var(--primary-500);
+        color: white;
+    }
+    .pagination a:hover {
+        background: var(--primary-400);
+        color: white;
+    }
+    .footer-messages {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        border-top: 1px solid #ddd;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        align-self: center;
+    }
+    .input-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 5px 0;
+    }
+    .input-container h1 {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+        margin: 0;
+        width: 40%;
+    }
+    .center-text {
+        width: 60%;
+        font-size: 16px;
+        text-align: left;
+        font-weight: normal;
+    }
+    .confirmModal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    .input-container input,
+    .input-container select,
+    .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    .input-container input:focus+label,
+    .input-container input:not(:placeholder-shown)+label,
+    .input-container select:focus+label,
+    .input-container select:not(:placeholder-shown)+label,
+    .input-container textarea:focus+label,
+    .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+     .modal-buttons {
+        display: flex;
+        align-items: right;
+        margin-top: 15px;
+    }
+    .btnDefault {
+        cursor: pointer;
+        border-radius: 50px;
+    }
+    .btnDanger {
+        border-radius: 50px;
+        cursor: pointer;
+    }
+    .btnDefault:hover {
+        background: #0056b3;
+    }
+    .btnDanger:hover {
+        background: #c82333;
+    }
+    #editStatusModal .input-container select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        outline: none;
+        font-size: 14px;
+        background-color: white;
+        color: #333;
+        appearance: none;
+        box-shadow: none;
+    }
+    #editStatusModal .input-container select:after {
+        content: '';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        pointer-events: none;
+    }
+    #editStatusModal .input-container label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        color: var(--neutral-500);
+        background: white;
+        padding: 0 5px;
+    }
 }
-
-/* table */
-
-.tableContainer {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--neutral-300);
-    border-radius: 8px;
-    width: 100%;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.table-title{
-    text-align: center;
-    margin-top: 10px;
-}
-
-th,
-td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--neutral-200);
-}
-
-th {
-    background-color: var(--neutral-300);
-    font-weight: bold;
-}
-
-tbody tr:nth-child(even) {
-    background-color: var(--primary-100);
-}
-
-tbody tr.highlighted {
-    background-color: var(--primary-500) !important; /* Use a higher specificity and !important */
-    color: white; /* Optional: Change text color */
-}
-
-
-.highlighted {
-    background-color: var(--primary-400);
-}
-
-/* search container */
-
-.search-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    /* Moves search container to the right */
-    width: 100%;
-    padding-bottom: 10px;
-    /* Adjust spacing if needed */
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-    background: #D3D3D3;
-    /* Adjust to match exact gray shade */
-    border-radius: 30px;
-    padding: 5px;
-    width: 320px;
-    /* Adjust width */
-}
-
-
-.search-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 10px;
-    border-radius: 30px;
-    outline: none;
-    font-size: 14px;
-}
-
-.search-icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 10px;
-}
-
-.search-icon img {
-    width: 16px;
-    height: 16px;
-}
-
-.filter-btn {
-    display: flex;
-    align-items: center;
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    border-left: 1px solid #888;
-    /* Divider line between search and filter */
-}
-
-.filter-btn img {
-    width: 16px;
-    height: 16px;
-    margin-left: 5px;
-}
-
-
-
-.pagination-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-bottom: 10px;
-}
-
-.pagination {
-    display: flex;
-    gap: 5px;
-}
-
-.pagination a {
-    text-decoration: none;
-    padding: 6px 12px;
-    border: 1px solid var(--neutral-300);
-    border-radius: 4px;
-    color: var(--primary-500);
-    background: var(--neutral-100);
-}
-
-.pagination a.active {
-    background: var(--primary-500);
-    color: white;
-}
-
-.pagination a:hover {
-    background: var(--primary-400);
-    color: white;
-}
-
-
-
-.footer-messages {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border-top: 1px solid #ddd;
-}
-
-
-
-/* modal */
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 95%;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    align-self: center;
-}
-
-.input-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    /* Ensures equal spacing */
-    width: 100%;
-    padding: 5px 0;
-    /* Adjust vertical spacing */
-}
-
-.input-container h1 {
-    font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    margin: 0;
-    width: 40%;
-    /* Adjust label width for proper spacing */
-}
-
-.center-text {
-    width: 60%;
-    /* Ensures proper alignment */
-    font-size: 16px;
-    text-align: left;
-    /* Match exact alignment from the image */
-    font-weight: normal;
-    /* Ensure text weight matches */
-}
-
-.confirmModal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    
-
-}
-
-
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 95%;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.input-container {
-    position: relative;
-    margin: 15px 0;
-    width: 100%;
-}
-
-.input-container input,
-.input-container select,
-.input-container textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    font-size: 16px;
-    background: transparent;
-}
-
-.input-container label {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    transition: 0.3s ease-out;
-    background: white;
-    padding: 0 5px;
-    font-size: 16px;
-    color: #666;
-    pointer-events: none;
-}
-
-/* Floating label effect */
-.input-container input:focus+label,
-.input-container input:not(:placeholder-shown)+label,
-.input-container select:focus+label,
-.input-container select:not(:placeholder-shown)+label,
-.input-container textarea:focus+label,
-.input-container textarea:not(:placeholder-shown)+label {
-    top: 5px;
-    font-size: 12px;
-    color: #007BFF;
-}
-
- /* Buttons */
- .modal-buttons {
-    display: flex;
-    align-items: right;
-    
-    margin-top: 15px;
-
-}
-
-.btnDefault {
-    cursor: pointer;
-    border-radius: 50px;
-}
-
-.btnDanger {
-    border-radius: 50px;
-    cursor: pointer;
-
-
-}
-
-.btnDefault:hover {
-    background: #0056b3;
-}
-
-.btnDanger:hover {
-    background: #c82333;
-}
-
-/* Fix for dropdown in Edit Status Modal */
-#editStatusModal .input-container select {
-    width: 100%; /* Ensure it spans the full width of the container */
-    padding: 10px; /* Adjust padding for better spacing */
-    border: 1px solid var(--neutral-300); /* Consistent border color */
-    border-radius: 4px; /* Rounded corners */
-    outline: none; /* Remove default outline */
-    font-size: 14px; /* Adjust font size for readability */
-    background-color: white; /* Ensure background is visible */
-    color: #333; /* Text color */
-    appearance: none; /* Remove default browser styling */
-    box-shadow: none; /* Remove any shadow effects */
-}
-
-/* Add a custom arrow for the dropdown */
-#editStatusModal .input-container select:after {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 10px;
-    height: 10px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    pointer-events: none;
-}
-
-/* Ensure label alignment */
-#editStatusModal .input-container label {
-    position: absolute;
-    top: -10px; /* Adjust position above the dropdown */
-    left: 10px;
-    font-size: 12px;
-    color: var(--neutral-500); /* Match label color */
-    background: white;
-    padding: 0 5px;
+@media screen and (min-width: 601px){
+    .content {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        min-height: 90vh;
+        margin: 5% 0 0 260px;
+        align-self: center;
+    }
+    .tableContainer {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--neutral-300);
+        border-radius: 8px;
+        width: 100%;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table-title{
+        text-align: center;
+        margin-top: 10px;
+    }
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+    th {
+        background-color: var(--neutral-300);
+        font-weight: bold;
+    }
+    tbody tr:nth-child(even) {
+        background-color: var(--primary-100);
+    }
+    tbody tr.highlighted {
+        background-color: var(--primary-500) !important;
+        color: white;
+    }
+    .highlighted {
+        background-color: var(--primary-400);
+    }
+    .search-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: #D3D3D3;
+        border-radius: 30px;
+        padding: 5px;
+        width: 320px;
+    }
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px;
+        border-radius: 30px;
+        outline: none;
+        font-size: 14px;
+    }
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+    }
+    .search-icon img {
+        width: 16px;
+        height: 16px;
+    }
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: 1px solid #888;
+    }
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+        margin-left: 5px;
+    }
+    .pagination-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .pagination {
+        display: flex;
+        gap: 5px;
+    }
+    .pagination a {
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        color: var(--primary-500);
+        background: var(--neutral-100);
+    }
+    .pagination a.active {
+        background: var(--primary-500);
+        color: white;
+    }
+    .pagination a:hover {
+        background: var(--primary-400);
+        color: white;
+    }
+    .footer-messages {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        border-top: 1px solid #ddd;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+        align-self: center;
+    }
+    .input-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 5px 0;
+    }
+    .input-container h1 {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+        margin: 0;
+        width: 40%;
+    }
+    .center-text {
+        width: 60%;
+        font-size: 16px;
+        text-align: left;
+        font-weight: normal;
+    }
+    .confirmModal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    .input-container input,
+    .input-container select,
+    .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    .input-container input:focus+label,
+    .input-container input:not(:placeholder-shown)+label,
+    .input-container select:focus+label,
+    .input-container select:not(:placeholder-shown)+label,
+    .input-container textarea:focus+label,
+    .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+     .modal-buttons {
+        display: flex;
+        align-items: right;
+        margin-top: 15px;
+    }
+    .btnDefault {
+        cursor: pointer;
+        border-radius: 50px;
+    }
+    .btnDanger {
+        border-radius: 50px;
+        cursor: pointer;
+    }
+    .btnDefault:hover {
+        background: #0056b3;
+    }
+    .btnDanger:hover {
+        background: #c82333;
+    }
+    #editStatusModal .input-container select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        outline: none;
+        font-size: 14px;
+        background-color: white;
+        color: #333;
+        appearance: none;
+        box-shadow: none;
+    }
+    #editStatusModal .input-container select:after {
+        content: '';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        pointer-events: none;
+    }
+    #editStatusModal .input-container label {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        color: var(--neutral-500);
+        background: white;
+        padding: 0 5px;
+    }
 }

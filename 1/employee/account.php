@@ -13,13 +13,152 @@ require_once '../../0/includes/employeeTicket.php';
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media only screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 98%;
+                min-height: 90vh;
+                align-self: center;
+            }
+            .container-account {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                min-height: 70vh;
+                margin: 5% auto;
+                border-radius: 10px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                background: white;
+            }
+            .account-box {
+                width: 100%;
+                max-width: 600px;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            }
+            .account-box-title {
+                font-size: 22px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .account-description {
+                font-size: 14px;
+                color: #555;
+                margin-bottom: 20px;
+            }
+            .account-box-content-row {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+            .account-box-content-row-label {
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .account-input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                background: #f8f8f8;
+            }
+            .change-password-text {
+                font-size: 12px;
+                margin-top: 15px;
+                text-align: center;
+            }
+            .change-password-link {
+                color: blue;
+                font-weight: bold;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .btnDefault {
+                border-radius: 50px;
+            }
+        }
+        @media only screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            }
+            .container-account {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 80%;
+                min-height: 70vh;
+                margin: 5% auto;
+                border-radius: 10px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+                padding: 30px;
+                background: white;
+            }
+            .account-box {
+                width: 100%;
+                max-width: 600px;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                text-align: center;
+            }
+            .account-box-title {
+                font-size: 22px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+            .account-description {
+                font-size: 14px;
+                color: #555;
+                margin-bottom: 20px;
+            }
+            .account-box-content-row {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+            .account-box-content-row-label {
+                font-size: 14px;
+                font-weight: 500;
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .account-input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                background: #f8f8f8;
+            }
+            .change-password-text {
+                font-size: 12px;
+                margin-top: 15px;
+                text-align: center;
+            }
+            .change-password-link {
+                color: blue;
+                font-weight: bold;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .btnDefault {
+                border-radius: 50px;
+            }
         }
     </style>
 </head>
@@ -58,84 +197,6 @@ require_once '../../0/includes/employeeTicket.php';
                     <div class="accountIcon img-contain"></div>
                 </div>
             </div>
-
-            <style>
-                .container-account {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    width: 80%;
-                    min-height: 70vh;
-                    margin: 5% auto;
-                    border-radius: 10px;
-                    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                    padding: 30px;
-                    background: white;
-                }
-
-                .account-box {
-                    width: 100%;
-                    max-width: 600px;
-                    background: #fff;
-                    padding: 20px;
-                    border-radius: 10px;
-                    text-align: center;
-                }
-
-                .account-box-title {
-                    font-size: 22px;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                }
-
-                .account-description {
-                    font-size: 14px;
-                    color: #555;
-                    margin-bottom: 20px;
-                }
-
-                .account-box-content-row {
-                    display: flex;
-                    flex-direction: column;
-                    margin-bottom: 15px;
-                }
-
-                .account-box-content-row-label {
-                    font-size: 14px;
-                    font-weight: 500;
-                    margin-bottom: 5px;
-                    text-align: left;
-                }
-
-                .account-input {
-                    width: 100%;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    background: #f8f8f8;
-                }
-
-                .change-password-text {
-                    font-size: 12px;
-                    margin-top: 15px;
-                    text-align: center;
-                }
-
-                .change-password-link {
-                    color: blue;
-                    font-weight: bold;
-                    text-decoration: none;
-                    cursor: pointer;
-
-                }
-
-                .btnDefault {
-                    border-radius: 50px;
-                }
-            </style>
-
             <?php
             require_once '../../0/includes/db.php'; // Include your database connection file
 

@@ -1,339 +1,494 @@
-body {
-    font-family: Arial, sans-serif;
-}
-
-.chat-container {
-    width: 100%;
-    border: 1px solid #ccc;
-    padding: 10px;
-    height: 80vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    background-color: #f9f9f9;
-}
-
-.message {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 60%;
-    word-wrap: break-word;
-}
-
-.sent {
-    background-color: #dcf8c6;
-    align-self: flex-end;
-    text-align: right;
-}
-
-.received {
-    background-color: #f1f0f0;
-    align-self: flex-start;
-    text-align: left;
-}
-
-.input-area {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    gap: 8px;
-}
-
-.attach {
-    padding: 10px;
-    cursor: pointer;
-    background-color: #ddd;
-    color: black;
-    /* Ensures text is black */
-    font-weight: bold;
-    /* Optional: makes text stand out */
-    border-radius: 5px;
-    margin-right: 5px;
-
-    /* Add spacing between attach and input */
-}
-
-input[type="text"] {
-    flex: 1;
-    padding: 10px;
-}
-
-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.container-convo {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    width: 100%;
-}
-
-.convo-assigned {
-    text-transform: uppercase;
-    font-size: small;
-    font-weight: bold;
-    text-align: center;
-    letter-spacing: 1px;
-    margin-top: 20px;
-}
-
-.assigned-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-    text-align: center;
-    display: block;
-    margin-top: 5px;
-}
-
-.sent {
-    background-color: #d1ffd1;
-    text-align: right;
-}
-
-.received {
-    background-color: #f1f1f1;
-    text-align: left;
-}
-
-.attachment {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.attachment-image {
-    max-width: 300px;
-    /* Limit the width to 300px */
-    height: auto;
-    /* Maintain aspect ratio */
-    border-radius: 5px;
-    /* Add rounded corners */
-    margin-top: 10px;
-    /* Add spacing above the image */
-}
-
-
-.no-messages {
-    text-align: center;
-    /* Center the text horizontally */
-    margin-top: 20px;
-    /* Add some spacing from the top */
-    font-size: 16px;
-    /* Adjust font size if needed */
-    color: #555;
-    /* Optional: Change text color */
-}
-
-/* Sidebar styles */
-.sidebar {
-    width: 30%;
-    display: flex-end;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.chatbox-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 70%;
-}
-
-.search {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    width: 180px;
-}
-
-#search {
-    flex: 1;
-    padding: 4px;
-    font-size: 12px;
-}
-
-#searchBtn {
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-color: transparent;
-    padding: 0;
-}
-
-#searchBtn img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-#searchBtn:hover {
-    cursor: pointer;
-}
-
-#searchBtn:focus {
-    outline: none;
-}
-
-#searchBtn:active {
-    transform: scale(0.95);
-}
-
-#searchBtn:active img {
-    transform: scale(0.95);
-}
-
-
-
-.cards-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 20%;
-    height: 80vh;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    border-left: none;
-}
-
-.card {
-    width: 100%;
-    max-height: 72px;
-    background-color: #ffffff;
-    border: 1px solid #f1f1f1;
-    padding: 4px 12px;
-    transition: all 120ms;
-    cursor: pointer !important;
-    margin: -1px 0 0 0;
-}
-
-.card:hover {
-    background-color: var(--primary-300);
-    border: 1px solid var(--primary-300);
-}
-
-.selected {
-    background-color: var(--primary-300);
-    border: 1px solid var(--primary-300);
-}
-
-.card h1 {
-    font-size: 12px;
-    margin: 2px 0;
-    color: var(--black);
-    font-weight: 500;
-    cursor: pointer;
-}
-
-/* Horizontal button container for view and download buttons */
-.button-container {
-    display: flex;
-    /* Use flexbox for horizontal layout */
-    gap: 10px;
-    /* Add spacing between buttons */
-    margin-top: 10px;
-    /* Add some margin above the buttons */
-}
-
-.btnWarning {
-    background-color: transparent;
-    /* Transparent background */
-    border: none;
-    /* Remove border */
-    cursor: pointer;
-    /* Pointer cursor on hover */
-    padding: 5px;
-    /* Add some padding */
-}
-
-.btnWarning img {
-    width: 20px;
-    /* Set icon width */
-    height: 20px;
-    /* Set icon height */
-}
-
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1000;
-    /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    background-color: rgba(0, 0, 0, 0.8);
-    /* Black background with opacity */
-    justify-content: center;
-    /* Center content horizontally */
-    align-items: center;
-    /* Center content vertically */
-    display: flex;
-    /* Flexbox for centering */
-}
-
-.modal-content {
-    margin: auto;
-    display: block;
-    max-width: 60%;
-    /* Limit the image size to 60% of the viewport width */
-    max-height: 60%;
-    /* Limit the image size to 60% of the viewport height */
-    width: auto;
-    /* Maintain aspect ratio */
-    height: auto;
-    /* Maintain aspect ratio */
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* Add a subtle shadow */
-}
-
-.close {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: #fff;
-    font-size: 40px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: red;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
+@media only screen and (max-width: 600px) {
+    .chat-container {
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 80vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        background-color: #f9f9f9;
+    }
+    .message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 60%;
+        word-wrap: break-word;
+    }
+    .sent {
+        background-color: #dcf8c6;
+        align-self: flex-end;
+        text-align: right;
+    }
+    .received {
+        background-color: #f1f0f0;
+        align-self: flex-start;
+        text-align: left;
+    }
+    .input-area {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        gap: 8px;
+    }
+    .attach {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #ddd;
+        color: black;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+    input[type="text"] {
+        flex: 1;
+        padding: 10px;
+    }
+    button {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .container-convo {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .convo-assigned {
+        text-transform: uppercase;
+        font-size: small;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 1px;
+        margin-top: 20px;
+    }
+    .assigned-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        display: block;
+        margin-top: 5px;
+    }
+    .sent {
+        background-color: #d1ffd1;
+        text-align: right;
+    }
+    .received {
+        background-color: #f1f1f1;
+        text-align: left;
+    }
+    .attachment {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .attachment-image {
+        max-width: 300px;
+        height: auto;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    .no-messages {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        color: #555;
+    }
+    .sidebar {
+        width: 30%;
+        display: flex-end;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .chatbox-container {
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        gap: 10px;
+        width: 98%;
+    }
+    .search {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+        border: none;
+        outline: none;
+    }
+    #search {
+        flex: 1;
+        padding: 4px;
+        font-size: 12px;
+    }
+    #searchBtn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background-color: transparent;
+        padding: 0;
+    }
+    #searchBtn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    #searchBtn:hover {
+        cursor: pointer;
+    }
+    #searchBtn:focus {
+        outline: none;
+    }
+    #searchBtn:active {
+        transform: scale(0.95);
+    }
+    #searchBtn:active img {
+        transform: scale(0.95);
+    }
+    .cards-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 98%;
+        height: 80vh;
+        padding: 8px 0;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        border-left: none;
+    }
+    .card {
+        width: 100%;
+        max-height: 72px;
+        background-color: #ffffff;
+        border: 1px solid #f1f1f1;
+        padding: 4px 12px;
+        transition: all 120ms;
+        cursor: pointer !important;
+        margin: -1px 0 0 0;
+    }
+    .card:hover {
+        background-color: var(--primary-300);
+        border: 1px solid var(--primary-300);
+    }
+    .selected {
+        background-color: var(--primary-300);
+        border: 1px solid var(--primary-300);
+    }
+    .card h1 {
+        font-size: 12px;
+        margin: 2px 0;
+        color: var(--black);
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .btnWarning {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+    .btnWarning img {
+        width: 20px;
+        height: 20px;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
     .modal-content {
-        max-width: 80%;
-        /* Adjust for smaller screens */
-        max-height: 50%;
-        /* Adjust for smaller screens */
+        margin: auto;
+        display: block;
+        max-width: 60%;
+        max-height: 60%;
+        width: auto;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
-
     .close {
-        font-size: 30px;
-        /* Smaller close button on small screens */
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
     }
+    .close:hover,
+    .close:focus {
+        color: red;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .card.active {
+        border: 2px solid #007bff;
+        background-color: #f0f8ff;
+    }   
 }
 
-
-.card.active {
-    border: 2px solid #007bff;
-    background-color: #f0f8ff;
+@media only screen and (min-width: 600px) {
+    body {
+        font-family: Arial, sans-serif;
+    }
+    
+    .chat-container {
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 10px;
+        height: 80vh;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        background-color: #f9f9f9;
+    }
+    .message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 60%;
+        word-wrap: break-word;
+    }
+    .sent {
+        background-color: #dcf8c6;
+        align-self: flex-end;
+        text-align: right;
+    }
+    .received {
+        background-color: #f1f0f0;
+        align-self: flex-start;
+        text-align: left;
+    }
+    .input-area {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        gap: 8px;
+    }
+    .attach {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #ddd;
+        color: black;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
+    input[type="text"] {
+        flex: 1;
+        padding: 10px;
+    }
+    button {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .container-convo {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        width: 100%;
+    }
+    .convo-assigned {
+        text-transform: uppercase;
+        font-size: small;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 1px;
+        margin-top: 20px;
+    }
+    .assigned-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-align: center;
+        display: block;
+        margin-top: 5px;
+    }
+    .sent {
+        background-color: #d1ffd1;
+        text-align: right;
+    }
+    .received {
+        background-color: #f1f1f1;
+        text-align: left;
+    }
+    .attachment {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .attachment-image {
+        max-width: 300px;
+        height: auto;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    .no-messages {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 16px;
+        color: #555;
+    }
+    .sidebar {
+        width: 30%;
+        display: flex-end;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .chatbox-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 70%;
+    }
+    .search {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 180px;
+    }
+    #search {
+        flex: 1;
+        padding: 4px;
+        font-size: 12px;
+    }
+    #searchBtn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background-color: transparent;
+        padding: 0;
+    }
+    #searchBtn img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    #searchBtn:hover {
+        cursor: pointer;
+    }
+    #searchBtn:focus {
+        outline: none;
+    }
+    #searchBtn:active {
+        transform: scale(0.95);
+    }
+    #searchBtn:active img {
+        transform: scale(0.95);
+    }
+    .cards-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 20%;
+        height: 80vh;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        border-left: none;
+    }
+    .card {
+        width: 100%;
+        max-height: 72px;
+        background-color: #ffffff;
+        border: 1px solid #f1f1f1;
+        padding: 4px 12px;
+        transition: all 120ms;
+        cursor: pointer !important;
+        margin: -1px 0 0 0;
+    }
+    .card:hover {
+        background-color: var(--primary-300);
+        border: 1px solid var(--primary-300);
+    }
+    .selected {
+        background-color: var(--primary-300);
+        border: 1px solid var(--primary-300);
+    }
+    .card h1 {
+        font-size: 12px;
+        margin: 2px 0;
+        color: var(--black);
+        font-weight: 500;
+        cursor: pointer;
+    }
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .btnWarning {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+    }
+    .btnWarning img {
+        width: 20px;
+        height: 20px;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+    .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 60%;
+        max-height: 60%;
+        width: auto;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+        color: red;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .card.active {
+        border: 2px solid #007bff;
+        background-color: #f0f8ff;
+    }           
 }

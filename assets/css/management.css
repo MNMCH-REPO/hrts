@@ -1,333 +1,534 @@
-.content {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    min-height: 90vh;
-    margin: 5% 0 0 260px;
-    align-self: center;
-    overflow-x: hidden;
+@media screen and (max-width: 600px) {
+    .content {
+        display: flex;
+        flex-direction: column;
+        width: 98%;
+        min-height: 90vh;
+        align-self: center;
+        overflow-x: hidden;
+    }
+    .tableContainer {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--neutral-300);
+        overflow: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th,
+    td {
+        padding: 6px;
+        text-align: left;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+    th {
+        background-color: var(--neutral-300);
+        font-weight: bold;
+    }
+    tbody tr:nth-child(even) {
+        background-color: var(--primary-100);
+    }
+    .btnWarningDisabled,
+    .btnDefaultDisabled,
+    .btnDangerDisabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    .selected-row {
+        background-color: var(--primary-500) !important;
+    }
+    .search-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: #D3D3D3;
+        border-radius: 30px;
+        padding: 5px;
+        width: 320px;
+    }
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px;
+        border-radius: 30px;
+        outline: none;
+        font-size: 14px;
+    }
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+    }
+    .search-icon img {
+        width: 16px;
+        height: 16px;
+    }
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: 1px solid #888;
+    }
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+        margin-left: 5px;
+    }
+    .pagination-wrapper {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        gap: 8px;
+        padding: 8px 0 10px 0;
+    }
+    .pagination-wrapper > .btnContainer {
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+        margin: 0;
+    }
+    .pagination-wrapper > .btnContainer > button{
+        max-height: 24px;
+        font-size: 12px;
+    }
+    .pagination {
+        width: 100%;
+        display: flex;
+        gap: 5px;
+    }
+    .pagination a {
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        color: var(--primary-500);
+        background: var(--neutral-100);
+    }
+    .pagination a.active {
+        background: var(--primary-500);
+        color: white;
+    }
+    .pagination a:hover {
+        background: var(--primary-400);
+        color: white;
+    }
+    .footer-messages {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        border-top: 1px solid #ddd;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    .input-container input,
+    .input-container select,
+    .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    .input-container input:focus+label,
+    .input-container input:not(:placeholder-shown)+label,
+    .input-container select:focus+label,
+    .input-container select:not(:placeholder-shown)+label,
+    .input-container textarea:focus+label,
+    .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+    #editLeaveRequestModal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    
+    }
+    #editLeaveRequestModal .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    #editLeaveRequestModal .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    #editLeaveRequestModal .input-container input,
+    #editLeaveRequestModal .input-container select,
+    #editLeaveRequestModal .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    #editLeaveRequestModal .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    #editLeaveRequestModal .input-container input:focus+label,
+    #editLeaveRequestModal .input-container input:not(:placeholder-shown)+label,
+    #editLeaveRequestModal .input-container select:focus+label,
+    #editLeaveRequestModal .input-container select:not(:placeholder-shown)+label,
+    #editLeaveRequestModal .input-container textarea:focus+label,
+    #editLeaveRequestModal .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+    #editLeaveRequestModal .modal-buttons {
+        display: flex;
+        gap: 10px;
+    }
 }
-
-/* table */
-
-.tableContainer {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid var(--neutral-300);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.tableContainer {
-    width: 100%;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--neutral-300);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th,
-td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--neutral-200);
-}
-
-th {
-    background-color: var(--neutral-300);
-    font-weight: bold;
-}
-
-tbody tr:nth-child(even) {
-    background-color: var(--primary-100);
-}
-
-/* Disabled button styles */
-.btnWarningDisabled,
-.btnDefaultDisabled,
-.btnDangerDisabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-
-/* Highlight the selected row */
-.selected-row {
-    background-color: var(--primary-500) !important;
-
-}
-
-
-/* search container */
-
-.search-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    /* Moves search container to the right */
-    width: 100%;
-    padding-bottom: 10px;
-    /* Adjust spacing if needed */
-}
-
-.search-container {
-    display: flex;
-    align-items: center;
-    background: #D3D3D3;
-    /* Adjust to match exact gray shade */
-    border-radius: 30px;
-    padding: 5px;
-    width: 320px;
-    /* Adjust width */
-}
-
-
-.search-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 10px;
-    border-radius: 30px;
-    outline: none;
-    font-size: 14px;
-}
-
-.search-icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 10px;
-}
-
-.search-icon img {
-    width: 16px;
-    height: 16px;
-}
-
-.filter-btn {
-    display: flex;
-    align-items: center;
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    border-left: 1px solid #888;
-    /* Divider line between search and filter */
-}
-
-.filter-btn img {
-    width: 16px;
-    height: 16px;
-    margin-left: 5px;
-}
-
-
-
-.pagination-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-bottom: 10px;
-}
-
-.pagination-wrapper>.btnContainer {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    height: 100%;
-    margin: 0 12px 0 0 !important;
-}
-
-.pagination {
-    width: 100%;
-    display: flex;
-    gap: 5px;
-}
-
-.pagination a {
-    text-decoration: none;
-    padding: 6px 12px;
-    border: 1px solid var(--neutral-300);
-    border-radius: 4px;
-    color: var(--primary-500);
-    background: var(--neutral-100);
-}
-
-.pagination a.active {
-    background: var(--primary-500);
-    color: white;
-}
-
-.pagination a:hover {
-    background: var(--primary-400);
-    color: white;
-}
-
-
-.footer-messages {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    border-top: 1px solid #ddd;
-}
-
-
-/* modal */
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 95%;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.input-container {
-    position: relative;
-    margin: 15px 0;
-    width: 100%;
-}
-
-.input-container input,
-.input-container select,
-.input-container textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    font-size: 16px;
-    background: transparent;
-}
-
-.input-container label {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    transition: 0.3s ease-out;
-    background: white;
-    padding: 0 5px;
-    font-size: 16px;
-    color: #666;
-    pointer-events: none;
-}
-
-/* Floating label effect */
-.input-container input:focus+label,
-.input-container input:not(:placeholder-shown)+label,
-.input-container select:focus+label,
-.input-container select:not(:placeholder-shown)+label,
-.input-container textarea:focus+label,
-.input-container textarea:not(:placeholder-shown)+label {
-    top: 5px;
-    font-size: 12px;
-    color: #007BFF;
-}
-
-/* Specific styles for editLeaveRequestModal */
-
-/* Center the modal on the screen */
-#editLeaveRequestModal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    justify-content: center; /* Horizontally center the modal */
-    align-items: center; /* Vertically center the modal */
-
-}
-
-/* Modal content */
-#editLeaveRequestModal .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 95%;
-    text-align: center;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-
-/* Input container */
-#editLeaveRequestModal .input-container {
-    position: relative;
-    margin: 15px 0;
-    width: 100%;
-}
-
-/* Inputs, selects, and textareas */
-#editLeaveRequestModal .input-container input,
-#editLeaveRequestModal .input-container select,
-#editLeaveRequestModal .input-container textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    font-size: 16px;
-    background: transparent;
-}
-
-/* Labels */
-#editLeaveRequestModal .input-container label {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-    transition: 0.3s ease-out;
-    background: white;
-    padding: 0 5px;
-    font-size: 16px;
-    color: #666;
-    pointer-events: none;
-}
-
-/* Floating label effect */
-#editLeaveRequestModal .input-container input:focus+label,
-#editLeaveRequestModal .input-container input:not(:placeholder-shown)+label,
-#editLeaveRequestModal .input-container select:focus+label,
-#editLeaveRequestModal .input-container select:not(:placeholder-shown)+label,
-#editLeaveRequestModal .input-container textarea:focus+label,
-#editLeaveRequestModal .input-container textarea:not(:placeholder-shown)+label {
-    top: 5px;
-    font-size: 12px;
-    color: #007BFF;
-}
-
-/* Modal buttons */
-#editLeaveRequestModal .modal-buttons {
-    display: flex;
-    gap: 10px;
+@media screen and (min-width: 601px) {
+    .content {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        min-height: 90vh;
+        margin: 5% 0 0 260px;
+        align-self: center;
+        overflow-x: hidden;
+    }
+    .tableContainer {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--neutral-300);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .tableContainer {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--neutral-300);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th,
+    td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--neutral-200);
+    }
+    th {
+        background-color: var(--neutral-300);
+        font-weight: bold;
+    }
+    tbody tr:nth-child(even) {
+        background-color: var(--primary-100);
+    }
+    .btnWarningDisabled,
+    .btnDefaultDisabled,
+    .btnDangerDisabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    .selected-row {
+        background-color: var(--primary-500) !important;
+    
+    }
+    .search-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .search-container {
+        display: flex;
+        align-items: center;
+        background: #D3D3D3;
+        border-radius: 30px;
+        padding: 5px;
+        width: 320px;
+    }
+    .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 10px;
+        border-radius: 30px;
+        outline: none;
+        font-size: 14px;
+    }
+    .search-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+    }
+    .search-icon img {
+        width: 16px;
+        height: 16px;
+    }
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        border-left: 1px solid #888;
+    }
+    .filter-btn img {
+        width: 16px;
+        height: 16px;
+        margin-left: 5px;
+    }
+    .pagination-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+    .pagination-wrapper>.btnContainer {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        height: 100%;
+        margin: 0 12px 0 0 !important;
+    }
+    .pagination {
+        width: 100%;
+        display: flex;
+        gap: 5px;
+    }
+    .pagination a {
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid var(--neutral-300);
+        border-radius: 4px;
+        color: var(--primary-500);
+        background: var(--neutral-100);
+    }
+    .pagination a.active {
+        background: var(--primary-500);
+        color: white;
+    }
+    .pagination a:hover {
+        background: var(--primary-400);
+        color: white;
+    }
+    .footer-messages {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        border-top: 1px solid #ddd;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    .input-container input,
+    .input-container select,
+    .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    .input-container input:focus+label,
+    .input-container input:not(:placeholder-shown)+label,
+    .input-container select:focus+label,
+    .input-container select:not(:placeholder-shown)+label,
+    .input-container textarea:focus+label,
+    .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+    #editLeaveRequestModal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+    
+    }
+    #editLeaveRequestModal .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 600px;
+        max-width: 95%;
+        text-align: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    #editLeaveRequestModal .input-container {
+        position: relative;
+        margin: 15px 0;
+        width: 100%;
+    }
+    #editLeaveRequestModal .input-container input,
+    #editLeaveRequestModal .input-container select,
+    #editLeaveRequestModal .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+    #editLeaveRequestModal .input-container label {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        transition: 0.3s ease-out;
+        background: white;
+        padding: 0 5px;
+        font-size: 16px;
+        color: #666;
+        pointer-events: none;
+    }
+    #editLeaveRequestModal .input-container input:focus+label,
+    #editLeaveRequestModal .input-container input:not(:placeholder-shown)+label,
+    #editLeaveRequestModal .input-container select:focus+label,
+    #editLeaveRequestModal .input-container select:not(:placeholder-shown)+label,
+    #editLeaveRequestModal .input-container textarea:focus+label,
+    #editLeaveRequestModal .input-container textarea:not(:placeholder-shown)+label {
+        top: 5px;
+        font-size: 12px;
+        color: #007BFF;
+    }
+    #editLeaveRequestModal .modal-buttons {
+        display: flex;
+        gap: 10px;
+    }   
 }
