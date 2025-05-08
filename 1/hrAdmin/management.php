@@ -211,13 +211,43 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 /* Slightly darker orange */
             }
         }
+
+        .blink-yellow {
+            animation: blink-yellow 3.5s infinite ease-in-out;
+        }
+
+        @keyframes blink-yellow {
+            0% {
+                background-color: #ffff99;
+                /* Light yellow */
+            }
+
+            25% {
+                background-color: #ffeb3b;
+                /* Bright yellow */
+            }
+
+            50% {
+                background-color: transparent;
+            }
+
+            75% {
+                background-color: #ffeb3b;
+                /* Bright yellow */
+            }
+
+            100% {
+                background-color: #ffff99;
+                /* Light yellow */
+            }
+        }
     </style>
 
 
     <?php
 
     require_once 'modals.php';
-    
+
 
     ?>
 
@@ -225,140 +255,142 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
     <script src="../../assets/js/management.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.querySelector(".search-input");
-    const allRows = Array.from(document.querySelectorAll("#usersTable tbody tr"));
-    const tbody = document.querySelector("#usersTable tbody");
-    const paginationContainer = document.getElementById("paginationControls");
-    const rowsPerPage = 5;
-    let currentPage = 1;
-    let currentFilter = "";
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.querySelector(".search-input");
+            const allRows = Array.from(document.querySelectorAll("#usersTable tbody tr"));
+            const tbody = document.querySelector("#usersTable tbody");
+            const paginationContainer = document.getElementById("paginationControls");
+            const rowsPerPage = 5;
+            let currentPage = 1;
+            let currentFilter = "";
 
-    function getRowStatus(row) {
-        return row.children[7]?.textContent.trim() || "";
-    }
+            function getRowStatus(row) {
+                return row.children[7]?.textContent.trim() || "";
+            }
 
-    function fetchAndApplyAWOL(rows) {
-        rows.forEach((row) => {
-            const userId = row.getAttribute("data-id"); // Get the user ID from the row
+            function fetchAndApplyAWOL(rows) {
+                rows.forEach((row) => {
+                    const userId = row.getAttribute("data-id"); // Get the user ID from the row
 
-            // Fetch AWOL value for the user
-            fetch(`../../0/includes/getLeaveBalancesQuery.php?userId=${userId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.success) {
-                        const awolValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
+                    // Fetch AWOL value for the user
+                    fetch(`../../0/includes/getLeaveBalancesQuery.php?userId=${userId}`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                const awolValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
 
-                        if (awolValue >= 5) {
-                            // Add a blinking red effect if AWOL is 5 or greater
-                            row.classList.add("blink-red");
-                        } else if (awolValue === 3) {
-                            // Add a blinking orange effect if AWOL is 3
-                            row.classList.add("blink-orange");
-                        }
-                    } else {
-                        console.error(`Failed to fetch AWOL value for user ID ${userId}: ${data.message}`);
-                    }
-                })
-                .catch((error) => {
-                    console.error(`Error fetching AWOL value for user ID ${userId}:`, error);
+                                if (awolValue >= 5) {
+                                    // Add a blinking red effect if AWOL is 5 or greater
+                                    row.classList.add("blink-red");
+                                } else if (awolValue === 3) {
+                                    // Add a blinking orange effect if AWOL is 3
+                                    row.classList.add("blink-yellow");
+                                } else if (awolValue === 4) {
+                                    row.classList.add("blink-orange");
+                                }
+                            } else {
+                                console.error(`Failed to fetch AWOL value for user ID ${userId}: ${data.message}`);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(`Error fetching AWOL value for user ID ${userId}:`, error);
+                        });
                 });
+            }
+
+            function renderTable(filter = "") {
+                const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                const rowsToRender = filteredRows.slice(start, end);
+                rowsToRender.forEach(row => tbody.appendChild(row));
+                fetchAndApplyAWOL(rowsToRender); // Reapply AWOL logic for the current page
+                renderPaginationButtons(totalPages);
+            }
+
+            let paginationStart = 1; // Tracks which set of pages we're viewing
+
+            function renderPaginationButtons(totalPages) {
+                paginationContainer.innerHTML = "";
+
+                const maxVisible = 10;
+                const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+
+                // Left arrow (go back 10 pages)
+                if (paginationStart > 1) {
+                    const leftArrow = document.createElement("button");
+                    leftArrow.textContent = "←";
+                    leftArrow.addEventListener("click", () => {
+                        paginationStart = Math.max(1, paginationStart - maxVisible);
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(leftArrow);
+                }
+
+                // Page number buttons
+                for (let i = paginationStart; i <= paginationEnd; i++) {
+                    const btn = document.createElement("button");
+                    btn.textContent = i;
+                    btn.className = i === currentPage ? "active" : "";
+                    btn.style.margin = "0 5px";
+                    btn.style.minWidth = "22px";
+                    btn.addEventListener("click", () => {
+                        currentPage = i;
+                        renderTable(currentFilter);
+                    });
+                    paginationContainer.appendChild(btn);
+                }
+
+                // Right arrow (go forward 10 pages)
+                if (paginationEnd < totalPages) {
+                    const rightArrow = document.createElement("button");
+                    rightArrow.textContent = "→";
+                    rightArrow.addEventListener("click", () => {
+                        paginationStart = paginationStart + maxVisible;
+                        renderPaginationButtons(totalPages);
+                    });
+                    paginationContainer.appendChild(rightArrow);
+                }
+            }
+
+            const plateIDs = ["plate1", "plate2", "plate3"];
+            plateIDs.forEach(id => {
+                const plate = document.getElementById(id);
+                if (plate) {
+                    plate.addEventListener("click", function() {
+                        currentFilter = this.getAttribute("data-status") || "";
+                        currentPage = 1;
+                        paginationStart = 1; // ✅ Reset pagination to start from 1
+                        renderTable(currentFilter);
+                    });
+                }
+            });
+
+            // Search functionality
+            function filterTableBySearch() {
+                const searchValue = searchInput.value.toLowerCase(); // Get the search input value
+                const filteredRows = allRows.filter((row) =>
+                    row.textContent.toLowerCase().includes(searchValue)
+                ); // Filter rows based on search value
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                currentPage = Math.min(currentPage, totalPages || 1);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                tbody.innerHTML = "";
+                const rowsToRender = filteredRows.slice(start, end);
+                rowsToRender.forEach((row) => tbody.appendChild(row));
+                fetchAndApplyAWOL(rowsToRender); // Reapply AWOL logic for the filtered rows
+                renderPaginationButtons(totalPages);
+            }
+
+            // Add event listener to the search input
+            searchInput.addEventListener("input", filterTableBySearch);
+
+            renderTable();
         });
-    }
-
-    function renderTable(filter = "") {
-        const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
-        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        currentPage = Math.min(currentPage, totalPages || 1);
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        tbody.innerHTML = "";
-        const rowsToRender = filteredRows.slice(start, end);
-        rowsToRender.forEach(row => tbody.appendChild(row));
-        fetchAndApplyAWOL(rowsToRender); // Reapply AWOL logic for the current page
-        renderPaginationButtons(totalPages);
-    }
-
-    let paginationStart = 1; // Tracks which set of pages we're viewing
-
-    function renderPaginationButtons(totalPages) {
-        paginationContainer.innerHTML = "";
-
-        const maxVisible = 10;
-        const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
-
-        // Left arrow (go back 10 pages)
-        if (paginationStart > 1) {
-            const leftArrow = document.createElement("button");
-            leftArrow.textContent = "←";
-            leftArrow.addEventListener("click", () => {
-                paginationStart = Math.max(1, paginationStart - maxVisible);
-                renderPaginationButtons(totalPages);
-            });
-            paginationContainer.appendChild(leftArrow);
-        }
-
-        // Page number buttons
-        for (let i = paginationStart; i <= paginationEnd; i++) {
-            const btn = document.createElement("button");
-            btn.textContent = i;
-            btn.className = i === currentPage ? "active" : "";
-            btn.style.margin = "0 5px";
-            btn.style.minWidth = "22px";
-            btn.addEventListener("click", () => {
-                currentPage = i;
-                renderTable(currentFilter);
-            });
-            paginationContainer.appendChild(btn);
-        }
-
-        // Right arrow (go forward 10 pages)
-        if (paginationEnd < totalPages) {
-            const rightArrow = document.createElement("button");
-            rightArrow.textContent = "→";
-            rightArrow.addEventListener("click", () => {
-                paginationStart = paginationStart + maxVisible;
-                renderPaginationButtons(totalPages);
-            });
-            paginationContainer.appendChild(rightArrow);
-        }
-    }
-
-    const plateIDs = ["plate1", "plate2", "plate3"];
-    plateIDs.forEach(id => {
-        const plate = document.getElementById(id);
-        if (plate) {
-            plate.addEventListener("click", function () {
-                currentFilter = this.getAttribute("data-status") || "";
-                currentPage = 1;
-                paginationStart = 1; // ✅ Reset pagination to start from 1
-                renderTable(currentFilter);
-            });
-        }
-    });
-
-    // Search functionality
-    function filterTableBySearch() {
-        const searchValue = searchInput.value.toLowerCase(); // Get the search input value
-        const filteredRows = allRows.filter((row) =>
-            row.textContent.toLowerCase().includes(searchValue)
-        ); // Filter rows based on search value
-        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-        currentPage = Math.min(currentPage, totalPages || 1);
-        const start = (currentPage - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        tbody.innerHTML = "";
-        const rowsToRender = filteredRows.slice(start, end);
-        rowsToRender.forEach((row) => tbody.appendChild(row));
-        fetchAndApplyAWOL(rowsToRender); // Reapply AWOL logic for the filtered rows
-        renderPaginationButtons(totalPages);
-    }
-
-    // Add event listener to the search input
-    searchInput.addEventListener("input", filterTableBySearch);
-
-    renderTable();
-});
     </script>
 </body>
 

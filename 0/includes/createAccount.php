@@ -25,6 +25,17 @@ function createUser($employeeID, $employeeName, $email, $role, $department)
 
         // Execute the query
         if ($stmt->execute()) {
+            // Insert default values into total_balance and used_balance tables
+            $balanceSql = "
+                INSERT INTO total_balance (user_id, sl, sil, elc, mil, ml, pl, awol, spl, lwop, brl) 
+                VALUES (:employeeID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                
+                INSERT INTO used_balance (user_id, sl, sil, elc, mil, ml, pl, awol, spl, lwop, brl) 
+                VALUES (:employeeID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            ";
+            $balanceStmt = $pdo->prepare($balanceSql);
+            $balanceStmt->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);
+            $balanceStmt->execute();
             return ['success' => true, 'message' => 'User created successfully.'];
         } else {
             return ['success' => false, 'message' => 'Failed to create user.'];
@@ -61,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Call the function to create the user
             $result = createUser($employeeID, $employeeName, $email, $role, $department);
+
+
+
 
             if ($result['success']) {
                 // Step 2: Insert into the `audit_trail` table

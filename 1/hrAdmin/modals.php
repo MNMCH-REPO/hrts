@@ -337,8 +337,8 @@
 
          <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php">
 
-             <input type="text" name="usedBalanceId" id="markAWOLID">
-             <input type="text" name="employeeLeaveUserId" id="markAWOLEmployeeID">
+             <input type="hidden" name="usedBalanceId" id="markAWOLID">
+             <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID">
              <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
              <p class="center-text">
                  Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
@@ -400,13 +400,17 @@
                          const totalAWOLValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
 
                          // Apply color based on the value of totalAWOL
-                         if (totalAWOLValue === 3 || totalAWOLValue === 4) {
-                             awolBalancesElement.style.color = "orange"; // Set color to orange if value is 3
+
+                         if (totalAWOLValue === 3) {
+                             awolBalancesElement.style.color = "yellow"; // Set color to orange for 3
+                         } else if (totalAWOLValue === 4) {
+                             awolBalancesElement.style.color = "orange"; // Use the term "red-orange"
                          } else if (totalAWOLValue >= 5) {
-                             awolBalancesElement.style.color = "red"; // Set color to red if value is 5 or greater
+                             awolBalancesElement.style.color = "red"; // Set color to red for 5 or greater
                          } else {
                              awolBalancesElement.style.color = ""; // Reset color for other values
                          }
+
 
 
                          console.log("Mark AWOL Employee ID:", markAWOLEmployeeID.value);
@@ -427,7 +431,67 @@
 
 
 
-         
+         function updateAWOLColor(totalAWOLValue) {
+             if (totalAWOLValue === 3) {
+                 awolBalancesElement.style.color = "yellow"; // Set color to orange for 3
+             } else if (totalAWOLValue === 4) {
+                 awolBalancesElement.style.color = "orange"; // Use the term "red-orange"
+             } else if (totalAWOLValue >= 5) {
+                 awolBalancesElement.style.color = "red"; // Set color to red for 5 or greater
+             } else {
+                 awolBalancesElement.style.color = ""; // Reset color for other values
+             }
+         }
+
+
+         markAWOLForm.addEventListener('submit', async (event) => {
+             event.preventDefault(); // Prevent the default form submission
+
+             const formData = new FormData(markAWOLForm);
+
+             try {
+                 const response = await fetch('../../../hrts/0/includes/markAWOLQuery.php', {
+                     method: 'POST',
+                     body: formData,
+                 });
+
+                 const result = await response.json();
+
+                 if (result.success) {
+                     alert(result.message); // Show success message
+
+                     // Update the AWOL balance dynamically
+                     const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                     const updatedAWOL = currentAWOL + 1;
+                     awolBalancesElement.textContent = updatedAWOL;
+
+                     // Update the color based on the new AWOL value
+                     updateAWOLColor(updatedAWOL);
+
+                     // Optionally reload the page to reflect other changes
+                     location.reload();
+                 } else {
+                     alert(result.message); // Show error message
+
+                     // Ensure the color is updated even if marking as AWOL fails
+                     const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                     updateAWOLColor(currentAWOL);
+                 }
+             } catch (error) {
+                 console.error('Error:', error);
+                 alert('An error occurred while marking AWOL.');
+
+                 // Ensure the color is updated even if an error occurs
+                 const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                 updateAWOLColor(currentAWOL);
+             }
+         });
+
+
+
+
+
+
          // Close Mark AWOL Modal
          closemarkAWOLModal.addEventListener("click", function() {
              console.log("Close Mark AWOL modal button clicked");
