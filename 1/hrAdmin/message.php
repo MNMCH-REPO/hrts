@@ -21,7 +21,6 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 flex-direction: column;
                 width: 100%;
                 min-height: 90vh;
-                margin: 5% 0 0 0;
                 align-self: center;
             } 
         }

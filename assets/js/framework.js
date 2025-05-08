@@ -103,3 +103,51 @@ sideNav.addEventListener("mouseenter", () => {
 if (window.innerWidth >= 600) {
     shrinkSideNav();
 }
+
+if (window.innerWidth < 600) {
+    // Create the burger button
+    const burgerButton = document.createElement("button");
+    burgerButton.id = "burgerButton";
+    burgerButton.textContent = "☰";
+    burgerButton.style.position = "absolute";
+    burgerButton.style.top = "10px";
+    burgerButton.style.left = "10px";
+    burgerButton.style.zIndex = "1000";
+    burgerButton.style.background = "var(--primary-400)";
+    burgerButton.style.color = "white";
+    burgerButton.style.border = "none";
+    burgerButton.style.padding = "4px 10px";
+    burgerButton.style.borderRadius = "5px";
+    burgerButton.style.cursor = "pointer";
+
+    // Append the burger button to the .chatbox-container
+    const chatboxContainer = document.querySelector(".chatbox-container");
+    if (chatboxContainer) {
+        chatboxContainer.appendChild(burgerButton);
+    }
+
+    // Hide the #cardsContainer initially
+    const cardsContainer = document.querySelector("#cardsContainer");
+    if (cardsContainer) {
+        cardsContainer.style.display = "none";
+        cardsContainer.style.zIndex = "9999"; // Ensure it's behind the burger button
+    }
+
+    // Toggle #cardsContainer visibility when the burger button is clicked
+    burgerButton.addEventListener("click", function () {
+        if (cardsContainer.style.display === "none") {
+            cardsContainer.style.display = "block";
+        } else {
+            cardsContainer.style.display = "none";
+        }
+    });
+
+    // Hide #cardsContainer when a .card element is clicked
+    document.querySelectorAll(".card").forEach(function (card) {
+        card.addEventListener("click", function () {
+            if (cardsContainer) {
+                cardsContainer.style.display = "none";
+            }
+        });
+    });
+}

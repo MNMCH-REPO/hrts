@@ -20,7 +20,7 @@ require_once '../../0/includes/employeeTicket.php';
             .content {
                 display: flex;
                 flex-direction: column;
-                width: 98%;
+                width: 100%;
                 min-height: 90vh;
                 align-self: center;
             }
@@ -91,7 +91,7 @@ require_once '../../0/includes/employeeTicket.php';
                     </div>
                 </div>
 
-                <div class="cards-container">
+                <div class="cards-container" id="cardsContainer">
                     <?php
                     require_once '../../0/includes/db.php';
 

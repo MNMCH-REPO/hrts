@@ -31,6 +31,7 @@
         align-items: center;
         margin-top: 10px;
         gap: 8px;
+        padding: 0 8px;
     }
     .attach {
         padding: 10px;
@@ -110,7 +111,7 @@
         flex-direction: column;
         align-self: center;
         gap: 10px;
-        width: 98%;
+        width: 100%;
     }
     .search {
         display: flex;
