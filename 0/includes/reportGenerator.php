@@ -3,41 +3,40 @@
     require '../../0/vendor/autoload.php';
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['downloadReport'])) {
-    //     $startDate = $_POST['startDate'] ?? date('Y-m-d');
-    //     $endDate = $_POST['endDate'] ?? date('Y-m-d');
-    //     $filePath = generateStandardReport($pdo, $startDate, $endDate);
-    //     if (file_exists($filePath)) {
-    //         header('Content-Description: File Transfer');
-    //         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    //         header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
-    //         header('Expires: 0');
-    //         header('Cache-Control: must-revalidate');
-    //         header('Pragma: public');
-    //         header('Content-Length: ' . filesize($filePath));
-    //         ob_clean();
-    //         flush();
-    //         readfile($filePath);
-    //     }
-    // }
     
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['downloadReport'])) {
         $startDate = $_POST['startDate'] ?? date('Y-m-d');
         $endDate = $_POST['endDate'] ?? date('Y-m-d');
         $reportType = $_POST['reportType'] ?? 'standard';
+        $ticketType = $_POST['ticketType'] ?? 'ticket'; // Default to 'ticket' if not provided
     
-        if ($reportType === 'standard') {
-            generateStandardReportOnServer($pdo, $startDate, $endDate);
-            downloadStandardReport($pdo, $startDate, $endDate);
-        } elseif ($reportType === 'employee') {
-            $employeeName = $_POST['employeeName'] ?? '';
-            generateEmployeeReportOnServer($pdo, $startDate, $endDate, $employeeName);
-            generateEmployeeReport($pdo, $startDate, $endDate, $employeeName);
-        } elseif ($reportType === 'department') {
-            $departmentName = $_POST['departmentName'] ?? '';
-            generateDepartmentReportOnServer($pdo, $startDate, $endDate, $departmentName);
-            generateDepartmentReport($pdo, $startDate, $endDate, $departmentName);
+        if ($ticketType === 'ticket') {
+            // Handle ticket-related reports
+            if ($reportType === 'standard') {
+                generateStandardReportOnServer($pdo, $startDate, $endDate);
+                downloadStandardReport($pdo, $startDate, $endDate);
+            } elseif ($reportType === 'employee') {
+                $employeeName = $_POST['employeeName'] ?? '';
+                generateEmployeeReportOnServer($pdo, $startDate, $endDate, $employeeName);
+                generateEmployeeReport($pdo, $startDate, $endDate, $employeeName);
+            } elseif ($reportType === 'department') {
+                $departmentName = $_POST['departmentName'] ?? '';
+                generateDepartmentReportOnServer($pdo, $startDate, $endDate, $departmentName);
+                generateDepartmentReport($pdo, $startDate, $endDate, $departmentName);
+            }
+        } elseif ($ticketType === 'leave') {
+            if ($reportType === 'standard') {
+                generateLeaveStandardReportOnServer($pdo, $startDate, $endDate);
+                downloadLeaveStandardReport($pdo, $startDate, $endDate);
+            } elseif ($reportType === 'employee') {
+                $employeeName = $_POST['employeeName'] ?? '';
+                generateLeaveEmployeeReportOnServer($pdo, $startDate, $endDate, $employeeName);
+                generateLeaveEmployeeReport($pdo, $startDate, $endDate, $employeeName);
+            } elseif ($reportType === 'department') {
+                $departmentName = $_POST['departmentName'] ?? '';
+                generateLeaveDepartmentReportOnServer($pdo, $startDate, $endDate, $departmentName);
+                generateLeaveDepartmentReport($pdo, $startDate, $endDate, $departmentName);
+            }
         }
     }
 
@@ -513,4 +512,406 @@ function generateDepartmentReportOnServer($pdo, $startDate, $endDate, $departmen
     $writer = new Xlsx($spreadsheet);
     $writer->save($filePath);
     return $filePath;
+}
+function generateLeaveStandardReportOnServer($pdo, $startDate, $endDate) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.department,
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY u.department, u.name
+    ");
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Leave Standard Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Employee Name', 'Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $currentRow = 1;
+    $currentDepartment = null;
+
+    foreach ($leaveRequests as $leave) {
+        if ($currentDepartment !== $leave['department']) {
+            if ($currentDepartment !== null) {
+                $currentRow++;
+            }
+            $sheet->setCellValue("A{$currentRow}", ucwords(strtolower($leave['department'])));
+            $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true);
+            $currentRow++;
+            $sheet->fromArray($header, null, "A{$currentRow}");
+            $sheet->getStyle("A{$currentRow}:I{$currentRow}")->getFont()->setBold(true);
+            $currentRow++;
+            $currentDepartment = $leave['department'];
+        }
+        $sheet->setCellValue("A{$currentRow}", ucwords(strtolower($leave['employee_name'])));
+        $sheet->setCellValue("B{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("C{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("E{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("F{$currentRow}", $leave['status']);
+        $sheet->setCellValue("G{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("H{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("I{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'I') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_standard_report_{$timestamp}.xlsx";
+    $filePath = "../../assets/reports/{$fileName}";
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+    return $filePath;
+}
+
+function downloadLeaveStandardReport($pdo, $startDate, $endDate) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.department,
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY u.department, u.name
+    ");
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Leave Standard Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Employee Name', 'Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $currentRow = 1;
+    $currentDepartment = null;
+
+    foreach ($leaveRequests as $leave) {
+        if ($currentDepartment !== $leave['department']) {
+            if ($currentDepartment !== null) {
+                $currentRow++;
+            }
+            $sheet->setCellValue("A{$currentRow}", ucwords(strtolower($leave['department'])));
+            $sheet->getStyle("A{$currentRow}")->getFont()->setBold(true);
+            $currentRow++;
+            $sheet->fromArray($header, null, "A{$currentRow}");
+            $sheet->getStyle("A{$currentRow}:I{$currentRow}")->getFont()->setBold(true);
+            $currentRow++;
+            $currentDepartment = $leave['department'];
+        }
+        $sheet->setCellValue("A{$currentRow}", ucwords(strtolower($leave['employee_name'])));
+        $sheet->setCellValue("B{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("C{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("E{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("F{$currentRow}", $leave['status']);
+        $sheet->setCellValue("G{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("H{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("I{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'I') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_standard_report_{$timestamp}.xlsx";
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+    header('Cache-Control: max-age=0');
+    ob_clean();
+    flush();
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+}
+function generateLeaveEmployeeReportOnServer($pdo, $startDate, $endDate, $employeeName) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE u.name = :employeeName
+        AND lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY lr.created_at ASC
+    ");
+    $stmt->bindParam(':employeeName', $employeeName);
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Employee Leave Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $sheet->setCellValue('A1', 'Employee Name:');
+    $sheet->setCellValue('B1', $employeeName);
+    $sheet->setCellValue('A2', 'Date Range:');
+    $sheet->setCellValue('B2', date('M d, Y', strtotime($startDate)) . ' - ' . date('M d, Y', strtotime($endDate)));
+    $sheet->fromArray($header, null, 'A4');
+    $sheet->getStyle('A4:H4')->getFont()->setBold(true);
+
+    $currentRow = 5;
+    foreach ($leaveRequests as $leave) {
+        $sheet->setCellValue("A{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("B{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("C{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("E{$currentRow}", $leave['status']);
+        $sheet->setCellValue("F{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("G{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("H{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'H') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_employee_report_{$timestamp}.xlsx";
+    $filePath = "../../assets/reports/{$fileName}";
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+    return $filePath;
+}
+function generateLeaveEmployeeReport($pdo, $startDate, $endDate, $employeeName) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE u.name = :employeeName
+        AND lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY lr.created_at ASC
+    ");
+    $stmt->bindParam(':employeeName', $employeeName);
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Employee Leave Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $sheet->setCellValue('A1', 'Employee Name:');
+    $sheet->setCellValue('B1', $employeeName);
+    $sheet->setCellValue('A2', 'Date Range:');
+    $sheet->setCellValue('B2', date('M d, Y', strtotime($startDate)) . ' - ' . date('M d, Y', strtotime($endDate)));
+    $sheet->fromArray($header, null, 'A4');
+    $sheet->getStyle('A4:H4')->getFont()->setBold(true);
+
+    $currentRow = 5;
+    foreach ($leaveRequests as $leave) {
+        $sheet->setCellValue("A{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("B{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("C{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("E{$currentRow}", $leave['status']);
+        $sheet->setCellValue("F{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("G{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("H{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'H') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_employee_report_{$timestamp}.xlsx";
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+    header('Cache-Control: max-age=0');
+    ob_clean();
+    flush();
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
+}
+
+function generateLeaveDepartmentReportOnServer($pdo, $startDate, $endDate, $departmentName) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE u.department = :departmentName
+        AND lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY lr.created_at ASC
+    ");
+    $stmt->bindParam(':departmentName', $departmentName);
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Department Leave Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Employee Name', 'Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $sheet->setCellValue('A1', 'Department Name:');
+    $sheet->setCellValue('B1', $departmentName);
+    $sheet->setCellValue('A2', 'Date Range:');
+    $sheet->setCellValue('B2', date('M d, Y', strtotime($startDate)) . ' - ' . date('M d, Y', strtotime($endDate)));
+    $sheet->fromArray($header, null, 'A4');
+    $sheet->getStyle('A4:I4')->getFont()->setBold(true);
+
+    $currentRow = 5;
+    foreach ($leaveRequests as $leave) {
+        $sheet->setCellValue("A{$currentRow}", $leave['employee_name']);
+        $sheet->setCellValue("B{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("C{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("E{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("F{$currentRow}", $leave['status']);
+        $sheet->setCellValue("G{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("H{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("I{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'I') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_department_report_{$timestamp}.xlsx";
+    $filePath = "../../assets/reports/{$fileName}";
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
+    return $filePath;
+}
+function generateLeaveDepartmentReport($pdo, $startDate, $endDate, $departmentName) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            u.name AS employee_name,
+            lr.leave_types,
+            lr.start_date,
+            lr.end_date,
+            lr.reason,
+            lr.status,
+            lr.created_at,
+            approver.name AS approved_by,
+            lr.updated_at
+        FROM leave_requests lr
+        JOIN users u ON lr.employee_id = u.id
+        LEFT JOIN users approver ON lr.approved_by = approver.id
+        WHERE u.department = :departmentName
+        AND lr.created_at BETWEEN :startDate AND :endDate
+        ORDER BY lr.created_at ASC
+    ");
+    $stmt->bindParam(':departmentName', $departmentName);
+    $stmt->bindParam(':startDate', $startDate);
+    $stmt->bindParam(':endDate', $endDate);
+    $stmt->execute();
+    $leaveRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Department Leave Report');
+    $spreadsheet->getDefaultStyle()->getFont()->setSize(12);
+
+    $header = ['Employee Name', 'Leave Type', 'Start Date', 'End Date', 'Reason', 'Status', 'Created At', 'Approved By', 'Updated At'];
+    $sheet->setCellValue('A1', 'Department Name:');
+    $sheet->setCellValue('B1', $departmentName);
+    $sheet->setCellValue('A2', 'Date Range:');
+    $sheet->setCellValue('B2', date('M d, Y', strtotime($startDate)) . ' - ' . date('M d, Y', strtotime($endDate)));
+    $sheet->fromArray($header, null, 'A4');
+    $sheet->getStyle('A4:I4')->getFont()->setBold(true);
+
+    $currentRow = 5;
+    foreach ($leaveRequests as $leave) {
+        $sheet->setCellValue("A{$currentRow}", $leave['employee_name']);
+        $sheet->setCellValue("B{$currentRow}", $leave['leave_types']);
+        $sheet->setCellValue("C{$currentRow}", $leave['start_date']);
+        $sheet->setCellValue("D{$currentRow}", $leave['end_date']);
+        $sheet->setCellValue("E{$currentRow}", $leave['reason']);
+        $sheet->setCellValue("F{$currentRow}", $leave['status']);
+        $sheet->setCellValue("G{$currentRow}", $leave['created_at']);
+        $sheet->setCellValue("H{$currentRow}", $leave['approved_by'] ?? 'N/A');
+        $sheet->setCellValue("I{$currentRow}", $leave['updated_at'] ?? 'N/A');
+        $currentRow++;
+    }
+
+    foreach (range('A', 'I') as $column) {
+        $sheet->getColumnDimension($column)->setAutoSize(true);
+    }
+
+    $timestamp = date('m-d-y_H-i-s');
+    $fileName = "leave_department_report_{$timestamp}.xlsx";
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+    header('Cache-Control: max-age=0');
+    ob_clean();
+    flush();
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('php://output');
+    exit;
 }

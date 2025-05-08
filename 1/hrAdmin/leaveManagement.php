@@ -1136,7 +1136,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             function renderPaginationButtons(totalPages) {
                 paginationContainer.innerHTML = "";
 
-                const maxVisible = 10;
+                const maxVisible = 5;
                 const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
 
                 // Left arrow (go back 10 pages)

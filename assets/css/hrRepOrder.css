@@ -52,45 +52,45 @@
         align-items: center;
         background: #D3D3D3;
         border-radius: 30px;
-        padding: 5px;
-        width: 320px;
+        padding: 2px;
+        width: 200px;
     }
     .search-input {
-        flex: 1;
+        width: 50%;
         border: none;
         background: transparent;
-        padding: 10px;
+        padding: 1px 4px;
         border-radius: 30px;
         outline: none;
-        font-size: 14px;
+        font-size: 10px;
     }
     .search-icon {
-        width: 24px;
-        height: 24px;
+        width: 12px;
+        height: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 10px;
     }
     .search-icon img {
-        width: 16px;
-        height: 16px;
+        width: 12px;
+        height: 12px;
     }
     .filter-btn {
         display: flex;
         align-items: center;
         background: transparent;
         border: none;
-        padding: 8px 12px;
-        font-size: 14px;
+        padding: 4px 6px;
+        font-size: 10px;
         font-weight: bold;
         cursor: pointer;
         border-left: 1px solid #888;
     }
     .filter-btn img {
-        width: 16px;
-        height: 16px;
-        margin-left: 5px;
+        width: 12px;
+        height: 12px;
+        margin-left: 1px;
     }
     .pagination-wrapper {
         display: flex;

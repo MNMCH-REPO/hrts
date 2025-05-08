@@ -187,6 +187,8 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        overflow-y: auto;
+        max-height: 60vh;
     }
     
     .report-card {

@@ -343,10 +343,6 @@ require_once '../../0/includes/reportGenerator.php';
             <br><br><br><br>
 
     </div>
-
-
-
-
     <div id="reportModal" class="modal">
         <form class="modal-content" method="post">
             <input type="hidden" name="reportType" value="standard">
@@ -361,6 +357,12 @@ require_once '../../0/includes/reportGenerator.php';
             <div class="date-range">
                 <label>From: <input type="date" id="startDate" name="startDate"></label>
                 <label>To: <input type="date" id="endDate" name="endDate"></label>
+            </div>
+            <div class="radioInputContainer">
+                <input type="radio" class="radioInput" id="ticket" name="ticketType" value="ticket">
+                <label class="radioInputLabel" for="ticket">Ticket</label>
+                <input type="radio" class="radioInput" id="leave" name="ticketType" value="leave">
+                <label class="radioInputLabel" for="leave">Leave</label>
             </div>
             <div class="report-options">
                 <div class="report-card">
