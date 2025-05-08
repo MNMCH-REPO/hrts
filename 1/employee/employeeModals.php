@@ -7,7 +7,7 @@
 
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
@@ -18,7 +18,7 @@
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department" readonly>
 
                     <label for="department">Department</label>
                 </div>

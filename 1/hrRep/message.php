@@ -90,62 +90,107 @@ require_once '../../0/includes/employeeTicket.php';
                         </button>
                     </div>
                 </div>
-                <div class="cards-container">
+                
+                <div class="cards-container" id="cardsContainer">
+
+                    <div class="search">
+                        <input type="text" id="search" placeholder="Search...">
+                    </div>
                     <?php
                     require_once '../../0/includes/db.php';
-
 
                     if (!isset($_SESSION['user_id'])) {
                         exit('User not logged in.');
                     }
 
-                    $employee_id = $_SESSION['user_id'];
+                    $employeeID = $_SESSION['user_id'];
 
                     try {
-                        // Fetch tickets assigned to the logged-in employee
-                        $stmt = $pdo->prepare("
-                        SELECT 
-                            
-    t.id, 
-    t.subject, 
-    u2.department, -- Fetch the department from the user who created the ticket
-    t.description, 
-    t.priority, 
-    t.status,
-    t.created_at,
-    COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
-    u2.name AS employee_name -- Employee who created the ticket
-FROM tickets t
-LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
-LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
-WHERE t.assigned_to = :employee_id OR t.employee_id = :employee_id
-ORDER BY t.updated_at DESC; -- Sort by newest update
-                            ");
-                        $stmt->bindParam(':employee_id', $employee_id, PDO::PARAM_INT);
-                        $stmt->execute();
-                        $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        // Fetch employee's own tickets
+                        $stmt1 = $pdo->prepare("
+                            SELECT 
+                                t.id, 
+                                t.subject, 
+                                u2.department, 
+                                t.description, 
+                                t.priority, 
+                                t.status,
+                                t.created_at,
+                                COALESCE(u1.name, 'Unassigned') AS assigned_name,
+                                u2.name AS employee_name,
+                                'ticket' AS type
+                            FROM tickets t
+                            LEFT JOIN users u1 ON t.assigned_to = u1.id
+                            LEFT JOIN users u2 ON t.employee_id = u2.id
+                            WHERE t.employee_id = :employee_id
+                            ORDER BY t.updated_at DESC
+                        ");
+                        $stmt1->execute(['employee_id' => $employeeID]);
+                        $tickets = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-                        if ($tickets) {
-                            foreach ($tickets as $index => $ticket) {
-                                echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                                      onclick="loadMessages(' . htmlspecialchars($ticket['id']) . ', \'' . htmlspecialchars($ticket['assigned_name']) . '\')">';
-                                echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                echo '<h1>' . htmlspecialchars($ticket['employee_name']) . '</h1>'; // Fixed typo
-                                echo '<h1>' . htmlspecialchars($ticket['department']) . '</h1>';
-                                // echo '<h1>Subject: ' . htmlspecialchars($ticket['subject']) . '</h1>';
-                                // echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name']) . '</h1>';
-                                // echo '<h1>Priority: ' . htmlspecialchars($ticket['priority']) . '</h1>';
-                                // echo '<h1>Status: ' . htmlspecialchars($ticket['status']) . '</h1>';
-                                // echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at']) . '</h1>';
-                                echo '</div>';
+                        // Fetch employee's own leave requests
+                        $stmt2 = $pdo->prepare("
+                            SELECT 
+                                l.id AS id,
+                                l.employee_id,
+                                l.leave_types, 
+                                l.start_date,
+                                l.end_date,
+                                l.reason,
+                                l.status,
+                                l.created_at,
+                                l.approved_by,
+                                l.updated_at,
+                                u3.name AS employee_name,
+                                'leave' AS type
+                            FROM leave_requests l
+                            LEFT JOIN users u3 ON l.employee_id = u3.id
+                            WHERE l.employee_id = :employee_id
+                            ORDER BY l.updated_at DESC, l.created_at DESC
+                        ");
+                        $stmt2->execute(['employee_id' => $employeeID]);
+                        $leaves = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Combine and sort
+                        $items = array_merge($tickets, $leaves);
+                        usort($items, function ($a, $b) {
+                            $dateA = $a['updated_at'] ?? $a['created_at'];
+                            $dateB = $b['updated_at'] ?? $b['created_at'];
+                            return strtotime($dateB) - strtotime($dateA);
+                        });
+
+                        // Render
+                        if ($items) {
+                            foreach ($items as $index => $item) {
+                                if (!empty($item['id']) && !empty($item['type'])) {
+                                    echo '<!-- DEBUG: ID=' . $item['id'] . ', TYPE=' . $item['type'] . ' -->';
+
+                                    echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
+
+                                    echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
+                                    echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
+                                    echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
+
+                                    if ($item['type'] === 'ticket') {
+                                        echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
+                                        echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
+                                    } else {
+                                        echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
+                                    }
+
+                                    echo '</div>';
+                                } else {
+                                    echo '<!-- Skipped item: Missing id or type -->';
+                                }
                             }
                         } else {
-                            echo '<p>No tickets assigned to you.</p>';
+                            echo '<p>No tickets or leave requests found.</p>';
                         }
                     } catch (PDOException $e) {
-                        echo 'Error fetching tickets: ' . $e->getMessage();
+                        echo 'Error: ' . $e->getMessage();
                     }
                     ?>
+
 
                 </div>
                 <br><br>
@@ -166,10 +211,33 @@ ORDER BY t.updated_at DESC; -- Sort by newest update
         <img class="modal-content" id="modalImage">
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../../assets/js/framework.js"></script>
     <script src="../../assets/js/messages.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search');
+            const cardsContainer = document.getElementById('cardsContainer');
+
+            if (!searchInput || !cardsContainer) return; // Prevent errors if elements are missing
+
+            function filterCards() {
+                const query = searchInput.value.toLowerCase();
+                const cards = cardsContainer.getElementsByClassName('card');
+
+                Array.from(cards).forEach(card => {
+                    const cardText = card.textContent.toLowerCase();
+                    card.style.display = cardText.includes(query) ? 'block' : 'none';
+                });
+            }
+
+            searchInput.addEventListener('input', filterCards);
+        });
+    </script>
+
+
+
 
 </body>
 

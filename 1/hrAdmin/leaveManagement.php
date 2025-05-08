@@ -1176,7 +1176,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 }
             }
 
-            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+            const plateIDs = ["plate1", "plate2", "plate3"];
             plateIDs.forEach(id => {
                 const plate = document.getElementById(id);
                 if (plate) {

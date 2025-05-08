@@ -1,9 +1,67 @@
+$(document).ready(function () {
+  let selectedTicketId = null; // Declare globally
+  let selectedTicketType = null;
+
+  $(document).on("click", ".card", function () {
+    const itemId = $(this).data("id");
+    const itemType = $(this).data("type");
+
+    console.log("Clicked card. ID:", itemId, "Type:", itemType);
+
+    $(".card").removeClass("selected");
+    $(this).addClass("selected");
+
+    if (!itemId || !itemType) {
+      console.error("No ticket ID or type found for this card.");
+      return;
+    }
+
+    selectedTicketId = itemId;
+    selectedTicketType = itemType;
+
+    if (itemType === "ticket") {
+      console.log("Selected Ticket ID:", selectedTicketId);
+     
+      loadMessages(itemId, null, itemType);
+    } else if (itemType === "leave") {
+      console.log("Selected Leave ID:", selectedTicketId);
+      
+      loadMessages(itemId, null, itemType);
+    } else {
+      console.warn("Unknown item type:", itemType);
+    }
+  });
+});
+
+
+
+$(document).on("click", ".card", function () {
+  const itemId = $(this).data("id");
+  const itemType = $(this).data("type");
+
+  console.log("Card clicked. ID:", itemId, "Type:", itemType);
+
+  if (!itemId || !itemType) {
+      console.error("Card is missing data-id or data-type attributes.");
+      return;
+  }
+
+  $(".card").removeClass("selected");
+  $(this).addClass("selected");
+
+  selectedTicketId = itemId;
+  selectedTicketType = itemType;
+
+  loadMessages(itemId, null, itemType); // Pass the ticket ID and type
+});
+
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
 
-function loadMessages(ticketId = null, assignedName = null) {
+function loadMessages(ticketId = null, assignedName = null, type = null) {
   if (ticketId && ticketId !== selectedTicketId) {
     selectedTicketId = ticketId;
+    selectedTicketType = type; // Set the type (ticket or leave)
 
     $("#message").val(""); // Clear message input
     $("#fileInput").val(""); // Clear file input
@@ -13,7 +71,7 @@ function loadMessages(ticketId = null, assignedName = null) {
 
     // Auto-refresh messages every second
     refreshInterval = setInterval(() => {
-      loadMessages(); // Refresh only if the same ticket is still selected
+      loadMessages(selectedTicketId, assignedName, selectedTicketType); // Pass type during refresh
     }, 1000);
   }
 
@@ -30,18 +88,21 @@ function loadMessages(ticketId = null, assignedName = null) {
 
   // Save the current scroll position
   let chatbox = $("#chatbox");
-  let scrollPosition = chatbox.scrollTop();
+  let isAtBottom = chatbox.scrollTop() + chatbox.innerHeight() >= chatbox[0].scrollHeight;
 
   // Load messages via AJAX
   $.ajax({
-    url: "../../../hrts/0/includes/employeeLoad_messages.php",
+    url: "../../0/includes/employeeLoad_messages.php",
     type: "GET",
-    data: { ticket_id: selectedTicketId },
+    data: { ticket_id: selectedTicketId, ticket_type: selectedTicketType },
+
     success: function (response) {
       chatbox.html(response);
 
-      // Restore the scroll position
-      chatbox.scrollTop(scrollPosition);
+      // Scroll to the bottom if the user was already at the bottom
+      if (isAtBottom) {
+        chatbox.scrollTop(chatbox[0].scrollHeight);
+      }
     },
     error: function (xhr, status, error) {
       console.error("Error loading messages:", error);
@@ -64,22 +125,17 @@ function updateChatbox(message) {
 function selectTicket(ticketId) {
   selectedTicketId = ticketId;
 
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(
-      JSON.stringify({ action: "select_ticket", ticket_id: ticketId })
-    );
-  }
-
   loadMessages(ticketId);
 }
 
-function uploadFile(fileInput, ticketId, callback) {
+function uploadFile(fileInput, ticketId, type, callback) {
   let formData = new FormData();
-  formData.append("ticket_id", ticketId);
-  formData.append("file", fileInput);
+  formData.append("id", ticketId); // Send the ID
+  formData.append("type", type); // Send the type (ticket or leave)
+  formData.append("file", fileInput); // Send the file
 
   $.ajax({
-    url: "../../../hrts/0/includes/upload_file.php", // New backend file for file uploads
+    url: "../../../hrts/0/includes/upload_file.php", // Backend file for file uploads
     type: "POST",
     data: formData,
     contentType: false,
@@ -99,6 +155,7 @@ function uploadFile(fileInput, ticketId, callback) {
     },
   });
 }
+
 function sendMessage(event) {
   if (event) event.preventDefault();
 
@@ -106,27 +163,37 @@ function sendMessage(event) {
   let fileInput = $("#fileInput")[0].files[0];
 
   if (!selectedTicketId) {
-    console.warn("No ticket selected.");
-    alert("Please select a ticket before sending a message.");
+    console.warn("No ticket or leave request selected.");
+    alert("Please select a ticket or leave request before sending a message.");
     return;
   }
 
   if (fileInput) {
     // Upload the file first, then send the filename as message (even if messageText is empty)
-    uploadFile(fileInput, selectedTicketId, function (fileResponse) {
-      let fileName = fileResponse.file_name || "File uploaded";
+    uploadFile(
+      fileInput,
+      selectedTicketId,
+      selectedTicketType,
+      function (fileResponse) {
+        let fileName = fileResponse.file_name || "File uploaded";
 
-      // ✅ Send filenfame as message only if no manual message is written
-      sendTextMessage(messageText || fileName);
-    });
+        // ✅ Send filename as message only if no manual message is written
+        sendTextMessage(messageText || fileName);
+      }
+    );
   } else {
     sendTextMessage(messageText);
   }
 }
 
+
 function sendTextMessage(messageText) {
   let formData = new FormData();
-  formData.append("ticket_id", selectedTicketId);
+  if (selectedTicketType === "ticket") {
+    formData.append("ticket_id", selectedTicketId);
+  } else if (selectedTicketType === "leave") {
+    formData.append("leave_id", selectedTicketId);
+  }
   formData.append("message", messageText);
 
   $.ajax({
@@ -138,10 +205,12 @@ function sendTextMessage(messageText) {
     success: function (response) {
       console.log("Message sent successfully:", response);
       if (response.success) {
-        $("#fileInput").val(""); // Clear file input
+        $("#fileInput").val(""); // ✅ Clear file input
+        $("#message").val(""); // ✅ Clear message input
         $("#message").attr("placeholder", "Type your message..."); // Reset placeholder
 
-        loadMessages(); // Refresh messages
+        // Optionally, refresh messages to ensure consistency
+        loadMessages();
       } else {
         console.error("Message sending failed:", response.message);
         alert(response.message); // Show error message to the user
@@ -187,26 +256,26 @@ $(document).ready(function () {
 });
 
 
-function handleFileAction(filePath, action) {
-  if (!filePath) {
-    console.error("File path is missing.");
-    return;
-  }
+  function handleFileAction(filePath, action) {
+    if (!filePath) {
+        console.error("File path is missing.");
+        return;
+    }
 
-  if (action === "view") {
-    // Open the file in a new tab for viewing
-    window.open(filePath, "_blank");
-  } else if (action === "download") {
-    // Trigger a download using AJAX
-    const link = document.createElement("a");
-    link.href = filePath;
-    link.download = filePath.split("/").pop(); // Extract the file name from the path
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } else {
-    console.error("Invalid action specified.");
-  }
+    if (action === "view") {
+        // Open the file in a new tab for viewing
+        window.open(filePath, "_blank");
+    } else if (action === "download") {
+        // Trigger a download using AJAX
+        const link = document.createElement("a");
+        link.href = filePath;
+        link.download = filePath.split("/").pop(); // Extract the file name from the path
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        console.error("Invalid action specified.");
+    }
 }
 
 // Ensure modal is hidden on page load

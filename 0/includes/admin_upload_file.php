@@ -1,10 +1,21 @@
 <?php
 header("Content-Type: application/json");
 
-function uploadFile($pdo, $type, $id, $user_id, $file) {
+function uploadFile($pdo, $type, $id, $user_id, $file)
+{
     $file_path = null;
     $file_name = null;
     try {
+        // Check file size (2 MB = 2 * 1024 * 1024 bytes)
+        if ($file['size'] > 2 * 1024 * 1024) {
+            throw new Exception("File size exceeds the 2 MB limit.");
+        }
+
+        // Check if the file is a video (based on MIME type)
+        $allowedVideoMimeTypes = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime'];
+        if (in_array($file['type'], $allowedVideoMimeTypes)) {
+            throw new Exception("Video files are not allowed.");
+        }
         // Validate the type and ID
         if ($type === 'ticket') {
             $stmt = $pdo->prepare("
@@ -37,7 +48,7 @@ function uploadFile($pdo, $type, $id, $user_id, $file) {
         }
 
         $uploadDir = '../../assets/uploads/';
-        $fileName = time() . '_' . basename($file['name']); // Add timestamp to avoid conflicts
+        $fileName = basename($file['name']); // Add timestamp to avoid conflicts
         $targetFilePath = $uploadDir . $fileName;
 
         // Ensure the upload directory exists and is writable

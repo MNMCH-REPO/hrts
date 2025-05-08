@@ -2,86 +2,76 @@ $(document).ready(function () {
   let selectedTicketId = null; // Declare globally
   let selectedTicketType = null;
 
-
-
-  
-
-
   $(document).on("click", ".card", function () {
-      const itemId = $(this).data("id");
-      const itemType = $(this).data("type");
+    const itemId = $(this).data("id");
+    const itemType = $(this).data("type");
 
-      console.log("Clicked card. ID:", itemId, "Type:", itemType);
+    console.log("Clicked card. ID:", itemId, "Type:", itemType);
 
-      $(".card").removeClass("selected");
-      $(this).addClass("selected");
+    $(".card").removeClass("selected");
+    $(this).addClass("selected");
 
-      if (!itemId || !itemType) {
-          console.error("No ticket ID or type found for this card.");
-          return;
-      }
+    if (!itemId || !itemType) {
+      console.error("No ticket ID or type found for this card.");
+      return;
+    }
 
-      selectedTicketId = itemId;
-      selectedTicketType = itemType;
+    selectedTicketId = itemId;
+    selectedTicketType = itemType;
 
-      if (itemType === "ticket") {
-          console.log("Selected Ticket ID:", selectedTicketId);
-          checkTicketPermissions(itemId);
-          loadMessages(itemId, null, itemType);
-      } else if (itemType === "leave") {
-          console.log("Selected Leave ID:", selectedTicketId);
-          checkTicketPermissions(itemId);
-          loadMessages(itemId, null, itemType);
-      } else {
-          console.warn("Unknown item type:", itemType);
-      }
+    if (itemType === "ticket") {
+      console.log("Selected Ticket ID:", selectedTicketId);
+      checkTicketPermissions(itemId);
+      loadMessages(itemId, null, itemType);
+    } else if (itemType === "leave") {
+      console.log("Selected Leave ID:", selectedTicketId);
+      checkTicketPermissions(itemId);
+      loadMessages(itemId, null, itemType);
+    } else {
+      console.warn("Unknown item type:", itemType);
+    }
   });
 });
 
-
 // Already existing: your checkTicketPermissions function
 function checkTicketPermissions(id, type) {
+  $.ajax({
+    url: "../../0/includes/adminSendPermission.php",
+    type: "GET",
+    dataType: "json", // ✅ Let jQuery parse the response as JSON
+    data: type === "ticket" ? { ticket_id: id } : { leave_id: id },
+    success: function (res) {
+      console.log("Permissions response:", res); // Already parsed
 
-    $.ajax({
-      url: "../../0/includes/adminSendPermission.php",
-      type: "GET",
-      dataType: "json", // ✅ Let jQuery parse the response as JSON
-      data: type === "ticket" ? { ticket_id: id } : { leave_id: id },
-      success: function (res) {
-        console.log("Permissions response:", res); // Already parsed
-  
-        if (res.canReply) {
-          $(".input-area").show();
-        } else {
-          $(".input-area").hide();
-        }
-      },
-      error: function (xhr, status, error) {
-        console.error("Error checking permissions:", error);
-        $(".input-area").hide();
-      },
-    });
-  }
-
-  
-
-// ✅ Add this part at the bottom of adminSendMessage.js
-  $(document).ready(function () {
-    $(document).on("click", ".card", function () {
-      const id = $(this).data("id");
-      const type = $(this).data("type");
-  
-      console.log("Clicked card ID:", id, "Type:", type);
-  
-      if (id && type) {
-        checkTicketPermissions(id, type);
+      if (res.canReply) {
+        $(".input-area").show();
       } else {
-        console.warn("Card clicked missing ID or type.");
         $(".input-area").hide();
       }
-    });
+    },
+    error: function (xhr, status, error) {
+      console.error("Error checking permissions:", error);
+      $(".input-area").hide();
+    },
   });
+}
 
+// ✅ Add this part at the bottom of adminSendMessage.js
+$(document).ready(function () {
+  $(document).on("click", ".card", function () {
+    const id = $(this).data("id");
+    const type = $(this).data("type");
+
+    console.log("Clicked card ID:", id, "Type:", type);
+
+    if (id && type) {
+      checkTicketPermissions(id, type);
+    } else {
+      console.warn("Card clicked missing ID or type.");
+      $(".input-area").hide();
+    }
+  });
+});
 
 let selectedTicketId = null; // Declare selectedTicketId globally
 let refreshInterval = null; // Declare refreshInterval globally
@@ -114,21 +104,17 @@ function loadMessages(ticketId = null, assignedName = null, type = null) {
     );
   }
 
-  // Save the current scroll position
-  let chatbox = $("#chatbox");
-  let scrollPosition = chatbox.scrollTop();
-
   // Load messages via AJAX
   $.ajax({
     url: "../../0/includes/load_messages.php",
     type: "GET",
     data: { ticket_id: selectedTicketId, ticket_type: selectedTicketType },
-
     success: function (response) {
-      chatbox.html(response);
+      const chatbox = $("#chatbox");
+      chatbox.html(response); // Update the chatbox with the loaded messages
 
-      // Restore the scroll position
-      chatbox.scrollTop(scrollPosition);
+      // Scroll to the bottom of the chatbox
+      chatbox.scrollTop(chatbox[0].scrollHeight);
     },
     error: function (xhr, status, error) {
       console.error("Error loading messages:", error);
@@ -166,6 +152,11 @@ function resumeSendState() {
     refreshInterval = setInterval(() => loadMessages(), 1000);
   }
 }
+
+
+
+
+
 
 function uploadFile(fileInput, ticketId, type, callback) {
   let formData = new FormData();
@@ -209,12 +200,17 @@ function sendMessage(event) {
 
   if (fileInput) {
     // Upload the file first, then send the filename as message (even if messageText is empty)
-    uploadFile(fileInput, selectedTicketId, selectedTicketType, function (fileResponse) {
-      let fileName = fileResponse.file_name || "File uploaded";
+    uploadFile(
+      fileInput,
+      selectedTicketId,
+      selectedTicketType,
+      function (fileResponse) {
+        let fileName = fileResponse.file_name || "File uploaded";
 
-      // ✅ Send filename as message only if no manual message is written
-      sendTextMessage(messageText || fileName);
-    });
+        // ✅ Send filename as message only if no manual message is written
+        sendTextMessage(messageText || fileName);
+      }
+    );
   } else {
     sendTextMessage(messageText);
   }
@@ -241,7 +237,9 @@ function sendTextMessage(messageText) {
         $("#fileInput").val(""); // ✅ Clear file input
         $("#message").val(""); // ✅ Clear message input
         $("#message").attr("placeholder", "Type your message..."); // Reset placeholder
-        loadMessages(); // Refresh messages
+
+        // Optionally, refresh messages to ensure consistency
+        loadMessages();
       } else {
         console.error("Message sending failed:", response.message);
         alert(response.message); // Show error message to the user

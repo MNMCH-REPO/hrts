@@ -23,8 +23,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 min-height: 90vh;
                 margin: 5% 0 0 0;
                 align-self: center;
-            } 
+            }
         }
+
         @media only screen and (min-width: 600px) {
             .content {
                 display: flex;
@@ -33,9 +34,8 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 min-height: 90vh;
                 margin: 5% 0 0 260px;
                 align-self: center;
-            } 
+            }
         }
-        
     </style>
 </head>
 
@@ -180,8 +180,6 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                         echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
                                         echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
                                         echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
-                                        echo '<h1>Subject: ' . htmlspecialchars($item['subject'] ?? 'N/A') . '</h1>';
-
                                         if ($item['type'] === 'ticket') {
                                             echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
                                             echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
@@ -212,7 +210,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         </div>
 
 
-        
+
 
         <!-- Image Modal -->
         <div id="imageModal" class="modal">
@@ -340,7 +338,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 }
             }
         </script>
-<script>
-</script>
+
 </body>
+
 </html>

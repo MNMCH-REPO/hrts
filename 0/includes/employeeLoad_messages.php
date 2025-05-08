@@ -1,3 +1,6 @@
+
+
+
 <?php
 session_start();
 require 'db.php';
@@ -6,37 +9,68 @@ if (!isset($_SESSION['user_id']) || !isset($_GET['ticket_id'])) {
     exit('Invalid request.');
 }
 
+$ticket_id = intval($_GET['ticket_id']);
+$ticket_type = $_GET['ticket_type']; // 'ticket' or 'leave'
 $user_id = $_SESSION['user_id'];
-$ticket_id = intval($_GET['ticket_id']); // Ensure it's an integer
 
+
+if ($_GET['ticket_type'] == 'leave') {
+    $type = 'leave';
+} else {
+    $type = 'ticket';
+}
 try {
-    // Check if the ticket belongs to the logged-in user
-    $checkStmt = $pdo->prepare("
-        SELECT 
-            t.id, 
-            t.employee_id, -- ID of the user who submitted the ticket
-            t.assigned_to, -- ID of the user assigned to the ticket
-            t.category_id, -- Category ID of the ticket
-            c.id AS categoryId, -- Category ID from the categories table
-            c.name AS category_name, -- Category name from the categories table
-            u_assigned.name AS assigned_name, -- Name of the user assigned to the ticket
-            u_creator.name AS creator_name   -- Name of the user who submitted the ticket
-        FROM tickets t
-        LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id -- Join to get the assigned user's name
-        LEFT JOIN users u_creator ON t.employee_id = u_creator.id  -- Join to get the creator's name
-        LEFT JOIN categories c ON t.category_id = c.id
-        WHERE t.id = :ticket_id AND (t.assigned_to = :user_id OR t.employee_id = :user_id)
+    if ($ticket_type === 'ticket') {
+        // Fetch ticket details
+        $checkStmt = $pdo->prepare("
+SELECT 
+    t.id, 
+    t.employee_id, 
+    t.assigned_to, 
+    t.category_id, 
+    c.name AS category_name, 
+    u_assigned.name AS assigned_name, -- Fetch the name of the assigned user
+    u_creator.name AS creator_name, -- Fetch the name of the creator
+    t.created_at,
+    t.updated_at
+FROM tickets t
+LEFT JOIN users u_assigned ON t.assigned_to = u_assigned.id -- Join to get the assigned user's name
+LEFT JOIN users u_creator ON t.employee_id = u_creator.id -- Join to get the creator's name
+LEFT JOIN categories c ON t.category_id = c.id
+WHERE t.id = :ticket_id AND (t.assigned_to = :user_id OR t.employee_id = :user_id);
     ");
+    } elseif ($ticket_type === 'leave') {
+        // Fetch leave request details
+        $checkStmt = $pdo->prepare("
+SELECT 
+    lr.id, 
+    lr.employee_id,
+    lr.approved_by AS assigned_to, -- Approver as assigned_to for unified logic
+    lr.leave_types AS category_name,
+    u_assigned.name AS assigned_name, -- Approver's name
+    u_creator.name AS creator_name -- Employee's (requestor's) name
+FROM leave_requests lr
+LEFT JOIN users u_assigned ON lr.approved_by = u_assigned.id
+LEFT JOIN users u_creator ON lr.employee_id = u_creator.id
+WHERE lr.id = :ticket_id 
+  AND (lr.approved_by = :user_id OR lr.employee_id = :user_id);
+  ");
+
+    } else {
+        exit("Invalid ticket type.");
+    }
+
     $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
     $checkStmt->execute();
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
 
+    
     if (!$ticketInfo) {
-        exit("You do not have access to this ticket.");
+        exit("No ticket found or access denied.");
     }
 
-    // Determine the display name
+    
     if ($ticketInfo['assigned_name'] && $user_id == $ticketInfo['employee_id']) {
         $displayName = htmlspecialchars($ticketInfo['assigned_name']);
     } elseif ($ticketInfo['creator_name'] && $user_id == $ticketInfo['assigned_to']) {
@@ -44,34 +78,91 @@ try {
     } else {
         $displayName = "Unknown";
     }
+    
 
-    // Fetch messages for the selected ticket
-    $stmt = $pdo->prepare("
-        SELECT ticket_responses.*, users.name AS sender_name 
-        FROM ticket_responses 
-        JOIN users ON ticket_responses.user_id = users.id 
-        WHERE ticket_responses.ticket_id = :ticket_id 
-        ORDER BY ticket_responses.created_at ASC
-        LIMIT 50
-    ");
+    // Fetch messages
+    if ($type === 'leave') {
+        $stmt = $pdo->prepare("
+            SELECT 
+                leave_responses.response_text_leave AS response_text, 
+                leave_responses.created_at, 
+                users.name AS sender_name, 
+                leave_responses.user_id
+            FROM leave_responses
+            JOIN users ON leave_responses.user_id = users.id
+            WHERE leave_responses.leave_id = :ticket_id
+            ORDER BY leave_responses.created_at ASC
+        ");
+    } else {
+        $stmt = $pdo->prepare("
+            SELECT 
+                ticket_responses.response_text, 
+                ticket_responses.created_at, 
+                users.name AS sender_name, 
+                ticket_responses.user_id
+            FROM ticket_responses
+            JOIN users ON ticket_responses.user_id = users.id
+            WHERE ticket_responses.ticket_id = :ticket_id
+            ORDER BY ticket_responses.created_at ASC
+        ");
+    }
     $stmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $stmt->execute();
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch attachments for the selected ticket
-    $attachmentStmt = $pdo->prepare("
-        SELECT attachments.*, users.name AS uploaded_by_name 
-        FROM attachments 
-        JOIN users ON attachments.uploaded_by = users.id 
-        WHERE attachments.ticket_id = :ticket_id 
-        ORDER BY attachments.uploaded_at ASC
-    ");
+    // Fetch attachments
+    if ($type === 'leave') {
+        $attachmentStmt = $pdo->prepare("
+            SELECT 
+                leave_attachments.file_name, 
+                leave_attachments.file_path, 
+                leave_attachments.uploaded_at AS created_at,
+                users.name AS uploaded_by_name
+            FROM leave_attachments
+            JOIN users ON leave_attachments.uploaded_by = users.id
+            WHERE leave_attachments.leave_request_id = :ticket_id
+            ORDER BY leave_attachments.uploaded_at ASC
+        ");
+    } else {
+        $attachmentStmt = $pdo->prepare("
+            SELECT 
+                attachments.file_name, 
+                attachments.file_path, 
+                attachments.uploaded_at AS created_at,
+                users.name AS uploaded_by_name
+            FROM attachments
+            JOIN users ON attachments.uploaded_by = users.id
+            WHERE attachments.ticket_id = :ticket_id
+            ORDER BY attachments.uploaded_at ASC
+        ");
+    }
     $attachmentStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
     $attachmentStmt->execute();
     $attachments = $attachmentStmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Merge messages and attachments
+    foreach ($messages as &$message) {
+        $message['type'] = 'message';
+    }
+    foreach ($attachments as &$attachment) {
+        $attachment['type'] = 'attachment';
+    }
+    $conversation = array_merge($messages, $attachments);
 
-    // Display the conversation header
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Output UI and messages
     echo '<style>
         .convo-assigned {
             text-transform: uppercase;
@@ -81,6 +172,7 @@ try {
             letter-spacing: 1px;
             margin-top: 20px;
         }
+
         .assigned-name {
             font-size: 1.8rem;
             font-weight: bold;
@@ -88,19 +180,7 @@ try {
             display: block;
             margin-top: 5px;
         }
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .sent {
-            background-color: #d1ffd1;
-            text-align: right;
-        }
-        .received {
-            background-color: #f1f1f1;
-            text-align: left;
-        }
+
         .attachment {
             margin: 10px 0;
             padding: 10px;
@@ -110,93 +190,133 @@ try {
         }
 
         .attachment-image {
-    max-width: 300px; /* Limit the width to 300px */
-    height: auto; /* Maintain aspect ratio */
-    border-radius: 5px; /* Add rounded corners */
-    margin-top: 10px; /* Add spacing above the image */
-}
+            max-width: 300px;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>';
 
-    echo '<h5 class="convo-assigned">Ticket Category: ' . htmlspecialchars($ticketInfo['category_name']) . '</h5>';
-    echo '<h3 class="assigned-name">' . $displayName . '</h3>';
 
-    // Display messages
+    
+    if ($type === 'ticket') {
+        echo '<h5 class="convo-assigned">TICKET CONCERN</h5>';
+        echo '<h5 class="convo-assigned">Category: ' . htmlspecialchars($ticketInfo['category_name'] ?? 'N/A') . '</h5>';
+        echo '<h3 class="assigned-name">' . $displayName . '</h3>';
+    } elseif ($type === 'leave') {
+        echo '<h5 class="convo-assigned">LEAVE REQUEST</h5>';
+        echo '<h5 class="convo-assigned">Leave Type: ' . htmlspecialchars($ticketInfo['category_name'] ?? 'N/A') . '</h5>';
+
+        echo '<h3 class="assigned-name">' . $displayName . '</h3>';
+    }
+
+
+
     if (!$messages && !$attachments) {
-
         echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
-        foreach ($messages as $row) {
-            $message = htmlspecialchars($row['response_text']);
-            $sender_name = htmlspecialchars($row['sender_name']);
-            $created_at = date('F j, Y - h:i A', strtotime($row['created_at']));
-            $class = ($row['user_id'] == $user_id) ? "sent" : "received";
 
+        // Ensure $messages and $attachments are arrays
+        $messages = is_array($messages) ? $messages : [];
+        $attachments = is_array($attachments) ? $attachments : [];
 
+        // Add a type field and validate keys
 
+        foreach ($messages as &$message) {
+            if (!is_array($message)) continue; // Skip invalid items
+            $message['type'] = 'message';
+            $message['created_at'] = !empty($message['created_at']) ? $message['created_at'] : null; // Validate created_at
+            $message['user_id'] = $message['user_id'] ?? null; // Default to null
+        }
 
-            // Check if this message matches any file_name in the attachments table
-            $isFileMessage = false;
-            foreach ($attachments as $attachment) {
-                if (
-                    $attachment['file_name'] === $row['response_text'] && // Match file_name with response_text
-                    $attachment['uploaded_by_name'] === $sender_name // Ensure the sender matches
-                ) {
-                    $isFileMessage = true;
-                    break;
-                }
+        foreach ($attachments as &$attachment) {
+            if (!is_array($attachment)) continue; // Skip invalid items
+            $attachment['type'] = 'attachment';
+            $attachment['created_at'] = !empty($attachment['created_at']) ? $attachment['created_at'] : null; // Validate created_at
+            $attachment['user_id'] = $attachment['user_id'] ?? null; // Default to null
+        }
+}
+
+// Merge and validate $conversation
+
+// Initialize an empty conversation array
+$conversation = [];
+
+// Combine and validate $messages and $attachments
+$dataSources = [$messages, $attachments];
+foreach ($dataSources as $dataSource) {
+    foreach ($dataSource as $item) {
+        if (is_array($item) && isset($item['created_at'])) {
+            $conversation[] = $item; // Add valid items
+        }
+    }
+}
+
+// Sort the conversation by created_at
+$createdAtTimestamps = array_map(function ($item) {
+    return isset($item['created_at']) ? strtotime($item['created_at']) : 0; // Convert created_at to timestamps
+}, $conversation);
+
+array_multisort($createdAtTimestamps, SORT_ASC, $conversation);
+
+// Render the conversation
+foreach ($conversation as $item) {
+    if (!is_array($item)) continue; // Skip invalid items
+    $created_at = isset($item['created_at']) && strtotime($item['created_at']) 
+        ? date('F j, Y - h:i A', strtotime($item['created_at'])) 
+        : 'Unknown Date'; // Fallback to 'Unknown Date' if invalid
+    $class = ($item['user_id'] == $user_id) ? "sent" : "received";
+
+    if ($item['type'] === 'message') {
+        // Check if the response_text matches any file_name in the attachments
+        $isDuplicate = false;
+        foreach ($attachments as $attachment) {
+            if ($attachment['file_name'] === $item['response_text']) {
+                $isDuplicate = true;
+                break;
             }
+        }
 
-            if ($isFileMessage) {
-                continue; // Skip this plain text message if it matches an attachment
-            }
-
-
-
+        // Render the message only if it's not a duplicate
+        if (!$isDuplicate) {
+            $message = htmlspecialchars($item['response_text']);
+            $sender_name = htmlspecialchars($item['sender_name']);
             echo "<div class='message $class'>";
             echo "<p><strong>$sender_name:</strong> <br> $message</p>";
             echo "<small>Sent on: $created_at</small>";
             echo "</div>";
         }
+    } elseif ($item['type'] === 'attachment') {
+        // Render attachment
+        $file_name = htmlspecialchars($item['file_name']);
+        $file_path = 'hrts/' . htmlspecialchars($item['file_path']);
+        $uploaded_by = htmlspecialchars($item['uploaded_by_name']);
 
-        // Display attachments
-        foreach ($attachments as $attachment) {
-            $file_name = htmlspecialchars($attachment['file_name']);
-            $file_path = 'hrts/'.htmlspecialchars($attachment['file_path']);
-            $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
-            $uploaded_at = date('F j, Y - h:i A', strtotime($attachment['uploaded_at']));
+        echo "<div class='attachment $class'>";
+        echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
 
-            echo "<div class='attachment'>";
+        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
 
-            echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
-            // Check if the file is an image
-            $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-            $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
-
-
-            if (in_array($file_extension, $image_extensions)) {
-                // Render the image with view and download options
-                echo "<img src='/$file_path' alt='$file_name' class='attachment-image'>";
-                echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
-                <img src='../../assets/images/icons/view.png' alt='View' >
-              </button></p>";
-                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
-                <img src='../../assets/images/icons/downloads.png' alt='Download' >
-              </button></p>";
-            } else {
-                // Provide view and download options for non-image files
-                echo "<p><strong>File:</strong> $file_name</p>";
-                echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
-                <img src='../../assets/images/icons/view.png' alt='View' >
-              </button></p>";
-                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
-                <img src='../../assets/images/icons/downloads.png' alt='Download' >
-              </button></p>";
-            }
-
-            echo "<small>Uploaded on: $uploaded_at</small>";
-            echo "</div>";
+        if (in_array($file_extension, $image_extensions)) {
+            echo "<img src='/$file_path' alt='$file_name' class='attachment-image'>";
+            echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
+                <img src='../../assets/images/icons/view.png' alt='View'>
+            </button></p>";
+            echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+                <img src='../../assets/images/icons/downloads.png' alt='Download'>
+            </button></p>";
+        } else {
+            echo "<p><strong>File:</strong> $file_name</p>";
+            echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+                <img src='../../assets/images/icons/downloads.png' alt='Download'>
+            </button></p>";
         }
+
+        echo "<small>Uploaded on: $created_at</small>";
+        echo "</div>";
     }
-} catch (PDOException $e) {
+}
+} catch (Exception $e) {
     echo "Error loading messages: " . $e->getMessage();
 }

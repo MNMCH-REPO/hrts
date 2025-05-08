@@ -10,15 +10,16 @@ $user_id = $_SESSION['user_id'];
 $roleUser = $_SESSION['role'];
 $ticket_id = intval($_GET['ticket_id']);
 // echo $_GET['ticket_type'];
-if ($_GET['ticket_type'] == 'leave') {
+if($_GET['ticket_type'] == 'leave'){
     $type = 'leave';
-} else {
+}
+else{
     $type = 'ticket';
 }
 
 try {
     // Admins can view all tickets
-    if ($type == 'ticket') {
+    if($type == 'ticket'){
         if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
             $checkStmt = $pdo->prepare("
                 SELECT 
@@ -57,7 +58,8 @@ try {
             $checkStmt->bindParam(':ticket_id', $ticket_id, PDO::PARAM_INT);
             $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         }
-    } else {
+    }
+    else{
         if ($roleUser === 'Admin' || $roleUser === 'Super Admin') {
             $checkStmt = $pdo->prepare("
                 SELECT 
@@ -79,7 +81,7 @@ try {
                     lr.id, 
                     lr.employee_id,
                     lr.approved_by as assigned_to,
-                    lr.leave_types AS category_name,
+                    lr.leave_types,
                     u_assigned.name AS assigned_name, 
                     u_creator.name AS creator_name
                 FROM leave_requests lr
@@ -91,7 +93,7 @@ try {
             $checkStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         }
     }
-
+    
 
     $checkStmt->execute();
     $ticketInfo = $checkStmt->fetch(PDO::FETCH_ASSOC);
@@ -148,7 +150,7 @@ try {
             SELECT 
                 leave_attachments.file_name, 
                 leave_attachments.file_path, 
-                leave_attachments.uploaded_at AS created_at,
+                leave_attachments.uploaded_at, 
                 users.name AS uploaded_by_name
             FROM leave_attachments
             JOIN users ON leave_attachments.uploaded_by = users.id
@@ -160,7 +162,7 @@ try {
             SELECT 
                 attachments.file_name, 
                 attachments.file_path, 
-                attachments.uploaded_at AS created_at,
+                attachments.uploaded_at, 
                 users.name AS uploaded_by_name
             FROM attachments
             JOIN users ON attachments.uploaded_by = users.id
@@ -216,117 +218,67 @@ try {
         echo '<h3 class="assigned-name">' . $displayName . '</h3>';
     } elseif ($type === 'leave') {
         echo '<h5 class="convo-assigned">LEAVE REQUEST</h5>';
-        echo '<h5 class="convo-assigned">Leave Type: ' . htmlspecialchars($ticketInfo['category_name'] ?? 'N/A') . '</h5>';
+        echo '<h5 class="convo-assigned">Leave Type: ' . htmlspecialchars($ticketInfo['leave_types'] ?? 'N/A') . '</h5>';
 
         echo '<h3 class="assigned-name">' . $displayName . '</h3>';
     }
 
-
     if (!$messages && !$attachments) {
         echo '<div class="no-messages">No messages or attachments yet.</div>';
     } else {
+        foreach ($messages as $row) {
+            $message = htmlspecialchars($row['response_text']);
+            $sender_name = htmlspecialchars($row['sender_name']);
+            $created_at = date('F j, Y - h:i A', strtotime($row['created_at']));
+            $class = ($row['user_id'] == $user_id) ? "sent" : "received";
 
-        // Ensure $messages and $attachments are arrays
-        $messages = is_array($messages) ? $messages : [];
-        $attachments = is_array($attachments) ? $attachments : [];
-
-        // Add a type field and validate keys
-
-        foreach ($messages as &$message) {
-            if (!is_array($message)) continue; // Skip invalid items
-            $message['type'] = 'message';
-            $message['created_at'] = !empty($message['created_at']) ? $message['created_at'] : null; // Validate created_at
-            $message['user_id'] = $message['user_id'] ?? null; // Default to null
-        }
-
-        foreach ($attachments as &$attachment) {
-            if (!is_array($attachment)) continue; // Skip invalid items
-            $attachment['type'] = 'attachment';
-            $attachment['created_at'] = !empty($attachment['created_at']) ? $attachment['created_at'] : null; // Validate created_at
-            $attachment['user_id'] = $attachment['user_id'] ?? null; // Default to null
-        }
-}
-
-// Merge and validate $conversation
-
-// Initialize an empty conversation array
-$conversation = [];
-
-// Combine and validate $messages and $attachments
-$dataSources = [$messages, $attachments];
-foreach ($dataSources as $dataSource) {
-    foreach ($dataSource as $item) {
-        if (is_array($item) && isset($item['created_at'])) {
-            $conversation[] = $item; // Add valid items
-        }
-    }
-}
-
-// Sort the conversation by created_at
-$createdAtTimestamps = array_map(function ($item) {
-    return isset($item['created_at']) ? strtotime($item['created_at']) : 0; // Convert created_at to timestamps
-}, $conversation);
-
-array_multisort($createdAtTimestamps, SORT_ASC, $conversation);
-
-// Render the conversation
-foreach ($conversation as $item) {
-    if (!is_array($item)) continue; // Skip invalid items
-    $created_at = isset($item['created_at']) && strtotime($item['created_at']) 
-        ? date('F j, Y - h:i A', strtotime($item['created_at'])) 
-        : 'Unknown Date'; // Fallback to 'Unknown Date' if invalid
-    $class = ($item['user_id'] == $user_id) ? "sent" : "received";
-
-    if ($item['type'] === 'message') {
-        // Check if the response_text matches any file_name in the attachments
-        $isDuplicate = false;
-        foreach ($attachments as $attachment) {
-            if ($attachment['file_name'] === $item['response_text']) {
-                $isDuplicate = true;
-                break;
+            $isFileMessage = false;
+            foreach ($attachments as $attachment) {
+                if ($attachment['uploaded_at'] === $row['created_at'] && $attachment['uploaded_by_name'] === $sender_name) {
+                    $isFileMessage = true;
+                    break;
+                }
             }
-        }
 
-        // Render the message only if it's not a duplicate
-        if (!$isDuplicate) {
-            $message = htmlspecialchars($item['response_text']);
-            $sender_name = htmlspecialchars($item['sender_name']);
+            if ($isFileMessage) continue;
+
             echo "<div class='message $class'>";
             echo "<p><strong>$sender_name:</strong> <br> $message</p>";
             echo "<small>Sent on: $created_at</small>";
             echo "</div>";
         }
-    } elseif ($item['type'] === 'attachment') {
-        // Render attachment
-        $file_name = htmlspecialchars($item['file_name']);
-        $file_path = 'hrts/' . htmlspecialchars($item['file_path']);
-        $uploaded_by = htmlspecialchars($item['uploaded_by_name']);
 
-        echo "<div class='attachment $class'>";
-        echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
+        foreach ($attachments as $attachment) {
+            $file_name = htmlspecialchars($attachment['file_name']);
+            $file_path = 'hrts/' . htmlspecialchars($attachment['file_path']);
+            $uploaded_by = htmlspecialchars($attachment['uploaded_by_name']);
+            $uploaded_at = date('F j, Y - h:i A', strtotime($attachment['uploaded_at']));
 
-        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+            echo "<div class='attachment'>";
+            echo "<p><strong>Uploaded by:</strong> $uploaded_by</p>";
 
-        if (in_array($file_extension, $image_extensions)) {
-            echo "<img src='/$file_path' alt='$file_name' class='attachment-image'>";
-            echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
-                <img src='../../assets/images/icons/view.png' alt='View'>
-            </button></p>";
-            echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
-                <img src='../../assets/images/icons/downloads.png' alt='Download'>
-            </button></p>";
-        } else {
-            echo "<p><strong>File:</strong> $file_name</p>";
-            echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
-                <img src='../../assets/images/icons/downloads.png' alt='Download'>
-            </button></p>";
+            $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+            $image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+
+            if (in_array($file_extension, $image_extensions)) {
+                echo "<img src='/$file_path' alt='$file_name' class='attachment-image'>";
+                echo "<p><button class='btnWarning' onclick=\"openImageModal('/$file_path', '$file_name')\">
+                    <img src='../../assets/images/icons/view.png' alt='View'>
+                </button></p>";
+                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+                    <img src='../../assets/images/icons/downloads.png' alt='Download'>
+                </button></p>";
+            } else {
+                echo "<p><strong>File:</strong> $file_name</p>";
+                echo "<p><button class='btnWarning' onclick=\"handleFileAction('/$file_path', 'download')\">
+                    <img src='../../assets/images/icons/downloads.png' alt='Download'>
+                </button></p>";
+            }
+
+            echo "<small>Uploaded on: $uploaded_at</small>";
+            echo "</div>";
         }
-
-        echo "<small>Uploaded on: $created_at</small>";
-        echo "</div>";
     }
-}
-} catch (Exception $e) {
+} catch (PDOException $e) {
     echo "Error loading messages: " . $e->getMessage();
 }

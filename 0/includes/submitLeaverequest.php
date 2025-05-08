@@ -53,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     try {
+
+
+
         // Begin transaction
         $pdo->beginTransaction();
 
@@ -86,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'message' => 'File size exceeds the 2 MB limit.'
                 ]);
                 exit();
+            
             }
             if ($_FILES['leaveAttachment']['error'] === UPLOAD_ERR_OK) {
                 $uploadDir = '../../assets/uploads/';

@@ -20,21 +20,18 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     #leaveWarning {
         display: block;
         text-align: center;
-        /* Centers the text inside the elements */
         margin: 0 auto;
-        /* Centers the elements themselves horizontally */
         width: 100%;
-        /* Ensures it occupies full width */
     }
 </style>
 
 <body>
     <div class="container">
-    <div class="sideNav">
+        <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
+
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/ticket.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="order.php">Orders</a>
             </div>
             <div class="navBtn">
@@ -42,18 +39,16 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <a href="leave.php">Leave Management</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
-                </div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
                 <a href="message.php">Messages</a>
             </div>
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/settings.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
+
             <div class="navBtn">
-                <div class="navBtnIcon img-contain"
-                    style="background-image: url(../../assets/images/icons/switch.png);"></div>
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
@@ -254,8 +249,16 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                     </div>
 
                     <div class="modal-buttons">
+                        <button type="button"
+                            id="approveViewAttachID"
+                            name="viewAttachmentBtn"
+                            class="btnDefault btnContainer viewAttachmentBtn"
+                            data-leave-id="">
+                            View Attachment
+                        </button>
+                        <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
-                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer">REJECT</button>
+                        <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer" data-leave-id="">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
                     </div>
                 </form>
@@ -395,8 +398,6 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 </form>
             </div>
         </div>
-
-        
         <!--request Leave Modal -->
         <div id="requestLeaveModal" class="modal">
             <div class="modal-content">
@@ -477,7 +478,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                         <div class="input-container">
                             <input type="file" name="leaveAttachment" id="leaveAttachmentID" required>
-                            <label for="attachmentLeave">Leave Attachment Approval</label>
+                            <label for="attachment">Leave Attachment Approval</label>
                         </div>
 
                         <div class="input-container">
@@ -515,10 +516,95 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             </div>
         </div>
 
+        <!-- Reject Confirmation Modal -->
+        <div id="rejectConfirmModal" class="modal">
+            <div class="modal-content">
+                <h2>Confirm Reject Leave Request</h2>
+                <p>Are you sure you want to reject this leave request? This action cannot be undone.</p>
+                <div class="btnContainer">
+                    <form id="rejectConfirmForm" method="POST">
+
+                        <input type="text" id="rejectLeaveID" name="leaveId" value=""> <!-- Hidden input for leave ID -->
+                        <button type="submit" class="btnWarning" id="confirmRejectButton">Confirm Reject</button>
+                        <button type="button" class="btnDefault" id="cancelRejectButton">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Image Modal -->
+        <div id="imageModal" class="modal">
+            <span class="close" id="closeModal">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+
+
+        <style>
+            #imageModal .modal-content {
+                margin: auto;
+                display: block;
+                max-width: 60%;
+                max-height: 60%;
+                width: auto;
+                height: auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            #imageModal .close {
+                position: absolute;
+                top: 20px;
+                right: 35px;
+                color: #fff;
+                font-size: 40px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            #imageModal .close:hover,
+            #imageModal .close:focus {
+                color: red;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            /* Responsive adjustments for #imageModal */
+            @media (max-width: 768px) {
+                #imageModal .modal-content {
+                    max-width: 80%;
+                    max-height: 50%;
+                }
+
+                #imageModal .close {
+                    font-size: 30px;
+                }
+            }
+        </style>
+
+
+
     </div>
 
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const messageButton = document.getElementById("messageApprovalID");
+
+    messageButton.addEventListener("click", function () {
+        const messageLeaveID = document.getElementById("approveLeaveID").value; // Get the leave ID
+        if (!messageLeaveID) {
+            alert("Leave ID is missing.");
+            return;
+        }
+
+        // Redirect to message.php with type=leave and the leave ID
+        window.location.href = `message.php?type=leave&id=${messageLeaveID}`;
+    });
+});
+</script>
 
 
     <script src="../../assets/js/framework.js"></script>
@@ -909,6 +995,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             // Add click event listener to each row
             tableRows.forEach((row) => {
                 row.addEventListener("click", function() {
+
                     // Remove highlight from all rows
                     tableRows.forEach((r) => r.classList.remove("highlighted"));
 
@@ -951,6 +1038,9 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
                         // Open the approveModal
                         approveModal.style.display = "flex";
+                        console.log("Leave ID:", leaveId);
+                        console.log("Employee ID:", employeeId);
+
                     } else if (status === "Approved") {
                         // Set the values in the Approved Summarization Modal
                         approvedSummarizationModalFields.leaveIdField.textContent = leaveId || "N/A";
@@ -974,13 +1064,13 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                         rejectedSummarizationModalFields.departmentField.textContent = department || "N/A";
                         rejectedSummarizationModalFields.leaveTypeField.textContent = leaveType || "N/A";
                         rejectedSummarizationModalFields.startDateField.textContent = startDate || "N/A";
-                        rejectedSummarizationModalFields.endDateField.textContent = endDate|| "N/A";
-                        rejectedSummarizationModalFields.reasonField.textContent = reason|| "N/A";
+                        rejectedSummarizationModalFields.endDateField.textContent = endDate || "N/A";
+                        rejectedSummarizationModalFields.reasonField.textContent = reason || "N/A";
                         rejectedSummarizationModalFields.statusField.textContent = status || "N/A";
                         rejectedSummarizationModalFields.createdAtField.textContent = createdAt || "N/A";
                         rejectedSummarizationModalFields.updatedAtField.textContent = updatedAt || "N/A";
                         rejectedSummarizationModalFields.rejectedByField.textContent = approvedBy || "N/A";
-                        
+
                         rejectedSummarizationModal.style.display = "flex";
                     }
                 });
@@ -1079,7 +1169,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 }
             }
 
-            const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+            const plateIDs = ["plate1", "plate2", "plate3"];
             plateIDs.forEach(id => {
                 const plate = document.getElementById(id);
                 if (plate) {
@@ -1165,7 +1255,170 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
             });
         });
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const rejectConfirmModal = document.getElementById("rejectConfirmModal");
+            const cancelRejectButton = document.getElementById("cancelRejectButton");
+            const confirmRejectButton = document.getElementById("confirmRejectButton");
+            const rejectLeaveIDInput = document.getElementById("rejectLeaveID");
+
+            // Open the modal when the "REJECT" button is clicked
+            document.getElementById("declineLeaveBtnID").addEventListener("click", function(event) {
+                event.preventDefault();
+
+                // Get the leave ID from the modal or table row
+                const rejectID = document.getElementById("approveLeaveID").textContent.trim();
+                if (!rejectID) {
+                    alert("Leave ID is missing.");
+                    return;
+                }
+
+
+                // Set the leave ID in the hidden input
+                rejectLeaveIDInput.value = rejectID;
+
+                // Show the reject confirmation modal
+                rejectConfirmModal.style.display = "flex";
+            });
+
+            // Close the modal when the "Cancel" button is clicked
+            cancelRejectButton.addEventListener("click", function() {
+                rejectConfirmModal.style.display = "none";
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target === rejectConfirmModal) {
+                    rejectConfirmModal.style.display = "none";
+                }
+            });
+
+            // Handle the form submission
+            document.getElementById("rejectConfirmForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const leaveId = rejectLeaveIDInput.value.trim();
+                const currentUserId = <?= json_encode($_SESSION['user_id'] ?? null) ?>; // Current user ID from session
+
+                if (!leaveId) {
+                    alert("Leave ID is missing.");
+                    return;
+                }
+
+                // Send AJAX request to reject the leave request
+                fetch("../../../hrts/0/includes/rejectLeave.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            leave_id: leaveId,
+                            approved_by: currentUserId,
+                        }),
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while rejecting the leave request.");
+                    });
+
+                // Close the modal after submission
+                rejectConfirmModal.style.display = "none";
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const messageButton = document.getElementById("messageApprovalID");
+
+    messageButton.addEventListener("click", function () {
+        const messageLeaveID = document.getElementById("approveLeaveID").textContent.trim();
+        console.log("Storing Leave ID in session storage:", messageLeaveID); // Debugging
+
+        if (!messageLeaveID) {
+            alert("Leave ID is missing.");
+            return;
+        }
+
+        // Store the leave ID and type in session storage
+        sessionStorage.setItem("leaveID", messageLeaveID);
+        sessionStorage.setItem("type", "leave");
+
+        // Redirect to message.php
+        window.location.href = "message.php";
+    });
+});
+
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("imageModal");
+            const modalImage = document.getElementById("modalImage");
+
+            // Hide image modal initially
+            modal.style.display = "none";
+
+            // Handle click on "View Attachment" button
+            document.addEventListener("click", function(e) {
+                if (e.target.classList.contains("viewAttachmentBtn")) {
+                    const leaveId = document.getElementById("approveLeaveID").textContent.trim();
+                    console.log("Leave Request ID:", leaveId);
+
+                    if (!leaveId) {
+                        console.error("Missing leave_request_id");
+                        return;
+                    }
+
+                    fetch(`../../../hrts/0/includes/leaveAttachmentsQuery.php?leave_id=${leaveId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success" && data.path) {
+                                openImageModal(data.path);
+                            } else {
+                                alert(data.message || "Attachment not found.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error fetching attachment:", error);
+                        });
+                }
+            });
+
+            // Open image modal
+            function openImageModal(imagePath) {
+                modalImage.src = imagePath;
+                modal.style.display = "flex";
+            }
+            // Close the modal
+            document.getElementById("closeModal").onclick = function() {
+                const modal = document.getElementById("imageModal");
+                modal.style.display = "none";
+            };
+
+            // Close the modal when clicking outside the image
+            window.onclick = function(event) {
+                const modal = document.getElementById("imageModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        });
     </script>
+
+
+
+
 
 
 </body>
