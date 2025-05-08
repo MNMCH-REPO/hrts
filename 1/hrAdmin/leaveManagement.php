@@ -515,7 +515,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <h2>Confirm Reset Leave Values</h2>
                 <p>Are you sure you want to reset all leave request values? This action cannot be undone.</p>
                 <div class="btnContainer">
-                    <form id="resetLeaveForm" method="POST">
+                    <form id="resetLeaveForm" method="POST" class="btnContainer">
                         <button type="submit" class="btnWarning " name="resetValueButton">Confirm Reset</button>
                         <button type="button" class="btnDefault" id="cancelReset">Cancel</button>
                     </form>
@@ -1136,7 +1136,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             function renderPaginationButtons(totalPages) {
                 paginationContainer.innerHTML = "";
 
-                const maxVisible = 10;
+                const maxVisible = 5;
                 const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
 
                 // Left arrow (go back 10 pages)
