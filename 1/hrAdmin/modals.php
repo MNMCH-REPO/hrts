@@ -335,7 +335,7 @@
          <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
          <br><br><br>
 
-         <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php">
+         <form id="markAWOLForm" method="POST" action="../../../hrts0/includes/markAWOLQuery.php">
 
              <input type="hidden" name="usedBalanceId" id="markAWOLID">
              <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID">
@@ -357,6 +357,58 @@
      </div>
  </div>
 
+
+<div id="uploadExcelModal" class="modal">
+    <div class="modal-content">
+        <h1 class="modal-title">UPLOAD EXCEL FILE</h1>
+        <form id="uploadExcelForm" action="../../../hrts/0/includes/uploadUsers.php" method="POST" enctype="multipart/form-data">
+            <p class="center-text">
+                Please select an Excel file to upload. The file should contain the columns: 
+                <strong>ID, Name, Email, Password, Role, Department</strong>.
+            </p>
+
+            <div class="input-container">
+                <input type="file" id="excelFile" name="excelFile" accept=".xls,.xlsx" required>
+                <label for="excelFile">Select File</label>
+            </div>
+
+            <div class="btnContainer">
+                <button type="submit" class="btnApprove" name="uploadExcel" id="uploadExcelID">Upload</button>
+                <button type="button" class="btnDanger" id="closeUploadModal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const uploadButton = document.getElementById("uploadExcelSubmit");
+        const modal = document.getElementById("uploadExcelModal");
+        const cancelButton = document.getElementById("closeUploadModal");
+        const uploadForm = document.getElementById("uploadExcelForm");
+
+        // Show modal on button click
+        document.getElementById("uploadExcelID").addEventListener("click", function () {
+            modal.style.display = "flex";
+        });
+
+        // Hide modal on cancel button click
+        cancelButton.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+
+        // Hide modal when clicking outside the modal content
+        window.addEventListener("click", function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+    });
+    </script>
 
 
  <script>

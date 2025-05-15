@@ -23,6 +23,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 min-height: 90vh;
                 align-self: center;
             }
+
             .tableContainer {
                 display: flex;
                 flex-direction: column;
@@ -30,16 +31,19 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 border-radius: 8px;
                 width: 100%;
             }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
             }
+
             th,
             td {
                 padding: 6px;
                 text-align: left;
                 border-bottom: 1px solid var(--neutral-200);
             }
+
             th {
                 background-color: var(--neutral-300);
                 font-weight: bold;
@@ -48,16 +52,19 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             tbody tr:nth-child(even) {
                 background-color: var(--primary-100);
             }
+
             tbody tr.highlighted {
                 background-color: var(--primary-500) !important;
                 color: white;
             }
+
             .search-wrapper {
                 display: flex;
                 justify-content: flex-end;
                 width: 100%;
                 padding-bottom: 10px;
             }
+
             .search-container {
                 display: flex;
                 align-items: center;
@@ -66,6 +73,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 padding: 2px;
                 width: 200px;
             }
+
             .search-input {
                 width: 50%;
                 border: none;
@@ -75,6 +83,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 outline: none;
                 font-size: 10px;
             }
+
             .search-icon {
                 width: 12px;
                 height: 12px;
@@ -83,10 +92,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 justify-content: center;
                 margin: 0 10px;
             }
+
             .search-icon img {
                 width: 12px;
                 height: 12px;
             }
+
             .filter-btn {
                 display: flex;
                 align-items: center;
@@ -98,11 +109,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 cursor: pointer;
                 border-left: 1px solid #888;
             }
+
             .filter-btn img {
                 width: 12px;
                 height: 12px;
                 margin-left: 1px;
             }
+
             .pagination-wrapper {
                 display: flex;
                 justify-content: space-between;
@@ -110,10 +123,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 width: 100%;
                 padding-bottom: 10px;
             }
+
             .pagination {
                 display: flex;
                 gap: 5px;
             }
+
             .pagination a {
                 text-decoration: none;
                 padding: 6px 12px;
@@ -122,14 +137,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: var(--primary-500);
                 background: var(--neutral-100);
             }
+
             .pagination a.active {
                 background: var(--primary-500);
                 color: white;
             }
+
             .pagination a:hover {
                 background: var(--primary-400);
                 color: white;
             }
+
             .footer-messages {
                 position: fixed;
                 bottom: 0;
@@ -142,6 +160,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: #333;
                 border-top: 1px solid #ddd;
             }
+
             .modal {
                 display: none;
                 position: fixed;
@@ -153,6 +172,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 justify-content: center;
                 align-items: center;
             }
+
             .modal-content {
                 background: white;
                 padding: 20px;
@@ -162,6 +182,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 text-align: center;
                 box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             }
+
             .input-container {
                 display: flex;
                 align-items: center;
@@ -169,18 +190,21 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 width: 100%;
                 padding: 5px 0;
             }
+
             .input-container h1 {
                 font-size: 16px;
                 text-align: left;
                 margin: 0;
                 width: 40%;
             }
+
             .center-text {
                 width: 60%;
                 font-size: 16px;
                 text-align: left;
                 font-weight: normal;
             }
+
             .input-container select {
                 width: 100%;
                 padding: 12px;
@@ -191,6 +215,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 background: white;
                 cursor: pointer;
             }
+
             #addTicketModal .modal-content {
                 background: white;
                 padding: 20px;
@@ -200,11 +225,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 text-align: center;
                 box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             }
+
             #addTicketModal .input-container {
                 position: relative;
                 margin: 15px 0;
                 width: 100%;
             }
+
             #addTicketModal .input-container input,
             #addTicketModal .input-container select,
             #addTicketModal .input-container textarea {
@@ -216,6 +243,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 font-size: 16px;
                 background: transparent;
             }
+
             #addTicketModal .input-container label {
                 position: absolute;
                 top: 50%;
@@ -228,6 +256,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: #666;
                 pointer-events: none;
             }
+
             #addTicketModal .input-container input:focus+label,
             #addTicketModal .input-container input:not(:placeholder-shown)+label,
             #addTicketModal .input-container select:focus+label,
@@ -238,6 +267,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 font-size: 12px;
                 color: #007BFF;
             }
+
             .modal-buttons {
                 display: flex;
                 align-items: right;
@@ -245,23 +275,28 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 margin-top: 15px;
 
             }
+
             .btnDefault {
                 cursor: pointer;
                 border-radius: 50px;
             }
+
             .btnDanger {
                 border-radius: 50px;
                 cursor: pointer;
 
 
             }
+
             .btnDefault:hover {
                 background: #0056b3;
             }
+
             .btnDanger:hover {
                 background: #c82333;
             }
         }
+
         @media only screen and (min-width: 600px) {
             .content {
                 display: flex;
@@ -271,6 +306,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 margin: 5% 0 0 260px;
                 align-self: center;
             }
+
             .tableContainer {
                 display: flex;
                 flex-direction: column;
@@ -278,16 +314,19 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 border-radius: 8px;
                 width: 100%;
             }
+
             table {
                 width: 100%;
                 border-collapse: collapse;
             }
+
             th,
             td {
                 padding: 12px;
                 text-align: left;
                 border-bottom: 1px solid var(--neutral-200);
             }
+
             th {
                 background-color: var(--neutral-300);
                 font-weight: bold;
@@ -296,16 +335,19 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             tbody tr:nth-child(even) {
                 background-color: var(--primary-100);
             }
+
             tbody tr.highlighted {
                 background-color: var(--primary-500) !important;
                 color: white;
             }
+
             .search-wrapper {
                 display: flex;
                 justify-content: flex-end;
                 width: 100%;
                 padding-bottom: 10px;
             }
+
             .search-container {
                 display: flex;
                 align-items: center;
@@ -314,6 +356,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 padding: 5px;
                 width: 320px;
             }
+
             .search-input {
                 flex: 1;
                 border: none;
@@ -323,6 +366,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 outline: none;
                 font-size: 14px;
             }
+
             .search-icon {
                 width: 24px;
                 height: 24px;
@@ -331,10 +375,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 justify-content: center;
                 margin: 0 10px;
             }
+
             .search-icon img {
                 width: 16px;
                 height: 16px;
             }
+
             .filter-btn {
                 display: flex;
                 align-items: center;
@@ -346,11 +392,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 cursor: pointer;
                 border-left: 1px solid #888;
             }
+
             .filter-btn img {
                 width: 16px;
                 height: 16px;
                 margin-left: 5px;
             }
+
             .pagination-wrapper {
                 display: flex;
                 justify-content: space-between;
@@ -358,10 +406,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 width: 100%;
                 padding-bottom: 10px;
             }
+
             .pagination {
                 display: flex;
                 gap: 5px;
             }
+
             .pagination a {
                 text-decoration: none;
                 padding: 6px 12px;
@@ -370,14 +420,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: var(--primary-500);
                 background: var(--neutral-100);
             }
+
             .pagination a.active {
                 background: var(--primary-500);
                 color: white;
             }
+
             .pagination a:hover {
                 background: var(--primary-400);
                 color: white;
             }
+
             .footer-messages {
                 position: fixed;
                 bottom: 0;
@@ -390,6 +443,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: #333;
                 border-top: 1px solid #ddd;
             }
+
             .modal {
                 display: none;
                 position: fixed;
@@ -401,6 +455,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 justify-content: center;
                 align-items: center;
             }
+
             .modal-content {
                 background: white;
                 padding: 20px;
@@ -410,6 +465,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 text-align: center;
                 box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             }
+
             .input-container {
                 display: flex;
                 align-items: center;
@@ -417,18 +473,21 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 width: 100%;
                 padding: 5px 0;
             }
+
             .input-container h1 {
                 font-size: 16px;
                 text-align: left;
                 margin: 0;
                 width: 40%;
             }
+
             .center-text {
                 width: 60%;
                 font-size: 16px;
                 text-align: left;
                 font-weight: normal;
             }
+
             .input-container select {
                 width: 100%;
                 padding: 12px;
@@ -439,6 +498,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 background: white;
                 cursor: pointer;
             }
+
             #addTicketModal .modal-content {
                 background: white;
                 padding: 20px;
@@ -448,11 +508,13 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 text-align: center;
                 box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
             }
+
             #addTicketModal .input-container {
                 position: relative;
                 margin: 15px 0;
                 width: 100%;
             }
+
             #addTicketModal .input-container input,
             #addTicketModal .input-container select,
             #addTicketModal .input-container textarea {
@@ -464,6 +526,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 font-size: 16px;
                 background: transparent;
             }
+
             #addTicketModal .input-container label {
                 position: absolute;
                 top: 50%;
@@ -476,6 +539,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 color: #666;
                 pointer-events: none;
             }
+
             #addTicketModal .input-container input:focus+label,
             #addTicketModal .input-container input:not(:placeholder-shown)+label,
             #addTicketModal .input-container select:focus+label,
@@ -486,6 +550,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 font-size: 12px;
                 color: #007BFF;
             }
+
             .modal-buttons {
                 display: flex;
                 align-items: right;
@@ -493,19 +558,23 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 margin-top: 15px;
 
             }
+
             .btnDefault {
                 cursor: pointer;
                 border-radius: 50px;
             }
+
             .btnDanger {
                 border-radius: 50px;
                 cursor: pointer;
 
 
             }
+
             .btnDefault:hover {
                 background: #0056b3;
             }
+
             .btnDanger:hover {
                 background: #c82333;
             }
@@ -598,7 +667,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                <div id="paginationControls" class="mt-3"></div>
+                    <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
@@ -729,7 +798,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <div class="input-container">
                     <select name="assignTo" id="assignToID" required>
                         <option value="" disabled selected>Select HR Representative</option>
-                        <?php foreach ($users as $user): ?>
+                        <?php
+                        // Filter users with roles "HR" or "Admin" and sort them alphabetically by name
+                        $filteredUsers = array_filter($users, function ($user) {
+                            return in_array($user['role'], ['HR', 'Admin']);
+                        });
+
+                        usort($filteredUsers, function ($a, $b) {
+                            return strcmp($a['name'], $b['name']);
+                        });
+
+                        foreach ($filteredUsers as $user): ?>
                             <option value="<?= $user['id'] ?>">
                                 <?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['department']) ?>)
                             </option>
@@ -757,7 +836,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName"  readonly>
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
@@ -1027,7 +1106,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
     <script src="../../assets/js/adminTicket.js"></script>
     <script>
-        
+
     </script>
 </body>
 

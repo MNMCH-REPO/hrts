@@ -13,20 +13,32 @@ require_once '../../0/includes/employeeTicket.php';
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                min-height: 90vh;
+                align-self: center;
+            }
+            
+        }
+        @media screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="sideNav">
+    <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/dashboard.png);"></div>
@@ -43,18 +55,22 @@ require_once '../../0/includes/employeeTicket.php';
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
-
             </div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
-
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leaveManagement.php">Leave Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
+
         <div class="content">
             <div class="topNav">
                 <div class="account">

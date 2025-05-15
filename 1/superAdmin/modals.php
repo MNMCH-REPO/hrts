@@ -83,14 +83,14 @@
      </div>
  </div>
 
-
+ <!-- edit -->
  <div id="editAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">EDIT ACCOUNT</h1>
          <form id="editAccountForm">
              <input type="hidden" name="idhidden" id="idhidden">
              <div class="input-container">
-                 <input type="text" id="employeeEditID" name="employeeID" required>
+                 <input type="text" id="employeeEditID" name="employeeID" readonly>
                  <label for="employeeID">Employee ID</label>
              </div>
              <div class="input-container">
@@ -106,9 +106,8 @@
              <div class="input-container">
                  <select id="roleEditID" name="role" required>
                      <option value="" disabled selected>Please select a Role</option>
-                     <option value="Admin">Admin</option>
                      <option value="Employee">Employee</option>
-                     <option value="HR Rep">HR Rep</option>
+                     <option value="HR">HR Repepresentative</option>
                  </select>
              </div>
 
@@ -160,6 +159,7 @@
 
 
              <div class="btnContainer">
+                 <button type="button" class="btnDefault" name="leaveRequest" id="leaveReaquestBtnID">Leave Request</button>
                  <button type="button" class="btnWarning" name="resetPassword" id="resetPasswordID">Reset Password</button>
                  <button type="submit" class="btnDefault" name="updateAccount" id="updateAccountID">UPDATE</button>
                  <button type="button" class="btnDanger" id="closeEditModal">BACK</button>
@@ -169,7 +169,7 @@
  </div>
 
 
-
+ <!-- disable -->
  <div id="disableAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">DISABLE ACCOUNT</h1>
@@ -208,6 +208,7 @@
      </div>
  </div>
 
+ <!-- enable -->
  <div id="enableAccountModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">ENABLE ACCOUNT</h1>
@@ -248,7 +249,7 @@
      </div>
  </div>
 
-
+ <!-- reset -->
  <div id="resetPasswordModal" class="modal">
      <div class="modal-content">
          <h1 class="modal-title">RESET PASSWORD</h1>
@@ -267,3 +268,235 @@
          </form>
      </div>
  </div>
+
+ <!-- leave Request Balances Modal -->
+ <div id="leaveRequestBalanceModal" class="modal">
+     <div class="modal-content">
+         <h1 class="modal-title">Edit Leave Request</h1>
+         <form id="leaveBalancesForm">
+             <input type="hidden" name="leaveRequestId" id="leaveRequestIdHidden">
+             <div class="input-container">
+                 <input type="text" id="leaveEmployeeNameID" name="employeeName" readonly>
+                 <label for="employeeName">Employee Name</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveDeparmentID" name="department" readonly>
+                 <label for="Department">Department</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="sickLeaveID" name="sl" required>
+                 <label for="sickLeaveID">Sick Leave (SL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveServiceIncentiveID" name="sil" required>
+                 <label for="leaveServiceIncentiveID">Service Incentive Leave (SIL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveEarnedLeaveID" name="elc" required>
+                 <label for="leaveEarnedLeaveID">Earned Leave Credit (ELC)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="managementInitiatedID" name="mil" required>
+                 <label for="managementInitiatedID">Management Initiated Leave (MIL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveMaternityLeaveID" name="ml" required>
+                 <label for="leaveMaternityLeaveID">Maternity Leave (ML)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leavePaternityLeaveID" name="pl" required>
+                 <label for="leavePaternityLeaveID">Paternity Leave (PL)</label>
+             </div>
+             <div class="input-container">
+                 <input type="text" id="leaveSoloParentLeaveID" name="spl" required>
+                 <label for="leaveSoloParentLeaveID">Solo Parent Leave (SPL)</label>
+             </div>
+             <!-- <div class="input-container">
+                 <input type="text" id="leaveWithoutPayID" name="lwop" required>
+                 <label for="leaveWithoutPayID">Leave Without Pay (LWOP)</label>
+             </div> -->
+             <div class="input-container">
+                 <input type="text" id="leaveBereavementLeaveID" name="brl" required>
+                 <label for="leaveBereavementLeaveID">Bereavement Leave (BRL)</label>
+             </div>
+             <div class="modal-buttons btnContainer">
+                 <button type="button" class="btnWarning" name="markLWOP" id="markAWOLBtnID">Mark as AWOL</button>
+                 <button type="submit" id="leaveBtnID" name="leaveButton" class="btnDefault">Save Changes</button>
+                 <button type="button" class="btnDanger" onclick="closeModal()">Cancel</button>
+             </div>
+         </form>
+     </div>
+ </div>
+
+
+
+ <div id="markAWOLModal" class="modal">
+     <div class="modal-content">
+         <h1 class="modal-title">MARK AS ABSENT WITHOUT OFFICIAL LEAVE</h1>
+         <br><br><br>
+
+         <form id="markAWOLForm" method="POST" action="../../0/includes/markAWOLQuery.php">
+
+             <input type="hidden" name="usedBalanceId" id="markAWOLID">
+             <input type="hidden" name="employeeLeaveUserId" id="markAWOLEmployeeID">
+             <input type="hidden" name="approvedBy" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Logged-in user ID -->
+             <p class="center-text">
+                 Are you sure you want to mark <strong id="markAWOLEmployeeName"></strong> today
+                 <br>as Absent Without Official Leave (AWOL)?
+             </p>
+             <br><br>
+             <p class="center-text">
+                 Total Absent Without Official Leave (AWOL): <strong id="awolBalances"><?php echo htmlspecialchars($totalAWOL); ?></strong>
+             </p>
+             <br>
+             <div class="btnContainer">
+                 <button type="submit" class="btnApprove" name="confirmMarkAWOL" id="confirmMarkAWOLID">Confirm</button>
+                 <button type="button" class="btnDanger" id="closemarkAWOLModal">Cancel</button>
+             </div>
+         </form>
+     </div>
+ </div>
+
+
+
+ <script>
+     document.addEventListener("DOMContentLoaded", function() {
+         const markAWOLButton = document.getElementById("markAWOLBtnID");
+         const markAWOLModal = document.getElementById("markAWOLModal");
+         const markAWOLEmployeeName = document.getElementById("markAWOLEmployeeName");
+         const awolBalancesElement = document.getElementById("awolBalances");
+         const markAWOLID = document.getElementById("markAWOLID");
+         const markAWOLEmployeeID = document.getElementById("markAWOLEmployeeID");
+         const closemarkAWOLModal = document.getElementById("closemarkAWOLModal");
+
+         // Check if required elements exist
+         if (!markAWOLModal || !markAWOLButton) {
+             console.error("Required elements for Mark AWOL modal not found!");
+             return;
+         }
+
+         // Open Mark AWOL Modal
+         markAWOLButton.addEventListener("click", function() {
+             console.log("Mark AWOL button clicked");
+
+             const userId = selectedRow.getAttribute("data-id");
+
+             // Fetch data from getLeaveBalancesQuery.php
+             fetch(`../../0/includes/getLeaveBalancesQuery.php?userId=${userId}`)
+                 .then(response => response.json())
+                 .then(data => {
+                     if (data.success) {
+                         // Populate modal fields with fetched data
+                         markAWOLEmployeeName.textContent = data.leaveBalances.name || "Unknown";
+                         awolBalancesElement.textContent = data.leaveBalances.totalAWOL || "0";
+
+                         // Populate the input fields
+                         markAWOLID.value = data.leaveBalances.usedBalanceId || ""; // Populate usedBalanceId
+
+                         markAWOLEmployeeID.value = data.leaveBalances.userId || "";
+
+
+                         // Convert totalAWOL to an integer for comparison
+                         const totalAWOLValue = parseInt(data.leaveBalances.totalAWOL, 10) || 0;
+
+                         // Apply color based on the value of totalAWOL
+
+                         if (totalAWOLValue === 3) {
+                             awolBalancesElement.style.color = "yellow"; // Set color to orange for 3
+                         } else if (totalAWOLValue === 4) {
+                             awolBalancesElement.style.color = "orange"; // Use the term "red-orange"
+                         } else if (totalAWOLValue >= 5) {
+                             awolBalancesElement.style.color = "red"; // Set color to red for 5 or greater
+                         } else {
+                             awolBalancesElement.style.color = ""; // Reset color for other values
+                         }
+
+
+
+                         console.log("Mark AWOL Employee ID:", markAWOLEmployeeID.value);
+                         console.log("Data fetched successfully:", data);
+
+                         // Show the modal
+                         markAWOLModal.style.display = "flex";
+                     } else {
+                         console.error("Failed to fetch leave balances:", data.message);
+                         alert("Failed to fetch leave balances. Please try again.");
+                     }
+                 })
+                 .catch(error => {
+                     console.error("Error fetching leave balances:", error);
+                     alert("An error occurred while fetching leave balances.");
+                 });
+         });
+
+
+
+         function updateAWOLColor(totalAWOLValue) {
+             if (totalAWOLValue === 3) {
+                 awolBalancesElement.style.color = "yellow"; // Set color to orange for 3
+             } else if (totalAWOLValue === 4) {
+                 awolBalancesElement.style.color = "orange"; // Use the term "red-orange"
+             } else if (totalAWOLValue >= 5) {
+                 awolBalancesElement.style.color = "red"; // Set color to red for 5 or greater
+             } else {
+                 awolBalancesElement.style.color = ""; // Reset color for other values
+             }
+         }
+
+
+         markAWOLForm.addEventListener('submit', async (event) => {
+             event.preventDefault(); // Prevent the default form submission
+
+             const formData = new FormData(markAWOLForm);
+
+             try {
+                 const response = await fetch('../../../hrts/0/includes/markAWOLQuery.php', {
+                     method: 'POST',
+                     body: formData,
+                 });
+
+                 const result = await response.json();
+
+                 if (result.success) {
+                     alert(result.message); // Show success message
+
+                     // Update the AWOL balance dynamically
+                     const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                     const updatedAWOL = currentAWOL + 1;
+                     awolBalancesElement.textContent = updatedAWOL;
+
+                     // Update the color based on the new AWOL value
+                     updateAWOLColor(updatedAWOL);
+
+                     // Optionally reload the page to reflect other changes
+                     location.reload();
+                 } else {
+                     alert(result.message); // Show error message
+
+                     // Ensure the color is updated even if marking as AWOL fails
+                     const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                     updateAWOLColor(currentAWOL);
+                 }
+             } catch (error) {
+                 console.error('Error:', error);
+                 alert('An error occurred while marking AWOL.');
+
+                 // Ensure the color is updated even if an error occurs
+                 const currentAWOL = parseInt(awolBalancesElement.textContent, 10) || 0;
+                 updateAWOLColor(currentAWOL);
+             }
+         });
+
+
+
+
+
+
+         // Close Mark AWOL Modal
+         closemarkAWOLModal.addEventListener("click", function() {
+             console.log("Close Mark AWOL modal button clicked");
+             markAWOLModal.style.display = "none";
+         });
+
+     });
+ </script>

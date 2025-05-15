@@ -254,38 +254,3 @@
 
 
 
-<!-- <script>
-    // Open modal function
-    function openModal(id) {
-        document.getElementById(id).style.display = 'flex'; // Open the modal
-        toggleFormType(); // Ensure the correct form is shown when modal opens
-    }
-
-    // Close modal function
-    function closeModal() {
-        document.getElementById('addTicketModal').style.display = 'none'; // Close the modal
-    }
-
-    // Toggle between ticket and leave form
-    function toggleFormType() {
-        const formType = document.getElementById('formType').value; // Get the selected form type
-
-        const selectedValue = formType.value; // Get the selected form type
-
-        // Toggle visibility based on the selected form
-        if (selectedValue === 'ticket') {
-            document.getElementById('ticketForm').style.display = 'block'; // Show ticket form
-            document.getElementById('leaveForm').style.display = 'none'; // Hide leave form
-            document.getElementById('modalTitle').textContent = "TICKET FORM"; // Update title
-        } else if (selectedValue === 'leave') {
-            document.getElementById('ticketForm').style.display = 'none'; // Hide ticket form
-            document.getElementById('leaveForm').style.display = 'block'; // Show leave form
-            document.getElementById('modalTitle').textContent = "LEAVE REQUEST FORM"; // Update title
-        }
-    }
-
-    // Ensure the correct form is displayed when the page loads
-    window.onload = function() {
-        toggleFormType(); // Toggle form type on page load
-    };
-</script> -->

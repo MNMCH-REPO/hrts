@@ -75,6 +75,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 </div>
 
                 <div class="btnContainer">
+                    <button type="button" class="btnDefault" id="uploadExcelID" name="iploadExcel">Upload</button>
                     <button type="button" class="btnWarning btnWarningDisabled" id="editAccountID" name="editAccount" disabled>Edit Account</button>
                     <button type="button" class="btnDanger btnDangerDisabled" id="disableAccountID" name="disbaleAccount" style="display: none;" disabled>Disable Account </button>
                     <button type="button" class="btnApprove btnApproveDisabled" id="enableAccountID" name="enableAccount" style="display: none;" disable>Enable Account </button>

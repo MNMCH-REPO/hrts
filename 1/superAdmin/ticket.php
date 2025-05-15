@@ -15,317 +15,569 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media only screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 95%;
+                min-height: 90vh;
+                align-self: center;
+            }
+
+            .tableContainer {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid var(--neutral-300);
+                border-radius: 8px;
+                width: 100%;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                padding: 6px;
+                text-align: left;
+                border-bottom: 1px solid var(--neutral-200);
+            }
+
+            th {
+                background-color: var(--neutral-300);
+                font-weight: bold;
+            }
+
+            tbody tr:nth-child(even) {
+                background-color: var(--primary-100);
+            }
+
+            tbody tr.highlighted {
+                background-color: var(--primary-500) !important;
+                color: white;
+            }
+
+            .search-wrapper {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+                padding-bottom: 10px;
+            }
+
+            .search-container {
+                display: flex;
+                align-items: center;
+                background: #D3D3D3;
+                border-radius: 30px;
+                padding: 2px;
+                width: 200px;
+            }
+
+            .search-input {
+                width: 50%;
+                border: none;
+                background: transparent;
+                padding: 1px 4px;
+                border-radius: 30px;
+                outline: none;
+                font-size: 10px;
+            }
+
+            .search-icon {
+                width: 12px;
+                height: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 10px;
+            }
+
+            .search-icon img {
+                width: 12px;
+                height: 12px;
+            }
+
+            .filter-btn {
+                display: flex;
+                align-items: center;
+                background: transparent;
+                border: none;
+                padding: 4px 6px;
+                font-size: 10px;
+                font-weight: bold;
+                cursor: pointer;
+                border-left: 1px solid #888;
+            }
+
+            .filter-btn img {
+                width: 12px;
+                height: 12px;
+                margin-left: 1px;
+            }
+
+            .pagination-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding-bottom: 10px;
+            }
+
+            .pagination {
+                display: flex;
+                gap: 5px;
+            }
+
+            .pagination a {
+                text-decoration: none;
+                padding: 6px 12px;
+                border: 1px solid var(--neutral-300);
+                border-radius: 4px;
+                color: var(--primary-500);
+                background: var(--neutral-100);
+            }
+
+            .pagination a.active {
+                background: var(--primary-500);
+                color: white;
+            }
+
+            .pagination a:hover {
+                background: var(--primary-400);
+                color: white;
+            }
+
+            .footer-messages {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #f4f4f4;
+                text-align: center;
+                padding: 10px 0;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                border-top: 1px solid #ddd;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 600px;
+                max-width: 95%;
+                text-align: center;
+                box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .input-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                padding: 5px 0;
+            }
+
+            .input-container h1 {
+                font-size: 16px;
+                text-align: left;
+                margin: 0;
+                width: 40%;
+            }
+
+            .center-text {
+                width: 60%;
+                font-size: 16px;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            .input-container select {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                outline: none;
+                font-size: 14px;
+                background: white;
+                cursor: pointer;
+            }
+
+            #addTicketModal .modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 600px;
+                max-width: 95%;
+                text-align: center;
+                box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            #addTicketModal .input-container {
+                position: relative;
+                margin: 15px 0;
+                width: 100%;
+            }
+
+            #addTicketModal .input-container input,
+            #addTicketModal .input-container select,
+            #addTicketModal .input-container textarea {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                outline: none;
+                font-size: 16px;
+                background: transparent;
+            }
+
+            #addTicketModal .input-container label {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                transition: 0.3s ease-out;
+                background: white;
+                padding: 0 5px;
+                font-size: 16px;
+                color: #666;
+                pointer-events: none;
+            }
+
+            #addTicketModal .input-container input:focus+label,
+            #addTicketModal .input-container input:not(:placeholder-shown)+label,
+            #addTicketModal .input-container select:focus+label,
+            #addTicketModal .input-container select:not(:placeholder-shown)+label,
+            #addTicketModal .input-container textarea:focus+label,
+            #addTicketModal .input-container textarea:not(:placeholder-shown)+label {
+                top: 5px;
+                font-size: 12px;
+                color: #007BFF;
+            }
+
+            .modal-buttons {
+                display: flex;
+                align-items: right;
+
+                margin-top: 15px;
+
+            }
+
+            .btnDefault {
+                cursor: pointer;
+                border-radius: 50px;
+            }
+
+            .btnDanger {
+                border-radius: 50px;
+                cursor: pointer;
+
+
+            }
+
+            .btnDefault:hover {
+                background: #0056b3;
+            }
+
+            .btnDanger:hover {
+                background: #c82333;
+            }
         }
 
-        /* table */
+        @media only screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            }
 
-        .tableContainer {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid var(--neutral-300);
-            border-radius: 8px;
-            width: 100%;
-        }
+            .tableContainer {
+                display: flex;
+                flex-direction: column;
+                border: 1px solid var(--neutral-300);
+                border-radius: 8px;
+                width: 100%;
+            }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
 
-        th,
-        td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--neutral-200);
-        }
+            th,
+            td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid var(--neutral-200);
+            }
 
-        th {
-            background-color: var(--neutral-300);
-            font-weight: bold;
-        }
+            th {
+                background-color: var(--neutral-300);
+                font-weight: bold;
+            }
 
-        tbody tr:nth-child(even) {
-            background-color: var(--primary-100);
-        }
+            tbody tr:nth-child(even) {
+                background-color: var(--primary-100);
+            }
 
-        tbody tr.highlighted {
-            background-color: var(--primary-500) !important;
-            /* Highlight color */
-            color: white;
-            /* Optional: Change text color */
-        }
+            tbody tr.highlighted {
+                background-color: var(--primary-500) !important;
+                color: white;
+            }
 
-        /* search container */
+            .search-wrapper {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+                padding-bottom: 10px;
+            }
 
-        .search-wrapper {
-            display: flex;
-            justify-content: flex-end;
-            /* Moves search container to the right */
-            width: 100%;
-            padding-bottom: 10px;
-            /* Adjust spacing if needed */
-        }
+            .search-container {
+                display: flex;
+                align-items: center;
+                background: #D3D3D3;
+                border-radius: 30px;
+                padding: 5px;
+                width: 320px;
+            }
 
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: #D3D3D3;
-            /* Adjust to match exact gray shade */
-            border-radius: 30px;
-            padding: 5px;
-            width: 320px;
-            /* Adjust width */
-        }
+            .search-input {
+                flex: 1;
+                border: none;
+                background: transparent;
+                padding: 10px;
+                border-radius: 30px;
+                outline: none;
+                font-size: 14px;
+            }
 
+            .search-icon {
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 10px;
+            }
 
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 10px;
-            border-radius: 30px;
-            outline: none;
-            font-size: 14px;
-        }
+            .search-icon img {
+                width: 16px;
+                height: 16px;
+            }
 
-        .search-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 10px;
-        }
+            .filter-btn {
+                display: flex;
+                align-items: center;
+                background: transparent;
+                border: none;
+                padding: 8px 12px;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                border-left: 1px solid #888;
+            }
 
-        .search-icon img {
-            width: 16px;
-            height: 16px;
-        }
+            .filter-btn img {
+                width: 16px;
+                height: 16px;
+                margin-left: 5px;
+            }
 
-        .filter-btn {
-            display: flex;
-            align-items: center;
-            background: transparent;
-            border: none;
-            padding: 8px 12px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            border-left: 1px solid #888;
-            /* Divider line between search and filter */
-        }
+            .pagination-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                padding-bottom: 10px;
+            }
 
-        .filter-btn img {
-            width: 16px;
-            height: 16px;
-            margin-left: 5px;
-        }
+            .pagination {
+                display: flex;
+                gap: 5px;
+            }
 
+            .pagination a {
+                text-decoration: none;
+                padding: 6px 12px;
+                border: 1px solid var(--neutral-300);
+                border-radius: 4px;
+                color: var(--primary-500);
+                background: var(--neutral-100);
+            }
 
+            .pagination a.active {
+                background: var(--primary-500);
+                color: white;
+            }
 
-        .pagination-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding-bottom: 10px;
-        }
+            .pagination a:hover {
+                background: var(--primary-400);
+                color: white;
+            }
 
-        .pagination {
-            display: flex;
-            gap: 5px;
-        }
+            .footer-messages {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                background-color: #f4f4f4;
+                text-align: center;
+                padding: 10px 0;
+                font-size: 14px;
+                font-weight: 500;
+                color: #333;
+                border-top: 1px solid #ddd;
+            }
 
-        .pagination a {
-            text-decoration: none;
-            padding: 6px 12px;
-            border: 1px solid var(--neutral-300);
-            border-radius: 4px;
-            color: var(--primary-500);
-            background: var(--neutral-100);
-        }
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                justify-content: center;
+                align-items: center;
+            }
 
-        .pagination a.active {
-            background: var(--primary-500);
-            color: white;
-        }
+            .modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 600px;
+                max-width: 95%;
+                text-align: center;
+                box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            }
 
-        .pagination a:hover {
-            background: var(--primary-400);
-            color: white;
-        }
+            .input-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                padding: 5px 0;
+            }
 
+            .input-container h1 {
+                font-size: 16px;
+                text-align: left;
+                margin: 0;
+                width: 40%;
+            }
 
-        .footer-messages {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #333;
-            border-top: 1px solid #ddd;
-        }
+            .center-text {
+                width: 60%;
+                font-size: 16px;
+                text-align: left;
+                font-weight: normal;
+            }
 
+            .input-container select {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                outline: none;
+                font-size: 14px;
+                background: white;
+                cursor: pointer;
+            }
 
+            #addTicketModal .modal-content {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                width: 600px;
+                max-width: 95%;
+                text-align: center;
+                box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            }
 
-        /* modal */
+            #addTicketModal .input-container {
+                position: relative;
+                margin: 15px 0;
+                width: 100%;
+            }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
+            #addTicketModal .input-container input,
+            #addTicketModal .input-container select,
+            #addTicketModal .input-container textarea {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                outline: none;
+                font-size: 16px;
+                background: transparent;
+            }
 
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 600px;
-            max-width: 95%;
-            text-align: center;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
+            #addTicketModal .input-container label {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                transition: 0.3s ease-out;
+                background: white;
+                padding: 0 5px;
+                font-size: 16px;
+                color: #666;
+                pointer-events: none;
+            }
 
-        .input-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            /* Ensures equal spacing */
-            width: 100%;
-            padding: 5px 0;
-            /* Adjust vertical spacing */
-        }
+            #addTicketModal .input-container input:focus+label,
+            #addTicketModal .input-container input:not(:placeholder-shown)+label,
+            #addTicketModal .input-container select:focus+label,
+            #addTicketModal .input-container select:not(:placeholder-shown)+label,
+            #addTicketModal .input-container textarea:focus+label,
+            #addTicketModal .input-container textarea:not(:placeholder-shown)+label {
+                top: 5px;
+                font-size: 12px;
+                color: #007BFF;
+            }
 
-        .input-container h1 {
-            font-size: 16px;
+            .modal-buttons {
+                display: flex;
+                align-items: right;
 
-            text-align: left;
-            margin: 0;
-            width: 40%;
-            /* Adjust label width for proper spacing */
-        }
+                margin-top: 15px;
 
-        .center-text {
-            width: 60%;
-            /* Ensures proper alignment */
-            font-size: 16px;
-            text-align: left;
-            /* Match exact alignment from the image */
-            font-weight: normal;
-            /* Ensure text weight matches */
-        }
+            }
 
+            .btnDefault {
+                cursor: pointer;
+                border-radius: 50px;
+            }
 
-
-        .input-container select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            font-size: 14px;
-            background: white;
-            cursor: pointer;
-        }
-
-
-
-        #addTicketModal .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 600px;
-            max-width: 95%;
-            text-align: center;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        #addTicketModal .input-container {
-            position: relative;
-            margin: 15px 0;
-            width: 100%;
-        }
-
-        #addTicketModal .input-container input,
-        #addTicketModal .input-container select,
-        #addTicketModal .input-container textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            outline: none;
-            font-size: 16px;
-            background: transparent;
-        }
-
-        #addTicketModal .input-container label {
-            position: absolute;
-            top: 50%;
-            left: 10px;
-            transform: translateY(-50%);
-            transition: 0.3s ease-out;
-            background: white;
-            padding: 0 5px;
-            font-size: 16px;
-            color: #666;
-            pointer-events: none;
-        }
-
-        /* Floating label effect */
-        #addTicketModal .input-container input:focus+label,
-        #addTicketModal .input-container input:not(:placeholder-shown)+label,
-        #addTicketModal .input-container select:focus+label,
-        #addTicketModal .input-container select:not(:placeholder-shown)+label,
-        #addTicketModal .input-container textarea:focus+label,
-        #addTicketModal .input-container textarea:not(:placeholder-shown)+label {
-            top: 5px;
-            font-size: 12px;
-            color: #007BFF;
-        }
-
-        /* Buttons */
-        .modal-buttons {
-            display: flex;
-            align-items: right;
-
-            margin-top: 15px;
-
-        }
-
-        .btnDefault {
-            cursor: pointer;
-            border-radius: 50px;
-        }
-
-        .btnDanger {
-            border-radius: 50px;
-            cursor: pointer;
+            .btnDanger {
+                border-radius: 50px;
+                cursor: pointer;
 
 
-        }
+            }
 
-        .btnDefault:hover {
-            background: #0056b3;
-        }
+            .btnDefault:hover {
+                background: #0056b3;
+            }
 
-        .btnDanger:hover {
-            background: #c82333;
+            .btnDanger:hover {
+                background: #c82333;
+            }
         }
     </style>
 </head>
@@ -354,7 +606,10 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
-
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leaveManagement.php">Leave Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
@@ -412,17 +667,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
             <div class="pagination-wrapper">
                 <div class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="?page=<?= $page - 1 ?>" class="prev">Previous</a>
-                    <?php endif; ?>
-
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?= $i ?>" class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a href="?page=<?= $page + 1 ?>" class="next">Next</a>
-                    <?php endif; ?>
+                    <div id="paginationControls" class="mt-3"></div>
                 </div>
 
                 <div class="search-container">
@@ -451,13 +696,22 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
+                            <th>Duration <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr data-status="<?= htmlspecialchars($ticket['status']) ?>">
+                                <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
+                                    data-status="<?= htmlspecialchars($ticket['status']) ?>"
+                                    data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
+                                    data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
+                                    data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
+                                    data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
+                                    data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"
+                                    data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
+
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['subject']) ?></td>
@@ -467,6 +721,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
+                                    <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -543,7 +798,17 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <div class="input-container">
                     <select name="assignTo" id="assignToID" required>
                         <option value="" disabled selected>Select HR Representative</option>
-                        <?php foreach ($users as $user): ?>
+                        <?php
+                        // Filter users with roles "HR" or "Admin" and sort them alphabetically by name
+                        $filteredUsers = array_filter($users, function ($user) {
+                            return in_array($user['role'], ['HR', 'Admin']);
+                        });
+
+                        usort($filteredUsers, function ($a, $b) {
+                            return strcmp($a['name'], $b['name']);
+                        });
+
+                        foreach ($filteredUsers as $user): ?>
                             <option value="<?= $user['id'] ?>">
                                 <?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['department']) ?>)
                             </option>
@@ -571,7 +836,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <input type="hidden" name="employeeId" id="employeeID" value="<?= $_SESSION['user_id'] ?>">
                 <div class="input-container">
-                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" required>
+                    <input type="text" name="employeeName" value="<?= $_SESSION['name'] ?>" id="employeeName" readonly>
                     <label for="employeeName">Employee Name</label>
                 </div>
 
@@ -582,7 +847,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <input type="text" id="departmentInputField" class="form-control"
-                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department">
+                        value="<?= $_SESSION['department'] ?>" name="department" placeholder="Enter Department" readonly>
 
                     <label for="department">Department</label>
                 </div>
@@ -641,7 +906,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="confirmdepartmentID" value="<?= htmlspecialchars($ticket['assigned_department']) ?>">Accounting and Finance</p>
+                    <p class="center-text" id="confirmdepartmentID" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -708,7 +973,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="editdepartmentID" value="<?= htmlspecialchars($ticket['department']) ?>">Accounting and Finance</p>
+                    <p class="center-text" id="editdepartmentID" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -785,7 +1050,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="summarizationDepartment"><?= htmlspecialchars($ticket['assigned_department'] ?? 'N/A') ?></p>
+                    <p class="center-text" id="summarizationDepartment" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
                 </div>
 
                 <div class="input-container">
@@ -820,20 +1085,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
                 <div class="input-container">
                     <h1><strong>Duration:</strong></h1>
-                    <p class="center-text" id="summarizationDuration">
-                        <?php
-                        if (!empty($ticket['start_at']) && !empty($ticket['updated_at'])) {
-                            $startAt = new DateTime($ticket['start_at']);
-                            $updatedAt = new DateTime($ticket['updated_at']);
-                            $duration = $startAt->diff($updatedAt);
-
-                            // Format the duration (e.g., "2 days, 3 hours, 15 minutes")
-                            echo $duration->format('%d days, %h hours, %i minutes');
-                        } else {
-                            echo 'N/A'; // Fallback if timestamps are missing
-                        }
-                        ?>
-                    </p>
+                    <p class="center-text" id="summarizationDuration" data-assigned="<?= htmlspecialchars($ticket['start_at']) ?>">Unassigned</p>
                 </div>
 
                 <div class="btnContainer">
@@ -853,6 +1105,9 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <script src="../../assets/js/framework.js"></script>
 
     <script src="../../assets/js/adminTicket.js"></script>
+    <script>
+
+    </script>
 </body>
 
 </html>

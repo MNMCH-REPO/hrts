@@ -15,13 +15,25 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
     <link rel="stylesheet" href="../../assets/css/message.css">
     <title>Tickets</title>
     <style>
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 80%;
-            min-height: 90vh;
-            margin: 5% 0 0 260px;
-            align-self: center;
+        @media only screen and (max-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                min-height: 90vh;
+                align-self: center;
+            }
+        }
+
+        @media only screen and (min-width: 600px) {
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 80%;
+                min-height: 90vh;
+                margin: 5% 0 0 260px;
+                align-self: center;
+            }
         }
     </style>
 </head>
@@ -46,15 +58,23 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/settings.png);"></div>
                 <a href="account.php">Account</a>
             </div>
+
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
+            </div>
+            <div class="navBtn">
+                <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
+                <a href="leaveManagement.php">Leave Management</a>
             </div>
             <div class="navBtn">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/switch.png);"></div>
                 <a href="../../0/includes/signout.php">Signout</a>
             </div>
         </div>
+
+
+
         <div class="content">
             <div class="topNav">
                 <div class="account">
@@ -64,13 +84,25 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             </div>
             <div class="main-convo">
                 <div class="container-convo">
-
-                    <div class="chat-container" id="chatbox">
-                        <!-- Messages will be loaded here -->
-
+                    <div class="chatbox-container">
+                        <div class="chat-container" id="chatbox">
+                            <!-- Messages will be loaded here -->
+                        </div>
+                        <div class="input-area">
+                            <input type="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
+                            <div class="attach" id="attach">Attachment📎</div>
+                            <input type="text" id="message" name="message">
+                            <button id="sendmesageBtn" aria-label="Send Message" style="width: 40px; height: 40px; border: none; background-color: transparent; padding: 0;">
+                                <img src="../../assets/images/icons/send.png" style="width: 100%; height: 100%; object-fit: contain;">
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="cards-container">
+                    <div class="cards-container" id="cardsContainer">
+                        <div class="search">
+                            <input type="text" id="search" placeholder="Search...">
+                        </div>
+
                         <?php
                         require_once '../../0/includes/db.php';
 
@@ -81,69 +113,102 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         $admin_ID = $_SESSION['user_id'];
 
                         try {
-                            // Fetch all tickets
-                            $stmt = $pdo->prepare("
+                            // Fetch tickets
+                            $stmt1 = $pdo->prepare("
             SELECT 
                 t.id, 
                 t.subject, 
-                u2.department, -- Fetch the department from the user who created the ticket
+                u2.department, 
                 t.description, 
                 t.priority, 
                 t.status,
                 t.created_at,
-                COALESCE(u1.name, 'Unassigned') AS assigned_name, -- Assigned to
-                u2.name AS employee_name -- Employee who created the ticket
+                COALESCE(u1.name, 'Unassigned') AS assigned_name,
+                u2.name AS employee_name,
+                'ticket' AS type
             FROM tickets t
-            LEFT JOIN users u1 ON t.assigned_to = u1.id -- Join to get the assigned user's name
-            LEFT JOIN users u2 ON t.employee_id = u2.id -- Join to get the employee's name and department
-            ORDER BY t.updated_at DESC; -- Sort by newest update
+            LEFT JOIN users u1 ON t.assigned_to = u1.id
+            LEFT JOIN users u2 ON t.employee_id = u2.id
+            ORDER BY t.updated_at DESC
         ");
-                            $stmt->execute();
-                            $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            $stmt1->execute();
+                            $tickets = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-                            if ($tickets) {
-                                foreach ($tickets as $index => $ticket) {
-                                    echo '<div class="card card-' . (($index % 4) + 1) . '" 
-                      data-ticket-id="' . htmlspecialchars($ticket['id']) . '">';
-                                    echo '<h1>Ticket ID: ' . htmlspecialchars($ticket['id']) . '</h1>';
-                                    echo '<h1>Employee Name: ' . htmlspecialchars($ticket['employee_name'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Department: ' . htmlspecialchars($ticket['department'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Subject: ' . htmlspecialchars($ticket['subject'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Assigned Name: ' . htmlspecialchars($ticket['assigned_name'] ?? 'Unassigned') . '</h1>';
-                                    echo '<h1>Priority: ' . htmlspecialchars($ticket['priority'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Status: ' . htmlspecialchars($ticket['status'] ?? 'N/A') . '</h1>';
-                                    echo '<h1>Created At: ' . htmlspecialchars($ticket['created_at'] ?? 'N/A') . '</h1>';
-                                    echo '</div>';
+                            // Fetch leave requests
+                            $stmt2 = $pdo->prepare("
+            SELECT 
+                l.id AS id,
+                l.employee_id,
+                l.leave_types, 
+                l.start_date,
+                l.end_date,
+                l.reason,
+                l.status,
+                l.created_at,
+                l.approved_by,
+                l.updated_at,
+                u3.name AS employee_name,
+                'leave' AS type
+            FROM leave_requests l
+            LEFT JOIN users u3 ON l.employee_id = u3.id
+            ORDER BY l.updated_at DESC, l.created_at DESC
+        ");
+                            $stmt2->execute();
+                            $leaves = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+                            // Combine both arrays
+                            $items = array_merge($tickets, $leaves);
+
+                            // Sort by updated_at or created_at if updated_at is missing
+                            usort($items, function ($a, $b) {
+                                $dateA = $a['updated_at'] ?? $a['created_at'];
+                                $dateB = $b['updated_at'] ?? $b['created_at'];
+                                return strtotime($dateB) - strtotime($dateA);
+                            });
+
+
+                            // Render
+                            if ($items) {
+                                foreach ($items as $index => $item) {
+                                    if (!empty($item['id']) && !empty($item['type'])) {
+                                        // Debug output
+                                        echo '<!-- DEBUG: ID=' . $item['id'] . ', TYPE=' . $item['type'] . ' -->';
+
+                                        echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
+
+                                        echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
+                                        echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
+                                        echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
+                                        if ($item['type'] === 'ticket') {
+                                            echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
+                                            echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
+                                        } else {
+                                            echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
+                                        }
+
+                                        echo '</div>';
+                                    } else {
+                                        echo '<!-- Skipped item: Missing id or type -->';
+                                    }
                                 }
                             } else {
-                                echo '<p>No tickets found.</p>';
+                                echo '<p>No tickets or leave requests found.</p>';
                             }
                         } catch (PDOException $e) {
-                            echo 'Error fetching tickets: ' . $e->getMessage();
+                            echo 'Error: ' . $e->getMessage();
                         }
                         ?>
                     </div>
-
-
-
-                    <div class="input-area" id="inputAreaID">
-                        <input type="file" name="file" id="fileInput" style="display: none;"> <!-- Hidden file input -->
-                        <div class="attach" id="attach">Attachment📎</div>
-                        <input type="text" id="message" placeholder="Type a message...">
-                        <button id="sendmesageBtn">Send</button>
-                    </div>
-
 
                     <br><br>
                     <div class="footer" style="text-align: center;">
                         <p>All rights reserved ©</p>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
+
+
 
 
         <!-- Image Modal -->
@@ -152,89 +217,32 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
             <img class="modal-content" id="modalImage">
         </div>
 
-        <style>
-            /* Modal styles */
-            .modal {
-                display: none;
-                /* Hidden by default */
-                position: fixed;
-                /* Stay in place */
-                z-index: 1000;
-                /* Sit on top */
-                left: 0;
-                top: 0;
-                width: 100%;
-                /* Full width */
-                height: 100%;
-                /* Full height */
-                background-color: rgba(0, 0, 0, 0.8);
-                /* Black background with opacity */
-                justify-content: center;
-                /* Center content horizontally */
-                align-items: center;
-                /* Center content vertically */
-                display: flex;
-                /* Flexbox for centering */
-            }
-
-            .modal-content {
-                margin: auto;
-                display: block;
-                max-width: 60%;
-                /* Limit the image size to 60% of the viewport width */
-                max-height: 60%;
-                /* Limit the image size to 60% of the viewport height */
-                width: auto;
-                /* Maintain aspect ratio */
-                height: auto;
-                /* Maintain aspect ratio */
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                /* Add a subtle shadow */
-            }
-
-            .close {
-                position: absolute;
-                top: 20px;
-                right: 35px;
-                color: #fff;
-                font-size: 40px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-            .close:hover,
-            .close:focus {
-                color: red;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .modal-content {
-                    max-width: 80%;
-                    /* Adjust for smaller screens */
-                    max-height: 50%;
-                    /* Adjust for smaller screens */
-                }
-
-                .close {
-                    font-size: 30px;
-                    /* Smaller close button on small screens */
-                }
-            }
-
-
-            .card.active {
-                border: 2px solid #007bff;
-                background-color: #f0f8ff;
-            }
-        </style>
-
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="../../assets/js/framework.js"></script>
         <script src="../../assets/js/adminSendMessage.js"></script>
+
+        <script>
+            const searchInput = document.getElementById('search');
+            const cardsContainer = document.getElementById('cardsContainer');
+
+            // Function to filter cards based on search input
+            function filterCards() {
+                const query = searchInput.value.toLowerCase();
+                const cards = cardsContainer.getElementsByClassName('card');
+
+                Array.from(cards).forEach(card => {
+                    const cardText = card.textContent.toLowerCase();
+                    if (cardText.includes(query)) {
+                        card.style.display = 'block'; // Show card if it matches
+                    } else {
+                        card.style.display = 'none'; // Hide card if it doesn't match
+                    }
+                });
+            }
+
+            // Add event listener for search input
+            searchInput.addEventListener('input', filterCards);
+        </script>
 
         <script>
             function handleFileAction(filePath, action) {
@@ -308,15 +316,15 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                         };
 
                         card.innerHTML = `
-        <h1>Ticket ID: ${ticket.id}</h1>
-        <h1>Employee Name: ${ticket.employee_name}</h1>
-        <h1>Department: ${ticket.department}</h1>
-        <h1>Subject: ${ticket.subject}</h1>
-        <h1>Assigned Name: ${ticket.assigned_name}</h1>
-        <h1>Priority: ${ticket.priority}</h1>
-        <h1>Status: ${ticket.status}</h1>
-        <h1>Created At: ${ticket.created_at}</h1>
-      `;
+                        <h1>Ticket ID: ${ticket.id}</h1>
+                        <h1>Employee Name: ${ticket.employee_name}</h1>
+                        <h1>Department: ${ticket.department}</h1>
+                        <h1>Subject: ${ticket.subject}</h1>
+                        <h1>Assigned Name: ${ticket.assigned_name}</h1>
+                        <h1>Priority: ${ticket.priority}</h1>
+                        <h1>Status: ${ticket.status}</h1>
+                        <h1>Created At: ${ticket.created_at}</h1>
+                    `;
 
                         cardsContainer.appendChild(card);
                     });
