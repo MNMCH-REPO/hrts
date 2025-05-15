@@ -221,6 +221,29 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         <script src="../../assets/js/framework.js"></script>
         <script src="../../assets/js/adminSendMessage.js"></script>
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Attach click handler to leave cards
+    document.querySelectorAll('.card[data-type="leave"]').forEach(card => {
+        card.addEventListener('click', function() {
+            const leaveId = card.getAttribute('data-id');
+            loadLeaveMessages(leaveId);
+        });
+    });
+});
+
+// Dummy function for demonstration. Replace with your actual implementation.
+function loadLeaveMessages(leaveId) {
+    // You should implement this function to load the leave messages into the chatbox
+    // For example:
+    // fetch('getLeaveMessages.php?leaveID=' + leaveId)
+    //   .then(res => res.json())
+    //   .then(data => { ... });
+    document.getElementById('chatbox').innerHTML = `<p>Loading messages for leave ID: ${leaveId}</p>`;
+}
+</script>
+
         <script>
             const searchInput = document.getElementById('search');
             const cardsContainer = document.getElementById('cardsContainer');

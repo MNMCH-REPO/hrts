@@ -429,7 +429,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         sl AS sick_leave,
                                         sil AS service_incentive_leave,
                                         elc AS earned_leave_credit,
-                                        mil AS management_initiated_leaave,
+                                        mil AS management_incentive_leaave,
                                         ml AS maternity_leave,
                                         pl AS paternity_leave,
                                         spl AS solo_parent_leave,
@@ -449,7 +449,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
-                                        echo '<option value="Management Intiated Leave">Management Intiated Leave</option>';
+                                        echo '<option value="Management Incentive Leave">Management Incentive Leave</option>';
                                         echo '<option value="Maternity Leave">Maternity Leave</option>';
                                         echo '<option value="Paternity Leave">Paternity Leave</option>';
                                         echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
@@ -854,8 +854,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
         const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
         const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
-        const birthdayLeaveTotal = <?= $leaveBalances['management_initiated_leaave'] ?? 0 ?>;
-        const birthdayLeaveUsed = <?= $usedBalances['management_initiated_leaave'] ?? 0 ?>;
+        const birthdayLeaveTotal = <?= $leaveBalances['management_incentive_leaave'] ?? 0 ?>;
+        const birthdayLeaveUsed = <?= $usedBalances['management_incentive_leaave'] ?? 0 ?>;
         const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
         const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
         const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
@@ -882,7 +882,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             "Sick Leave": "sl",
             "Service Incentive Leave": "sil",
             "Earned Leave Credit": "elc",
-            "Management Intiated Leave": "mil",
+            "Management Incentive Leave": "mil",
             "Maternity Leave": "ml",
             "Paternity Leave": "pl",
             "Solo Parent Leave": "spl",

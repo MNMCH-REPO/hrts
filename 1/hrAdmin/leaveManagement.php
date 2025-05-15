@@ -263,7 +263,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             data-leave-id="">
                             View Attachment
                         </button>
-                        <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button>
+                        <!-- <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button> -->
+                        <a href="message.php" class="btnWarning btnContainer" id="messageApprovalID" style="text-decoration: none;">Message</a>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
                         <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer" data-leave-id="">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
@@ -436,7 +437,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         sl AS sick_leave,
                                         sil AS service_incentive_leave,
                                         elc AS earned_leave_credit,
-                                        mil AS management_initiated_leaave,
+                                        mil AS management_incentive_leaave,
                                         ml AS maternity_leave,
                                         pl AS paternity_leave,
                                         spl AS solo_parent_leave,
@@ -456,7 +457,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                                         echo '<option value="Sick Leave">Sick Leave</option>';
                                         echo '<option value="Service Incentive Leave">Service Incentive Leave</option>';
                                         echo '<option value="Earned Leave Credit">Earned Leave Credit</option>';
-                                        echo '<option value="Management Intiated Leave">Management Intiated Leave</option>';
+                                        echo '<option value="Management Incentive Leave">Management Incentive Leave</option>';
                                         echo '<option value="Maternity Leave">Maternity Leave</option>';
                                         echo '<option value="Paternity Leave">Paternity Leave</option>';
                                         echo '<option value="Solo Parent Leave">Solo Parent Leave</option>';
@@ -596,22 +597,36 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const messageButton = document.getElementById("messageApprovalID");
 
-    messageButton.addEventListener("click", function () {
-        const messageLeaveID = document.getElementById("approveLeaveID").value; // Get the leave ID
-        if (!messageLeaveID) {
-            alert("Leave ID is missing.");
-            return;
-        }
+    <script>
+        // Add this ONCE, after the DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            const messageBtn = document.getElementById("messageApprovalID");
+            if (messageBtn) {
+                messageBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const leaveID = this.getAttribute("data-id");
+                    if (!leaveID) {
+                        alert("Leave ID is missing.");
+                        return;
+                    }
+                    window.location.href = `message.php?leaveID=${encodeURIComponent(leaveID)}&type=leave`;
+                });
+            }
 
-        // Redirect to message.php with type=leave and the leave ID
-        window.location.href = `message.php?type=leave&id=${messageLeaveID}`;
-    });
-});
-</script>
+            // In your table row click handler, after you get leaveId:
+            const tableRows = document.querySelectorAll("tbody tr");
+            tableRows.forEach(row => {
+                row.addEventListener("click", function() {
+                    const leaveId = this.children[0].textContent.trim();
+                    if (messageBtn) {
+                        messageBtn.setAttribute("data-id", leaveId);
+                    }
+
+                });
+            });
+        });
+    </script>
 
 
     <script src="../../assets/js/framework.js"></script>
@@ -861,8 +876,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
         const serviceIncentiveLeaveUsed = <?= $usedBalances['service_incentive_leave'] ?? 0 ?>;
         const earnedLeaveCreditTotal = <?= $leaveBalances['earned_leave_credit'] ?? 0 ?>;
         const earnedLeaveCreditUsed = <?= $usedBalances['earned_leave_credit'] ?? 0 ?>;
-        const birthdayLeaveTotal = <?= $leaveBalances['management_initiated_leaave'] ?? 0 ?>;
-        const birthdayLeaveUsed = <?= $usedBalances['management_initiated_leaave'] ?? 0 ?>;
+        const birthdayLeaveTotal = <?= $leaveBalances['management_incentive_leaave'] ?? 0 ?>;
+        const birthdayLeaveUsed = <?= $usedBalances['management_incentive_leaave'] ?? 0 ?>;
         const maternityLeaveTotal = <?= $leaveBalances['maternity_leave'] ?? 0 ?>;
         const maternityLeaveUsed = <?= $usedBalances['maternity_leave'] ?? 0 ?>;
         const paternityLeaveTotal = <?= $leaveBalances['paternity_leave'] ?? 0 ?>;
@@ -889,7 +904,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
             "Sick Leave": "sl",
             "Service Incentive Leave": "sil",
             "Earned Leave Credit": "elc",
-            "Management Intiated Leave": "mil",
+            "Management Incentive Leave": "mil",
             "Maternity Leave": "ml",
             "Paternity Leave": "pl",
             "Solo Parent Leave": "spl",
@@ -1346,27 +1361,15 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const messageButton = document.getElementById("messageApprovalID");
-
-    messageButton.addEventListener("click", function () {
-        const messageLeaveID = document.getElementById("approveLeaveID").textContent.trim();
-        console.log("Storing Leave ID in session storage:", messageLeaveID); // Debugging
-
-        if (!messageLeaveID) {
-            alert("Leave ID is missing.");
-            return;
-        }
-
-        // Store the leave ID and type in session storage
-        sessionStorage.setItem("leaveID", messageLeaveID);
-        sessionStorage.setItem("type", "leave");
-
-        // Redirect to message.php
-        window.location.href = "message.php";
-    });
-});
-
+        // Example for a button click
+        document.getElementById("messageApprovalID").addEventListener("click", function() {
+            const leaveID = document.getElementById("approveLeaveID").textContent.trim();
+            if (!leaveID) {
+                alert("Leave ID is missing.");
+                return;
+            }
+            window.location.href = `message.php?leaveID=${encodeURIComponent(leaveID)}&type=leave`;
+        });
 
 
         document.addEventListener("DOMContentLoaded", function() {
