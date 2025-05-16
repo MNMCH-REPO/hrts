@@ -1,6 +1,8 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
-require_once '../../0/includes/hrHeadQuery.php';
+require_once '../../0/includes/adminTableQuery.php';
+require_once '../../0/includes/adminDashboardTables.php';
+require_once '../../0/includes/reportGenerator.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,8 +16,8 @@ require_once '../../0/includes/hrHeadQuery.php';
     <link rel="stylesheet" href="../../assets/css/framework.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <title>HRTS</title>
-</head>
-<style>
+
+    <style>
         .time-btn {
             padding: 8px 16px;
             border: 1px solid var(--neutral-300);
@@ -49,7 +51,27 @@ require_once '../../0/includes/hrHeadQuery.php';
             color: var(--white);
             border-color: var(--primary-500);
         }
+        .suggestion-box {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .suggestion-box div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .suggestion-box div:hover {
+            background-color: #f0f0f0;
+        }
     </style>
+
+</head>
+
 <body>
     <div class="container">
         <div class="sideNav">
@@ -69,8 +91,7 @@ require_once '../../0/includes/hrHeadQuery.php';
             </div>
         </div>
 
-
-        <div class="content">
+        <d class="content">
             <div class="topNav">
                 <div class="account">
                     <div class="accountName">John Doe</div>
@@ -79,97 +100,69 @@ require_once '../../0/includes/hrHeadQuery.php';
             </div>
 
             <div class="row plateRow">
-                <!-- Plates -->
-                <div class="col plate" id="plate1" data-status="status">
+                <div class="col plate" id="plate1" data-status="Open">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/time-left.png);"></div>
-                    <div class="plateContent">
-                        <div class="plateTitle">Pending</div>
-                        <div class="plateValue">
-                            <?= isset($openTickets[0]['open_tickets']) ? htmlspecialchars($openTickets[0]['open_tickets']) : '0' ?>
-                        </div>
+                    <div class="plateContent" data-status="Open">
+                        <div class="plateTitle">Open</div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Open']) ?></div>
                     </div>
                 </div>
 
-                <div class="col plate" id="plate2" data-status="status">
+                <div class="col plate" id="plate2" data-status="In Progress">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/hourglass.png);"></div>
-                    <div class="plateContent">
+                    <div class="plateContent" data-status="In Progress">
                         <div class="plateTitle">In Progress</div>
-                        <div class="plateValue">
-                            <?= isset($inprogressTickets[0]['inprogress_tickets']) ? htmlspecialchars($inprogressTickets[0]['inprogress_tickets']) : '0' ?>
-                        </div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['In Progress']) ?></div>
                     </div>
                 </div>
 
-                <div class="col plate" id="plate3" data-status="status">
+                <div class="col plate" id="plate3" data-status="Resolved">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Resolved</div>
-                        <div class="plateValue">
-                            <?= isset($resolvedTickets[0]['resolved_tickets']) ? htmlspecialchars($resolvedTickets[0]['resolved_tickets']) : '0' ?>
-                        </div>
+                        <div class="plateValue"><?= htmlspecialchars($statusCounts['Resolved']) ?></div>
                     </div>
                 </div>
 
-                <div class="col plate" id="plate4" data-status="status">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                <!-- Plates 4 and 5 don't need data-status because they aren't used for ticket filtering -->
+                <div class="col plate" id="plate4">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/team.png);"></div>
                     <div class="plateContent">
-                        <div class="plateTitle">Rejected</div>
-                        <div class="plateValue">
-                            <?= htmlspecialchars(array_sum(array_column($rejectedTickets, 'rejected_count'))) ?>
-                        </div>
+                        <div class="plateTitle">HR Representative</div>
+                        <div class="plateValue"><?= htmlspecialchars($roleCounts['HR']) ?></div>
                     </div>
                 </div>
 
-                <div class="col plate" id="plate5" data-status="status">
-                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/ethics.png);"></div>
+                <div class="col plate" id="plate5">
+                    <div class="plateIcon" style="background-image: url(../../assets/images/icons/groups.png);"></div>
                     <div class="plateContent">
-                        <div class="plateTitle">Total Tickets</div>
-                        <div class="plateValue">
-                            <?= isset($totalTickets[0]['total_tickets']) ? htmlspecialchars($totalTickets[0]['total_tickets']) : '0' ?>
-                        </div>
+                        <div class="plateTitle">Employee</div>
+                        <div class="plateValue"><?= htmlspecialchars($roleCounts['Employee']) ?></div>
                     </div>
                 </div>
-                <div class="col plate" id="plate6" data-status="Download">
+
+                <div class="col plate" id="plate6">
                     <div class="plateIcon" style="background-image: url(../../assets/images/icons/folder.png);"></div>
                     <div class="plateContent">
                         <div class="plateTitle">Download</div>
                         <div class="plateValue"></div>
                     </div>
                 </div>
+
             </div>
-
-
-
 
             <div class="pagination-wrapper">
-                <div class="pagination" id="pageNationID">
+                <div class="pagination">
                     <div id="paginationControls" class="mt-3"></div>
-                </div>
-
-
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="SEARCH..." class="search-input">
-                    <div class="search-icon">
-                        <img src="../../assets/images/icons/search.png" alt="Search">
-                    </div>
-                    <button id="filterButton" class="filter-btn">
-                        <img src="../../assets/images/icons/sort.png" alt="Filter"> FILTER
-                    </button>
                 </div>
             </div>
 
-            <div class="tableContainer">
-                <table id="ticketTable" class="table">
-                    <div class="table-title" style="text-align: center;">
-                        <h2>Tickets</h2>
-                        <p>List of tickets with their details.</p>
-
-                    </div>
+            <div class="tableContainer" id="tableContainerTicketID">
+                <table>
                     <thead>
                         <tr>
                             <th>ID <i class="fas fa-sort"></i></th>
                             <th>Employee Name <i class="fas fa-sort"></i></th>
-                            <th>Department <i class="fas fa-sort"></i></th>
                             <th>Subject <i class="fas fa-sort"></i></th>
                             <th>Description <i class="fas fa-sort"></i></th>
                             <th>Status <i class="fas fa-sort"></i></th>
@@ -177,26 +170,15 @@ require_once '../../0/includes/hrHeadQuery.php';
                             <th>Category ID <i class="fas fa-sort"></i></th>
                             <th>Assigned To <i class="fas fa-sort"></i></th>
                             <th>Created At <i class="fas fa-sort"></i></th>
-                            <th>Duration <i class="fas fa-sort"></i></th>
                             <th>Updated At <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($tickets)): ?>
                             <?php foreach ($tickets as $ticket): ?>
-                                <tr data-id="<?= htmlspecialchars($ticket['id']) ?>"
-                                    data-status="<?= htmlspecialchars($ticket['status']) ?>"
-                                    data-priority="<?= htmlspecialchars($ticket['priority']) ?>"
-                                    data-category="<?= htmlspecialchars($ticket['category_name']) ?>"
-                                    data-assigned-name="<?= htmlspecialchars($ticket['assigned_to_name']) ?>"
-                                    data-created-at="<?= htmlspecialchars($ticket['created_at']) ?>"
-                                    data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"
-                                    data-updated-at="<?= htmlspecialchars($ticket['updated_at']) ?>">
-
-
+                                <tr data-id="<?= htmlspecialchars($user['id']) ?>">
                                     <td><?= htmlspecialchars($ticket['id']) ?></td>
                                     <td><?= htmlspecialchars($ticket['employee_name']) ?></td>
-                                    <td><?= htmlspecialchars($ticket['assigned_department']) ?></td>
                                     <td><?= htmlspecialchars($ticket['subject']) ?></td>
                                     <td><?= htmlspecialchars($ticket['description']) ?></td>
                                     <td><?= htmlspecialchars($ticket['status']) ?></td>
@@ -204,461 +186,212 @@ require_once '../../0/includes/hrHeadQuery.php';
                                     <td><?= htmlspecialchars($ticket['category_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['assigned_to_name']) ?></td>
                                     <td><?= htmlspecialchars($ticket['created_at']) ?></td>
-                                    <td class="timer-cell" data-start-at="<?= htmlspecialchars($ticket['start_at']) ?>"></td>
                                     <td><?= htmlspecialchars($ticket['updated_at']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="12" style="text-align: center;">No tickets found</td>
+                                <td colspan="10" style="text-align: center;">No tickets found</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
 
                 </table>
-
-
             </div>
-            <br>
+
             <br><br>
 
-            <div class="tableContainer">
-                <table id="topAccountMostSolved" class="table">
-                    <div class="table-title" style="text-align: center;">
-                        <h2>Top HR Employees with Most Resolved Tickets</h2>
-                        <p>List of HR employees with the highest number of resolved tickets.</p>
-                    </div>
+
+
+            <style>
+                /* Highlight rows with Inactive status */
+                .inactive-row {
+                    background-color: var(--danger-highlight) !important;
+                    color: white;
+                }
+            </style>
+
+            <br><br>
+
+
+            <div class="tableContainer" id="tableContainerDepartment">
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Total Orders</h1>
+                    <h1 style="text-align: center; margin-top: 20px;">
+                        Top 5 Departments: <?= htmlspecialchars($totalTickets ?? 0) ?>
+                    </h1>
+                    <br>
+
                     <thead>
                         <tr>
-                            <th>ID <i class="fas fa-sort"></i></th>
-                            <th>Employee Name <i class="fas fa-sort"></i></th>
-                            <th>Total Resolved <i class="fas fa-sort"></i></th>
+                            <th>Department <i class="fas fa-sort"></i></th>
+                            <th>Total Orders <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($topResolvedAccounts)): ?>
-                            <?php foreach ($topResolvedAccounts as $account): ?>
+                        <?php if (!empty($totalDepartments)): ?>
+                            <?php foreach ($totalDepartments as $department): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($account['user_id']) ?></td>
-                                    <td><?= htmlspecialchars($account['employee_name']) ?></td>
-                                    <td><?= htmlspecialchars($account['resolved_count']) ?></td>
+                                    <td><?= htmlspecialchars($department['department'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($department['totalDepartmentCounts'] ?? 0) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="3" style="text-align: center;">No resolved tickets found</td>
+                                <td colspan="2" style="text-align: center;">No Department found</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
 
-            <br><br><br>
-        </div>
+            <br><br>
+
+            <div class="tableContainer" id="tableContainerCategory">
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Orders by Category</h1>
+                    <h1 style="text-align: center; margin-top: 20px;">
+                        Total Categories: <?= htmlspecialchars($totalCategory ?? 0) ?>
+                    </h1>
+                    <br>
+
+                    <thead>
+                        <tr>
+                            <th>Category <i class="fas fa-sort"></i></th>
+                            <th>Total Orders <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($totalCategories)): ?>
+                            <?php foreach ($totalCategories as $category): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($category['category'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($category['totalCategoryCounts'] ?? 0) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="2" style="text-align: center;">No Category found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
 
 
-        <div id="reportModal" class="modal">
-        <div class="modal-content">
+            <br><br>
+
+            <div class="tableContainer" id="tableContainerCategory">
+                <table>
+                    <h1 style="text-align: center; margin-top: 20px;">Top 10 Longest Orders</h1>
+                    <br>
+
+                    <thead>
+                        <tr>
+                            <th>Order ID <i class="fas fa-sort"></i></th>
+                            <th>Category <i class="fas fa-sort"></i></th>
+                            <th>Order Details <i class="fas fa-sort"></i></th>
+                            <th>Duration <i class="fas fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($longestOrders)): ?>
+                            <?php foreach ($longestOrders as $order): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($order['ticket_id'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($order['category'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($order['order_details'] ?? 'N/A') ?></td>
+                                    <td>
+                                        <?php
+                                        // Convert duration from seconds to hours, minutes, and seconds
+                                        $hours = floor($order['duration_seconds'] / 3600);
+                                        $minutes = floor(($order['duration_seconds'] % 3600) / 60);
+                                        $seconds = $order['duration_seconds'] % 60;
+                                        echo sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No Orders found</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+            <br><br><br><br>
+
+    </div>
+    <div id="reportModal" class="modal">
+        <form class="modal-content" method="post">
+            <input type="hidden" name="reportType" value="standard">
             <span class="close">&times;</span>
             <h2>Generate Report</h2>
             <div class="time-options">
-                <button class="time-btn">Today</button>
-                <button class="time-btn">This week</button>
-                <button class="time-btn">This month</button>
-                <button class="time-btn">Custom</button>
+                <div class="time-btn">Today</div>
+                <div class="time-btn">This week</div>
+                <div class="time-btn">This month</div>
+                <div class="time-btn">Custom</div>
             </div>
-
             <div class="date-range">
-                <label>From: <input type="date" id="startDate"></label>
-                <label>To: <input type="date" id="endDate"></label>
+                <label>From: <input type="date" id="startDate" name="startDate"></label>
+                <label>To: <input type="date" id="endDate" name="endDate"></label>
             </div>
-
+            <div class="radioInputContainer">
+                <input type="radio" class="radioInput" id="ticket" name="ticketType" value="ticket">
+                <label class="radioInputLabel" for="ticket">Ticket</label>
+                <input type="radio" class="radioInput" id="leave" name="ticketType" value="leave">
+                <label class="radioInputLabel" for="leave">Leave</label>
+            </div>
             <div class="report-options">
                 <div class="report-card">
-                    <h3>Generate Overall Tickets</h3>
-                    <p>This will generate sample rows ("Open, In Progress, Resolved").</p>
+                    <h3>Standard Report</h3>
+                    <br>
+                    <p>This will generate basic report about tickets and employees</p>
                 </div>
-
                 <div class="report-card">
-                    <h3>Generate Tickets per Employee</h3>
-                    <label>Type:
-                        <select>
-                            <option>Please select a category</option>
-                        </select>
-                    </label>
-                    <label>Name: <input type="text" placeholder="Enter Name"></label>
+                    <h3>Tickets of the Employee</h3>
+                    <br>
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " id="employeeNameInput" name="employeeName">
+                        <label class="textInputLabel">Name</label>
+                        <div class="suggestion-box" id="employeeSuggestionBox"></div>
+                    </div>
                 </div>
-
                 <div class="report-card">
-                    <h3>Generate Tickets per Department</h3>
-                    <label>Type:
-                        <select>
-                            <option>Please select a category</option>
-                        </select>
-                    </label>
+                    <h3>Tickets on a Department</h3>
+                    <br>
+                    <div class="textInputContainer">
+                        <input type="text" class="textInput" placeholder=" " id="departmentNameInput" name="departmentName">
+                        <label class="textInputLabel">Department</label>
+                        <div class="suggestion-box" id="departmentSuggestionBox"></div>
+                    </div>
                 </div>
             </div>
-
-            <button id="downloadReport">Download Report</button>
-        </div>
+            <div class="btnContainer">
+                <button type="submit" name="downloadReport" id="downloadReport" class="btnDefault">Download Report</button>
+            </div>
+        </form>
     </div>
 
 
 
 
-    <!-- Ticket Summarization Modal -->
-    <div id="ticketSummarizationModal" class="modal">
-        <div class="modal-content">
-            <h1 class="modal-title">Ticket Summarization</h1>
-
-            <form id="ticketSummarizationForm" method="POST">
-                <div class="input-container">
-                    <h1><strong>Ticket ID:</strong></h1>
-                    <p class="center-text" id="summarizationTicketID"><?= htmlspecialchars($ticket['id'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Employee Name:</strong></h1>
-                    <p class="center-text" id="summarizationEmployeeName"><?= htmlspecialchars($ticket['employee_name'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Department:</strong></h1>
-                    <p class="center-text" id="summarizationDepartment" data-assigned="<?= htmlspecialchars($ticket['assigned_department']) ?>">Unassigned</p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Subject:</strong></h1>
-                    <p class="center-text" id="summarizationSubject"><?= htmlspecialchars($ticket['subject'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Category:</strong></h1>
-                    <p class="center-text" id="summarizationCategory"><?= htmlspecialchars($ticket['category'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Description:</strong></h1>
-                    <p class="center-text" id="summarizationDescription"><?= htmlspecialchars($ticket['description'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Priority:</strong></h1>
-                    <p class="center-text" id="summarizationPriority"><?= htmlspecialchars($ticket['priority'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Assigned To:</strong></h1>
-                    <p class="center-text" id="summarizationAssignedTo"><?= htmlspecialchars($ticket['assigned_to_name'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Status:</strong></h1>
-                    <p class="center-text" id="summarizationStatus"><?= htmlspecialchars($ticket['status'] ?? 'N/A') ?></p>
-                </div>
-
-                <div class="input-container">
-                    <h1><strong>Duration:</strong></h1>
-                    <p class="center-text" id="summarizationDuration" data-assigned="<?= htmlspecialchars($ticket['start_at']) ?>">Unassigned</p>
-                </div>
-
-                <div class="btnContainer">
-                    <button type="button" class="btnDanger" onclick="closeModal()">BACK</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <footer class="footer-messages">
+        <p>All rights reserved to Metro North Medical Center and Hospital, Inc.</p>
+    </footer>
+    <script src="../../assets/js/framework.js"></script>
 
 
-
-
-        <script src="../../assets/js/framework.js"></script>
-        <script>
-
-            //filter
-document.addEventListener("DOMContentLoaded", function () {
-  const filterButton = document.getElementById("filterButton");
-
-  if (!filterButton) {
-    console.warn("⚠️ 'filterButton' not found in the DOM.");
-    return;
-  }
-
-  filterButton.addEventListener("click", function () {
-    // Create a dropdown menu dynamically
-    let dropdown = document.querySelector(".filter-dropdown");
-    if (!dropdown) {
-      dropdown = document.createElement("div");
-      dropdown.classList.add("filter-dropdown");
-      dropdown.style.position = "absolute";
-      dropdown.style.backgroundColor = "#fff";
-      dropdown.style.border = "1px solid #ccc";
-      dropdown.style.padding = "10px";
-      dropdown.style.zIndex = "1000";
-
-      // Add filter options
-      const filters = [
-        { column: 5, label: "Status" },
-        { column: 6, label: "Priority" },
-        { column: 7, label: "Category" },
-      ];
-
-      filters.forEach((filter) => {
-        const option = document.createElement("div");
-        option.textContent = filter.label;
-        option.style.cursor = "pointer";
-        option.style.padding = "5px 10px";
-        option.addEventListener("click", function () {
-          applyFilter(filter.column);
-          dropdown.remove(); // Remove dropdown after selection
-        });
-        dropdown.appendChild(option);
-      });
-
-      document.body.appendChild(dropdown);
-
-      // Position the dropdown below the filter button
-      const rect = filterButton.getBoundingClientRect();
-      dropdown.style.left = `${rect.left}px`;
-      dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-
-      // Close dropdown when clicking outside
-      document.addEventListener("click", function closeDropdown(event) {
-        if (!dropdown.contains(event.target) && event.target !== filterButton) {
-          dropdown.remove();
-          document.removeEventListener("click", closeDropdown);
-        }
-      });
-    }
-  });
-
-  // Apply filter based on the selected column
-  function applyFilter(columnIndex) {
-    const table = document.querySelector("#ticketTable"); // Ensure the table is selected
-    if (!table) {
-      console.error("Table element not found.");
-      return;
-    }
-    const rows = table.getElementsByTagName("tr");
-    const filterValue = prompt("Enter the value to filter by:");
-
-    if (filterValue) {
-      for (let i = 0; i < rows.length; i++) {
-        const cell = rows[i].getElementsByTagName("td")[columnIndex];
-        if (cell) {
-          rows[i].style.display =
-            cell.textContent.trim().toLowerCase() === filterValue.toLowerCase()
-              ? ""
-              : "none";
-        }
-      }
-    }
-  }
-});
-
-
-
-// Function to handle the timer
-document.addEventListener("DOMContentLoaded", function () {
-  // Function to calculate elapsed time
-  function calculateElapsedTime(startTime, endTime = null) {
-    const startDate = new Date(startTime); // Convert start_at to a Date object
-    const endDate = endTime ? new Date(endTime) : new Date(); // Use updated_at if provided, otherwise use current time
-    const elapsed = Math.floor((endDate - startDate) / 1000); // Elapsed time in seconds
-
-    const hours = Math.floor(elapsed / 3600);
-    const minutes = Math.floor((elapsed % 3600) / 60);
-    const seconds = elapsed % 60;
-
-    return `${hours
-      .toString()
-      .padStart(
-        2,
-        "0"
-      )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-  }
-
-  // Update all timer cells
-  function updateTimers() {
-    const timerCells = document.querySelectorAll(".timer-cell");
-    timerCells.forEach((cell) => {
-      const startAt = cell.getAttribute("data-start-at");
-      const row = cell.closest("tr");
-      const updatedAt = row
-        .querySelector("td:nth-child(12)")
-        ?.textContent.trim(); // Updated At column
-      const status = row.getAttribute("data-status");
-
-      // Stop the timer if updated_at has a value or status is "Resolved"
-      if ((updatedAt && updatedAt !== "") || status === "Resolved") {
-        // Calculate the elapsed time between startAt and updatedAt
-        cell.textContent = calculateElapsedTime(startAt, updatedAt);
-        cell.classList.add("stopped"); // Add a class to indicate the timer has stopped
-        return;
-      }
-
-      if (startAt) {
-        cell.textContent = calculateElapsedTime(startAt);
-      }
-    });
-  }
-
-  // Update timers every second
-  setInterval(updateTimers, 1000);
-
-  // Initial update
-  updateTimers();
-});
-
-
-//ticket summarization modal
-document.addEventListener("DOMContentLoaded", function () {
-  const tableRows = document.querySelectorAll("tbody tr");
-  const confirmModal = document.getElementById("confirmModal");
-  const editStatusModal = document.getElementById("editStatusModal");
-  const ticketSummarizationModal = document.getElementById(
-    "ticketSummarizationModal"
-  );
-
-  // Modal fields for confirmModal
-  const confirmModalFields = {
-    ticketIdField: document.getElementById("confirmTicketID"),
-    employeeNameField: document.getElementById("confirmemployeeID"),
-    departmentField: document.getElementById("confirmdepartmentID"),
-    subjectField: document.getElementById("confirmsubjectID"),
-    categoryField: document.getElementById("confirmcategoryID"),
-    descriptionField: document.getElementById("confirmdescriptionID"),
-    priorityField: document.getElementById("confirmpriorityID"),
-    assignedToField: document.getElementById("confirmassignedID"),
-    statusField: document.getElementById("confirmStatusID"),
-  };
-
-  // Modal fields for editStatusModal
-  const editStatusModalFields = {
-    ticketIdField: document.getElementById("editTicketID"),
-    employeeNameField: document.getElementById("editemployeeID"),
-    departmentField: document.getElementById("editdepartmentID"),
-    subjectField: document.getElementById("editsubjectID"),
-    categoryField: document.getElementById("editcategoryID"),
-    descriptionField: document.getElementById("editdescriptionID"),
-    priorityField: document.getElementById("editpriorityID"),
-    assignedToField: document.getElementById("editassignedID"),
-  };
-
-  // Fields in the Ticket Summarization Modal
-  const summarizationFields = {
-    ticketIdField: document.getElementById("summarizationTicketID"),
-    employeeNameField: document.getElementById("summarizationEmployeeName"),
-    departmentField: document.getElementById("summarizationDepartment"),
-    subjectField: document.getElementById("summarizationSubject"),
-    categoryField: document.getElementById("summarizationCategory"),
-    descriptionField: document.getElementById("summarizationDescription"),
-    priorityField: document.getElementById("summarizationPriority"),
-    assignedToField: document.getElementById("summarizationAssignedTo"),
-    statusField: document.getElementById("summarizationStatus"),
-    durationField: document.getElementById("summarizationDuration"),
-  };
-
-  // Add click event listener to each row
-  tableRows.forEach((row) => {
-    row.addEventListener("click", function () {
-      // Remove highlight from all rows
-      tableRows.forEach((r) => r.classList.remove("highlighted"));
-
-      // Highlight the clicked row
-      this.classList.add("highlighted");
-
-      // Get the values from the clicked row
-      const ticketId = this.children[0].textContent.trim();
-      const employeeName = this.children[1].textContent.trim();
-      const assignedDepartment = this.children[2].textContent.trim();
-      const subject = this.children[3].textContent.trim();
-      const description = this.children[4].textContent.trim();
-      const status = this.children[5].textContent.trim();
-      const priority = this.children[6].textContent.trim();
-      const category = this.children[7].textContent.trim();
-      const assignedTo = this.children[8].textContent.trim();
-      const startAt = this.getAttribute("data-start-at");
-      const updatedAt = this.children[11]?.textContent.trim();
-
-      // Get the current user from the session
-      const currentUser = document
-        .querySelector(".accountName")
-        .textContent.trim();
-
-       if (status === "Resolved") {
-        // Populate the modal fields
-
-        summarizationFields.ticketIdField.textContent = ticketId;
-        summarizationFields.employeeNameField.textContent = employeeName;
-        editStatusModalFields.departmentField.textContent = assignedDepartment;
-        summarizationFields.subjectField.textContent = subject;
-        summarizationFields.categoryField.textContent = category;
-        summarizationFields.descriptionField.textContent = description;
-        summarizationFields.priorityField.textContent = priority;
-        summarizationFields.assignedToField.textContent = assignedTo;
-        summarizationFields.statusField.textContent = status;
-
-        // Calculate and populate the duration
-        if (Date.parse(startAt) && Date.parse(updatedAt)) {
-          const startDate = new Date(startAt);
-          const updatedDate = new Date(updatedAt);
-          const durationMs = updatedDate - startDate;
-
-          // Convert duration to days, hours, and minutes
-          const days = Math.floor(durationMs / (1000 * 60 * 60 * 24));
-          const hours = Math.floor(
-            (durationMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-          );
-          const minutes = Math.floor(
-            (durationMs % (1000 * 60 * 60)) / (1000 * 60)
-          );
-          const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
-
-          summarizationFields.durationField.textContent = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-        } else {
-          summarizationFields.durationField.textContent = "N/A";
-        }
-
-        ticketSummarizationModal.style.display = "flex";
-        logModalOpened("Ticket Summarization Modal", {
-          ticketId,
-          employeeName,
-          department,
-          subject,
-          description,
-          status,
-          priority,
-          category,
-          assignedTo,
-        });
-      }
-    });
-  });
-
-  // Close the modal when clicking outside of it
-  window.addEventListener("click", function (event) {
-    if (event.target === ticketSummarizationModal) {
-      ticketSummarizationModal.style.display = "none";
-    }
-  });
-
-  // Close the modal when clicking the "BACK" button
-  const closeModalButtons = document.querySelectorAll(".btnDanger");
-  closeModalButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      ticketSummarizationModal.style.display = "none";
-    });
-  });
-});
-
-
-
-
-    //filter modals search
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const allRows = Array.from(document.querySelectorAll("#ticketTable tbody tr"));
-            const tbody = document.querySelector("#ticketTable tbody");
+            const allRows = Array.from(document.querySelectorAll("#tableContainerTicketID tbody tr"));
+            const tbody = document.querySelector("#tableContainerTicketID tbody");
             const paginationContainer = document.getElementById("paginationControls");
             const rowsPerPage = 5;
             let currentPage = 1;
@@ -757,7 +490,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Close modal when clicking outside the content
             window.addEventListener("click", function(event) {
-                if (event.target === modal) {
+                if (event.target === modal && !event.target.classList.contains("time-btn")) {
                     modal.style.display = "none";
                 }
             });
@@ -765,7 +498,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-        //report function  
+        
         document.addEventListener("DOMContentLoaded", function () {
             const timeButtons = document.querySelectorAll(".time-btn");
             const startDateInput = document.getElementById("startDate");
@@ -828,8 +561,90 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     </script>
+    <?php 
+        require_once '../../0/includes/employeeList.php';
+        require_once '../../0/includes/departmentList.php';
+    ?>
+    <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const employeeInput = document.getElementById("employeeNameInput");
+            const employeeSuggestionBox = document.getElementById("employeeSuggestionBox");
+            const departmentInput = document.getElementById("departmentNameInput");
+            const departmentSuggestionBox = document.getElementById("departmentSuggestionBox");
 
+            // Function to show suggestions
+            function showSuggestions(input, suggestionBox, data) {
+                const query = input.value.toLowerCase();
+                suggestionBox.innerHTML = "";
+                if (query.trim() === "") {
+                    suggestionBox.style.display = "none";
+                    return;
+                }
 
+                const filteredData = data.filter(item =>
+                    item.name ? item.name.toLowerCase().includes(query) : item.toLowerCase().includes(query)
+                );
+
+                if (filteredData.length > 0) {
+                    filteredData.forEach(item => {
+                        const suggestion = document.createElement("div");
+                        suggestion.textContent = item.name || item;
+                        suggestion.addEventListener("click", () => {
+                            input.value = item.name || item;
+                            suggestionBox.style.display = "none";
+                        });
+                        suggestionBox.appendChild(suggestion);
+                    });
+                    suggestionBox.style.display = "block";
+                } else {
+                    suggestionBox.style.display = "none";
+                }
+            }
+
+            // Event listeners for employee input
+            employeeInput.addEventListener("input", () => {
+                showSuggestions(employeeInput, employeeSuggestionBox, employees);
+            });
+
+            // Event listeners for department input
+            departmentInput.addEventListener("input", () => {
+                showSuggestions(departmentInput, departmentSuggestionBox, departments);
+            });
+
+            // Hide suggestion box when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!employeeInput.contains(event.target) && !employeeSuggestionBox.contains(event.target)) {
+                    employeeSuggestionBox.style.display = "none";
+                }
+                if (!departmentInput.contains(event.target) && !departmentSuggestionBox.contains(event.target)) {
+                    departmentSuggestionBox.style.display = "none";
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const reportCards = document.querySelectorAll(".report-card");
+            const reportTypeInput = document.querySelector("input[name='reportType']");
+            reportCards.forEach((card) => {
+                card.addEventListener("click", function () {
+                    // Remove the 'selected' class from all report cards
+                    reportCards.forEach((c) => c.classList.remove("selected"));
+
+                    // Add the 'selected' class to the clicked card
+                    this.classList.add("selected");
+
+                    // Update the hidden input with the report type
+                    const reportType = this.querySelector("h3").textContent.trim();
+                    if (reportType === "Standard Report") {
+                        reportTypeInput.value = "standard";
+                    } else if (reportType === "Tickets of the Employee") {
+                        reportTypeInput.value = "employee";
+                    } else if (reportType === "Tickets on a Department") {
+                        reportTypeInput.value = "department";
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
