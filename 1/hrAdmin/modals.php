@@ -24,7 +24,8 @@
                      <option value="" disabled selected>Please select a Role</option>
                      <option value="Admin">Admin</option>
                      <option value="Employee">Employee</option>
-                     <option value="HR Rep">HR Rep</option>
+                     <option value="HR">HR Representative</option>
+                     
 
                  </select>
              </div>
