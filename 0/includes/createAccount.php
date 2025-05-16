@@ -7,7 +7,7 @@ function createUser($employeeID, $employeeName, $email, $role, $department)
 
     try {
         // Static password hash
-        $passwordHash = '$2y$10$goVTP4El61v39QXFzClRlOwmsf48VELveViYRJ0uW2wcYZ9IlGOja';
+        $passwordHash = '$2y$10$zNPr3SU/xRrFbUv5HkGgcOEloVMkW9AO5ygDqwhuPPxVsLHfOoQ.K'; // hash for "mnmch@2025"
 
         // Prepare the SQL query
         $sql = "INSERT INTO users (id, name, email, password, role, department, created_at) 
