@@ -221,6 +221,146 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         <script src="../../assets/js/framework.js"></script>
         <script src="../../assets/js/adminSendMessage.js"></script>
 
+        <!-- 
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Attach click handler to all leave cards
+                document.querySelectorAll('.card[data-type="leave"]').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const leaveId = card.getAttribute('data-id');
+                        const leaveType = card.getAttribute('data-type');
+                        loadMessages(leaveId, null, leaveType); // Use the type from the card
+                        history.replaceState(null, '', `?leaveID=${leaveId}&type=${leaveType}`);
+                    });
+                });
+
+                // Auto-open the card if leaveID is in the URL
+                function getQueryParam(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
+                }
+
+                const leaveID = getQueryParam("leaveID");
+                const type = getQueryParam("type");
+
+                if (leaveID && type === "leave") {
+                    const cardsContainer = document.getElementById('cardsContainer');
+
+                    function tryOpenLeaveCard() {
+                        const cards = cardsContainer.querySelectorAll('.card[data-type="leave"]');
+                        let found = false;
+                        cards.forEach(card => {
+                            if (card.getAttribute('data-id') === leaveID) {
+                                card.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "center"
+                                });
+                                card.classList.add("highlighted");
+                                card.dispatchEvent(new MouseEvent('click', {
+                                    bubbles: true
+                                }));
+                                console.log("Auto-opened leave card with ID:", leaveID); // <-- Add this line
+                                found = true;
+                            }
+                        });
+                        return found;
+                    }
+
+                    // Try immediately, or observe for changes if not found
+                    if (!tryOpenLeaveCard()) {
+                        const observer = new MutationObserver(() => {
+                            if (tryOpenLeaveCard()) {
+                                observer.disconnect();
+                            }
+                        });
+                        observer.observe(cardsContainer, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+                }
+            });
+        </script> -->
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Attach click handler to all cards (tickets and leaves)
+                document.querySelectorAll('.card').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const id = card.getAttribute('data-id');
+                        const type = card.getAttribute('data-type');
+                        loadMessages(id, null, type);
+                        // Update the URL for both types
+                        if (type === "leave") {
+                            history.replaceState(null, '', `?leaveID=${id}&type=leave`);
+                        } else if (type === "ticket") {
+                            history.replaceState(null, '', `?ticketID=${id}&type=ticket`);
+                        }
+                    });
+                });
+
+                // Helper to get URL params
+                function getQueryParam(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
+                }
+
+                // Auto-open logic for leave
+                const leaveID = getQueryParam("leaveID");
+                const leaveType = getQueryParam("type");
+                // Auto-open logic for ticket
+                const ticketID = getQueryParam("ticketID");
+                const ticketType = getQueryParam("type");
+
+                const cardsContainer = document.getElementById('cardsContainer');
+
+                function tryOpenCard(id, type) {
+                    const cards = cardsContainer.querySelectorAll(`.card[data-type="${type}"]`);
+                    let found = false;
+                    cards.forEach(card => {
+                        if (card.getAttribute('data-id') === id) {
+                            card.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+                            card.classList.add("highlighted");
+                            card.dispatchEvent(new MouseEvent('click', {
+                                bubbles: true
+                            }));
+                            console.log(`Auto-opened ${type} card with ID:`, id);
+                            found = true;
+                        }
+                    });
+                    return found;
+                }
+
+                // Try to auto-open leave or ticket card based on URL
+                if (leaveID && leaveType === "leave") {
+                    if (!tryOpenCard(leaveID, "leave")) {
+                        const observer = new MutationObserver(() => {
+                            if (tryOpenCard(leaveID, "leave")) observer.disconnect();
+                        });
+                        observer.observe(cardsContainer, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+                } else if (ticketID && ticketType === "ticket") {
+                    if (!tryOpenCard(ticketID, "ticket")) {
+                        const observer = new MutationObserver(() => {
+                            if (tryOpenCard(ticketID, "ticket")) observer.disconnect();
+                        });
+                        observer.observe(cardsContainer, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+                }
+            });
+        </script>
+
+
         <script>
             const searchInput = document.getElementById('search');
             const cardsContainer = document.getElementById('cardsContainer');

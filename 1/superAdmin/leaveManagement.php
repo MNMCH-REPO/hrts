@@ -263,7 +263,8 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                             data-leave-id="">
                             View Attachment
                         </button>
-                        <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button>
+                        <!-- <button type=" button" id="messageApprovalID" name="messageApproval" class="btnWarning btnContainer">Message</button> -->
+                        <a href="message.php" class="btnWarning btnContainer" id="messageApprovalID" style="text-decoration: none;">Message</a>
                         <button type="submit" id="approveLeaveBtnID" name="approveLeaveBtn" class="btnDefault btnContainer">APPROVE</button>
                         <button type="submit" id="declineLeaveBtnID" name="declineLeaveBtn" class="btnWarning btnContainer" data-leave-id="">REJECT</button>
                         <button type="button" class="btnDanger btnContainer" onclick="closeModal()">CANCEL</button>
@@ -596,22 +597,36 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const messageButton = document.getElementById("messageApprovalID");
 
-    messageButton.addEventListener("click", function () {
-        const messageLeaveID = document.getElementById("approveLeaveID").value; // Get the leave ID
-        if (!messageLeaveID) {
-            alert("Leave ID is missing.");
-            return;
-        }
+    <script>
+        // Add this ONCE, after the DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            const messageBtn = document.getElementById("messageApprovalID");
+            if (messageBtn) {
+                messageBtn.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const leaveID = this.getAttribute("data-id");
+                    if (!leaveID) {
+                        alert("Leave ID is missing.");
+                        return;
+                    }
+                    window.location.href = `message.php?leaveID=${encodeURIComponent(leaveID)}&type=leave`;
+                });
+            }
 
-        // Redirect to message.php with type=leave and the leave ID
-        window.location.href = `message.php?type=leave&id=${messageLeaveID}`;
-    });
-});
-</script>
+            // In your table row click handler, after you get leaveId:
+            const tableRows = document.querySelectorAll("tbody tr");
+            tableRows.forEach(row => {
+                row.addEventListener("click", function() {
+                    const leaveId = this.children[0].textContent.trim();
+                    if (messageBtn) {
+                        messageBtn.setAttribute("data-id", leaveId);
+                    }
+
+                });
+            });
+        });
+    </script>
 
 
     <script src="../../assets/js/framework.js"></script>
@@ -1346,27 +1361,15 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
 
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const messageButton = document.getElementById("messageApprovalID");
-
-    messageButton.addEventListener("click", function () {
-        const messageLeaveID = document.getElementById("approveLeaveID").textContent.trim();
-        console.log("Storing Leave ID in session storage:", messageLeaveID); // Debugging
-
-        if (!messageLeaveID) {
-            alert("Leave ID is missing.");
-            return;
-        }
-
-        // Store the leave ID and type in session storage
-        sessionStorage.setItem("leaveID", messageLeaveID);
-        sessionStorage.setItem("type", "leave");
-
-        // Redirect to message.php
-        window.location.href = "message.php";
-    });
-});
-
+        // Example for a button click
+        document.getElementById("messageApprovalID").addEventListener("click", function() {
+            const leaveID = document.getElementById("approveLeaveID").textContent.trim();
+            if (!leaveID) {
+                alert("Leave ID is missing.");
+                return;
+            }
+            window.location.href = `message.php?leaveID=${encodeURIComponent(leaveID)}&type=leave`;
+        });
 
 
         document.addEventListener("DOMContentLoaded", function() {

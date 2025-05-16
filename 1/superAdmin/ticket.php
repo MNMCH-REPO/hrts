@@ -827,7 +827,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
 
 
 
-    <!-- Modal -->
+        <!-- Modal -->
     <div id="addTicketModal" class="modal">
         <div class="modal-content">
             <h1 class="modal-title">TICKET FORM</h1>
@@ -878,13 +878,12 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" name="submitTicket" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
+                    <button type="submit" name="submitTicketBtn" id="submitTicketID" class="btnDefault">SUBMIT TICKET</button>
                     <button type="button" class="btnDanger" onclick="closeModal()">CANCEL</button>
                 </div>
             </form>
         </div>
     </div>
-
 
 
     <!-- Modal -->
