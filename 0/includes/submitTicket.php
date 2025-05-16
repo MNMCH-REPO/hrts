@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $description = trim($_POST['description'] ?? '');
 
         // Validate required fields
-        if (!$employeeId || empty($employeeName) || empty($subject) || empty($department) || empty($category) || empty($description)) {
+        if (empty($employeeId) || empty($employeeName) || empty($subject) || empty($department) || empty($category) || empty($description)) {
             echo json_encode(["success" => false, "message" => "All fields are required."]);
             exit();
         }

@@ -222,27 +222,65 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
         <script src="../../assets/js/adminSendMessage.js"></script>
 
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Attach click handler to leave cards
-    document.querySelectorAll('.card[data-type="leave"]').forEach(card => {
-        card.addEventListener('click', function() {
-            const leaveId = card.getAttribute('data-id');
-            loadLeaveMessages(leaveId);
-        });
-    });
-});
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Attach click handler to all leave cards
+                document.querySelectorAll('.card[data-type="leave"]').forEach(card => {
+                    card.addEventListener('click', function() {
+                        const leaveId = card.getAttribute('data-id');
+                        const leaveType = card.getAttribute('data-type');
+                        loadMessages(leaveId, null, leaveType); // Use the type from the card
+                        history.replaceState(null, '', `?leaveID=${leaveId}&type=${leaveType}`);
+                    });
+                });
 
-// Dummy function for demonstration. Replace with your actual implementation.
-function loadLeaveMessages(leaveId) {
-    // You should implement this function to load the leave messages into the chatbox
-    // For example:
-    // fetch('getLeaveMessages.php?leaveID=' + leaveId)
-    //   .then(res => res.json())
-    //   .then(data => { ... });
-    document.getElementById('chatbox').innerHTML = `<p>Loading messages for leave ID: ${leaveId}</p>`;
-}
-</script>
+                // Auto-open the card if leaveID is in the URL
+                function getQueryParam(name) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return urlParams.get(name);
+                }
+
+                const leaveID = getQueryParam("leaveID");
+                const type = getQueryParam("type");
+
+                if (leaveID && type === "leave") {
+                    const cardsContainer = document.getElementById('cardsContainer');
+
+                    function tryOpenLeaveCard() {
+                        const cards = cardsContainer.querySelectorAll('.card[data-type="leave"]');
+                        let found = false;
+                        cards.forEach(card => {
+                            if (card.getAttribute('data-id') === leaveID) {
+                                card.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "center"
+                                });
+                                card.classList.add("highlighted");
+                                card.dispatchEvent(new MouseEvent('click', {
+                                    bubbles: true
+                                }));
+                                console.log("Auto-opened leave card with ID:", leaveID); // <-- Add this line
+                                found = true;
+                            }
+                        });
+                        return found;
+                    }
+
+                    // Try immediately, or observe for changes if not found
+                    if (!tryOpenLeaveCard()) {
+                        const observer = new MutationObserver(() => {
+                            if (tryOpenLeaveCard()) {
+                                observer.disconnect();
+                            }
+                        });
+                        observer.observe(cardsContainer, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+                }
+            });
+        </script>
 
         <script>
             const searchInput = document.getElementById('search');

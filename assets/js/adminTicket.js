@@ -1,8 +1,5 @@
 //raymond
 
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
   const plate = document.getElementById("plate1");
 
@@ -106,7 +103,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const filterButton = document.getElementById("filterButton");
   const table = document.getElementById("ticketTable");
 
-
   if (!filterButton) {
     console.error("❌ filterButton element not found!");
     return;
@@ -151,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         dropdown.appendChild(option);
       });
-      
 
       document.body.appendChild(dropdown);
 
@@ -173,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function applyFilter(columnIndex, label) {
     const rows = table.getElementsByTagName("tr");
     const filterValue = prompt("Enter the value to filter by: " + label); // Display the label in the prompt
-  
+
     if (filterValue) {
       for (let i = 0; i < rows.length; i++) {
         const cell = rows[i].getElementsByTagName("td")[columnIndex];
@@ -186,22 +181,17 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   }
-  
 });
 
+//create ticket modal
 document.addEventListener("DOMContentLoaded", function () {
   // Open modal function
   function openModal() {
     document.getElementById("addTicketModal").style.display = "flex";
 
     // Auto-fill department correctly
-    let departmentField = document.getElementById("departmentInputField");
 
-    if (departmentField) {
-      departmentField.readonly = true; // Make it read-only
-    } else {
-      console.error("❌ Department field not found!");
-    }
+
   }
 
   // Make the function globally accessible
@@ -224,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
 
       let formData = new FormData(this);
+      
 
       fetch("../../0/includes/submitTicket.php", {
         method: "POST",
@@ -245,6 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 
 // Function to handle the timer
 document.addEventListener("DOMContentLoaded", function () {
@@ -518,9 +510,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
-
-
 //assign ticket
 document.addEventListener("DOMContentLoaded", function () {
   const assignTicketForm = document.getElementById("assignTicketForm");
@@ -592,9 +581,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
-
-
 //accept ticket
 document.addEventListener("DOMContentLoaded", function () {
   // Function to calculate elapsed time
@@ -640,16 +626,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-
   function updateDurationCell(row, data) {
     const durationCell = row.querySelector("td:nth-child(10)"); // Assuming the duration column is the 10th column
     if (durationCell) {
       const startAt = data.startAt || row.getAttribute("data-start-at");
-      
+
       // Set the attribute on both row and cell for consistency
-      row.setAttribute("data-start-at", startAt); 
+      row.setAttribute("data-start-at", startAt);
       durationCell.setAttribute("data-start-at", startAt); // <--- Add this line
-  
+
       // Call the function to calculate elapsed time and update the cell
       durationCell.textContent = calculateElapsedTime(startAt);
     }
@@ -723,9 +708,10 @@ document.addEventListener("DOMContentLoaded", function () {
   updateTimers();
 });
 
-
-document.addEventListener("DOMContentLoaded", function() {
-  const allRows = Array.from(document.querySelectorAll("#ticketTable tbody tr"));
+document.addEventListener("DOMContentLoaded", function () {
+  const allRows = Array.from(
+    document.querySelectorAll("#ticketTable tbody tr")
+  );
   const tbody = document.querySelector("#ticketTable tbody");
   const paginationContainer = document.getElementById("paginationControls");
   const rowsPerPage = 5;
@@ -733,76 +719,80 @@ document.addEventListener("DOMContentLoaded", function() {
   let currentFilter = "";
 
   function getRowStatus(row) {
-      return row.children[4].textContent.trim();
+    return row.children[4].textContent.trim();
   }
 
   function renderTable(filter = "") {
-      const filteredRows = filter ? allRows.filter(row => getRowStatus(row) === filter) : allRows;
-      const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-      currentPage = Math.min(currentPage, totalPages || 1);
-      const start = (currentPage - 1) * rowsPerPage;
-      const end = start + rowsPerPage;
-      tbody.innerHTML = "";
-      filteredRows.slice(start, end).forEach(row => tbody.appendChild(row));
-      renderPaginationButtons(totalPages);
+    const filteredRows = filter
+      ? allRows.filter((row) => getRowStatus(row) === filter)
+      : allRows;
+    const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+    currentPage = Math.min(currentPage, totalPages || 1);
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    tbody.innerHTML = "";
+    filteredRows.slice(start, end).forEach((row) => tbody.appendChild(row));
+    renderPaginationButtons(totalPages);
   }
   let paginationStart = 1; // Tracks which set of pages we're viewing
 
   function renderPaginationButtons(totalPages) {
-      paginationContainer.innerHTML = "";
+    paginationContainer.innerHTML = "";
 
-      const maxVisible = 10;
-      const paginationEnd = Math.min(paginationStart + maxVisible - 1, totalPages);
+    const maxVisible = 10;
+    const paginationEnd = Math.min(
+      paginationStart + maxVisible - 1,
+      totalPages
+    );
 
-      // Left arrow (go back 10 pages)
-      if (paginationStart > 1) {
-          const leftArrow = document.createElement("button");
-          leftArrow.textContent = "←";
-          leftArrow.addEventListener("click", () => {
-              paginationStart = Math.max(1, paginationStart - maxVisible);
-              renderPaginationButtons(totalPages);
-          });
-          paginationContainer.appendChild(leftArrow);
-      }
+    // Left arrow (go back 10 pages)
+    if (paginationStart > 1) {
+      const leftArrow = document.createElement("button");
+      leftArrow.textContent = "←";
+      leftArrow.addEventListener("click", () => {
+        paginationStart = Math.max(1, paginationStart - maxVisible);
+        renderPaginationButtons(totalPages);
+      });
+      paginationContainer.appendChild(leftArrow);
+    }
 
-      // Page number buttons
-      for (let i = paginationStart; i <= paginationEnd; i++) {
-          const btn = document.createElement("button");
-          btn.textContent = i;
-          btn.className = i === currentPage ? "active" : "";
-          btn.style.margin = "0 5px";
-          btn.style.minWidth = "22px";
-          btn.addEventListener("click", () => {
-              currentPage = i;
-              renderTable(currentFilter);
-          });
-          paginationContainer.appendChild(btn);
-      }
+    // Page number buttons
+    for (let i = paginationStart; i <= paginationEnd; i++) {
+      const btn = document.createElement("button");
+      btn.textContent = i;
+      btn.className = i === currentPage ? "active" : "";
+      btn.style.margin = "0 5px";
+      btn.style.minWidth = "22px";
+      btn.addEventListener("click", () => {
+        currentPage = i;
+        renderTable(currentFilter);
+      });
+      paginationContainer.appendChild(btn);
+    }
 
-      // Right arrow (go forward 10 pages)
-      if (paginationEnd < totalPages) {
-          const rightArrow = document.createElement("button");
-          rightArrow.textContent = "→";
-          rightArrow.addEventListener("click", () => {
-              paginationStart = paginationStart + maxVisible;
-              renderPaginationButtons(totalPages);
-          });
-          paginationContainer.appendChild(rightArrow);
-      }
+    // Right arrow (go forward 10 pages)
+    if (paginationEnd < totalPages) {
+      const rightArrow = document.createElement("button");
+      rightArrow.textContent = "→";
+      rightArrow.addEventListener("click", () => {
+        paginationStart = paginationStart + maxVisible;
+        renderPaginationButtons(totalPages);
+      });
+      paginationContainer.appendChild(rightArrow);
+    }
   }
 
   const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
-  plateIDs.forEach(id => {
-      const plate = document.getElementById(id);
-      if (plate) {
-          plate.addEventListener("click", function() {
-              currentFilter = this.getAttribute("data-status") || "";
-              currentPage = 1;
-              paginationStart = 1; // ✅ Reset pagination to start from 1
-              renderTable(currentFilter);
-
-          });
-      }
+  plateIDs.forEach((id) => {
+    const plate = document.getElementById(id);
+    if (plate) {
+      plate.addEventListener("click", function () {
+        currentFilter = this.getAttribute("data-status") || "";
+        currentPage = 1;
+        paginationStart = 1; // ✅ Reset pagination to start from 1
+        renderTable(currentFilter);
+      });
+    }
   });
   renderTable();
 });
