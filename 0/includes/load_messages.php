@@ -64,7 +64,7 @@ try {
                     lr.id, 
                     lr.employee_id,
                     lr.approved_by as assigned_to,
-                    lr.leave_types,
+                    lr.leave_types AS category_name,
                     u_assigned.name AS assigned_name, 
                     u_creator.name AS creator_name
                 FROM leave_requests lr
@@ -149,6 +149,7 @@ try {
                 leave_attachments.file_name, 
                 leave_attachments.file_path, 
                 leave_attachments.uploaded_at AS created_at,
+                leave_attachments.uploaded_by AS user_id,
                 users.name AS uploaded_by_name
             FROM leave_attachments
             JOIN users ON leave_attachments.uploaded_by = users.id
@@ -161,6 +162,7 @@ try {
                 attachments.file_name, 
                 attachments.file_path, 
                 attachments.uploaded_at AS created_at,
+                attachments.uploaded_by AS user_id,
                 users.name AS uploaded_by_name
             FROM attachments
             JOIN users ON attachments.uploaded_by = users.id
