@@ -782,7 +782,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  const plateIDs = ["plate1", "plate2", "plate3", "plate4", "plate5"];
+  const plateIDs = ["plate1", "plate2", "plate3"];
   plateIDs.forEach((id) => {
     const plate = document.getElementById(id);
     if (plate) {

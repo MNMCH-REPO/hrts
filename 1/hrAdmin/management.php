@@ -41,7 +41,7 @@ require_once '../../0/includes/accountQuery.php'; // Include the query file
                 <a href="account.php">Account</a>
             </div>
 
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
             </div>

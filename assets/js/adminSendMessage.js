@@ -104,19 +104,42 @@ function loadMessages(ticketId = null, assignedName = null, type = null) {
     );
   }
 
+
+  // Save the current scroll position
+  let chatbox = $("#chatbox");
+  let previousScrollTop = chatbox.scrollTop(); // Save the current scroll position
+  let isAtBottom =
+    chatbox.scrollTop() + chatbox.innerHeight() >= chatbox[0].scrollHeight - 1; // Check if user is at the bottom
+
   // Load messages via AJAX
   $.ajax({
     url: "../../0/includes/load_messages.php",
     type: "GET",
     data: { ticket_id: selectedTicketId, ticket_type: selectedTicketType },
     success: function (response) {
-      const chatbox = $("#chatbox");
+      const oldHeight = chatbox[0].scrollHeight; // Save the old height before updating
+      
       chatbox.html(response); // Update the chatbox with the loaded messages
 
-      // Scroll to the bottom of the chatbox
-      chatbox.scrollTop(chatbox[0].scrollHeight);
+      const newHeight = chatbox[0].scrollHeight; // Get the new height after updating
+
+      // Restore the scroll position
+      if (isAtBottom) {
+        
+        chatbox.scrollTop(chatbox[0].scrollHeight); // Scroll to the bottom if the user was already there
+      } else if (newHeight > oldHeight) {
+        
+        // Adjust scroll position if new messages were added
+        chatbox.scrollTop(previousScrollTop + (newHeight - oldHeight));
+        
+      } else {
+        
+        chatbox.scrollTop(previousScrollTop); // Restore the previous scroll position
+      }
     },
+    
     error: function (xhr, status, error) {
+      
       console.error("Error loading messages:", error);
     },
   });
@@ -126,14 +149,15 @@ function updateChatbox(message) {
   const chatbox = $("#chatbox");
   const messageDiv = `
     <div class="message">
+    
       <p><strong>${message.sender}:</strong> ${message.text}</p>
       <small>${message.time}</small>
     </div>
   `;
   chatbox.append(messageDiv);
+  
   chatbox.scrollTop(chatbox[0].scrollHeight);
 }
-
 function selectTicket(ticketId) {
   selectedTicketId = ticketId;
 
@@ -149,6 +173,7 @@ function resumeSendState() {
   resetSendState();
   // Restart the refresh
   if (!refreshInterval) {
+    console.log("Scroll1"); // Log the loaded messages
     refreshInterval = setInterval(() => loadMessages(), 1000);
   }
 }

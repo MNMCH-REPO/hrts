@@ -49,14 +49,15 @@
             t.subject,
             c.name AS category,
             t.description,
-            t.assigned_to,
+            assigned_user.name AS assigned_to, -- Join to get the name of the assigned user
             t.created_at,
             t.updated_at
         FROM tickets t
         JOIN users u ON t.employee_id = u.id
         JOIN categories c ON t.category_id = c.id
+        LEFT JOIN users assigned_user ON t.assigned_to = assigned_user.id -- Join to get the assigned user's name
         WHERE t.created_at BETWEEN :startDate AND :endDate
-        ORDER BY u.department, u.name
+        ORDER BY u.department, u.name;
     ");
     $stmt->bindParam(':startDate', $startDate);
     $stmt->bindParam(':endDate', $endDate);
@@ -111,14 +112,15 @@
                 t.subject,
                 c.name AS category,
                 t.description,
-                t.assigned_to,
+                assigned_user.name AS assigned_to, -- Join to get the name of the assigned user
                 t.created_at,
                 t.updated_at
             FROM tickets t
             JOIN users u ON t.employee_id = u.id
             JOIN categories c ON t.category_id = c.id
+            LEFT JOIN users assigned_user ON t.assigned_to = assigned_user.id -- Join to get the assigned user's name
             WHERE t.created_at BETWEEN :startDate AND :endDate
-            ORDER BY u.department, u.name
+            ORDER BY u.department, u.name;
         ");
         $stmt->bindParam(':startDate', $startDate);
         $stmt->bindParam(':endDate', $endDate);

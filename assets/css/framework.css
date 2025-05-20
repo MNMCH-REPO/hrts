@@ -55,6 +55,9 @@
     --normal: 256ms;
     --slow: 512ms;
 }
+.currentPage{
+    background-color: var(--primary-300);
+}
 @media only screen and (max-width: 600px) {
     *{
         margin: 0;

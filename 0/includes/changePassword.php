@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirmPassword = $_POST['confirmPassword'] ?? '';
 
     // Validate input fields
-    if (empty($oldPassword) || empty($newPassword) || empty($confirmPassword)) {
+    if (empty($newPassword) || empty($confirmPassword)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
         exit;
     }

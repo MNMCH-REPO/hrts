@@ -180,12 +180,13 @@
         background-color: var(--primary-300);
         border: 1px solid var(--primary-300);
     }
-    .card h1 {
-        font-size: 12px;
-        margin: 2px 0;
-        color: var(--black);
+    .card * {
         font-weight: 500;
-        cursor: pointer;
+        font-size: 10px;
+        max-width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .button-container {
         display: flex;

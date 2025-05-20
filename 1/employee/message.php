@@ -51,7 +51,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
                 <a href="leave.php">Leave Management</a>
             </div>
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
                 </div>
                 <a href="message.php">Messages</a>
@@ -118,12 +118,14 @@ require_once '../../0/includes/employeeTicket.php';
                                 t.created_at,
                                 COALESCE(u1.name, 'Unassigned') AS assigned_name,
                                 u2.name AS employee_name,
+                                c.name AS category_name, -- Join to get the category name
                                 'ticket' AS type
                             FROM tickets t
                             LEFT JOIN users u1 ON t.assigned_to = u1.id
                             LEFT JOIN users u2 ON t.employee_id = u2.id
-                            WHERE t.employee_id = :employee_id
-                            ORDER BY t.updated_at DESC
+                            LEFT JOIN categories c ON t.category_id = c.id -- Join to get the category name
+                            WHERE t.employee_id = :employee_id OR t.assigned_to = :employee_id
+                            ORDER BY t.updated_at DESC; 
                         ");
                         $stmt1->execute(['employee_id' => $employeeID]);
                         $tickets = $stmt1->fetchAll(PDO::FETCH_ASSOC);

@@ -145,7 +145,7 @@ require_once '../../0/includes/employeeTicket.php';
                         <div class="account-box-content">
                             <label class="account-box-content-row">
                                 <span class="account-box-content-row-label">Old Password</span>
-                                <input type="password" id="oldPassword" name="oldPassword" class="account-input" required>
+                                <input type="password" id="oldPassword" name="oldPassword" class="account-input">
                             </label>
 
                             <label class="account-box-content-row">

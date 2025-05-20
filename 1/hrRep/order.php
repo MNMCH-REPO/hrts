@@ -1,6 +1,6 @@
 <?php
 require_once '../../0/includes/employeeTicket.php';
-require_once '../../0/includes/platesHrFilter.php'; // Include the query file
+require_once '../../0/includes/platesHrFilter.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +24,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
     <div class="container">
         <div class="sideNav">
             <div class="sideNavLogo img-cover"></div>
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="order.php">Orders</a>
             </div>

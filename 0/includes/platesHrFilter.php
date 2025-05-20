@@ -27,8 +27,9 @@ try {
             $statusCounts[$row['status']] = $row['count'];
         }
     }
-
-    echo "<script>console.log('Status Counts:', " . json_encode($statusCounts) . ");</script>";
+        echo "<script>
+                const statusCounts = " . json_encode($statusCounts) . ";
+            </script>";
 
 
     if ($currentUserId) {

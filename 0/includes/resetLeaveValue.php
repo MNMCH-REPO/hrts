@@ -18,21 +18,25 @@ try {
         // Reset leave balances for all users
         $pdo->beginTransaction();
 
-        $resetQuery = "UPDATE used_balance SET sl = 0, sil = 0, elc = 0, mil = 0, ml = 0, pl = 0, spl = 0, brl = 0, awol = 0, lwop = 0";
-        $stmt1 = $pdo->prepare($resetQuery);
+        $resetTotal = "UPDATE total_balance SET sl = 5, sil = 5, elc = 1, mil = 5, ml = 0, pl = 0, spl = 5, brl = 5, awol = 0, lwop = 0";
+        $stmt1 = $pdo->prepare($resetTotal);
         if (!$stmt1->execute()) {
+            $pdo->rollBack();
+            echo json_encode(['success' => false, 'message' => 'Failed to reset leave balances (total_balance).']);
+            exit;
+        }
+
+
+
+        $resetQuery = "UPDATE used_balance SET sl = 0, sil = 0, elc = 0, mil = 0, ml = 0, pl = 0, spl = 0, brl = 0, awol = 0, lwop = 0";
+        $stmt2 = $pdo->prepare($resetQuery);
+        if (!$stmt2->execute()) {
             $pdo->rollBack();
             echo json_encode(['success' => false, 'message' => 'Failed to reset leave balances (used_balance).']);
             exit;
         }
 
-        $resetTotalEclQuery = "UPDATE total_balance SET elc = 1";
-        $stmt2 = $pdo->prepare($resetTotalEclQuery);
-        if (!$stmt2->execute()) {
-            $pdo->rollBack();
-            echo json_encode(['success' => false, 'message' => 'Failed to reset leave balances (total_balance).']);
-            exit;
-        }
+
 
         // Log the action in the `audit_trail` table
         $actionType = 'RESET';

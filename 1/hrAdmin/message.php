@@ -50,7 +50,7 @@ require_once '../../0/includes/adminTableQuery.php'; // Include the query file
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/ticket.png);"></div>
                 <a href="ticket.php">Tickets</a>
             </div>
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);"></div>
                 <a href="message.php">Messages</a>
             </div>

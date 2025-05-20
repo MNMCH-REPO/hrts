@@ -50,7 +50,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/management.png);"></div>
                 <a href="management.php">Management</a>
             </div>
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
                 <a href="leaveManagement.php">Leave Management</a>
             </div>
@@ -532,7 +532,7 @@ require_once '../../0/includes/platesHrFilter.php'; // Include the query file
                 <div class="btnContainer">
                     <form id="rejectConfirmForm" method="POST">
 
-                        <input type="text" id="rejectLeaveID" name="leaveId" value=""> <!-- Hidden input for leave ID -->
+                        <input type="hidden" id="rejectLeaveID" name="leaveId" value=""> <!-- Hidden input for leave ID -->
                         <button type="submit" class="btnWarning" id="confirmRejectButton">Confirm Reject</button>
                         <button type="button" class="btnDefault" id="cancelRejectButton">Cancel</button>
                     </form>

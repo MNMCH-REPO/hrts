@@ -51,7 +51,7 @@ require_once '../../0/includes/employeeTicket.php';
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/leave.png);"></div>
                 <a href="leave.php">Leave Management</a>
             </div>
-            <div class="navBtn">
+            <div class="navBtn currentPage">
                 <div class="navBtnIcon img-contain" style="background-image: url(../../assets/images/icons/chat.png);">
                 </div>
                 <a href="message.php">Messages</a>
@@ -117,12 +117,14 @@ require_once '../../0/includes/employeeTicket.php';
                                 t.created_at,
                                 COALESCE(u1.name, 'Unassigned') AS assigned_name,
                                 u2.name AS employee_name,
+                                c.name AS category_name, -- Join to get the category name
                                 'ticket' AS type
                             FROM tickets t
                             LEFT JOIN users u1 ON t.assigned_to = u1.id
                             LEFT JOIN users u2 ON t.employee_id = u2.id
-                            WHERE t.employee_id = :employee_id
-                            ORDER BY t.updated_at DESC
+                            LEFT JOIN categories c ON t.category_id = c.id -- Join to get the category name
+                            WHERE t.employee_id = :employee_id OR t.assigned_to = :employee_id
+                            ORDER BY t.updated_at DESC;
                         ");
                         $stmt1->execute(['employee_id' => $employeeID]);
                         $tickets = $stmt1->fetchAll(PDO::FETCH_ASSOC);
@@ -144,7 +146,7 @@ require_once '../../0/includes/employeeTicket.php';
                                 'leave' AS type
                             FROM leave_requests l
                             LEFT JOIN users u3 ON l.employee_id = u3.id
-                            WHERE l.employee_id = :employee_id
+                            WHERE l.employee_id = :employee_id OR l.approved_by = :employee_id
                             ORDER BY l.updated_at DESC, l.created_at DESC
                         ");
                         $stmt2->execute(['employee_id' => $employeeID]);
@@ -165,17 +167,14 @@ require_once '../../0/includes/employeeTicket.php';
                                     echo '<!-- DEBUG: ID=' . $item['id'] . ', TYPE=' . $item['type'] . ' -->';
 
                                     echo '<div class="card card-' . (($index % 4) + 1) . '" data-id="' . htmlspecialchars($item['id']) . '" data-type="' . htmlspecialchars($item['type']) . '">';
-
-                                    echo '<h1>Type: ' . strtoupper($item['type']) . '</h1>';
-                                    echo '<h1>ID: ' . htmlspecialchars($item['id']) . '</h1>';
-                                    echo '<h1>Name: ' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</h1>';
-
+                                    echo '<b style="font-size: 12px;">' . ucwords(strtolower(htmlspecialchars($item['employee_name'] ?? 'N/A'))) . '</b>';
+                                    
                                     if ($item['type'] === 'ticket') {
-                                        echo '<h1>Department: ' . ucwords(strtolower(htmlspecialchars($item['department'] ?? 'N/A'))) . '</h1>';
-                                        echo '<h1>Assigned Name: ' . htmlspecialchars($item['assigned_name'] ?? 'N/A') . '</h1>';
+                                        echo '<h1>' . ucwords(strtolower(htmlspecialchars($item['category_name'] ?? 'N/A'))) . '</h1>';
                                     } else {
-                                        echo '<h1>Leave Type: ' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
+                                        echo '<h1>' . htmlspecialchars($item['leave_types'] ?? 'N/A') . '</h1>';
                                     }
+                                    echo '<h1>' . ucwords(strtolower($item['type'])) .' ('. htmlspecialchars($item['id']) . ')</h1>';
 
                                     echo '</div>';
                                 } else {

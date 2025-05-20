@@ -484,6 +484,7 @@ document.addEventListener("DOMContentLoaded", function () {
       )}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
+
   // Function to update all timer cells
   function updateTimers() {
     const timerCells = document.querySelectorAll(".timer-cell");
@@ -568,6 +569,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
         alert("An error occurred while processing the request.");
       });
+      console.log("runs......");
+      location.reload();
   }
   // Add event listeners for the buttons
   document
