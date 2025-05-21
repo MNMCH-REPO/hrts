@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Insert default balances
                 $balanceSql1 = "
     INSERT INTO total_balance (user_id, sl, sil, elc, mil, ml, pl, awol, spl, lwop, brl) 
-    VALUES (:employeeID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    VALUES (:employeeID, 5, 5, 1, 5, 0, 0, 5, 5, 0, 0)
 ";
                 $balanceStmt1 = $pdo->prepare($balanceSql1);
                 $balanceStmt1->bindParam(':employeeID', $employeeID, PDO::PARAM_STR);

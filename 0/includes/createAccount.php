@@ -28,7 +28,7 @@ function createUser($employeeID, $employeeName, $email, $role, $department)
             // Insert default values into total_balance and used_balance tables
             $balanceSql = "
                 INSERT INTO total_balance (user_id, sl, sil, elc, mil, ml, pl, awol, spl, lwop, brl) 
-                VALUES (:employeeID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                VALUES (:employeeID, 5, 5, 1, 5, 0, 0, 5, 5, 0, 0)
                 
                 INSERT INTO used_balance (user_id, sl, sil, elc, mil, ml, pl, awol, spl, lwop, brl) 
                 VALUES (:employeeID, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
